@@ -1,0 +1,76 @@
+Let `VAR_S`,`TYPE_S` be disjoint types of Symbols.
+
+#---------------------------------------
+# Types
+#---------------------------------------
+
+TYPE =
+  Bool
+| Int
+| List TYPE
+| Tuple TYPE TYPE                                #Notation: `(TYPE,TYPE)`
+| Record (VAR_S TYPE)*                           #Notation: `{VAR_S:TYPE,..,VAR_S:TYPE}`
+| Function TYPE TYPE                             #Notation: `TYPE -> TYPE`
+| TypeVariable TYPE_S VAR_S* (TYPE_S TYPE_S*)*   #Notation: `TYPE_S VAR_S..VAR_S`
+| Free VAR_S                                     #Notation: `VAR_S`
+
+#---------------------------------------
+# Expressions and Statements
+#---------------------------------------
+
+                               #Type                                Notation
+EXP =                 
+  Foldl                        #`(a -> b -> b) -> b -> List a -> b` `foldl`
+| Cons                         #`a -> List a -> List a`             `::`  (infix)
+| Add                          #`Int -> Int -> Int`                 `+`   (infix)
+| Subtract                     #`Int -> Int -> Int`                 `-`   (infix)
+| Multiply                     #`Int -> Int -> Int`                 `*`   (infix)
+| Divide                       #`Int -> Int -> Int`                 `//`  (infix) Note: a // 0 == 0
+| Less                         #`Int -> Int -> Bool`                `<`   (infix)
+| Equal                        #`Int -> Int -> Bool`                `==`  (infix)
+| Not                          #`Bool -> Bool`                      `not`
+| And                          #`Bool -> Bool -> Bool`              `&&`  (infix)
+| Or                           #`Bool -> Bool -> Bool`              `||`  (infix)
+| Pipe                         #`a -> (a -> b) -> b`                `|>`  (infix)
+| Composition                  #`(a->b) -> (b->c) -> (a->c)`        `>>`  (infix)
+| IfThenElse                   #`Bool -> a -> a -> a`               `if EXP then EXP else EXP`
+| Constructor TYPE_S EXP*                        #Notation: `TYPE_S EXP..EXP`
+| RecordConstructor (VAR_S EXP)*                 #Notation: `{VAR_S = EXP,..,VAR_S = EXP}`
+| Set VAR_S VAR_S EXP                            #Notation: `{VAR_S | VAR_S = EXP}`
+| Get VAR_S VAR_S                                #Notation: `VAR_S.VAR_S`
+| LetIn VAR_S TYPE EXP EXP                       #Notation: `let VAR_S : TYPE; VAR_S = EXP; in EXP`
+| Case EXP (PATTERN EXP)*                        #Notation: `case EXP of [ PATTERN -> EXP;..; PATTERN -> EXP ]`
+| Call EXP EXP                                   #Notation: `EXP EXP` 
+| Value VALUE
+
+BOOL = True | False
+
+INT = 0 | 1 | -1 | 2 | -2 | ...
+
+PATTERN =
+| Constant VALUE
+| As PATTERN VAR_S                               #Notation: `(PATTERN as VAR_S)`
+| Fields PATTERN*                                #Notation: `{PATTERN,..,PATTERN}` Note: For Records
+| HeadAndTail PATTERN PATTERN                    #Notation: `PATTERN :: PATTERN`   Note: For Lists
+| CustomType TYPE_S PATTERN*
+| Wildcard                                       #Notation: `_`
+
+VALUE =
+| BoolValue BOOL
+| IntValue INT
+| ListValue VALUE*                               #Notation: `[VALUE,..,VALUE]`
+| TupleValue VALUE VALUE                         #Notation: `(VALUE,VALUE)`
+| RecordValue (VAR_S,TYPE)*                      #Notation: `{VAR_S:TYPE,..,VAR_S:TYPE}`
+| LambdaValue PATTERN EXP                        #Notation: `\PATTERN -> EXP`
+| CustomValue TYPE_S VALUE*
+| Variable VAR_S
+
+SORT =
+| Sort TYPE
+| SortVariable VAR_S
+
+STATEMENT =
+  Main TYPE EXP                                  #Notation: `main : TYPE; main = EXP`
+| Constant VAR_S TYPE EXP STATEMENT              #Notation: `VAR_S : TYPE; VAR_S = EXP; STATEMENT`
+| Alias TYPE_S VAR_S* TYPE STATEMENT             #Notation: `type alias TYPE_S VAR_S..VAR_S = TYPE; STATEMENT`
+| Type TYPE_S VAR_S* (TYPE_S SORT*)* STATEMENT #Notation: `type TYPE_S VAR_S..VAR_S = TYPE_S SORT..SORT |..| TYPE_S SORT..SORT`

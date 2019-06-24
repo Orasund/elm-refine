@@ -1,0 +1,41 @@
+# Custom Types
+
+[[.]]✔<.,.> ⊆ TYPE × VAR_S × TYPE_S    #checks whether a type is sound, given a
+                                        #set of allowed free variables and a set 
+                                        #of defined types
+
+
+
+
+# Type Rules
+
+a ∈ sf                      #sf is a recursive defined set of all free variables
+-------------------
+[[Free a]]✔<sf,st>
+
+[[Bool]]✔<sf,st>
+
+[[Int]]✔<sf,st>
+
+[[a]]✔<sf,st>
+------------
+[[List a]]✔<sf,st>
+
+[[a]]✔<sf,st>
+[[b]]✔<sf,st>
+-----------------
+[[Tuple a b]]✔<sf,st>
+
+∀(_ a) ∈ f:[[a]]✔<sf,st>
+---------------------
+[[Record f]]✔<sf,st>
+
+[[a]]✔<sf,st>
+[[b]]✔<sf,st>
+-------------------------
+[[Function a b]]✔<sf,st>
+
+n ∉ st                                       #st is the set of all defined types
+∀s ∈ ss:[[s]]✔<vs ∪ sf,n ∪ st>             #vs is the set of all free variables
+---------------------------------
+[[TypeVariable n vs ss]]✔<sf,st>
