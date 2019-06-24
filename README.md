@@ -1,8 +1,8 @@
 # elm-refine
-elm-refine will be type checker for Elm that introduces refinement types.
+elm-refine will be a type checker for Elm that introduces refinement types.
 It is developed as part of a master thesis in computer mathematics.
 
-# What are Refinement Types?
+## What are Refinement Types?
 
 Let's look at the following example.
 
@@ -16,7 +16,7 @@ dividedBy : IntWithoutZero -> Int -> Int
 dividedBy a b = b // a
 ```
 
-` 3 |> dividedBy 0` will normally return `0`, but using my type-checker it will now throw an error instead:
+` 3 |> dividedBy 0` will normally return `0`, but using this type-checker it will now throw an error instead:
 
 ```
 dividedBy expected the first element to be an IntWithoutZero
