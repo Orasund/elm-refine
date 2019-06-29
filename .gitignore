@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+src/master-thesis/_*
+src/master-thesis/.*
+src/master-thesis/master-thesis*
