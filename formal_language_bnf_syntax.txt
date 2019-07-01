@@ -85,7 +85,7 @@
 
 <list_pattern_sort> ::= "" | <pattern> | <pattern> <list_pattern_list>
 
-<list_pattern_vars> ::= "" | <lower_var> | pattern> "," <lower_var>
+<list_pattern_vars> ::= "" | <lower_var> | <pattern> "," <list_pattern_vars>
 
 <pattern>           ::= <bool>
                       | <int>
