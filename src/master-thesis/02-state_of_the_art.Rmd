@@ -14,37 +14,43 @@ First, we define some notations:
 
 For this thesis we will use a Hindley-Milner type system.
 
-**Axiom 1** (Types)
-Let $n\in\mathbb{N}$; $\forall i\in\mathbb{N}_a^b.k_i\in\mathbb{N}_0$; $\forall i\in\mathbb{N}_a^b.C_i$ is a unique symbol. 
+```{block2, type="axiom" ,latex.options="[Types]_"}
+Let $n\in\mathbb{N}; \forall i\in\mathbb{N}_a^b.k_i\in\mathbb{N}_0; \forall i\in\mathbb{N}_a^b.C_i$ is a unique symbol. 
 
 $T$ is a _type_ if either
 
 * (_Type variable_) $T$ is a symbol.
 
-* (_Mono type_) $T$ has the form
+* (_Type application_) $T$ has the form
     $T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n}$
     
-    where $\forall i\in\mathbb{N}_1^n \forall j\in\mathbb{N}_0^{k_i}. T_{i,j}$ is a mono type or type variable.
+    where $\forall i\in\mathbb{N}_1^n \forall j\in\mathbb{N}_0^{k_i}. T_{i,j}$ is a type application or type variable.
 
-* (_Poly type_) $T$ has the form $T = \forall a_1 .. \forall a_n.T'$
+* (_Quantified Type_) $T$ has the form $T = \forall a_1 .. \forall a_n.T'$
 
-    where $T'$ is a mono type or a type variable and $\forall i\in\mathbb{N}_1^n.a_i $ is a type variable.
+    where $T'$ is a type application or a type variable and $\forall i\in\mathbb{N}_1^n.a_i$ is a type variable.
 
 We write $v:T$ to declare that $v$ has the type $T$.
+```
 
 ```{definition,name="Meta-level types"}
 For simpler notation, we will define Meta-level types.
 
-  * We define $\mathcal{V}$ as the (meta-level) type of all type variables.
-  * We define $\mathcal{M}$ as the (meta-level) type of all mono types.
-  * We define $\mathcal{P}$ as the (meta-level) type of all poly types.
-  * $\mathcal{T}::= Var \ \mathcal{V} \ | \ Mono \ \mathcal{M} \ | \ Poly \ \mathcal{P}$ is called the (meta-level) type of all types.
+We define
 
-We will ignore the symbols $(Var, Mono, Poly)$ of meta-level types.
+  * $\mathcal{V}$ as the (meta-level) type of all type variables.
+  * $\mathcal{A}$ as the (meta-level) type of all type applications.
+  * Mono types $\mathcal{M}::= \mathcal{V} \ | \mathcal{A}$.
+  * Poly types $\mathcal{P}$ as the (meta-level) type of all quantified types.
+  * Type of Types $\mathcal{T}::= \mathcal{V} \ | \mathcal{A} \ | \ \mathcal{P}$.
+
+&nbsp;
 ```
 
+Using these types we can now differenciate between a type variable ($a:\mathcal{V}$), a type application ($a:\mathcal{A}$) and a poly type ($a:\mathcal{P}$). We can also define a general type ($a:\mathcal{T}$) or a mono type ($a:\mathcal{M}$).
+
 ```{definition,name="Sort, Value, Constructor"}
-Let $n\in\mathbb{N}$; $\forall j\in\mathbb{N}_1^n k_j\in\mathbb{N}$; ${i\in\mathbb{N}_1^n}$; $\forall j:\mathbb{N}_0^{k_i}.t_j: T_{i,j}$; $T:\mathcal{M}$. For $T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n}$, we call
+Let $n\in\mathbb{N}$; $\forall j\in\mathbb{N}_1^n k_j\in\mathbb{N}$; ${i\in\mathbb{N}_1^n}$; $\forall j:\mathbb{N}_0^{k_i}.t_j: T_{i,j}$; $T:\mathcal{A}$. For $T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n}$, we call
 
 * $C_i \ T_{i,1} \ .. \ T_{i,k_1}$ a _sort_ of $T$,
 * $C_i \ t_0 \ .. \ t_{k_i}$ a _value_ of $T$,
@@ -69,7 +75,7 @@ The set of all free type variables of a type is denoted as $\text{free}$:
 $$
   \begin{aligned}
     \text{free}(a:\mathcal{V}) :=& {a}\\
-    \text{free}(T:\mathcal{M}) :=& \text{let } T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n} \text{ in }\\
+    \text{free}(T:\mathcal{A}) :=& \text{let } T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n} \text{ in }\\
     &\bigcup_{i\in\mathbb{N}_0^n}\bigcup_{j\in\mathbb{N}_0^{k_i}}\text{free}(T_{i,j}:\mathcal{V})\\
     \text{free}(T:\mathcal{P}) :=& \text{let } T=\forall a_1 .. \forall a_n.T' \text{ in }\\
     &\text{free}(T':\mathcal{M})\backslash\{a_1,..,a_n\}
@@ -81,9 +87,9 @@ $$
 A type can be substituted by replacing a bounded type variable with a mono type:
 
 $$
-  \begin{aligned}
+  \begin{aligned}[]
     [a:\mathcal{V}]_{a_i:\mathcal{V} \mapsto S:\mathcal{M}} :=& \begin{cases} S & \text{if } a = a_i\\ a &\text{else} \end{cases}\\
-    [T:\mathcal{M}]_{a_i:\mathcal{V} \mapsto S:\mathcal{M}}:=& \text{let } C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n} \text{ in }\\
+    [T:\mathcal{A}]_{a_i:\mathcal{V} \mapsto S:\mathcal{M}}:=& \text{let } C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n} \text{ in }\\
     &C_1 \ [T_{1,1}]_{a_i \mapsto S} \ ..\ [T_{1,k_1}]_{a_i \mapsto S} \\
     &| \ .. \\
     &| \ C_n \ [T_{n,1}]_{a_i \mapsto S} \ .. \ [T_{n,k_n}]_{a_i \mapsto S}\\
@@ -93,21 +99,28 @@ $$
 $$
 ```
 
-**Axiom 2** (Type Order)
+```{block2, type="axiom" ,latex.options="[Type Order]_"}
 The type substitution gives raise to a partical order $\sqsubseteq$:
 
 $$
 \frac
-{     \exists i\in\mathbb{N}_0^n.T'=[T]_{a_i \mapsto T_i} 
-\quad \forall i\in\mathbb{N}_0^n.b_i\not\in \text{free}(\forall a_1 .. \forall a_n.T)
+{T'=[T]_{\forall i\in\mathbb{N}_0^n.a_i \mapsto T_i:\mathcal{M}} 
+\quad \forall i\in\mathbb{N}_0^m.b_i\not\in \text{free}(\forall a_1 .. \forall a_n.T)
+\quad m \leq n
 }
-{\forall a_1 .. \forall a_n.T \sqsubseteq \forall b_1 .. \forall b_n.T'} 
+{\forall a_1 .. \forall a_n.T \sqsubseteq \forall b_1 .. \forall b_m.T'}
 $$
+```
 
-**Axiom 3** (Product Type)
+Informal the rule can be read as follows:
+
+* First replace all bounded variables with mono types.
+* Next rebound any new variables (variables that where previously not free).
+
+```{block2, type="axiom" ,latex.options="[Product Type]_"}
 Let $n \in \mathbb{N}$. $\forall i\in\mathbb{N}_1^n.T_i:\mathbb{T}$, $l_i$ be a unique symbol.
 
-We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_. We say that $T:\mathcal{M}$.
+We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_. We say that $T:\mathcal{A}$.
 
 * We call $\forall i\in\mathbb{N}_1^n.l_i$ the labels of the product type.
 * The values of a product type have the form $\{l_1=t_1,..,l_n=t_n\}$ where $\forall_{i\in\mathbb{N}_1^n}.t_i:T_i$.
@@ -118,16 +131,15 @@ For ordered product types we write
 $T_1 \times .. \times T_n := \{1:T_1,..,n:T_n\}.$
 
 Values of a ordered product type have the form $(t_1,..,t_n)$ $\forall_{i\in\mathbb{N}_1^n}.t_i:T_i$.
+```
 
-**Axiom 4** (Functions)
-Let $T_1:\mathcal{T},T_2:\mathcal{T}$.
+```{block2, type="axiom" ,latex.options="[Functions]_"}
+The function $T_1:\mathcal{T} \rightarrow T_2:\mathcal{T}$ is a mono type.
 
-The function $T_1 \rightarrow T_2$ is a mono type.
+```
 
 ```{definition,name="Set of Types"}
 
-Let $T:\mathcal{T}$.
-
-We define $s \subseteq T$ as a set containing elements of type $T$.
+We define $s \subseteq T:\mathcal{T}$ as a set containing elements of type $T$.
 
 ```
