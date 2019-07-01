@@ -2,4 +2,16 @@
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
-\setsansfont{Verdana}
+%\setmainfont{Tex Gyre Termes}
+%\setsansfont{Verdana}
+
+\newenvironment{letIn}
+{Let 
+\begin{tabular}[t]{l}
+$\begin{matrix*}[l]
+}
+{
+\end{matrix*}$
+\end{tabular}\newline
+\text{\textemdash}
+}

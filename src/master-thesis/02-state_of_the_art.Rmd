@@ -15,7 +15,9 @@ First, we define some notations:
 For this thesis we will use a Hindley-Milner type system.
 
 ```{block2, type="axiom" ,latex.options="[Types]_"}
-Let $n\in\mathbb{N}; \forall i\in\mathbb{N}_a^b.k_i\in\mathbb{N}_0; \forall i\in\mathbb{N}_a^b.C_i$ is a unique symbol. 
+\begin{letIn}
+n\in\mathbb{N};\quad \forall i\in\mathbb{N}_a^b.k_i\in\mathbb{N}_0;\quad \forall i\in\mathbb{N}_a^b.C_i\text{ be a unique symbol}
+\end{letIn}
 
 $T$ is a _type_ if either
 
@@ -32,6 +34,9 @@ $T$ is a _type_ if either
 
 We write $v:T$ to declare that $v$ has the type $T$.
 ```
+
+For applied quanitifed types, the quantifer moves to the upper most level.
+      As an example: $List (\forall a.a)$ is the same as $\forall a.List a$. This property will later be used for comparing two types.(See Unification).
 
 ```{definition,name="Meta-level types"}
 For simpler notation, we will define Meta-level types.
@@ -50,7 +55,15 @@ We define
 Using these types we can now differenciate between a type variable ($a:\mathcal{V}$), a type application ($a:\mathcal{A}$) and a poly type ($a:\mathcal{P}$). We can also define a general type ($a:\mathcal{T}$) or a mono type ($a:\mathcal{M}$).
 
 ```{definition,name="Sort, Value, Constructor"}
-Let $n\in\mathbb{N}$; $\forall j\in\mathbb{N}_1^n k_j\in\mathbb{N}$; ${i\in\mathbb{N}_1^n}$; $\forall j:\mathbb{N}_0^{k_i}.t_j: T_{i,j}$; $T:\mathcal{A}$. For $T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n}$, we call
+\begin{letIn}
+n\in\mathbb{N};\quad
+\forall j\in\mathbb{N}_1^n k_j\in\mathbb{N};\quad
+{i\in\mathbb{N}_1^n};\quad
+\forall j:\mathbb{N}_0^{k_i}.t_j: T_{i,j};\\
+T:\mathcal{A}.\quad
+T ::= C_1 \ T_{1,1} \ .. \ T_{1,k_1} \ | \ .. \ | \ C_n \ T_{n,1} \ .. \ T_{n,k_n}
+\end{letIn}
+We call
 
 * $C_i \ T_{i,1} \ .. \ T_{i,k_1}$ a _sort_ of $T$,
 * $C_i \ t_0 \ .. \ t_{k_i}$ a _value_ of $T$,
@@ -68,7 +81,11 @@ Let $n\in\mathbb{N}$; $\forall j\in\mathbb{N}_1^n k_j\in\mathbb{N}$; ${i\in\math
 ```
 
 ```{definition,name="Bounded, Free, Set of free variables"}
-The type variables $a_i$ are called _bounded_. Unbounded type variables are called _free_. 
+\begin{letIn}
+T:\mathcal{P};\quad
+T=\forall a.T'.
+\end{letIn}
+$a:\mathcal{V}$ is called _bounded_. Unbounded type variables are called _free_. 
 
 The set of all free type variables of a type is denoted as $\text{free}$:
 
@@ -83,9 +100,9 @@ $$
 $$
 ```
 
-```{definition,name="Type substitution"}
 A type can be substituted by replacing a bounded type variable with a mono type:
 
+```{definition,name="Type substitution"}
 $$
   \begin{aligned}[]
     [a:\mathcal{V}]_{a_i:\mathcal{V} \mapsto S:\mathcal{M}} :=& \begin{cases} S & \text{if } a = a_i\\ a &\text{else} \end{cases}\\
@@ -99,9 +116,9 @@ $$
 $$
 ```
 
-```{block2, type="axiom" ,latex.options="[Type Order]_"}
 The type substitution gives raise to a partical order $\sqsubseteq$:
 
+```{block2, type="axiom" ,latex.options="[Type Order]_"}
 $$
 \frac
 {T'=[T]_{\forall i\in\mathbb{N}_0^n.a_i \mapsto T_i:\mathcal{M}} 
@@ -118,7 +135,10 @@ Informal the rule can be read as follows:
 * Next rebound any new variables (variables that where previously not free).
 
 ```{block2, type="axiom" ,latex.options="[Product Type]_"}
-Let $n \in \mathbb{N}$. $\forall i\in\mathbb{N}_1^n.T_i:\mathbb{T}$, $l_i$ be a unique symbol.
+\begin{letIn}
+n \in \mathbb{N};\quad
+\forall i\in\mathbb{N}_1^n.T_i:\mathbb{T}, l_i \text{ be a unique symbol}.
+\end{letIn}
 
 We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_. We say that $T:\mathcal{A}$.
 
@@ -134,6 +154,7 @@ Values of a ordered product type have the form $(t_1,..,t_n)$ $\forall_{i\in\mat
 ```
 
 ```{block2, type="axiom" ,latex.options="[Functions]_"}
+
 The function $T_1:\mathcal{T} \rightarrow T_2:\mathcal{T}$ is a mono type.
 
 ```
