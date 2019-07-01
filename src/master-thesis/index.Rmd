@@ -1,11 +1,11 @@
 --- 
 title: "Elm-Refine: Refinement Types for Elm"
-subtitle: "Master's Thesis Proposal"
+subtitle: "Master's Thesis"
 author: "Lucas Payr"
 date: "`r Sys.Date()`"
 geometry: margin=3.5cm
 site: bookdown::bookdown_site
-documentclass: article
+documentclass: scrartcl
 bibliography: [book.bib, packages.bib]
 biblio-style: alphabetic
 link-citations: yes
@@ -17,5 +17,10 @@ output:
     toc: no
     toc_depth: 2
     keep_tex: true
+    template: template.tex
+    includes:
+      in_header: preamble.tex
+      before_body: doc-prefix.tex
+      after_body: doc-suffix.tex
 ---
 
