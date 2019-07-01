@@ -1,0 +1,70 @@
+# Types
+
+∀a.List a ::= Empty
+            | Cons a (List a)
+
+Nat       ::= 1 | Succ Nat
+
+Int       ::= 0 | Pos Nat | Neg Nat
+
+Bool      ::= True | False
+
+# Domain
+
+Let S be a set of symbols.
+
+D ⊆ S × T
+
+I : <lower_var> -> S is a function, interpretating a syntactical variable.
+C : D -> <upper_var> -> T returns the constructor of a syntactical terminal.
+
+# Type inference for Pattern Matching
+
+D ⊢ [[<bool>]]:Bool                                                       [Bool]
+
+D ⊢ [[<int>]]:Int                                                          [Int]
+
+D ⊢ [["[]"]]:∀a.List a                                              [Empty List]
+
+D ⊢ [[<p:pattern>]]:t1
+D ⊢ [["[" <l:list_pattern_list> "]"]]:t2
+t1 ⊑ t'   t2 ⊑ List t'
+-------------------------------------------------------------             [List]
+D ⊢ [["[" <p:pattern> "," <l:list_pattern_list> "]"]]:List t'
+
+D ⊢ [[<p1:pattern>]]:t1
+D ⊢ [[<p2:pattern>]]:t2
+-------------------------------------------------                        [Tuple]
+D ⊢ [["(" <p1:pattern> , <p2:pattern> ")"]]:t1×t2
+
+I(v) = a
+---------------------------                                           [Variable]
+D ⊢ [[<v:lower_var>]]:∀a.a
+
+C(v) = t
+-----------------------                                               [Terminal]
+D ⊢ [[<v:upper_var>]]:t
+
+D ⊢ [[<p1:pattern>]]:t1 -> t
+D ⊢ [[<p2:pattern>]]:t2
+t1 ⊑ t2
+-----------------------------------                                [Application]
+D ⊢ [[<p1:pattern> <p2:pattern>]]:t
+
+D ⊢ [[<p:pattern>]]:t
+--------------------------------------                                      [As]
+D ⊢ [[<p:pattern> "as" <lower_var>]]:t
+
+D ⊢ [["{}"]]:{}                                                   [Empty Record]
+
+∀i\in\mathcal{N}_1^n.I(v_i)=l_i
+------------------------------------------------------------------------[Record]
+D ⊢ [["{" <v_1:lower_var> "," .. "," <v_n:lower_var> "}"]]:{l_1,...,l_n}
+
+D ⊢ [[<p:pattern>]]:t1
+D ⊢ [[<l:pattern>]]:t2
+t1 ⊑ t   t2 ⊑ List t
+---------------------------------------------                    [Head and Tail]
+D ⊢ [[<p1:pattern> "::" <p2:pattern>]]:List t
+
+D ⊢ [["_"]]:∀a.a                                                      [Wildcard]
