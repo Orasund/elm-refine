@@ -1,8 +1,8 @@
 --- 
-title: "Elm-Refine: Refinement Types for Elm"
-subtitle: "Master's Thesis"
-author: "Lucas Payr"
-date: "`r Sys.Date()`"
+#title: "Elm-Refine: Refinement Types for Elm"
+#subtitle: "Master's Thesis"
+#author: "Lucas Payr"
+#date: "`r Sys.Date()`"
 geometry: margin=3.5cm
 site: bookdown::bookdown_site
 documentclass: scrartcl
