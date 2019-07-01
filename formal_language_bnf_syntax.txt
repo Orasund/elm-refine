@@ -36,8 +36,8 @@
 
 
 
-<list_exp_field>    ::= <lower_var> "=" <type>
-                      | <lower_var> "=" <type> "," <list_type_field>
+<list_exp_field>    ::= <lower_var> "=" <exp>
+                      | <lower_var> "=" <exp> "," <list_exp_field>
 
 <maybe_signature>   ::= "" | <lower_var> ":" <type> ";"
 
@@ -64,7 +64,6 @@
                       | <exp> "|>" <exp>
                       | <exp> ">>" <exp>
                       | "if" <exp> "then" <exp> "else" <exp>
-                      | <upper_var>
                       | "{" <list_exp_field> "}"
                       | "{}"
                       | "{" <lower_var> "|" <list_exp_field> }
