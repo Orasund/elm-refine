@@ -5,7 +5,7 @@ D ⊆ S × T
 
 # Type inference for pattern matching
 
-match Bool with [[<bool>]] -> D                                           [Bool]
+match Bool with [[<bool>]] -> {}                                          [Bool]
 
 match Int with [[<int>]] -> {}                                             [Int]
 
@@ -49,9 +49,10 @@ D = ∪_{i\in\mathcal{N}_1^n} {(l_(k(i)),T_(k(i)))}
 ------------------------------------------------------------------------[Record]
 match {l_1:T_1,..,l_n:T_n} with [["{" <v_1:lower_var> "," .. "," <v_m:lower_var> "}"]] -> D
 
-match v1 with [[<p1:pattern>]] -> D1
-match v2 with [[<p2:pattern>]] -> D2
+match t1 with [[<p1:pattern>]] -> D1
+match t2 with [[<p2:pattern>]] -> D2
+t1 ⊑ t'   t2 ⊑ List t'
 -----------------------------------------------------------------[Head and Tail]
-match (v1 :: v2) with [[<p1:pattern> "::" <p2:pattern>]] -> D1 ∪ D2
+match (t1 :: t2) with [[<p1:pattern> "::" <p2:pattern>]] -> D1 ∪ D2
 
 match v with [["_"]] -> {}                                             [Wildcard]

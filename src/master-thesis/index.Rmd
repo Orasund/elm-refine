@@ -3,7 +3,7 @@
 #subtitle: "Master's Thesis"
 #author: "Lucas Payr"
 #date: "`r Sys.Date()`"
-geometry: margin=3.5cm
+geometry: "margin=3.5cm,showframe"
 site: bookdown::bookdown_site
 documentclass: scrartcl
 bibliography: [book.bib, packages.bib]

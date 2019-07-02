@@ -1,0 +1,100 @@
+## Type Inference
+
+### Type Checker for Patterns
+
+$$\logicRule{}{\vdash \syntax{<bool>}:\mathit{Bool}}{P-Bool}$$
+
+$$\logicRule{}{\vdash \syntax{<int>}:\mathit{Int}}{P-Int}$$
+
+$$\logicRule{}{\vdash \syntax{"[]"}:\forall a.\mathit{List} \ \mathit{a}}{P-EmptyList}$$
+
+$$\logicRule
+{
+\begin{gathered}
+\Gamma_1\vdash\syntax{<$p$:pattern>}:T_1\quad\\
+\Gamma_2\vdash\syntax{"[" <$l$:list-pattern-list> "]"}:T_2\quad\\
+T_1\sqsubseteq T_3\quad
+T_2\sqsubseteq \textit{List} T_3\quad
+\end{gathered}
+}
+{
+\Gamma_1,\Gamma_2\vdash \syntax{"[" <$p$:pattern> "," <$l$:list-pattern-list> "]"}:\textit{List} \ T_3
+}
+{P-List}
+$$
+
+$$\logicRule
+{\Gamma_1\vdash \syntax{<$p_1$:pattern>}:T_1\quad
+\Gamma_2\vdash \syntax{<$p_1$:pattern>}:T_2
+}
+{\Gamma_1,\Gamma_2\vdash \syntax{"(" <$p_1$:pattern> "," <$p_2$:pattern> ")"}:T_1 \times T_2}
+{P-Tuple}
+$$
+
+$$\logicRule
+{I(\syntax{<$v$:lower-var>}):a}
+{\vdash\syntax{<$v$:lower-var>}:\forall a.a}
+{P-Variable}
+$$
+
+$$\logicRule
+{C(\syntax{<$v$:upper-var>}):T}
+{\vdash\syntax{<$v$:upper-var>}:T}
+{P-Terminal}
+$$
+
+$$\logicRule
+{\Gamma\vdash\syntax{<$p_1$:pattern>}:T_1 \to T_2\quad
+\Gamma\vdash\syntax{<$p_2$:pattern>}:T_3\quad
+T_2\sqsubseteq T_3
+}
+{\Gamma\vdash\syntax{<$p_1$:pattern> <$p_2$:pattern>}:T_1}
+{P-Application}
+$$
+
+$$\logicRule
+{\Gamma\vdash\syntax{<$p$:pattern>}:T\quad
+I(\syntax{<$v$:lower-var>}):a
+}
+{\Gamma,a:T\vdash\syntax{<$p$:pattern> "as" <$v$:lower-var>}:T}
+{P-As}
+$$
+
+$$\logicRule
+{}
+{\vdash\syntax{"\{\}"}:\{\}}
+{P-EmptyRecord}
+$$
+
+$$\logicRule
+{\begin{gathered}
+k:\mathcal{N}_1^m\to\mathcal{N}_1^n\quad
+k \text{ is injective}\quad\\
+\forall i\in\mathcal{N}_1^n.I(v_i)=l_(k(i))\quad
+\Gamma = \bigcup_{i\in\mathcal{N}_1^n} {l_{k(i)}:T_{k(i)}}
+\end{gathered}}
+{\Gamma\vdash\syntax{"{" <$v_1$:lower-var> "," $\dots$ "," <$v_m$:lower-var> "}"}}
+{P-Record}
+$$
+
+$$\logicRule
+{
+\begin{gathered}
+\Gamma_1\vdash\syntax{<$p_1$:pattern>}:T_1\quad\\
+\Gamma_2\vdash\syntax{<$p_2$:pattern>}:T_2\quad\\
+T_1\sqsubseteq T_3\quad
+T_2\sqsubseteq \textit{List} T_3\quad
+\end{gathered}
+}
+{
+\Gamma_1,\Gamma_2\vdash \syntax{<$p_1$:pattern> "::" <$p_2$:pattern>}:\textit{List} \ T_3
+}
+{P-List}
+$$
+
+$$\logicRule
+{
+}
+{\vdash\syntax{"\_"}:\forall a. a}
+{P-Wildcard}
+$$

@@ -1,8 +1,8 @@
-# State of the art
+\setcounter{section}{2}
 
-## Type Theory
+# Liquid Types
 
-### Definiting the Type System
+## Definiting the Type System
 
 First, we define some notations:
 
@@ -120,7 +120,7 @@ The type substitution gives raise to a partical order $\sqsubseteq$:
 
 ```{block2, type="axiom" ,latex.options="[Type Order]_"}
 $$
-\frac
+\dfrac
 {T'=[T]_{\forall i\in\mathbb{N}_0^n.a_i \mapsto T_i:\mathcal{M}} 
 \quad \forall i\in\mathbb{N}_0^m.b_i\not\in \text{free}(\forall a_1 .. \forall a_n.T)
 \quad m \leq n

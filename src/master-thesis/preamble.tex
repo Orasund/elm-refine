@@ -1,9 +1,24 @@
 \usepackage[framemethod=TikZ]{mdframed}
+\usepackage{multicol}
+\usepackage{stmaryrd} %[[ and ]]
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
 %\setmainfont{Tex Gyre Termes}
 %\setsansfont{Verdana}
+
+\newcommand{\logicRule}[3]{
+  \ifstrempty{#1}
+  {
+    #2
+  }
+  {
+    \dfrac{#1}{#2}
+  }
+  \quad [\text{\texttt{#3}}]
+}
+
+\newcommand{\syntax}[1]{\llbracket \text{\footnotesize\texttt{#1}} \rrbracket}
 
 \newenvironment{letIn}
 {Let 
