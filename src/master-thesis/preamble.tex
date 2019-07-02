@@ -10,12 +10,12 @@
 \newcommand{\logicRule}[3]{
   \ifstrempty{#1}
   {
-    #2
+    $#2$& [\text{\texttt{#3}}]\\[10pt]
   }
   {
-    \dfrac{#1}{#2}
+    $\dfrac{#1}{#2}$& [\text{\texttt{#3}}]\\[20pt]
   }
-  \quad [\text{\texttt{#3}}]
+  
 }
 
 \newcommand{\syntax}[1]{\llbracket \text{\footnotesize\texttt{#1}} \rrbracket}
