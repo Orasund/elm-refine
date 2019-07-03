@@ -176,7 +176,9 @@ Functions from one type $T_1:\mathcal{T}$ to another $T_2:\mathcal{T}$ are mono 
 ```
 
 ```{block2, type="myexample",latex.options="_"}
-\begin{LetIn}T_1:\mathcal{T},T_2:\mathcal{T},T_3:\mathcal{T}\end{LetIn}
+\begin{letIn}
+T_1:\mathcal{T},T_2:\mathcal{T},T_3:\mathcal{T}
+\end{letIn}
 Then $(T_1 \times T_2 \rightarrow T_3)$ is isomorphic to $T_1 \rightarrow (T_2 \rightarrow T_3$. This was originally proven by Gottlob Frege.[@Schönfinkel] This method for translating multivariable functions into single variable functions is nowadays called currying and named after Haskell Curry who further developed the theory.[@curry] 
 ```
 
