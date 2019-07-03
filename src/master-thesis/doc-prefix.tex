@@ -4,6 +4,44 @@
 \renewcommand{\subsubsection}[1]{{\footnotesize\textbf{\MakeUppercase{{#1}}}}~\nolinebreak[4]}
 
 %%
+%% example
+%%
+%%\newcounter{example}[section]\setcounter{example}{0}
+\providecommand{\theexample}{}
+\renewcommand{\theexample}{\arabic{section}.\arabic{example}}
+\newenvironment{myexample}[2][]
+  {\refstepcounter{example}
+  \mdfsetup{frametitlefont=\normalfont,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    linecolor=yellow!10!orange!20,
+    linewidth=2pt,
+    singleextra={
+      \node[
+        overlay,
+        outer sep=0pt,
+        anchor=north east,
+        text width=2.5cm,
+        minimum height=4ex,
+        fill=yellow!10!orange!20,
+      ] at (O|-P) {\strut \textbf{Example~\theexample}};
+      },
+    firstextra={
+      \node[
+        overlay,
+        outer sep=0pt,
+        anchor=north east,
+        text width=2.5cm,
+        minimum height=4ex,
+        fill=yellow!10!orange!20,
+      ] at (O|-P) {\strut  \textbf{Example~\theexample}};
+      }}
+  \vspace{0.2cm}\begin{mdframed}
+  }
+  {\end{mdframed}}
+
+%%
 %% AXIOMS
 %%
 \newcounter{axiom}[section]\setcounter{axiom}{0}
@@ -36,6 +74,7 @@ frametitleaboveskip=\dimexpr-\ht\strutbox\relax
 %%
 \newcounter{defi}[section]\setcounter{defi}{0}
 \renewcommand{\thedefi}{\arabic{section}.\arabic{defi}}
+\provideenvironment{definition}{}{}
 \renewenvironment{definition}[2][]{%
 \refstepcounter{defi}%
 \ifstrempty{#1}%

@@ -1,6 +1,7 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{multicol}
 \usepackage{stmaryrd} %[[ and ]]
+\usepackage{makecmds} %provideenvironment
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
@@ -10,10 +11,10 @@
 \newcommand{\logicRule}[3]{
   \ifstrempty{#1}
   {
-    $#2$& [\text{\texttt{#3}}]\\[10pt]
+    $#2$& [\small\text{\texttt{#3}}]\\[10pt]
   }
   {
-    $\dfrac{#1}{#2}$& [\text{\texttt{#3}}]\\[20pt]
+    $\dfrac{#1}{#2}$&[\small\text{\texttt{#3}}]\\[20pt]
   }
   
 }

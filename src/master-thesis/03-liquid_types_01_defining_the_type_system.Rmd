@@ -28,31 +28,46 @@ $T$ is a _type_ if either
     
     where $\forall i\in\mathbb{N}_1^n \forall j\in\mathbb{N}_0^{k_i}. T_{i,j}$ is a type application or type variable.
 
-* (_Quantified Type_) $T$ has the form $T = \forall a_1 .. \forall a_n.T'$
+* (_Quantified type_) $T$ has the form $T = \forall a_1 .. \forall a_n.T'$
 
     where $T'$ is a type application or a type variable and $\forall i\in\mathbb{N}_1^n.a_i$ is a type variable.
+    
+    For applied quanitifed types, the quantifer moves to the upper most level.
 
 We write $v:T$ to declare that $v$ has the type $T$.
 ```
 
-For applied quanitifed types, the quantifer moves to the upper most level.
-      As an example: $List (\forall a.a)$ is the same as $\forall a.List a$. This property will later be used for comparing two types.(See Unification).
+```{block2, type="myexample",latex.options="_"}
+\begin{letIn}T ::= C a \text{ be a type application or a type variable.}\end{letIn}
+We will later see that $a$ may be substituted by the quantified type $\forall a.a$.
+This would lead to $T::= C (\forall a.a)$, but as quantifiers always move to the upper most level, it results in $\forall a.T::= C a$ instead.
+```
+
+```{block2, type="myexample",latex.options="_"}
+The symbol `string` is a valid type. It can be though of as a type, whos implementation is unknown. For real programming languages this is not allowed.
+```
+
+```{block2, type="myexample",latex.options="_"}
+$Bool ::= True \ | \ False$ is a valid type application.
+
+$\forall a.List \ a ::= Empty \ | \ Cons \ a \ (List \ a)$ List is a valid quantified type.
+```
+
+Types are usually grouped into so called Mono-types and Poly-types.
 
 ```{definition,name="Meta-level types"}
-For simpler notation, we will define Meta-level types.
-
 We define
 
   * $\mathcal{V}$ as the (meta-level) type of all type variables.
   * $\mathcal{A}$ as the (meta-level) type of all type applications.
-  * Mono types $\mathcal{M}::= \mathcal{V} \ | \mathcal{A}$.
-  * Poly types $\mathcal{P}$ as the (meta-level) type of all quantified types.
-  * Type of Types $\mathcal{T}::= \mathcal{V} \ | \mathcal{A} \ | \ \mathcal{P}$.
+  * _Mono types_ $\mathcal{M}::= \mathcal{V} \ | \mathcal{A}$.
+  * _Poly types_ $\mathcal{P}$ as the (meta-level) type of all quantified types.
+  * _Type of types_ $\mathcal{T}::= \mathcal{V} \ | \mathcal{A} \ | \ \mathcal{P}$.
 
 &nbsp;
 ```
 
-Using these types we can now differenciate between a type variable ($a:\mathcal{V}$), a type application ($a:\mathcal{A}$) and a poly type ($a:\mathcal{P}$). We can also define a general type ($a:\mathcal{T}$) or a mono type ($a:\mathcal{M}$).
+Instead of writing "let $a$ be a type application or a type variable" we can now just write $a:\mathcal{M}$.
 
 ```{definition,name="Sort, Value, Constructor"}
 \begin{letIn}
@@ -129,7 +144,7 @@ $$
 $$
 ```
 
-Informal the rule can be read as follows:
+The rule can be read as follows:
 
 * First replace all bounded variables with mono types.
 * Next rebound any new variables (variables that where previously not free).
@@ -142,7 +157,7 @@ n \in \mathbb{N};\quad
 
 We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_. We say that $T:\mathcal{A}$.
 
-* We call $\forall i\in\mathbb{N}_1^n.l_i$ the labels of the product type.
+* We call $\forall i\in\mathbb{N}_1^n.l_i$ the _labels_ of the product type.
 * The values of a product type have the form $\{l_1=t_1,..,l_n=t_n\}$ where $\forall_{i\in\mathbb{N}_1^n}.t_i:T_i$.
 * The types $T_i$ are unordered: $\{a:T_1,b:T_2\} = \{b:T_2,a:T_1\}$.
 
@@ -153,13 +168,19 @@ $T_1 \times .. \times T_n := \{1:T_1,..,n:T_n\}.$
 Values of a ordered product type have the form $(t_1,..,t_n)$ $\forall_{i\in\mathbb{N}_1^n}.t_i:T_i$.
 ```
 
+We most general example of a product type is a record. Tuples can be be represented as ordered product types.
+
 ```{block2, type="axiom" ,latex.options="[Functions]_"}
 
-The function $T_1:\mathcal{T} \rightarrow T_2:\mathcal{T}$ is a mono type.
-
+Functions from one type $T_1:\mathcal{T}$ to another $T_2:\mathcal{T}$ are mono types. We use the notation $T_1 \rightarrow T_2$ to decribe function types.
 ```
 
-```{definition,name="Set of Types"}
+```{block2, type="myexample",latex.options="_"}
+\begin{LetIn}T_1:\mathcal{T},T_2:\mathcal{T},T_3:\mathcal{T}\end{LetIn}
+Then $(T_1 \times T_2 \rightarrow T_3)$ is isomorphic to $T_1 \rightarrow (T_2 \rightarrow T_3$. This was originally proven by Gottlob Frege.[@Schönfinkel] This method for translating multivariable functions into single variable functions is nowadays called currying and named after Haskell Curry who further developed the theory.[@curry] 
+```
+
+```{definition,name="Subsets of types"}
 
 We define $s \subseteq T:\mathcal{T}$ as a set containing elements of type $T$.
 
