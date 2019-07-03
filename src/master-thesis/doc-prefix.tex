@@ -38,7 +38,7 @@
         overlay,
         outer sep=0pt,
         right,
-        xshift=-1.pt,
+        xshift=-1pt,
         %anchor=north east,
         %text width=2.5cm,
         minimum height=4ex,
@@ -56,26 +56,42 @@
 \newcounter{axiom}[section]\setcounter{axiom}{0}
 \renewcommand{\theaxiom}{\arabic{section}.\arabic{axiom}}
 \newenvironment{axiom}[2][]{%
-\refstepcounter{axiom}%
-\ifstrempty{#1}%
-{\mdfsetup{%
-frametitle={%
-\tikz[baseline=(current bounding box.east),outer sep=0pt]
-\node[anchor=east,rectangle,fill=olive!20!green!30]
-{\strut Axiom~\theaxiom};}}
-}%
-{\mdfsetup{%
-frametitle={%
-\tikz[baseline=(current bounding box.east),outer sep=0pt]
-\node[anchor=east,rectangle,fill=green!20]
-{\strut Axiom~\theaxiom:~#1};}}%
-}%
-\mdfsetup{innertopmargin=10pt,linecolor=green!20,%
-linewidth=2pt,topline=true,%
-frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+  \refstepcounter{axiom}%
+  \mdfsetup{%
+    singleextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=green!20
+      ] at (O|-P)
+      {\strut \textbf{Axiom~\theaxiom\ifstrempty{#1}{}{:~#1}}
+      };
+    },
+    firstextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=green!20
+      ] at (O|-P)
+      {\strut \textbf{Axiom~\theaxiom\ifstrempty{#1}{}{:~#1}}
+      };
+    }
+  }
+  \mdfsetup{
+    innertopmargin=1.2\baselineskip,linecolor=green!20,%
+    linewidth=2pt,topline=true,%
+    frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+  }
+  \begin{mdframed}[skipabove=20pt]\relax%
+  \label{#2}
 }
-\begin{mdframed}[skipabove=20pt,nobreak=true,everyline=true]\relax%
-\label{#2}}{\end{mdframed}}
+{\end{mdframed}}
 
 
 %%
@@ -85,24 +101,40 @@ frametitleaboveskip=\dimexpr-\ht\strutbox\relax
 \renewcommand{\thedefi}{\arabic{section}.\arabic{defi}}
 \provideenvironment{definition}{}{}
 \renewenvironment{definition}[2][]{%
-\refstepcounter{defi}%
-\ifstrempty{#1}%
-{\mdfsetup{%
-frametitle={%
-\tikz[baseline=(current bounding box.east),outer sep=0pt]
-\node[anchor=east,rectangle,fill=red!20]
-{\strut Definition~\thedefi};}}
-}%
-{\mdfsetup{%
-frametitle={%
-\tikz[baseline=(current bounding box.east),outer sep=0pt]
-\node[anchor=east,rectangle,fill=red!20]
-{\strut Definition~\thedefi:~#1};}}%
-}%
-\mdfsetup{innertopmargin=10pt,linecolor=red!20,%
-linewidth=2pt,topline=true,%
-frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+  \refstepcounter{defi}%
+  \mdfsetup{%
+    singleextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=red!20
+      ] at (O|-P)
+      {\strut \textbf{Definition~\theaxiom\ifstrempty{#1}{}{:~#1}}
+      };
+    },
+    firstextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=red!20
+      ] at (O|-P)
+      {\strut \textbf{Definition~\theaxiom\ifstrempty{#1}{}{:~#1}}
+      };
+    }
+  }
+  \mdfsetup{
+    innertopmargin=1.2\baselineskip,linecolor=red!20,%
+    linewidth=2pt,topline=true,%
+    frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+  }
+  \begin{mdframed}[skipabove=20pt]\relax%
+  \label{#2}
 }
-\begin{mdframed}[skipabove=20pt,nobreak=true,everyline=true]\relax%
-\label{#2}}{\end{mdframed}}
+{\end{mdframed}}
 
