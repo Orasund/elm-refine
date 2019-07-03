@@ -1,113 +1,112 @@
-<upper_letter>      ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I"
+<upper-letter>      ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I"
                       | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R"
                       | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
 
-<lower_letter>      ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i"
+<lower-letter>      ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i"
                       | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r"
                       | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
 
 <digit>             ::= "0" | "1" | "2" | "3" | "4"
                       | "5" | "6" | "7" | "8" | "9"
 
-<symbol>            ::= <lower_letter> | <upper_letter> | <digit> | "_" | "-"
+<symbol>            ::= <lower-letter> | <upper-letter> | <digit> | "-" | "-"
 
-<lower_var>         ::= <lower_letter> | <lower_letter> <symbol>
+<lower-var>         ::= <lower-letter> | <lower-letter> <symbol>
 
-<list_lower_var>    ::= "" | <lower_var> | <lower_var> <list_lower_var>
+<upper-var>         ::= <upper-letter> | <upper-letter> <symbol>
 
-<upper_var>         ::= <upper_letter> | <upper_letter> <symbol>
+<list-lower-var>    ::= "" | <lower-var> | <lower-var> <list-lower-var>
 
 
+<list-type-field>   ::= ""
+                      | <lower-var> ":" <type>
+                      | <lower-var> ":" <type> "," <list-type-field>
 
-<list_type_field>   ::= ""
-                      | <lower_var> ":" <type>
-                      | <lower_var> ":" <type> "," <list_type_field>
-
-<list_type>         ::= "" | <type> | <type> <list_type>
+<list-type>         ::= "" | <type> | <type> <list-type>
 
 <type>              ::= "Bool"
                       | "Int"
                       | "List" <TYPE>
                       | "(" <TYPE> "," <TYPE> ")"
-                      | "{" <type_fields> "}"
+                      | "{" <type-fields> "}"
                       | <TYPE> "->" <TYPE>
-                      | <upper_var> <list_type>
-                      | <lower_var>
+                      | <upper-var> <list-type>
+                      | <lower-var>
 
 
 
-<list_exp_field>    ::= <lower_var> "=" <exp>
-                      | <lower_var> "=" <exp> "," <list_exp_field>
+<list-pattern-list> ::= "" | <pattern> | <pattern> "," <list-pattern-list>
 
-<maybe_signature>   ::= "" | <lower_var> ":" <type> ";"
+<list-pattern-sort> ::= "" | <pattern> | <pattern> <list-pattern-list>
 
-<list_case>         ::= <pattern> "->" <exp>
-                      | <pattern> "->" <exp> ";" <list_case>
+<list-pattern-vars> ::= "" | <lower-var> | <pattern> "," <list-pattern-vars>
+
+<pattern>           ::= <bool>
+                      | <int>
+                      | "[" <list-pattern-list> "]"
+                      | "(" <pattern> , <pattern> ")"
+                      | <upper-var> <list-pattern-sort>
+                      | <lower-var>
+                      | <pattern> "as" <lower-var>
+                      | "{" <list-pattern-vars> "}"
+                      | <pattern> "::" <pattern>
+                      | "-"
+
+
+
+<list-exp-field>    ::= <lower-var> "=" <exp>
+                      | <lower-var> "=" <exp> "," <list-exp-field>
+
+<maybe-signature>   ::= "" | <lower-var> ":" <type> ";"
+
+<list-case>         ::= <pattern> "->" <exp>
+                      | <pattern> "->" <exp> ";" <list-case>
 
 <bool>              ::= "True" | "False"
 
 <int>               ::= "0" | "-1" | "1" | "-2" | "2" | ..
 
-<list_exp>          ::= "" | <exp> | <exp> "," <list_exp> 
+<list-exp>          ::= "" | <exp> | <exp> "," <list-exp> 
 
 <exp>               ::= "foldl"
-                      | "(::)" | <exp> "::" <exp>
-                      | "(+)" | <exp> "+" <exp>
-                      | "(-)" | <exp> "-" <exp>
-                      | "(*)" | <exp> "*" <exp>
-                      | "(//)" | <exp> "//" <exp>
-                      | "(<)" | <exp> "<" <exp>
-                      | "(==)" | <exp> "==" <exp>
+                      | "(::)"
+                      | "(+)"
+                      | "(-)"
+                      | "(*)"
+                      | "(//)"
+                      | "(<)"
+                      | "(==)"
                       | "not"
-                      | "(&&)" | <exp> "&&" <exp>
-                      | "(||)" | <exp> "||" <exp>
+                      | "(&&)"
+                      | "(||)"
                       | <exp> "|>" <exp>
                       | <exp> ">>" <exp>
                       | "if" <exp> "then" <exp> "else" <exp>
-                      | "{" <list_exp_field> "}"
+                      | "{" <list-exp-field> "}"
                       | "{}"
-                      | "{" <lower_var> "|" <list_exp_field> }
-                      | <lower_var> "." <lower_var>
-                      | "let" <maybe_signature> <lower_var> "=" <exp> "in" <exp>
-                      | "case" <exp> "of" "[" <list_case> "]"
+                      | "{" <lower-var> "|" <list-exp-field> }
+                      | <lower-var> "." <lower-var>
+                      | "let" <maybe-signature> <lower-var> "=" <exp> "in" <exp>
+                      | "case" <exp> "of" "[" <list-case> "]"
                       | <exp> <exp>
                       | <bool>
                       | <int>
-                      | "[" <list_exp> "]"
+                      | "[" <list-exp> "]"
                       | "(" <exp> "," <exp> ")"
                       | "\" <pattern> "->" <exp>
-                      | <upper_var>
-                      | <lower_var>
+                      | <upper-var>
+                      | <lower-var>
 
 
 
-<list_pattern_list> ::= "" | <pattern> | <pattern> "," <list_pattern_list>
+<list-sort>         ::= <upper-letter> 
 
-<list_pattern_sort> ::= "" | <pattern> | <pattern> <list_pattern_list>
+<list-statement>    ::= "" | <statement> ";" | <statement> ";" <list-statement>
 
-<list_pattern_vars> ::= "" | <lower_var> | <pattern> "," <list_pattern_vars>
+<statement>         ::= <maybe-signature> <lower-var> "=" <exp>
+                      | "type" "alias" <upper-var> <list-lower-var> "=" <type>
+                      | "type" <upper-var> <list-lower-var> "=" <upper-var> <list-type>
 
-<pattern>           ::= <bool>
-                      | <int>
-                      | "[" <list_pattern_list> "]"
-                      | "(" <pattern> , <pattern> ")"
-                      | <upper_var> <list_pattern_sort>
-                      | <lower_var>
-                      | <pattern> "as" <lower_var>
-                      | "{" <list_pattern_vars> "}"
-                      | <pattern> "::" <pattern>
-                      | "_"
+<maybe-main-sign>   ::= "" | "main" ":" <type> ";"
 
-
-
-<list_sort>         ::= <upper_letter> 
-
-<list_statement>    ::= "" | <statement> ";" | <statement> ";" <list_statement>
-
-<statement>         ::= <maybe_signature> <lower_var> "=" <exp>
-                      | "type" "alias" <upper_var> <list_lower_var> "=" <type>
-                      | "type" <upper_var> <list_lower_var> "=" <upper_var> <list_type>
-
-<maybe_main_sign>   ::= "" | "main" ":" <type> ";"
-
-<program>           ::= <list_statement> <maybe_main_sign> "main" "=" <exp>
+<program>           ::= <list-statement> <maybe-main-sign> "main" "=" <exp>

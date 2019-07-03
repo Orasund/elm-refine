@@ -8,6 +8,8 @@
 %\setmainfont{Tex Gyre Termes}
 %\setsansfont{Verdana}
 
+\newcommand{\mf}[1]{\text{\texttt{#1}}}
+
 \newcommand{\logicRule}[3]{
   \ifstrempty{#1}
   {
@@ -24,10 +26,9 @@
 \newenvironment{letIn}
 {Let 
 \begin{tabular}[t]{l}
-\(\begin{matrix*}[l]
+\begin{tabular}{l}\(
 }
-{
-\end{matrix*}\)
+{\)\end{tabular}
 \end{tabular}\newline
 \text{\textemdash}
 }
