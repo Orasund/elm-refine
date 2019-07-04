@@ -6,13 +6,16 @@
     {\footnotesize\textbf{\MakeUppercase{{#1}}}}~\nolinebreak[4]
 }
 
+\newenvironment{myexample}[2][]{\begin{example}}{\end{example}}
+
+\iffalse
 %%
 %% example
 %%
 %%\newcounter{example}[section]\setcounter{example}{0}
 \providecommand{\theexample}{}
 \renewcommand{\theexample}{\arabic{section}.\arabic{example}}
-\newenvironment{myexample}[2][]
+\renewenvironment{myexample}[2][]
   {\refstepcounter{example}
   \mdfsetup{frametitlefont=\normalfont,
     topline=false,
@@ -140,4 +143,4 @@
   \label{#2}
 }
 {\end{mdframed}}
-
+\fi

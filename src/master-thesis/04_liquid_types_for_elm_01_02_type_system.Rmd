@@ -1,0 +1,209 @@
+### Type System
+
+We have already defined Boolean and lists in example \cite{ex:bool_list}. Integers where defined in example \cite{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Custom types are type applications. Functions and type variables have the expected definition.
+
+Before we define the type inference, we first need to define the Context $\Gamma$. This context will then hold the conditions under which the type can be inferred.
+
+```{definition,name="Context"}
+We define $\Gamma\subseteq \mathcal{V} \times \mathcal{T}$ to be the _context_ of a type inference.
+```
+
+The first two universial inference rules for any Hindley-Milner type system are the instantiation and the generalization.
+
+```{definition,name="Instantiation, Generalization"}
+\begin{center}
+\begin{tabular}{c l}
+\logicRule
+{
+T' \sqsubseteq T\quad
+\Gamma\vdash\syntax{e}:T'
+}
+{\Gamma\vdash \syntax{e}:T}
+{Instantiation}
+
+\logicRule
+{(a,\_)\not\in\Gamma\quad
+\Gamma\vdash \syntax{e}:T
+}
+{\Gamma\vdash \syntax{e}:\mathit{\forall a.T}}
+{Generalization}
+\end{tabular}
+\end{center}
+```
+
+The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
+The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
+
+#### Patterns
+
+\begin{figure}
+%\begin{mdframed}
+\begin{center}
+\begin{tabular}{c l}
+\logicRule{}{\Gamma\vdash match_\beta(\mathit{Bool},\syntax{<bool>})}{P-Bool}
+
+\logicRule{}{\Gamma\vdash match_\beta(\mathit{Int},\syntax{<int>})}{P-Int}
+
+\logicRule{}
+{\Gamma\vdash match_\beta(\forall a.\mathit{List} \ a,\syntax{"[]"})}
+{PEList}
+
+\logicRule
+{\begin{gathered}
+\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p$})\quad
+\Gamma\vdash match_{\beta_2}(T_2,\syntax{"[" $l$ "]"})\quad\\
+\beta_1\cap\beta_2=\varnothing\quad
+\beta_1\cup\beta_2=\beta_3\quad
+T_2 = \textit{List} \ T_1
+\end{gathered}
+}
+{\Gamma\vdash match_{\beta_3}(T_2,\syntax{"[" $p$:<pattern> "," $l$:<list-pattern-list> "]"}
+}
+{PList}
+
+\logicRule
+{\begin{gathered}
+\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p_1$})\quad
+\Gamma\vdash match_{\beta_2}(T_2,\syntax{$p_2$})\quad\\
+\beta_1\cap\beta_2=\varnothing\quad
+\beta_1\cup\beta_2=\beta_3
+\end{gathered}
+}
+{
+\Gamma\vdash match_{\beta_3}(T_1 \times T_2,\syntax{"(" $p_1$:<pattern> "," $p_2$:<pattern> ")"})
+}
+{PTuple}
+
+\logicRule
+{(v,\_)\not\in\Gamma\quad
+\beta = \{(v,T)\}
+}
+{\Gamma\vdash match_{\beta}(T,\syntax{$v$:<lower-var>})
+}
+{PVariable}
+
+\logicRule
+{(v,T)\in\Gamma}
+{\Gamma\vdash match_\beta(T,\syntax{$v$:<upper-var>})}
+{PTerminal}
+
+\logicRule
+{
+\begin{gathered}
+\Gamma\vdash \forall i\in\mathcal{N}_1^n.match_{\beta_i}(\syntax{$p_i$}:T_i)\quad\\
+(p_0,T_1\rightarrow \dots \rightarrow T_n\rightarrow \to T_0)\in\Gamma
+\end{gathered}
+}
+{
+\Gamma\vdash match_\beta(T_0,\syntax{$p_0$:<upper-var> $p_1$:<pattern> .. $p_n$:<pattern>})
+}
+{PApp}
+
+\logicRule
+{(v,\_)\not\in\Gamma\quad
+(v,T)\in\beta\quad
+\Gamma\vdash match_{\beta\backslash\{(v,T)\}}(T\syntax{$p$})\quad
+}
+{\Gamma\vdash match_\beta(T,\syntax{$p$:<pattern> "as" $v$:<lower-var>})}
+{P-As}
+
+\logicRule
+{}
+{\Gamma\vdash match_\beta(\{\},\syntax{"\{\}"})}
+{PERecord}
+
+\logicRule
+{
+\begin{gathered}
+k:\mathbb{N}_1^m\to\mathcal{N}_1^n\quad
+k \text{ is injective}\quad\\
+\forall i\in\mathcal{N}_1^n.(l_{k(i)},\_)\not\in\Gamma\quad
+\Gamma = \bigcup_{i\in\mathcal{N}_1^n} \{(l_{k(i)},T_{k(i))}\}\quad
+T = \{l_1:T_1,\dots,l_n:T_n\}
+\end{gathered}
+}
+{\Gamma\vdash match_\beta(T,\syntax{"\{" $l_{k_1}$:<lower-var> "," $\dots$ "," $v_{k_m}$:<lower-var> "\}"})
+}
+{PRecord}
+
+\logicRule
+{
+\begin{gathered}
+\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p_1$})\quad
+\Gamma_2\vdash match_{\beta_2}(T_2,\syntax{$p_2$})\quad\\
+\beta_1\cap\beta_2=\varnothing\quad
+\beta_1\cup\beta_2=\beta_3
+\end{gathered}
+}
+{
+\Gamma\vdash match_{\beta_3}(\textit{List} \ T_3,\syntax{$p_1$:<pattern> "::" $p_2$:<pattern>})
+}
+{PHeadNTail}
+
+\logicRule
+{}
+{\Gamma\vdash match_\beta(\forall a. a,\syntax{"\_"})}
+{PWildcard}
+
+\end{tabular}
+\end{center}
+%\end{mdframed}
+\caption{Type checking for patterns.}
+\label{fig:type_inference}
+\end{figure}
+
+For pattern matching we are not interested in finding a type, instead we have given a type want are interested whether a pattern matches that type and if so under what context. This is called type checking and is the reverse of type inference.
+
+The type checking rules for pattern matching can be found in figure \ref{fig:type_inference}.
+
+```{block2, type="myexample",latex.options="_"}
+Looking back at our list reversing example, we can check the type of the following pattern matching code.
+
+\begin{lstlisting}[language=elm]
+  case [1,2,3] |> reverse of
+  [
+    a :: _ ->
+      a;
+    _ ->
+      -1
+  ]
+\end{lstlisting}
+  
+Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$. We can now check if the pattern has the same type. If so, then there exists a smallest context under which the types are the same. 
+
+We need to find a type $T:\mathcal{T}$ with $T \sqsubseteq \mathit{List} \ \mathit{Int}$ for which $$\Gamma_1\vdash\syntax{\(a\):<lower-var> " :: \_"}:T \text{ and }\Gamma_2\vdash\syntax{"\_"}:T$$ holds. 
+
+We start with $\Gamma_2 \vdash \syntax{"\_"}:T$. We will prove it for $T=\textit{List} \ \textit{Int}$ and $\Gamma_2 = \varnothing$.
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+  \RightLabel{$\mathit{[P-Wildcard]}$}
+  \UnaryInfC{$\vdash \syntax{"\_"}:\forall a.a$}
+\RightLabel{$\mathit{[Instantiation]}$}
+\UnaryInfC{$\vdash \syntax{"\_"}:\textit{List} \ \text{Int}$}
+\end{prooftree}
+\end{center}
+
+Next we prove $\Gamma_1 \vdash \syntax{\(a\):<lower-var> " :: \_"}:T$ for $T=\textit{List} \ \textit{Int}$ and $\Gamma_1 = \{(a:\mf{<lower-var>},\textit{Int})\}$.
+
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+    \UnaryInfC{$(a,\_)\not\in\varnothing$}
+    \LeftLabel{$(4)$}
+  \UnaryInfC{$\Gamma_1 \vdash\syntax{a}:\textit{Int} $}
+    \AxiomC{$\top$}
+  \UnaryInfC{$\Gamma_1\cap\varnothing=\varnothing$}
+    \AxiomC{$\top$}
+  \UnaryInfC{$\Gamma_1=\Gamma_1\cup\varnothing$}
+      \AxiomC{$\top$}
+    \RightLabel{$(3)$}
+    \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\forall a.a$}
+  \RightLabel{$(2)$}
+  \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\textit{List} \ \textit{Int}$}
+\RightLabel{$(1)$}
+\QuaternaryInfC{$\Gamma_1 \vdash \syntax{a:<lower-var> " :: \_"}:\textit{List} \ \textit{Int}$}
+\end{prooftree}
+\end{center}
+$(1) \mathit{[P-HeadAndTail]}, (2) \mathit{[Instantiation]}, (3) \mathit{[P-Wildcard]},(4) \mathit{[P-Variable]}$
+```

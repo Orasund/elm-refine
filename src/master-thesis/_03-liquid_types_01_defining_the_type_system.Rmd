@@ -48,9 +48,26 @@ The symbol `string` is a valid type. It can be though of as a type, whos impleme
 ```
 
 ```{block2, type="myexample",latex.options="_"}
-$Bool ::= True \ | \ False$ is a valid type application.
+\label{ex:bool_list}
+$\mathit{Bool} ::= \mathit{True} \ | \ \mathit{False}$ is a valid type application.
 
-$\forall a.List \ a ::= Empty \ | \ Cons \ a \ (List \ a)$ List is a valid quantified type.
+$\forall a.\mathit{List} \ a ::= \mathit{Empty} \ | \ \mathit{Cons} \ a \ (\mathit{List} \ a)$ is a valid quantified type.
+```
+
+```{block2, type="myexample",latex.options="_"}
+\label{ex:int}
+The natural numbers and the integers can be defined as types using the piano axioms&nbsp;[@peano]:
+
+* 1 is a natural number
+* Every natural number has a successor.
+
+These axioms can be used for the definiton of the type application.
+
+$$\mathit{Nat} ::= 1 \ | \ \mathit{Succ} \ Nat$$
+
+For integers we can use the property that they contain 0 as well as all positive and negative numbers.
+  
+$$\mathit{Int} ::= 0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}$$
 ```
 
 Types are usually grouped into so called Mono-types and Poly-types.
@@ -182,8 +199,9 @@ T_1:\mathcal{T},T_2:\mathcal{T},T_3:\mathcal{T}
 Then $(T_1 \times T_2 \rightarrow T_3)$ is isomorphic to $T_1 \rightarrow (T_2 \rightarrow T_3$. This was originally proven by Gottlob Frege.[@Schönfinkel] This method for translating multivariable functions into single variable functions is nowadays called currying and named after Haskell Curry who further developed the theory.[@curry] 
 ```
 
-```{definition,name="Subsets of types"}
+```{definition,name="partial function"}
 
-We define $s \subseteq T:\mathcal{T}$ as a set containing elements of type $T$.
-
+We define $f \subseteq T_1\times T_2$ as a partial function from $T_1$ to $T_2$.
 ```
+
+When ever we write $f \subseteq T_1\times T_2$, we assume that f is univariant: $(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_2$.
