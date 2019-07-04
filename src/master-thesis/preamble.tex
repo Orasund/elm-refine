@@ -2,6 +2,8 @@
 \usepackage{multicol}
 \usepackage{stmaryrd} %[[ and ]]
 \usepackage{makecmds} %provideenvironment
+\usepackage{elm-highlighting}
+\usepackage{bussproofs} %prooftrees
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
@@ -13,10 +15,10 @@
 \newcommand{\logicRule}[3]{
   \ifstrempty{#1}
   {
-    $#2$& [\small\text{\texttt{#3}}]\\[10pt]
+    $#2$& \small{$[\mathit{#3}]$}\\[10pt]
   }
   {
-    $\dfrac{#1}{#2}$&[\small\text{\texttt{#3}}]\\[20pt]
+    $\dfrac{#1}{#2}$&\small{$[\mathit{#3}]$}\\[20pt]
   }
   
 }

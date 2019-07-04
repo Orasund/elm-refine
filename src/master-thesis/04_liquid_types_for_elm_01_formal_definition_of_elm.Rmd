@@ -6,9 +6,9 @@
 
 ### Syntax
 
-Elm differenciates between variables depending on the capitalisation of the first letter. For the formal langauge we define `<upper-letter>`$:\mathcal{V}$ for variables with a capitaliced first letter and `<lower-var>`$:\mathcal{V}$ for variables without.
+Elm differenciates between variables depending on the capitalisation of the first letter. For the formal langauge we define `<upper-letter>`$:\mathcal{V}$ for variables with the first letter capitaliced and `<lower-var>`$:\mathcal{V}$ for variables without.
 
-Syntactically we can build our types from Booleans, Intergers, lists, tuples, records, functions, custom types and type variables.
+Syntactically we can build our types from booleans, intergers, lists, tuples, records, functions, custom types and type variables.
 
 ```{definition,name="Type Signiture Syntax"}
 \begin{letIn}
@@ -22,10 +22,10 @@ $$
 \begin{aligned}
 \mf{<type>} ::=& \mf{"Bool"}\\
                &| \mf{"Int"}\\
-               &| \mf{"List" <TYPE>}\\
-               &| \mf{"(" <TYPE> "," <TYPE> ")"}\\
+               &| \mf{"List" <type>}\\
+               &| \mf{"(" <type> "," <type> ")"}\\
                &| \mf{"{" <type-fields> "}"}\\
-               &| \mf{<TYPE> "->" <TYPE>}\\
+               &| \mf{<type> "->" <type>}\\
                &| \mf{<upper-var> <list-type>}\\
                &| \mf{<lower-var>}\\
 \end{aligned}
@@ -71,7 +71,7 @@ $$
 
 Because Elm is a pure functional programming language, a programm contains a single expression.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \begin{mdframed}
 \begin{center}
 \begin{align*}
@@ -158,11 +158,65 @@ $$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$
 $$\mf{<program>} \ ::= \ \mf{<list-statement> <maybe-main-sign> "main" "=" <exp>}$$
 ```
 
+```{block2, type="myexample",latex.options="_"}
+Using this syntax we can now write a function that reverses a list.
+
+\begin{lstlisting}[language=elm]
+reverse : List a -> List a
+reverse =
+  foldl
+    (::)
+    [];
+
+main : Int
+main =
+  case [1,2,3] |> reverse of
+  [
+    a :: _ ->
+      a;
+    _ ->
+      -1
+  ]
+\end{lstlisting}
+```
+
 ### Type System
 
-We have already defined Boolean and lists in example \cite{ex:bool_list}. Integers where defined in example \cite{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Custom types are type applications. Functions and type variable have the expected definition.
+We have already defined Boolean and lists in example \cite{ex:bool_list}. Integers where defined in example \cite{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Custom types are type applications. Functions and type variables have the expected definition.
 
-### Type Inference
+Before we define the type inference, we first need to define the Context $\Gamma$. This context will then hold the conditions under which the type can be inferred.
+
+```{definition,name="Context"}
+We define $\Gamma\subseteq \mathcal{V} \times \mathcal{T}$ to be the _context_ of a type inference.
+```
+
+The first two universial inference rules for any Hindley-Milner type system are the instantiation and the generalization.
+
+```{definition,name="Instantiation, Generalization"}
+\begin{center}
+\begin{tabular}{c l}
+\logicRule
+{
+T' \sqsubseteq T\quad
+\Gamma\vdash\syntax{e}:T'
+}
+{\Gamma\vdash \syntax{e}:T}
+{Instantiation}
+
+\logicRule
+{(a,\_)\not\in\Gamma\quad
+\Gamma\vdash \syntax{e}:T
+}
+{\Gamma\vdash \syntax{e}:\mathit{\forall a.T}}
+{Generalization}
+\end{tabular}
+\end{center}
+```
+
+The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
+The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
+
+#### Patterns
 
 \begin{figure}
 \begin{mdframed}
@@ -234,7 +288,7 @@ I(\syntax{$v$}):a\quad
 k:\mathbb{N}_1^m\to\mathcal{N}_1^n\quad
 k \text{ is injective}\quad\\
 \forall i\in\mathcal{N}_1^n.I(v_i)=l_(k(i))\quad
-\Gamma = \bigcup_{i\in\mathcal{N}_1^n} \{l_{k(i)}:T_{k(i)}\}
+\Gamma = \bigcup_{i\in\mathcal{N}_1^n} \{(l_{k(i)},T_{k(i))}\}
 \end{gathered}}
 {\Gamma\vdash\syntax{"{" $v_1$:<lower-var> "," $\dots$ "," $v_m$:<lower-var> "}"}}
 {P-Record}
@@ -261,5 +315,62 @@ T_1 \cap T_2 = \varnothing
 \end{tabular}
 \end{center}
 \end{mdframed}
-\caption{Type inference for patterns.}
+\caption{Type checking for patterns.}
+\label{fig:type_inference}
 \end{figure}
+
+For pattern matching we are not interested in finding a type, instead we have given a type want are interested whether a pattern matches that type and if so under what context. This is called type checking and is the reverse of type inference.
+
+The type checking rules for pattern matching can be found in figure \ref{fig:type_inference}.
+
+```{block2, type="myexample",latex.options="_"}
+Looking back at our list reversing example, we can check the type of the following pattern matching code.
+
+\begin{lstlisting}[language=elm]
+  case [1,2,3] |> reverse of
+  [
+    a :: _ ->
+      a;
+    _ ->
+      -1
+  ]
+\end{lstlisting}
+  
+Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$. We can now check if the pattern has the same type. If so, then there exists a smallest context under which the types are the same. 
+
+We need to find a type $T:\mathcal{T}$ with $T \sqsubseteq \mathit{List} \ \mathit{Int}$ for which $$\Gamma_1\vdash\syntax{\(a\):<lower-var> " :: \_"}:T \text{ and }\Gamma_2\vdash\syntax{"\_"}:T$$ holds. 
+
+We start with $\Gamma_2 \vdash \syntax{"\_"}:T$. We will prove it for $T=\textit{List} \ \textit{Int}$ and $\Gamma_2 = \varnothing$.
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+  \RightLabel{$\mathit{[P-Wildcard]}$}
+  \UnaryInfC{$\vdash \syntax{"\_"}:\forall a.a$}
+\RightLabel{$\mathit{[Instantiation]}$}
+\UnaryInfC{$\vdash \syntax{"\_"}:\textit{List} \ \text{Int}$}
+\end{prooftree}
+\end{center}
+
+Next we prove $\Gamma_1 \vdash \syntax{\(a\):<lower-var> " :: \_"}:T$ for $T=\textit{List} \ \textit{Int}$ and $\Gamma_1 = \{(a:\mf{<lower-var>},\textit{Int})\}$.
+
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+    \UnaryInfC{$(a,\_)\not\in\varnothing$}
+    \LeftLabel{$(4)$}
+  \UnaryInfC{$\Gamma_1 \vdash\syntax{a}:\textit{Int} $}
+    \AxiomC{$\top$}
+  \UnaryInfC{$\Gamma_1\cap\varnothing=\varnothing$}
+    \AxiomC{$\top$}
+  \UnaryInfC{$\Gamma_1=\Gamma_1\cup\varnothing$}
+      \AxiomC{$\top$}
+    \RightLabel{$(3)$}
+    \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\forall a.a$}
+  \RightLabel{$(2)$}
+  \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\textit{List} \ \textit{Int}$}
+\RightLabel{$(1)$}
+\QuaternaryInfC{$\Gamma_1 \vdash \syntax{a:<lower-var> " :: \_"}:\textit{List} \ \textit{Int}$}
+\end{prooftree}
+\end{center}
+$(1) \mathit{[P-HeadAndTail]}, (2) \mathit{[Instantiation]}, (3) \mathit{[P-Wildcard]},(4) \mathit{[P-Variable]}$
+```
