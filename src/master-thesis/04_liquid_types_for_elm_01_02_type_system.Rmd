@@ -37,30 +37,47 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 #### Expressions
 
 ```{definition,name="type inference for expressions"}
+\begin{letIn}
+n\in\mathbb{N};\quad
+T:\mathcal{T};\quad
+v:\mf{<lower-var>};\quad
+e:\mf{<exp>};\quad
+\forall i\in\mathbb{N}_0^3.T_i:\mathcal{T};\\
+\forall i\in\mathbb{N}_4^n.T_i:\mathcal{T};\quad
+\forall i\in\mathbb{N}_0^3.v_i:\mf{<lower-var>};\quad
+\forall i\in\mathbb{N}_4^n.v_i:\mf{<lower-var>};\\
+\forall i\in\mathbb{N}_0^3.e_i:\mf{<exp>};\quad
+\forall i\in\mathbb{N}_4^n.e_i:\mf{<exp>};\quad
+p:\mf{<pattern>};\quad
+\mathit{le}:\mf{<list.exp>};\\
+\mathit{lc}:\mf{<list-case>};\quad
+c:\mf{<upper-var>};\quad
+t:\mf{<type>}.
+\end{letIn}
 \begin{center}
 \begin{tabular}{c l}
 \logicRule
 {(v,T)\in\Gamma}
-{\Gamma\vdash\syntax{$v$:<lower-var>}:T}
+{\Gamma\vdash\syntax{$v$}:T}
 {Variable}
 
 \logicRule
 {(v,T)\in\Gamma}
-{\Gamma\vdash\syntax{$v$:<upper-var>}:T}
+{\Gamma\vdash\syntax{$v$}:T}
 {Constructor}
 
 \logicRule
 {\Gamma\vdash match_\Delta(T_1,\syntax{$p$})\quad
 \Gamma\cup\Delta\vdash\syntax{$e$}:T_2
 }
-{\Gamma\vdash\syntax{"\" $p$:<pattern> "->" $e$:<exp>}:T_1\to T_2}
+{\Gamma\vdash\syntax{"\" $p$ "->" $e$}:T_1\to T_2}
 {Lambda}
 
 \logicRule
 {\Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"(" $e_1$:<exp> "," $e_2$:<exp> ")"}:T_1\times T_2}
+{\Gamma\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:T_1\times T_2}
 {Tuple}
 
 \logicRule
@@ -71,26 +88,26 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \logicRule
 {
 \Gamma\vdash\syntax{$e$}:T\quad
-\Gamma\vdash\syntax{$l$}:\mathit{List} \ T
+\Gamma\vdash\syntax{$\mathit{le}$}:\mathit{List} \ T
 }
-{\Gamma\vdash\syntax{" $e$:<exp> "," $l$:<list-exp> "}: \mathit{List} \ T}
+{\Gamma\vdash\syntax{" $e$ "," $\mathit{le}$ "}: \mathit{List} \ T}
 {List}
 
 \logicRule
 {}
-{\vdash\syntax{<int>}:\mathit{Int}}
+{\vdash\syntax{$\_$:<int>}:\mathit{Int}}
 {Int}
 
 \logicRule
 {}
-{\vdash\syntax{<bool>}:\mathit{Bool}}
+{\vdash\syntax{$\_$:<bool>}:\mathit{Bool}}
 {Bool}
 
 \logicRule
 {\Gamma\vdash\syntax{$e_1$}:T_1\to T_2\quad
 \Gamma\vdash\syntax{$e_2$}:T_1
 }
-{\Gamma\vdash\syntax{$e_1$:<exp> $e_2$:<exp>}:T_2}
+{\Gamma\vdash\syntax{$e_1$ $e_2$}:T_2}
 {Call}
 
 \logicRule
@@ -98,7 +115,7 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
 \Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $p$:<pattern> "->" $e_2$:<exp> "]"}:T_2}
+{\Gamma\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:T_2}
 {1CaseOf}
 
 \logicRule
@@ -106,17 +123,17 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
 \Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2\quad\\
-\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $l$ "]"}:T_2
+\Gamma\vdash\syntax{"case" $e_1$ "of" "[" $\mathit{lc}$ "]"}:T_2
 \end{gathered}
 }
-{\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $p$:<pattern> "->" $e_2$:<exp> ";" $l$:<list-case> "]"}:T_2}
+{\Gamma\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ ";" $\mathit{lc}$ "]"}:T_2}
 {CaseOf}
 
 \logicRule
 {\Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"let" $v$:<lower-var> "=" $e_1$:<exp> "in" $e_2$:<exp>}:T_2}
+{\Gamma\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:T_2}
 {LetIn}
 
 \logicRule
@@ -124,25 +141,8 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"let" $v$:<lower-var> ":" $t$:<type> ";" $v$:<lower-var> "=" $e_1$:<exp> "in" $e_2$:<exp>}:T_2}
+{\Gamma\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:T_2}
 {LetIn2}
-
-\logicRule
-{(v_1,\{v_2:T,..\})\in\Gamma
-}
-{\Gamma\vdash\syntax{$v_1$:<lower-var> "." $v_2$:<lower-var>}:T}
-{Getter}
-
-\logicRule
-{(v,T)\in\Gamma
-}
-{\Gamma\vdash\syntax{"\{" $v$:<lower-var> "|" <list-exp-field> "\}"}:T}
-{Setter}
-
-\logicRule
-{}
-{\vdash\syntax{"\{\}"}:\{\}}
-{0Record}
 
 \end{tabular}
 \end{center}
@@ -150,9 +150,26 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \begin{tabular}{c l}
 
 \logicRule
+{(v_1,\{v_2:T,..\})\in\Gamma
+}
+{\Gamma\vdash\syntax{$v_1$ "." $v_2$}:T}
+{Getter}
+
+\logicRule
+{(v,T)\in\Gamma
+}
+{\Gamma\vdash\syntax{"\{" $v$ "|" $\_$:<list-exp-field> "\}"}:T}
+{Setter}
+
+\logicRule
+{}
+{\vdash\syntax{"\{\}"}:\{\}}
+{0Record}
+
+\logicRule
 {\Gamma\vdash\forall i \in\mathbb{N}_1^n.\syntax{$v_i$}:T_i
 }
-{\Gamma\vdash\syntax{"\{" $v_1$:<lower-var> "=" $e_1$:<exp> "," .. "," $v_n$:<lower-var> "=" $e_n$:<exp> "\}"}:\{v_1:T_1,..,v_n:T_n\}
+{\Gamma\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," .. "," $v_n$ "=" $e_n$ "\}"}:\{v_1:T_1,..,v_n:T_n\}
 }
 {Record}
 
@@ -162,7 +179,7 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\syntax{$e_2$}:T\quad
 \Gamma\vdash\syntax{$e_3$}:T
 }
-{\Gamma\vdash\syntax{"if" $e_1$:<exp> "then" $e_2$:<exp> "else" $e_3$:<exp>}:T}
+{\Gamma\vdash\syntax{"if" $e_1$ "then" $e_2$ "else" $e_3$}:T}
 {IfElse}
 
 \logicRule
@@ -170,7 +187,7 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\syntax{$e_1$}:T_1 \to T_2\quad
 \Gamma\vdash\syntax{$e_2$}:T_2 \to T_3
 }
-{\Gamma\vdash\syntax{$e_1$:<exp> ">>" $e_2$:<exp>}:T_1 \to T_3}
+{\Gamma\vdash\syntax{$e_1$ ">>" $e_2$}:T_1 \to T_3}
 {Composition}
 
 \logicRule
@@ -178,7 +195,7 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\vdash\syntax{$e_2$}:T_1 \to T_2
 }
-{\Gamma\vdash\syntax{$e_1$:<exp> "|>" $e_2$:<exp>}:T_2}
+{\Gamma\vdash\syntax{$e_1$ "|>" $e_2$}:T_2}
 {Pipe}
 
 \logicRule
