@@ -101,7 +101,7 @@ k is injective
 ∀i\in\mathcal{N}_1^n.I(v_i)=l_(k(i)) ∧
 Γ = ∪_{i\in\mathcal{N}_1^n} {(l_(k(i)),T_(k(i)))}
 ------------------------------------------------------------------------[Record]
-Γ ⊢ [["{" v_1:<lower_var> ":" e_1:<exp> "," .. "," v_n:<lower_var> ":" e_n:<exp> "}"]]:{l_1:T_1,..,l_n:T_n}
+Γ ⊢ [["{" v_1:<lower-var> ":" e_1:<exp> "," .. "," v_n:<lower-var> ":" e_n:<exp> "}"]]:{l_1:T_1,..,l_n:T_n}
 
 Γ ⊢ [[e1]]:Bool
 Γ ⊢ [[e2]]:T

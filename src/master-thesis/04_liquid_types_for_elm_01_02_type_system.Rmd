@@ -34,127 +34,370 @@ T' \sqsubseteq T\quad
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
 
-#### Patterns
+#### Expressions
 
-\begin{figure}
-%\begin{mdframed}
+```{definition,name="type inference for expressions"}
 \begin{center}
 \begin{tabular}{c l}
-\logicRule{}{\Gamma\vdash match_\beta(\mathit{Bool},\syntax{<bool>})}{P-Bool}
+\logicRule
+{(v,T)\in\Gamma}
+{\Gamma\vdash\syntax{$v$:<lower-var>}:T}
+{Variable}
 
-\logicRule{}{\Gamma\vdash match_\beta(\mathit{Int},\syntax{<int>})}{P-Int}
+\logicRule
+{(v,T)\in\Gamma}
+{\Gamma\vdash\syntax{$v$:<upper-var>}:T}
+{Constructor}
 
-\logicRule{}
-{\Gamma\vdash match_\beta(\forall a.\mathit{List} \ a,\syntax{"[]"})}
-{PEList}
+\logicRule
+{\Gamma\vdash match_\Delta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Delta\vdash\syntax{$e$}:T_2
+}
+{\Gamma\vdash\syntax{"\" $p$:<pattern> "->" $e$:<exp>}:T_1\to T_2}
+{Lambda}
+
+\logicRule
+{\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\vdash\syntax{$e_2$}:T_2
+}
+{\Gamma\vdash\syntax{"(" $e_1$:<exp> "," $e_2$:<exp> ")"}:T_1\times T_2}
+{Tuple}
+
+\logicRule
+{}
+{\vdash\syntax{"[]"}:\forall a.a}
+{0List}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e$}:T\quad
+\Gamma\vdash\syntax{$l$}:\mathit{List} \ T
+}
+{\Gamma\vdash\syntax{" $e$:<exp> "," $l$:<list-exp> "}: \mathit{List} \ T}
+{List}
+
+\logicRule
+{}
+{\vdash\syntax{<int>}:\mathit{Int}}
+{Int}
+
+\logicRule
+{}
+{\vdash\syntax{<bool>}:\mathit{Bool}}
+{Bool}
+
+\logicRule
+{\Gamma\vdash\syntax{$e_1$}:T_1\to T_2\quad
+\Gamma\vdash\syntax{$e_2$}:T_1
+}
+{\Gamma\vdash\syntax{$e_1$:<exp> $e_2$:<exp>}:T_2}
+{Call}
+
+\logicRule
+{\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2
+}
+{\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $p$:<pattern> "->" $e_2$:<exp> "]"}:T_2}
+{1CaseOf}
 
 \logicRule
 {\begin{gathered}
-\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p$})\quad
-\Gamma\vdash match_{\beta_2}(T_2,\syntax{"[" $l$ "]"})\quad\\
-\beta_1\cap\beta_2=\varnothing\quad
-\beta_1\cup\beta_2=\beta_3\quad
+\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2\quad\\
+\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $l$ "]"}:T_2
+\end{gathered}
+}
+{\Gamma\vdash\syntax{"case" $e_1$:<exp> "of" "[" $p$:<pattern> "->" $e_2$:<exp> ";" $l$:<list-case> "]"}:T_2}
+{CaseOf}
+
+\logicRule
+{\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
+}
+{\Gamma\vdash\syntax{"let" $v$:<lower-var> "=" $e_1$:<exp> "in" $e_2$:<exp>}:T_2}
+{LetIn}
+
+\logicRule
+{I(t):T_1
+\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
+}
+{\Gamma\vdash\syntax{"let" $v$:<lower-var> ":" $t$:<type> ";" $v$:<lower-var> "=" $e_1$:<exp> "in" $e_2$:<exp>}:T_2}
+{LetIn2}
+
+\logicRule
+{(v_1,\{v_2:T,..\})\in\Gamma
+}
+{\Gamma\vdash\syntax{$v_1$:<lower-var> "." $v_2$:<lower-var>}:T}
+{Getter}
+
+\logicRule
+{(v,T)\in\Gamma
+}
+{\Gamma\vdash\syntax{"\{" $v$:<lower-var> "|" <list-exp-field> "\}"}:T}
+{Setter}
+
+\logicRule
+{}
+{\vdash\syntax{"\{\}"}:\{\}}
+{0Record}
+
+\end{tabular}
+\end{center}
+\begin{center}
+\begin{tabular}{c l}
+
+\logicRule
+{\Gamma\vdash\forall i \in\mathbb{N}_1^n.\syntax{$v_i$}:T_i
+}
+{\Gamma\vdash\syntax{"\{" $v_1$:<lower-var> "=" $e_1$:<exp> "," .. "," $v_n$:<lower-var> "=" $e_n$:<exp> "\}"}:\{v_1:T_1,..,v_n:T_n\}
+}
+{Record}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e_1$}:\textit{Bool}\quad
+\Gamma\vdash\syntax{$e_2$}:T\quad
+\Gamma\vdash\syntax{$e_3$}:T
+}
+{\Gamma\vdash\syntax{"if" $e_1$:<exp> "then" $e_2$:<exp> "else" $e_3$:<exp>}:T}
+{IfElse}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e_1$}:T_1 \to T_2\quad
+\Gamma\vdash\syntax{$e_2$}:T_2 \to T_3
+}
+{\Gamma\vdash\syntax{$e_1$:<exp> ">>" $e_2$:<exp>}:T_1 \to T_3}
+{Composition}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e_1$}:T_1\quad
+\Gamma\vdash\syntax{$e_2$}:T_1 \to T_2
+}
+{\Gamma\vdash\syntax{$e_1$:<exp> "|>" $e_2$:<exp>}:T_2}
+{Pipe}
+
+\logicRule
+{}
+{\vdash\syntax{"(||)"}:\mathit{Bool}\to \mathit{Bool}\to \mathit{Bool}}
+{Or}
+
+\logicRule
+{}
+{\vdash\syntax{"(\&\&)"}:\mathit{Bool}\to \mathit{Bool}\to \mathit{Bool}}
+{And}
+
+\logicRule
+{}
+{\vdash\syntax{"not"}:\mathit{Bool}\to \mathit{Bool}}
+{Not}
+
+\logicRule
+{}
+{\vdash\syntax{"(==)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Bool}}
+{Equal}
+
+\logicRule
+{}
+{\vdash\syntax{"(<)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Bool}}
+{Less}
+
+\logicRule
+{}
+{\vdash\syntax{"(//)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{Divide}
+
+\logicRule
+{}
+{\vdash\syntax{"(*)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{Multiply}
+
+\logicRule
+{}
+{\vdash\syntax{"(-)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{Minus}
+
+\logicRule
+{}
+{\vdash\syntax{"(+)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{Plus}
+
+\logicRule
+{}
+{\vdash\syntax{"(::)"}:\forall a.a\to\mathit{List}\ a\to\mathit{List}\ a}
+{Cons}
+
+\logicRule
+{}
+{\vdash\syntax{"foldl"}:\forall a.\forall b.(a\to b)\to b\to\mathit{List}\ a\to b}
+{Foldl}
+
+\end{tabular}
+\end{center}
+```
+
+#### Patterns
+
+\begin{figure}
+\begin{mdframed}
+\begin{center}
+\begin{tabular}{c l}
+\logicRule{}{\vdash \text{match}_\varnothing(\mathit{Bool},\syntax{<bool>})}{P-Bool}
+
+\logicRule{}{\vdash \text{match}_\varnothing(\mathit{Int},\syntax{<int>})}{P-Int}
+
+\logicRule{}
+{\vdash \text{match}_\varnothing(\forall a.\mathit{List} \ a,\syntax{"[]"})}
+{P0List}
+
+\logicRule
+{\begin{gathered}
+\Gamma\vdash \text{match}_{\Delta_1}(T_1,\syntax{$p$})\quad
+\Gamma\vdash \text{match}_{\Delta_2}(T_2,\syntax{"[" $l$ "]"})\quad\\
+\Delta_1\cap\Delta_2=\varnothing\quad
+\Delta_1\cup\Delta_2=\Delta_3\quad
 T_2 = \textit{List} \ T_1
 \end{gathered}
 }
-{\Gamma\vdash match_{\beta_3}(T_2,\syntax{"[" $p$:<pattern> "," $l$:<list-pattern-list> "]"}
+{\Gamma\vdash \text{match}_{\Delta_3}(T_2,\syntax{"[" $p$:<pattern> "," $l$:<list-pattern-list> "]"}
 }
 {PList}
 
 \logicRule
 {\begin{gathered}
-\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p_1$})\quad
-\Gamma\vdash match_{\beta_2}(T_2,\syntax{$p_2$})\quad\\
-\beta_1\cap\beta_2=\varnothing\quad
-\beta_1\cup\beta_2=\beta_3
+\Gamma\vdash \text{match}_{\Delta_1}(T_1,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Delta_2}(T_2,\syntax{$p_2$})\quad\\
+\Delta_1\cap\Delta_2=\varnothing\quad
+\Delta_1\cup\Delta_2=\Delta_3
 \end{gathered}
 }
 {
-\Gamma\vdash match_{\beta_3}(T_1 \times T_2,\syntax{"(" $p_1$:<pattern> "," $p_2$:<pattern> ")"})
+\Gamma\vdash \text{match}_{\Delta_3}(T_1 \times T_2,\syntax{"(" $p_1$:<pattern> "," $p_2$:<pattern> ")"})
 }
 {PTuple}
 
 \logicRule
 {(v,\_)\not\in\Gamma\quad
-\beta = \{(v,T)\}
+\Delta = \{(v,T)\}
 }
-{\Gamma\vdash match_{\beta}(T,\syntax{$v$:<lower-var>})
+{\Gamma\vdash \text{match}_{\Delta}(T,\syntax{$v$:<lower-var>})
 }
 {PVariable}
 
 \logicRule
 {(v,T)\in\Gamma}
-{\Gamma\vdash match_\beta(T,\syntax{$v$:<upper-var>})}
-{PTerminal}
+{\Gamma\vdash \text{match}_\varnothing(T,\syntax{$v$:<upper-var>})}
+{P0App}
 
 \logicRule
 {
 \begin{gathered}
-\Gamma\vdash \forall i\in\mathcal{N}_1^n.match_{\beta_i}(\syntax{$p_i$}:T_i)\quad\\
-(p_0,T_1\rightarrow \dots \rightarrow T_n\rightarrow \to T_0)\in\Gamma
-\end{gathered}
+\Gamma\vdash \forall i\in\mathbb{N}_1^n.\text{match}_{\Delta_i}(\syntax{$p_i$}:T_i)\quad\\
+(p_0,T_1\to \dots \to T_n\to T_0)\in\Gamma\quad\\
+\forall i\in\mathbb{N}_1^n.\forall j\in\mathbb{N}_1^n.i\neq j \Rightarrow\Delta_i\cap \Delta_j = \varnothing\quad
+\Delta_0 = \bigcup_{i\in\mathbb{N}_1^n}\Delta_i
+\end{gathered} 
 }
 {
-\Gamma\vdash match_\beta(T_0,\syntax{$p_0$:<upper-var> $p_1$:<pattern> .. $p_n$:<pattern>})
+\Gamma\vdash \text{match}_{\Delta_0}(T_0,\syntax{$p_0$:<upper-var> $p_1$:<pattern> .. $p_n$:<pattern>})
 }
 {PApp}
 
 \logicRule
 {(v,\_)\not\in\Gamma\quad
-(v,T)\in\beta\quad
-\Gamma\vdash match_{\beta\backslash\{(v,T)\}}(T\syntax{$p$})\quad
+(v,T)\in\Delta\quad
+\Gamma\vdash \text{match}_{\Delta\backslash\{(v,T)\}}(T,\syntax{$p$})\quad
 }
-{\Gamma\vdash match_\beta(T,\syntax{$p$:<pattern> "as" $v$:<lower-var>})}
+{\Gamma\vdash \text{match}_\Delta(T,\syntax{$p$:<pattern> "as" $v$:<lower-var>})}
 {P-As}
 
 \logicRule
 {}
-{\Gamma\vdash match_\beta(\{\},\syntax{"\{\}"})}
-{PERecord}
+{\vdash \text{match}_\varnothing(\{\},\syntax{"\{\}"})}
+{P0Record}
 
 \logicRule
 {
 \begin{gathered}
-k:\mathbb{N}_1^m\to\mathcal{N}_1^n\quad
+k:\mathbb{N}_1^m\to\mathbb{N}_1^n\quad
 k \text{ is injective}\quad\\
 \forall i\in\mathcal{N}_1^n.(l_{k(i)},\_)\not\in\Gamma\quad
-\Gamma = \bigcup_{i\in\mathcal{N}_1^n} \{(l_{k(i)},T_{k(i))}\}\quad
+\Gamma = \bigcup_{i\in\mathbb{N}_1^n} \{(l_{k(i)},T_{k(i))}\}\quad
 T = \{l_1:T_1,\dots,l_n:T_n\}
 \end{gathered}
 }
-{\Gamma\vdash match_\beta(T,\syntax{"\{" $l_{k_1}$:<lower-var> "," $\dots$ "," $v_{k_m}$:<lower-var> "\}"})
+{\Gamma\vdash \text{match}_\Delta(T,\syntax{"\{" $l_{k_1}$:<lower-var> "," $\dots$ "," $v_{k_m}$:<lower-var> "\}"})
 }
 {PRecord}
 
 \logicRule
 {
 \begin{gathered}
-\Gamma\vdash match_{\beta_1}(T_1,\syntax{$p_1$})\quad
-\Gamma_2\vdash match_{\beta_2}(T_2,\syntax{$p_2$})\quad\\
-\beta_1\cap\beta_2=\varnothing\quad
-\beta_1\cup\beta_2=\beta_3
+\Gamma\vdash \text{match}_{\Delta_1}(T,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Delta_2}(List T,\syntax{$p_2$})\quad\\
+\Delta_1\cap\Delta_2=\varnothing\quad
+\Delta_1\cup\Delta_2=\Delta_3
 \end{gathered}
 }
 {
-\Gamma\vdash match_{\beta_3}(\textit{List} \ T_3,\syntax{$p_1$:<pattern> "::" $p_2$:<pattern>})
+\Gamma\vdash \text{match}_{\Delta_3}(\textit{List} \ T,\syntax{$p_1$:<pattern> "::" $p_2$:<pattern>})
 }
-{PHeadNTail}
+{PHead}
 
 \logicRule
 {}
-{\Gamma\vdash match_\beta(\forall a. a,\syntax{"\_"})}
+{\Gamma\vdash \text{match}_\varnothing(\forall a. a,\syntax{"\_"})}
 {PWildcard}
 
 \end{tabular}
 \end{center}
-%\end{mdframed}
+\end{mdframed}
 \caption{Type checking for patterns.}
-\label{fig:type_inference}
+\label{fig:type_inference_for_patterns}
 \end{figure}
 
-For pattern matching we are not interested in finding a type, instead we have given a type want are interested whether a pattern matches that type and if so under what context. This is called type checking and is the reverse of type inference.
+For pattern matching we do not only want to infer a type that matches the pattern, but also find all substitutions for doing so. We will see that patterns also allow for variable declarations by using the `as` keyword.
 
-The type checking rules for pattern matching can be found in figure \ref{fig:type_inference}.
+```{definition,name="Type inference for pattern matching"}
+\begin{letIn}\Delta\subseteq \mf{<lower-var>}\times\mathcal{T}
+\end{letIn}
+
+we say a pattern $p$ matches a type $T$ for the context $\Gamma$ using the bindings $\Delta$ if $\Gamma\vdash \text{match}_\Delta(T,p)$.
+
+$\Delta$ contains the minimal substitutions and variable bindings needed to match the type to the pattern.
+
+Instantiation and Generalization applies to pattern matching as well.
+
+\begin{center}
+\begin{tabular}{c l}
+\logicRule
+{
+ T' \sqsubseteq T\quad
+ \Gamma\vdash \text{match}_\Delta(T',\syntax{e})
+}
+{
+  \Gamma\vdash \text{match}_\Delta(T,\syntax{e})
+}
+{PInstantiation}
+
+\logicRule
+{(a,\_)\not\in\Gamma\quad
+\Gamma\vdash \text{match}_\Delta(T,\syntax{e})
+}
+{
+  \Gamma\vdash \text{match}_\Delta(\forall a.T,\syntax{e})
+}
+{PGeneralization}
+\end{tabular}
+\end{center}
+
+
+The type checking rules for pattern matching can be found in figure \ref{fig:type_inference_for_patterns}.
+```
 
 ```{block2, type="myexample",latex.options="_"}
 Looking back at our list reversing example, we can check the type of the following pattern matching code.
@@ -169,41 +412,37 @@ Looking back at our list reversing example, we can check the type of the followi
   ]
 \end{lstlisting}
   
-Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$. We can now check if the pattern has the same type. If so, then there exists a smallest context under which the types are the same. 
+Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$ and $\Gamma = \varnothing$.
 
-We need to find a type $T:\mathcal{T}$ with $T \sqsubseteq \mathit{List} \ \mathit{Int}$ for which $$\Gamma_1\vdash\syntax{\(a\):<lower-var> " :: \_"}:T \text{ and }\Gamma_2\vdash\syntax{"\_"}:T$$ holds. 
-
-We start with $\Gamma_2 \vdash \syntax{"\_"}:T$. We will prove it for $T=\textit{List} \ \textit{Int}$ and $\Gamma_2 = \varnothing$.
+We start by proving $\vdash \text{match}_\varnothing(\mathit{List} \ \mathit{Int},\syntax{"\_"})$.
 \begin{center}
 \begin{prooftree}
     \AxiomC{$\top$}
-  \RightLabel{$\mathit{[P-Wildcard]}$}
-  \UnaryInfC{$\vdash \syntax{"\_"}:\forall a.a$}
-\RightLabel{$\mathit{[Instantiation]}$}
-\UnaryInfC{$\vdash \syntax{"\_"}:\textit{List} \ \text{Int}$}
+  \RightLabel{$\mathit{[PWildcard]}$}
+  \UnaryInfC{$\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
+\RightLabel{$\mathit{[PInstantiation]}$}
+\UnaryInfC{$\vdash \text{match}_\varnothing(\textit{List} \ \text{Int},\syntax{"\_"})$}
 \end{prooftree}
 \end{center}
 
-Next we prove $\Gamma_1 \vdash \syntax{\(a\):<lower-var> " :: \_"}:T$ for $T=\textit{List} \ \textit{Int}$ and $\Gamma_1 = \{(a:\mf{<lower-var>},\textit{Int})\}$.
+Next we prove $\vdash \text{match}_\Delta(\textit{List} \ \textit{Int},\syntax{\(a\):<lower-var> " :: \_"})$ for $\Delta=\{(a,\textit{Int})\}$.
 
 \begin{center}
 \begin{prooftree}
     \AxiomC{$\top$}
     \UnaryInfC{$(a,\_)\not\in\varnothing$}
     \LeftLabel{$(4)$}
-  \UnaryInfC{$\Gamma_1 \vdash\syntax{a}:\textit{Int} $}
+  \UnaryInfC{$\vdash \text{match}_\Delta(\textit{Int},\syntax{a})$}
     \AxiomC{$\top$}
-  \UnaryInfC{$\Gamma_1\cap\varnothing=\varnothing$}
-    \AxiomC{$\top$}
-  \UnaryInfC{$\Gamma_1=\Gamma_1\cup\varnothing$}
+  \UnaryInfC{$\Delta\cap\varnothing=\varnothing$}
       \AxiomC{$\top$}
     \RightLabel{$(3)$}
-    \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\forall a.a$}
+    \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
   \RightLabel{$(2)$}
-  \UnaryInfC{$\varnothing\vdash\syntax{"\_"}:\textit{List} \ \textit{Int}$}
+  \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\textit{List} \ \textit{Int},\syntax{"\_"})$}
 \RightLabel{$(1)$}
-\QuaternaryInfC{$\Gamma_1 \vdash \syntax{a:<lower-var> " :: \_"}:\textit{List} \ \textit{Int}$}
+\TrinaryInfC{$\vdash \text{match}_\Delta(\textit{List} \ \textit{Int},\syntax{a:<lower-var> " :: \_"})$}
 \end{prooftree}
 \end{center}
-$(1) \mathit{[P-HeadAndTail]}, (2) \mathit{[Instantiation]}, (3) \mathit{[P-Wildcard]},(4) \mathit{[P-Variable]}$
+$(1) \mathit{[PHead]}, (2) \mathit{[PInstantiation]}, (3) \mathit{[PWildcard]},(4) \mathit{[PVariable]}$
 ```
