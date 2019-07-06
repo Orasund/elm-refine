@@ -11,6 +11,7 @@ Syntactically we can build our types from booleans, intergers, lists, tuples, re
 \end{letIn}
 We define the following types:
 $$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
+$$\mf{<type-fields>} \ ::= \ \mf{""} \ | \ \mf{<lower-var> ":" <type>} \ | \ \mf{<lower-var> ":" <type> "," <list-type-field>}$$
 $$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type> <type>} \ \mf{<list-type>}$$
 $$
 \begin{aligned}
@@ -56,7 +57,7 @@ $$
                    |& \ \mf{<upper-var> <list-pattern-sort>}\\
                    |& \ \mf{<lower-var>}\\
                    |& \ \mf{<pattern> "as" <lower-var>}\\
-                   |& \ \mf{"{" <list-pattern-vars> "}"}\\
+                   |& \ \mf{"\{" <list-pattern-vars> "\}"}\\
                    |& \ \mf{<pattern> "::" <pattern>}\\
                    |& \ \mf{"-"}
 \end{aligned}

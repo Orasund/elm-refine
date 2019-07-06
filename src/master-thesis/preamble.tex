@@ -4,6 +4,7 @@
 \usepackage{makecmds} %provideenvironment
 \usepackage{elm-highlighting}
 \usepackage{bussproofs} %prooftrees
+\usepackage{xtab} %tabular over multiple pages
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
@@ -26,11 +27,8 @@
 \newcommand{\syntax}[1]{\llbracket \text{\footnotesize\texttt{#1}} \rrbracket}
 
 \newenvironment{letIn}
-{Let 
-\begin{tabular}[t]{l}
-$\begin{matrix*}[l]
+{Let $\begin{array}[t]{l}
 }
-{\end{matrix*}$
-\end{tabular}\newline
+{\end{array}$\newline
 \text{\textemdash}
 }
