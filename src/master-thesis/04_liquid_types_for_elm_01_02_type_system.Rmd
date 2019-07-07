@@ -1,6 +1,30 @@
 ### Types system
 
-We have already defined Boolean and lists in example \cite{ex:bool_list}. Integers where defined in example \cite{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Custom types are type applications. Functions and type variables have the expected definition.
+We have already defined Boolean and lists in example \ref{ex:bool_list}. Integers where defined in example \ref{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Algebraic types are type applications. Functions and type variables have the expected definition.
+
+```{definition,name="Algebraic types"}
+$$
+\begin{aligned}
+\mathit{Algebraic} ::=
+  Algebraic \mathit{List} (\mathcal{V},\mathit{List} \ \mathcal{T})
+\end{aligned}
+$$
+```
+
+```{definition,name="Type names"}
+$$
+\begin{aligned}
+\mathit{Type} ::=& Bool\\
+                |& Int\\
+                |& List \ Type\\
+                |& Tuple \ Type Type\\
+                |& Record \ \mathit{List} \ (\mathcal{V},Type)\\
+                |& Function \ Type \ Type\\
+                |& Algebraic \ \mathcal{V} \ \mathit{List} \ (\mathcal{V},\mathit{List} \ Type)\\
+                |& Variable \ \mathcal{V}
+\end{aligned}
+$$
+```
 
 To reason about the syntax we need a interpretation of the most basic elements.
 ```{definition,name="partial Interpretation"}
@@ -19,14 +43,14 @@ We call $I$ a partial interpretation iff
 
 $$
 \begin{aligned}
-  \syntax{\_":"Bool} : & \mathit{Bool}\\
-  \syntax{\_":"Int} : & \mathit{Int}\\
-  \syntax{\_":"List \ $t$} :& \mathit{List} \ \syntax{$t$})\\
-  \syntax{\_":" "(" $t_1$ , $t_2$ ")"} :& \syntax{$t_1$} \times \syntax{$t_2$}\\
-  \syntax{\_":" "\{\}"} :& \mathit{\{\}}\\
-  \syntax{\_":" "\{" $v_1$ ":" $t_1$ "," \dots "," $v_1$ ":" $t_n$ "\}"} :& \{\syntax{\_":" $v_1$}_I:\syntax{$t_1$} , \dots , \syntax{$v_n$}:\syntax{$t_n$}\}\\
-  \syntax{\_":" $t_1$ "->" $t_2$} :& \syntax{$t_1$} \to \syntax{$t_2$}\\
-  \syntax{\_":" $c$ $t_1$ .. $t_n$} :& [\syntax{$c$}]_{a_1\mapsto t_1,\dots,a_n\mapsto t_n}
+  \syntax{Bool} =& \mathit{Bool}\\
+  \syntax{Int} =& \mathit{Int}\\
+  \syntax{List \ $t$} =& \mathit{List} \ \syntax{$t$})\\
+  \syntax{"(" $t_1$ , $t_2$ ")"} =& \syntax{$t_1$} \times \syntax{$t_2$}\\
+  \syntax{"\{\}"} =& \mathit{\{\}}\\
+  \syntax{"\{" $v_1$ ":" $t_1$ "," \dots "," $v_1$ ":" $t_n$ "\}"} =& \{\syntax{$v_1$}:\syntax{$t_1$} , \dots , \syntax{$v_n$}:\syntax{$t_n$}\}\\
+  \syntax{$t_1$ "->" $t_2$} =& \syntax{$t_1$} \to \syntax{$t_2$}\\
+  \syntax{$c$ $t_1$ .. $t_n$} =& [\syntax{$c$}]_{a_1\mapsto t_1,\dots,a_n\mapsto t_n}
 \end{aligned}
 $$
 ```
@@ -37,7 +61,7 @@ The interpretation is only partial, as it does not say consider interprating pat
 Before we define the type inference, we first need to define the Context $\Gamma$. This context will then hold the conditions under which the type can be inferred.
 
 ```{definition,name="Context"}
-We define $\Gamma\subseteq \mathcal{V} \times \mathcal{T}$ to be the _context_ of a type inference.
+We define $\Gamma\subseteq \mathcal{V} \times \mathcal{T}$ to be the _variable context_ and $\Delta\subseteq\mathcal{V}\times \mathit{Type}$ the _type context_ of a type inference.
 ```
 
 The first two universial inference rules for any Hindley-Milner type system are the instantiation and the generalization.
@@ -66,7 +90,67 @@ T' \sqsubseteq T\quad
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
 
-#### type inferene for Expressions
+#### type inference for Statements
+
+```{definition,name="type inference for statement"}
+\begin{letIn}
+T:\mathcal{T};\quad
+v:\mf{<lower-var>};\quad
+a:\mathcal{V};\quad
+e:\mf{<exp>};\quad
+s:\mf{<statement>};\quad
+\end{letIn}
+
+\begin{center}
+\begin{xtabular}{c l}
+
+\logicRule
+{(v,\_)\not\in\Gamma\quad
+\Gamma\vdash\syntax{$e$}:T_1\quad
+\Gamma\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}
+}
+{\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2}
+{TConstant}
+
+\logicRule
+{
+(v,\_)\not\in\Gamma\quad
+\Gamma\vdash\syntax{$e$}:T_1\quad
+\Gamma\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}\quad
+\syntax{$t$}:T_2
+}
+{\Gamma\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$}:T_2}
+{TConstant2}
+
+\logicRule
+{}
+{\Gamma\vdash\syntax{"type alias" $c$ $v_1$ \dots $v_n$ "=" $t$ ";" $s$ }}
+{TAlias}
+
+\logicRule
+{}
+{\Gamma\vdash\syntax{"type" $c$ $v_1$ \dots $v_n$ "=" $ls$ ";" $s$}}
+{TCustomType}
+
+\logicRule
+{\Gamma\vdash\syntax{$e$}:T}
+{\Gamma\vdash\syntax{"main" $e$}T}
+{TMain}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e$}:T\quad
+\Gamma\vdash\syntax{"main : " $t$}:T
+}
+{\Gamma\vdash\syntax{"main :" $t$ "; main" $e$}:T}
+{TMain2}
+
+\end{xtabular}
+\end{center}
+```
+
+#### type inference for Expressions
+
 ```{definition,name="type inference for expressions"}
 \begin{letIn}
 n\in\mathbb{N};\quad
@@ -84,8 +168,9 @@ e:\mf{<exp>};\quad
 \forall i\in\mathbb{N}_4^n.e_i:\mf{<exp>};\\
 p:\mf{<pattern>};\quad
 \mathit{le}:\mf{<list.exp>};\quad
-\mathit{lc}:\mf{<list-case>};\quad
-c:\mf{<upper-var>};\\
+\mathit{lc}:\mf{<list-case>};\\
+\mathit{lef}:\mf{<list-exp-field>};\quad
+c:\mf{<upper-var>};\quad
 t:\mf{<type>}.
 \end{letIn}
 \begin{center}
@@ -106,8 +191,8 @@ t:\mf{<type>}.
 {TConstructor}
 
 \logicRule
-{\Gamma\vdash match_\Delta(T_1,\syntax{$p$})\quad
-\Gamma\cup\Delta\vdash\syntax{$e$}:T_2
+{\Gamma\vdash match_\Theta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Theta\vdash\syntax{$e$}:T_2
 }
 {\Gamma\vdash\syntax{"\" $p$ "->" $e$}:T_1\to T_2}
 {TLambda}
@@ -151,8 +236,8 @@ t:\mf{<type>}.
 
 \logicRule
 {\Gamma\vdash\syntax{$e_1$}:T_1\quad
-\Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
-\Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2
+\Gamma\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Theta\vdash\syntax{$e_2$}:T_2
 }
 {\Gamma\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:T_2}
 {TSingleCaseOf}
@@ -160,8 +245,8 @@ t:\mf{<type>}.
 \logicRule
 {\begin{gathered}
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
-\Gamma\vdash\text{match}_\Delta(T_1,\syntax{$p$})\quad
-\Gamma\cup\Delta\vdash\syntax{$e_2$}:T_2\quad\\
+\Gamma\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
+\Gamma\cup\Theta\vdash\syntax{$e_2$}:T_2\quad\\
 \Gamma\vdash\syntax{"case" $e_1$ "of" "[" $\mathit{lc}$ "]"}:T_2
 \end{gathered}
 }
@@ -169,36 +254,61 @@ t:\mf{<type>}.
 {TCaseOf}
 
 \logicRule
-{\syntax{$v$}=a\quad
-(a,_)\not\in\Gamma\quad
+{
+\syntax{$v$}=a\quad
+(a,\_)\not\in\Gamma\quad
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\cup\{(a,T_1)\}\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:T_2}
+{
+\Gamma\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:T_2
+}
 {TLetIn}
 
 \logicRule
-{\syntax{$v$}=a\quad
+{\begin{gathered}
+\syntax{$v$}=a\quad
 (a,\_)\not\in\Gamma\quad
 \syntax{$v$ ":" t}:T_1\\
 \Gamma\vdash\syntax{$e_1$}:T_1\quad
 \Gamma\cup\{(a,T_1)\}\vdash\syntax{$e_2$}:T_2
+\end{gathered}
 }
-{\Gamma\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:T_2}
+{\Gamma\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:T_2
+}
 {TLetIn2}
 
 \logicRule
 {\syntax{$v_1$}=a_1\quad
 \syntax{$v_2$}=a_2\quad
-(a_1,\{a_2:T,..\})\in\Gamma
+(a_1,\{a_2:T,\dots\})\in\Gamma
 }
 {\Gamma\vdash\syntax{$v_1$ "." $v_2$}:T}
 {TGetter}
 
 \logicRule
-{(v,T)\in\Gamma
+{\begin{gathered}
+\syntax{$v_1$}=a_1\quad
+\syntax{$v_2$}=a_2\quad
+\Gamma\vdash\syntax{$e$}:T_2\\
+T_1=\{a_2:T_2,..\}\quad
+(a_1,T_1)\in\Gamma
+\end{gathered}
 }
-{\Gamma\vdash\syntax{"\{" $v$ "|" $\_$:<list-exp-field> "\}"}:T}
+{\Gamma\vdash\syntax{"\{" $v1$ "|" $v2$ "=" $e$ "\}"}:T_1}
+{TSingleSetter}
+
+\logicRule
+{\begin{gathered}
+\syntax{$v_1$}=a_1\quad
+\syntax{$v_2$}=a_2\quad
+\Gamma\vdash\syntax{$e$}:T_2\\
+T_1=\{a_2:T_2,..\}\quad
+(a_1,T_1)\in\Gamma\quad
+\Gamma\vdash\syntax{$\mathit{lef}$}:T_1
+\end{gathered}
+}
+{\Gamma\vdash\syntax{"\{" $v$ "|" $v2$ "=" $e$ "," $\mathit{lef}$:<list-exp-field> "\}"}:T_1}
 {TSetter}
 
 \logicRule
@@ -207,7 +317,8 @@ t:\mf{<type>}.
 {TEmptyRecord}
 
 \logicRule
-{\Gamma\vdash\forall i \in\mathbb{N}_1^n.\syntax{$v_i$}:T_i
+{\forall i \in\mathbb{N}_1^n.\syntax{$v_i$}=a_i
+\Gamma\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:T_i
 }
 {\Gamma\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," \dots "," $v_n$ "=" $e_n$ "\}"}:\{v_1:T_1,\dots,v_n:T_n\}
 }
@@ -251,7 +362,7 @@ t:\mf{<type>}.
 \logicRule
 {}
 {\vdash\syntax{"not"}:\mathit{Bool}\to \mathit{Bool}}
-{Not}
+{TNot}
 
 \logicRule
 {}
@@ -290,7 +401,7 @@ t:\mf{<type>}.
 
 \logicRule
 {}
-{\vdash\syntax{"foldl"}:\forall a.\forall b.(a\to b)\to b\to\mathit{List}\ a\to b}
+{\vdash\syntax{"foldl"}:\forall a.\forall b.(a\to b\to b)\to b\to\mathit{List}\ a\to b}
 {TFoldl}
 
 \end{xtabular}
@@ -298,22 +409,64 @@ t:\mf{<type>}.
 ```
 
 \begin{description}
-\item[TVariable,TConstructor] First interprete the syntacticall variable and find the type in the context.
-\item[TLambda] Elm allows the parameters of a function to be pattern matched. Therefore we first need to find a patching type $T_1$ and can then infer the type of $e$ by including the additional bindings $\Delta$ to the context.
+\item[TVariable,TConstructor] Interprete the syntactical variable and find the type in the context.
+\item[TLambda] Elm allows the parameters of a function to be pattern matched. Therefore we first need to find a patching type $T_1$ and can then infer the type of $e$ by including the additional bindings $\Theta$ to the context.
 \item[TEmptyList] The empty list is a literal for every list, therefore we can infer the most general of all lists.
 \item[TList] Recursively we check that every element has the same type.
 \item[TInt,TBool] The type of Literals infered without any restrictions.
 \item[TCall] The first expression needs to be a function that the the second type can be passed to.
-\item[TSingleCaseOf,TCaseOf] First match the type of the expression $e_1$ to the pattern, then use the additional bindings $\Delta$ to obtain the type of $e_2$. As all patterns need to have the same type, we can then recursively check the other patterns as well.
-\item[TLetIn,TLetIn2] the variable $a$ may not have a value assined in the conext $\Gamma$. If so, we can infer the type $T_1$ of $e_1$ and add $(a,T_1)$ to the context before we evaluate $e_2$. For $[TLetIn2]$ we already the type is already given as $t$. Note that $t$ can more specific as the type we would usually infer.
+\item[TSingleCaseOf,TCaseOf] First match the type of the expression $e_1$ to the pattern, then use the additional bindings $\Theta$ to obtain the type of $e_2$. As all patterns need to have the same type, we can then recursively check the other patterns as well.
+\item[TLetIn,TLetIn2] The variable $a$ may not have a value assined in the conext $\Gamma$. If so, we can infer the type $T_1$ of $e_1$ and add $(a,T_1)$ to the context before we evaluate $e_2$. For $[TLetIn2]$ we already the type is already given as $t$. Note that $t$ can more specific as the type we would usually infer.
+\item[TGetter] The second variable $a_2$ is a label of the record, that is bound to $a_1$.
+\item[TSingleSetter,TSetter] Setters can not change the type in Elm. But we still need to ensure that the field are also correctly typed.
+\item[TElmptyRecord] The empty record is a type with just a single element.
+\item[TRecord] Each field and its value must be given at the same time. Thats why we can not use a recursive definition.
+\item[TIfElse] The first expression $e_1$ needs to be a boolean and the branches $e_2,e_3$ must have the same type.
+\item[TComposition,TPipe] The pipe applies the first expression to the second. The composition is similar to the pipe, but results in a function.
+\item[TOr,TAnd,TNot,TEqual,TDivide,TMultiply,TMinus,TPlus,TCons,TFoldl] These functions can be seen as lambda function literals.
 \end{description}
 
-#### Patterns
+```{block2, type="myexample",latex.options="_"}
+In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We can now proof the typing of the `reverse` function for $\Gamma = \varnothing$ and $T = \forall a.List a to List \ a$.
+
+\begin{lstlisting}[language=elm]
+reverse : List a -> List a
+reverse =
+  foldl
+    (::)
+    []
+\end{lstlisting}
+
+We will add brackets around $foldl (::)$ to make it more readable. The bracket do not change the type inference or evaluation. Let $T_1 = \mathit{List} \ a$, $T_0 = \mathit{List} \ a \to \mathit{List} \ a$ and $T_2 = a \to \mathit{List} \ a \to \mathit{List} \ a$
+
+\begin{center}
+\small
+\begin{prooftree}
+      \AxiomC{$\top$}
+    \LeftLabel{$(4)$}
+    \UnaryInfC{$\vdash \syntax{"foldl"}:\forall a. T_2\to T_1 \to T_0$}
+      \AxiomC{$\top$}
+    \RightLabel{$(3)$}
+    \UnaryInfC{$\vdash \syntax{"(::)"}:T_2$}
+  \LeftLabel{$(1)$}
+  \BinaryInfC{$\vdash \syntax{"foldl (::)"}:\forall a.T_1 \to T_0$}
+    \AxiomC{$\top$}
+  \RightLabel{$(2)$}
+  \UnaryInfC{$\vdash \syntax{"[]"}:\forall a.T_1$}
+\RightLabel{$(1)$}
+\BinaryInfC {$\vdash  \syntax{"(foldl (::)) []"}:\forall a.T_0$}
+\end{prooftree}
+\end{center}
+
+$(1)\mathit{[TCall]},(2)\mathit{[TEmptyList]},(3)\mathit{[TCons]},(4)\mathit{[TFoldl]}$
+```
+
+#### type inference for Patterns
 
 For pattern matching we do not only want to infer a type that matches the pattern, but also find all substitutions for doing so. We will see that patterns also allow for variable declarations by using the `as` keyword.
 
 ```{definition,name="Type inference for pattern matching"}
-\begin{letIn}\Delta\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
+\begin{letIn}\Theta\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
 p:\mf{<pattern>};\quad
 v:\mf{<lower-var>};\quad
 T:\mathcal{T};\\
@@ -321,14 +474,14 @@ T:\mathcal{T};\\
 \forall i\in\mathbb{N}_3^n.p_i:\mf{<pattern>};\\
 \forall i\in\mathbb{N}_0^n.v_i:\mf{<lower-var>};\quad
 \forall i\in\mathbb{N}_0^n.T_i:\mathcal{T};\\
-\forall i\in\mathbb{N}_0^3.\Delta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
-\forall i\in\mathbb{N}_4^n.\Delta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\\
+\forall i\in\mathbb{N}_0^3.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
+\forall i\in\mathbb{N}_4^n.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\\
 lpl:\mf{<list-pattern-list>}
 \end{letIn}
 
-we say a pattern $p$ matches a type $T$ for the context $\Gamma$ using the bindings $\Delta$ if $\Gamma\vdash \text{match}_\Delta(T,p)$.
+we say a pattern $p$ matches a type $T$ for the context $\Gamma$ using the bindings $\Theta$ if $\Gamma\vdash \text{match}_\Theta(T,p)$.
 
-$\Delta$ contains the minimal substitutions and variable bindings needed to match the type to the pattern.
+$\Theta$ contains the minimal substitutions and variable bindings needed to match the type to the pattern.
 
 Instantiation and Generalization applies to pattern matching as well.
 
@@ -337,19 +490,19 @@ Instantiation and Generalization applies to pattern matching as well.
 \logicRule
 {
  T' \sqsubseteq T\quad
- \Gamma\vdash \text{match}_\Delta(T',\syntax{e})
+ \Gamma\vdash \text{match}_\Theta(T',\syntax{e})
 }
 {
-  \Gamma\vdash \text{match}_\Delta(T,\syntax{e})
+  \Gamma\vdash \text{match}_\Theta(T,\syntax{e})
 }
 {PInstantiation}
 
 \logicRule
 {(a,\_)\not\in\Gamma\quad
-\Gamma\vdash \text{match}_\Delta(T,\syntax{e})
+\Gamma\vdash \text{match}_\Theta(T,\syntax{e})
 }
 {
-  \Gamma\vdash \text{match}_\Delta(\forall a.T,\syntax{e})
+  \Gamma\vdash \text{match}_\Theta(\forall a.T,\syntax{e})
 }
 {PGeneralization}
 \end{tabular}
@@ -359,9 +512,14 @@ The type inference rules for pattern matching are as follows
 
 \begin{center}
 \begin{xtabular}{c l}
-\logicRule{}{\vdash \text{match}_\varnothing(\mathit{Bool},$\_$:\syntax{<bool>})}{PBool}
+\logicRule
+{}
+{\vdash \text{match}_\varnothing(\mathit{Bool},$\_$:\syntax{<bool>})}
+{PBool}
 
-\logicRule{}{\vdash \text{match}_\varnothing(\mathit{Int},$\_$:\syntax{<int>})}{PInt}
+\logicRule{}
+{\vdash \text{match}_\varnothing(\mathit{Int},$\_$:\syntax{<int>})}
+{PInt}
 
 \logicRule{}
 {\vdash \text{match}_\varnothing(\forall a.\mathit{List} \ a,\syntax{"[]"})}
@@ -369,63 +527,69 @@ The type inference rules for pattern matching are as follows
 
 \logicRule
 {\begin{gathered}
-\Gamma\vdash \text{match}_{\Delta_1}(T_1,\syntax{$p$})\quad
-\Gamma\vdash \text{match}_{\Delta_2}(T_2,\syntax{"[" $lpl$ "]"})\quad\\
-\Delta_1\cap\Delta_2=\varnothing\quad
-\Delta_1\cup\Delta_2=\Delta_3\quad
+\Gamma\vdash \text{match}_{\Theta_1}(T_1,\syntax{$p$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(T_2,\syntax{"[" $lpl$ "]"})\\
+\Theta_1\cap\Theta_2=\varnothing\quad
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\\
+\Theta_1\cup\Theta_2=\Theta_3\quad
 T_2 = \textit{List} \ T_1
 \end{gathered}
 }
-{\Gamma\vdash \text{match}_{\Delta_3}(T_2,\syntax{"[" $p$ "," $lpl$ "]"}
+{\Gamma\vdash \text{match}_{\Theta_3}(T_2,\syntax{"[" $p$ "," $lpl$ "]"}
 }
 {PList}
 
 \logicRule
 {\begin{gathered}
-\Gamma\vdash \text{match}_{\Delta_1}(T_1,\syntax{$p_1$})\quad
-\Gamma\vdash \text{match}_{\Delta_2}(T_2,\syntax{$p_2$})\quad\\
-\Delta_1\cap\Delta_2=\varnothing\quad
-\Delta_1\cup\Delta_2=\Delta_3
+\Gamma\vdash \text{match}_{\Theta_1}(T_1,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(T_2,\syntax{$p_2$})\quad\\
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\quad
+\Theta_1\cup\Theta_2=\Theta_3
 \end{gathered}
 }
 {
-\Gamma\vdash \text{match}_{\Delta_3}(T_1 \times T_2,\syntax{"(" $p_1$ "," $p_2$ ")"})
+\Gamma\vdash \text{match}_{\Theta_3}(T_1 \times T_2,\syntax{"(" $p_1$ "," $p_2$ ")"})
 }
 {PTuple}
 
 \logicRule
-{(v,\_)\not\in\Gamma\quad
-\Delta = \{(v,T)\}
+{\syntax{$v$}=a\quad
+(a,\_)\not\in\Gamma\quad
+\Theta = \{(a,T)\}
 }
-{\Gamma\vdash \text{match}_{\Delta}(T,\syntax{$v$})
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{$v$})
 }
 {PVariable}
 
 \logicRule
-{(v,T)\in\Gamma}
-{\Gamma\vdash \text{match}_\varnothing(T,\syntax{$v$})}
-{PSingleAppication}
+{
+\syntax{$v$}=a\quad
+(v,T)\in\Gamma\quad
+}
+{
+\Gamma\vdash\text{match}_\varnothing(T,\syntax{$v$})
+}
+{PSingleApplication}
 
 \logicRule
 {
 \begin{gathered}
-\Gamma\vdash \forall i\in\mathbb{N}_1^n.\text{match}_{\Delta_i}(\syntax{$p_i$}:T_i)\quad\\
+\Gamma\vdash \forall i\in\mathbb{N}_1^n.\text{match}_{\Theta_i}(\syntax{$p_i$}:T_i)\quad\\
 (p_0,T_1\to \dots \to T_n\to T_0)\in\Gamma\quad\\
-\forall i\in\mathbb{N}_1^n.\forall j\in\mathbb{N}_1^n.i\neq j \Rightarrow\Delta_i\cap \Delta_j = \varnothing\quad
-\Delta_0 = \bigcup_{i\in\mathbb{N}_1^n}\Delta_i
+\forall i\in\mathbb{N}_1^n.\forall j\in\mathbb{N}_1^n.i\neq j \Rightarrow\forall (a_1,\_)\in \Theta_i,(a_2,\_)\in\Theta_j.a_1 \neq a_2\\
+\Theta_0 = \bigcup_{i\in\mathbb{N}_1^n}\Theta_i
 \end{gathered} 
 }
 {
-\Gamma\vdash \text{match}_{\Delta_0}(T_0,\syntax{$p_0$ $p_1$ .. $p_n$})
+\Gamma\vdash \text{match}_{\Theta_0}(T_0,\syntax{$p_0$ $p_1$ .. $p_n$})
 }
 {PApplication}
-
 \logicRule
 {(v,\_)\not\in\Gamma\quad
-(v,T)\in\Delta\quad
-\Gamma\vdash \text{match}_{\Delta\backslash\{(v,T)\}}(T,\syntax{$p$})\quad
+(v,T)\in\Theta\quad
+\Gamma\vdash \text{match}_{\Theta\backslash\{(v,T)\}}(T,\syntax{$p$})
 }
-{\Gamma\vdash \text{match}_\Delta(T,\syntax{$p$ "as" $v$})}
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{$p$ "as" $v$})}
 {PAs}
 
 \logicRule
@@ -439,25 +603,25 @@ T_2 = \textit{List} \ T_1
 k:\mathbb{N}_1^m\to\mathbb{N}_1^n\quad
 k \text{ is injective}\quad\quad
 \forall i\in\mathcal{N}_1^n.(v_{k(i)},\_)\not\in\Gamma\\
-\Gamma = \bigcup_{i\in\mathbb{N}_1^n} \{(v_{k(i)},T_{k(i))}\}\quad
+\Theta = \bigcup_{i\in\mathbb{N}_1^n} \{(v_{k(i)},T_{k(i))}\}\quad
 T = \{v_1:T_1,\dots,v_n:T_n\}
 \end{gathered}
 }
-{\Gamma\vdash \text{match}_\Delta(T,\syntax{"\{" $v_{k_1}$ "," $\dots$ "," $v_{k_m}$ "\}"})
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{"\{" $v_{k_1}$ "," $\dots$ "," $v_{k_m}$ "\}"})
 }
 {PRecord}
 
 \logicRule
 {
 \begin{gathered}
-\Gamma\vdash \text{match}_{\Delta_1}(T,\syntax{$p_1$})\quad
-\Gamma\vdash \text{match}_{\Delta_2}(List \ T,\syntax{$p_2$})\quad\\
-\Delta_1\cap\Delta_2=\varnothing\quad
-\Delta_1\cup\Delta_2=\Delta_3
+\Gamma\vdash \text{match}_{\Theta_1}(T,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(List \ T,\syntax{$p_2$})\quad\\
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\quad
+\Theta_1\cup\Theta_2=\Theta_3
 \end{gathered}
 }
 {
-\Gamma\vdash \text{match}_{\Delta_3}(\textit{List} \ T,\syntax{$p_1$ "::" $p_2$})
+\Gamma\vdash \text{match}_{\Theta_3}(\textit{List} \ T,\syntax{$p_1$ "::" $p_2$})
 }
 {PHeadAndTail}
 
@@ -466,12 +630,27 @@ T = \{v_1:T_1,\dots,v_n:T_n\}
 {\Gamma\vdash \text{match}_\varnothing(\forall a. a,\syntax{"\_"})}
 {PWildcard}
 
+
+
 \end{xtabular}
 \end{center}
 ```
 
+\begin{description}
+\item[PBool,PInt,PEmptyList] The type of literals can be infered without any restrictions.
+\item[PList,PTuple] Recursively we need to ensure that every element has the same type. Additionally every binding needs to be unique.
+\item[PVariable] If the variable is not yet bound in context, will can be added to $\Theta$.
+\item[PSingleApplication] A single application ist just a Terminal. Its type is defined in the context $\Gamma$.
+\item[PApplication] For a generell application the constructor can again be found in the context.Again we need to ensure that the elements of all $\Theta_i$ sets are unique in the first element.
+\item[PAs] We bind the variable in $\Theta$ and then ensure that it can not be bound again. Note that binding are done bottom up, so $\Theta$ contains all bindings that occure in $p$.
+\item[PEmptyRecord] The empty record ist just a literal.
+\item[PRecord] Here the variable names and the field names are the same. For every field that we name, the type will be bound to the variable that has the same name. This requires that all the field names are not yet bound in $\Gamma$.
+\item[PHeadAndTail] This is the same as $\mathit{[PList]}$ with the difference that now we intentially look at one elment at a time, where as PList has already given the length of the list.
+\item[PWildcard] Anything is allowed, thus we infere the smalles type: $\forall a.a$.
+\end{description}
+
 ```{block2, type="myexample",latex.options="_"}
-Looking back at our list reversing example, we can check the type of the following pattern matching code.
+In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. Now we can check the type of the following pattern matching code.
 
 \begin{lstlisting}[language=elm]
   case [1,2,3] |> reverse of
@@ -496,23 +675,23 @@ We start by proving $\vdash \text{match}_\varnothing(\mathit{List} \ \mathit{Int
 \end{prooftree}
 \end{center}
 
-Next we prove $\vdash \text{match}_\Delta(\textit{List} \ \textit{Int},\syntax{\(a\):<lower-var> " :: \_"})$ for $\Delta=\{(a,\textit{Int})\}$.
+Next we prove $\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{\(a\):<lower-var> " :: \_"})$ for $\Theta=\{(a,\textit{Int})\}$.
 
 \begin{center}
 \begin{prooftree}
     \AxiomC{$\top$}
     \UnaryInfC{$(a,\_)\not\in\varnothing$}
     \LeftLabel{$(4)$}
-  \UnaryInfC{$\vdash \text{match}_\Delta(\textit{Int},\syntax{a})$}
+  \UnaryInfC{$\vdash \text{match}_\Theta(\textit{Int},\syntax{a})$}
     \AxiomC{$\top$}
-  \UnaryInfC{$\Delta\cap\varnothing=\varnothing$}
+  \UnaryInfC{$\Theta\cap\varnothing=\varnothing$}
       \AxiomC{$\top$}
     \RightLabel{$(3)$}
     \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
   \RightLabel{$(2)$}
   \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\textit{List} \ \textit{Int},\syntax{"\_"})$}
 \RightLabel{$(1)$}
-\TrinaryInfC{$\vdash \text{match}_\Delta(\textit{List} \ \textit{Int},\syntax{a:<lower-var> " :: \_"})$}
+\TrinaryInfC{$\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{a:<lower-var> " :: \_"})$}
 \end{prooftree}
 \end{center}
 $(1) \mathit{[PHeadAndTail]}, (2) \mathit{[PInstantiation]}, (3) \mathit{[PWildcard]},(4) \mathit{[PVariable]}$

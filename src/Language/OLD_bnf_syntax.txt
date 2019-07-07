@@ -99,7 +99,8 @@
 
 
 
-<list-sort>         ::= <upper-letter> 
+<list-sort>         ::= <upper-var> <list-type> 
+                      | <upper-var> <list-type> "|" <list-sort>
 
 <list-statement>    ::= "" | <statement> ";" | <statement> ";" <list-statement>
 

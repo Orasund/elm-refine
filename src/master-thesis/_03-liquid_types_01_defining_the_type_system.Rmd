@@ -79,7 +79,7 @@ We define
   * $\mathcal{A}$ as the (meta-level) type of all type applications.
   * _Mono types_ $\mathcal{M}::= \mathcal{V} \ | \mathcal{A}$.
   * _Poly types_ $\mathcal{P}$ as the (meta-level) type of all quantified types.
-  * _Type of types_ $\mathcal{T}::= \mathcal{V} \ | \mathcal{A} \ | \ \mathcal{P}$.
+  * $\mathcal{T}::= \mathcal{V} \ | \mathcal{A} \ | \ \mathcal{P}$ as the (meta-level) sum-type of all typs.
 
 &nbsp;
 ```

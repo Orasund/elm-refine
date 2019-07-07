@@ -133,7 +133,12 @@ Additionally Elm also allows global constants, type aliases and custom types.
   \mf{<lower-var>}:\mathcal{V}.
 \end{letIn}
 We define the following types:
-$$\mf{<list-sort>} ::= \mf{<upper-letter>}$$
+$$
+\begin{aligned}
+\mf{<list-sort>} ::=& \mf{<upper-var> <list-type>} \\
+                   |& \ \mf{<upper-var> <list-type> | <list-sort>}
+\end{aligned}
+$$
 $$
 \begin{aligned}
   \mf{<list-statement>} \ ::=& \ \mf{""} \ | \ \mf{<statement> ";"} \\
@@ -146,7 +151,7 @@ $$
                      |& \ \mf{"type" "alias" <upper-var> <list-lower-var>}\\
                       &\quad\mf{"=" <type>}\\
                      |& \ \mf{"type" <upper-var> <list-lower-var>}\\
-                      &\quad\mf{"=" <upper-var> <list-type>}\\
+                      &\quad\mf{"=" <upper-var> <list-sort>}\\
 \end{aligned}
 $$
 $$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$
@@ -154,6 +159,7 @@ $$\mf{<program>} \ ::= \ \mf{<list-statement> <maybe-main-sign> "main" "=" <exp>
 ```
 
 ```{block2, type="myexample",latex.options="_"}
+\label{ex:reverse_list}
 Using this syntax we can now write a function that reverses a list.
 
 \begin{lstlisting}[language=elm]
