@@ -1,28 +1,35 @@
 ### Syntax
 
-Elm differenciates between variables depending on the capitalisation of the first letter. For the formal langauge we define `<upper-letter>`$:\mathcal{V}$ for variables with the first letter capitaliced and `<lower-var>`$:\mathcal{V}$ for variables without.
+Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-letter>`$\in\mathcal{V}$ for variables with the first letter capitalized and `<lower-var>`$\in\mathcal{V}$ for variables without.
 
-Syntactically we can build our types from booleans, intergers, lists, tuples, records, functions, custom types and type variables.
+Syntactically we can build our types from booleans, integers, lists, tuples, records, functions, custom types and type variables.
+
+We will define our syntax in a Backus-Naur-Form [@backus-naur-form].
 
 ```{definition,name="Type Signiture Syntax"}
 \begin{letIn}
-  \mf{<upper-letter>}:\mathcal{V};\quad
-  \mf{<lower-var>}:\mathcal{V}.
+  \mf{<upper-letter>}\in\mathcal{V};\quad
+  \mf{<lower-var>}\in\mathcal{V}.
 \end{letIn}
 We define the following types:
 $$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
-$$\mf{<type-fields>} \ ::= \ \mf{""} \ | \ \mf{<lower-var> ":" <type>} \ | \ \mf{<lower-var> ":" <type> "," <list-type-field>}$$
-$$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type> <type>} \ \mf{<list-type>}$$
+$$
+\begin{aligned}
+\mf{<list-type-fields>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var> ":" <type>} \\
+                       |& \mf{<lower-var> ":" <type> "," <list-type-fields>}
+\end{aligned}
+$$
+$$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type> \ | \ <type>} \ \mf{<list-type>}$$
 $$
 \begin{aligned}
 \mf{<type>} ::=& \mf{"Bool"}\\
-               &| \mf{"Int"}\\
-               &| \mf{"List" <type>}\\
-               &| \mf{"(" <type> "," <type> ")"}\\
-               &| \mf{"{" <type-fields> "}"}\\
-               &| \mf{<type> "->" <type>}\\
-               &| \mf{<upper-var> <list-type>}\\
-               &| \mf{<lower-var>}\\
+              |& \mf{"Int"}\\
+              |& \mf{"List" <type>}\\
+              |& \mf{"(" <type> "," <type> ")"}\\
+              |& \mf{"{" <list-type-fields> "}"}\\
+              |& \mf{<type> "->" <type>}\\
+              |& \mf{<upper-var> <list-type>}\\
+              |& \mf{<lower-var>}\\
 \end{aligned}
 $$
 ```
@@ -31,8 +38,8 @@ For matching expressions we allow various pattern.
 
 ```{definition,name="Pattern Syntax"}
 \begin{letIn}
-  \mf{<upper-letter>}:\mathcal{V};\quad
-  \mf{<lower-var>}:\mathcal{V}.
+  \mf{<upper-letter>}\in\mathcal{V};\quad
+  \mf{<lower-var>}\in\mathcal{V}.
 \end{letIn}
 We define the following types:
 $$
@@ -41,11 +48,11 @@ $$
                              |& \ \mf{<pattern> "," <list-pattern-list>}
 \end{aligned}
 $$
-$$\mf{<list-pattern-sort>} \ ::= \ \mf{""} \ | \ \mf{<pattern>} \ | \ \mf{<pattern> <list-pattern-list>}$$
+$$\mf{<list-pattern-sort>} \ ::= \ \mf{""} \ | \ \mf{<pattern>} \ | \ \mf{<pattern> <list-pattern-sort>}$$
 $$
 \begin{aligned}
 \mf{<list-pattern-vars>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var>} \\
-                             |& \ \mf{<pattern> "," <list-pattern-vars>}\\
+                             |& \ \mf{<lower-var> "," <list-pattern-vars>}\\
 \end{aligned}
 $$
 $$
@@ -64,10 +71,10 @@ $$
 $$
 ```
 
-Because Elm is a pure functional programming language, a programm contains a single expression.
+Because Elm is a pure functional programming language, a program contains just a single expression.
 
 \begin{figure}[htbp]
-%\begin{mdframed}
+\begin{mdframed}
 \begin{center}
 \begin{align*}
 \mf{<exp>} \ ::=& \ \mf{"foldl"}\\
@@ -94,15 +101,15 @@ Because Elm is a pure functional programming language, a programm contains a sin
                |& \ \mf{<lower-var>}
 \end{align*}
 \end{center}
-%\end{mdframed}
+\end{mdframed}
 \caption{Syntax for Expressions}
 \label{fig:exp-syntax}
 \end{figure}
 
 ```{definition,name="Expression Syntax"}
 \begin{letIn}
-  \mf{<upper-letter>}:\mathcal{V};\quad
-  \mf{<lower-var>}:\mathcal{V}.
+  \mf{<upper-letter>}\in\mathcal{V};\quad
+  \mf{<lower-var>}\in\mathcal{V}.
 \end{letIn}
 We define the following types:
 $$
@@ -125,12 +132,12 @@ $$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp>} \ | \ \mf{<exp> "," <list-exp>}$$
 The definition of `<exp>` can be found in figure \ref{fig:exp-syntax}.
 ```
 
-Additionally Elm also allows global constants, type aliases and custom types.
+Additionally, Elm also allows global constants, type aliases and custom types.
 
 ```{definition,name="Statement Syntax"}
 \begin{letIn}
-  \mf{<upper-letter>}:\mathcal{V};\quad
-  \mf{<lower-var>}:\mathcal{V}.
+  \mf{<upper-letter>}\in\mathcal{V};\quad
+  \mf{<lower-var>}\in\mathcal{V}.
 \end{letIn}
 We define the following types:
 $$
@@ -179,4 +186,7 @@ main =
       -1
   ]
 \end{lstlisting}
+
+`foldl` iterates over the list from left to right.
+It takes the function `(::)`, that appends an element to a list, and the empty list as the starting list. The `main` function reverses the list and returns the first element: $3$. Elm requires you also provide return values for other cases that may occur, like the empty list. In that case we just return $-1$. This will never happened, as long as the reverse function is correctly implemented.
 ```

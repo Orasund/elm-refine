@@ -24,10 +24,14 @@ $$
                 |& Variable \ \mathcal{V}
 \end{aligned}
 $$
+  
+$$
+
+$$
 ```
 
 To reason about the syntax we need a interpretation of the most basic elements.
-```{definition,name="partial Interpretation"}
+```{definition,name="Semantics"}
 \begin{letIn}
 n\in\mathbb{N};\quad
 t:mf{<type>};\quad
@@ -39,7 +43,7 @@ c:\mf{<upper-var>};\quad
 \syntax{.}:\mf{<upper-var>}\to\mathcal{V};\quad
 \syntax{.}:\mf{<type>}\to\mathcal{T}.
 \end{letIn}
-We call $I$ a partial interpretation iff
+We call $I$ a semantic iff
 
 $$
 \begin{aligned}
