@@ -1,0 +1,255 @@
+\setcounter{section}{2}
+
+# Liquid Types
+
+## Defining the Type System
+
+First, we define some notations:
+
+* $\mathbb{N}$ are the natural numbers starting from $1$.
+* $\mathbb{N}_0$ are the natural numbers starting from $0$.
+* $\mathbb{N}_a^b:=\{i\in \mathbb{N}_0 | a \leq i \land i \leq b\}$ are the natural numbers between $a$ and $b$.
+* We'll use "$.$" to separate a quantifier from a statement: $\forall a . b$ and $\exists a . b$.
+* Functions will be written as $a_1 \to \dots \to a_n \to b$ instead of $a_1 \times \dots \times a_n \to b$.
+
+For this thesis we will use a Hindley-Milner type system [@Principal_Type-Schemes_for_Functional_Programs].
+
+```{definition,name="Types"}
+We say
+$$
+\begin{aligned}
+T \text{ is a }\mathit{type} :\Leftrightarrow 
+       & T \text{ is a mono type}\\
+  \lor & T \text{ is a poly type}
+\end{aligned}
+$$
+We write $v:T$ to declare that $v$ has the type $T$.
+```
+
+```{definition,name="Mono types, Poly types"}
+\begin{letIn}
+n \in \mathbb{N}.\quad
+\end{letIn}
+We say
+
+$$
+\begin{aligned}
+  T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow 
+      & T \text{ is a symbol}\\
+  \lor& T ::= C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}\\
+  \lor& T ::= \{l_1:T_1,..,l_n:T_n\}\\
+  \lor& T ::= T_1 \rightarrow T_2\\
+  T \text{is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow & T ::= \forall a.T' 
+\end{aligned}
+$$
+
+where $T_1, T_2, T_i, T_{i,j}$ are a mono types and $l_i,C_i$ are symbols for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_0^{k_i}$; $T'$ is a type and $a$ is a symbol in $T'$.
+
+&nbsp;
+```
+
+```{definition,name="Type variable"}
+$T$ is a _type variable_ $:\Leftrightarrow T$ is a symbol.
+```
+
+```{block2, type="myexample",latex.options="_"}
+The symbol `string` is a type variable. It can be though of as a type, whose implementation is unknown. For real programming languages this is not allowed.
+```
+
+```{definition,name="Type application, Sort, Value, Constructor"}
+\begin{letIn}
+n\in\mathbb{N},\quad
+k_j\in\mathbb{N}\quad
+T_{i,j}\text{ be a mono type}\quad
+C_i\text{ be a symbol}\\
+\text{and }t_j: T_{i,j}\text{ for all } j\in\mathbb{N}_1^n \text{ and } i\in\mathbb{N}_1^n.
+\end{letIn}
+
+We call $T ::= C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}$ a _type application_.
+
+For a give type application we call
+
+* $C_i \ T_{i,1} \dots T_{i,k_1}$ a _sort_ of $T$,
+* $C_i \ t_0 \dots t_{k_i}$ a _value_ of $T$,
+* $C_i$ a _terminal_ of $T$,
+* The function
+    $$
+      \begin{aligned}
+      C_i&: T_{i,1} \to\dots \to T_{i,k_1} \to T\\
+      C_i&(t_1,\dots,t_n) := C_i \ t_1 \dots \ t_n
+      \end{aligned}
+    $$
+    a _constructor_ of $T$.
+
+Note: The vertical line "|" can be read as "or". It's not a predicate but rather separates the sorts from each other.
+```
+
+```{block2, type="myexample",latex.options="_"}
+\label{ex:bool_list}
+$\mathit{Bool} ::= \mathit{True} \ | \ \mathit{False}$ is a type application.
+```
+
+```{block2, type="myexample",latex.options="_"}
+\label{ex:int}
+The natural numbers and the integers can be defined as type applications using the peano axioms&nbsp;[@peano]:
+
+* $1$ is a natural number.
+* Every natural number has a successor.
+
+These axioms can be used for the definition of the type application.
+
+$$\mathit{Nat} ::= 1 \ | \ \mathit{Succ} \ Nat$$
+
+For integers, we can use the property that they contain $0$ as well as all positive and negative numbers.
+  
+$$\mathit{Int} ::= 0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}$$
+```
+
+```{definition,name="Product type"}
+\begin{letIn}
+n \in \mathbb{N},\quad
+T_i\text{ be a type}\text{ and } l_i \text{ be a unique symbol for all } i\in\mathbb{N}_1^n.
+\end{letIn}
+
+We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_.
+
+* We call $l_i$ the _labels_ of the product type for all $i\in\mathbb{N}_1^n$.
+* The values of a product type have the form $\{l_1=t_1,\dots,l_n=t_n\}$ where $t_i:T_i$ for all ${i\in\mathbb{N}_1^n}$.
+* The types $T_i$ are unordered: $\{a:T_1,b:T_2\} = \{b:T_2,a:T_1\}$.
+
+For ordered product types we write
+
+$T_1 \times \dots \times T_n := \{1:T_1,\dots,n:T_n\}.$
+
+Values of a ordered product type have the form $(t_1,\dots,t_n)$, where $t_i:T_i$ for all $i\in\mathbb{N}_1^n$.
+```
+
+We most general example of a product type is a record. Tuples can be represented as ordered product types.
+
+```{definition,name="Functions"}
+\begin{letIn}
+T_1\text{ and }T_2\text{ be types}.
+\end{letIn}
+We call $T_1 \rightarrow T_2$ a _function_. A function type acts exactly the same as a function over sets.
+```
+
+```{block2, type="myexample",latex.options="_"}
+\begin{letIn}
+T_1, T_2, T_3\text{ be types}.
+\end{letIn}
+Then $(T_1 \times T_2 \rightarrow T_3)$ is isomorphic to $T_1 \rightarrow (T_2 \rightarrow T_3)$. This was originally proven by Gottlob Frege [@Schönfinkel]. This method for translating multivariable functions into single variable functions is nowadays called _currying_ and named after Haskell Curry who further developed the theory [@curry]. 
+```
+
+```{definition,name="Bounded, Free, Set of free variables"}
+\begin{letIn}
+n\in\mathbb{N},\quad
+a \text{ be a type variable},\quad
+T \text{ be a type},\quad
+k\in\mathbb{N}_1^n\to\mathbb{N}_0,\\
+\text{ and } T_{i,k(j)} \text{ be a type for all } i\in\mathbb{N}_1^n\text{ and } j\in\mathbb{N}_1^n.
+\end{letIn}
+
+$a\in\mathcal{V}$ is called _bounded_. Unbounded type variables are called _free_. 
+
+The set of all free type variables of a type is defined as follows:
+
+$$
+  \begin{aligned}
+    \text{free}(a) :=& {a}\\
+    \text{free}(C_1 \ T_{1,1} \dots \ T_{1,k(1)} \ |  \dots | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}) :=& \bigcup_{i\in\mathbb{N}_0^n}\bigcup_{j\in\mathbb{N}_0^{k_i}}\text{free}(T_{i,j})\\
+    \text{free}(\{\_:T_1,\dots,\_:T_n\}) :=&\bigcup_{i\in\mathbb{N}_1^n}\text{free}(T_i)\}\\
+    \text{free}(T_1 \to T_2) :=& \text{free}(T_1)\cup\text{free}(T_2)\\
+    \text{free}(\forall a.T) :=& \text{free}(T)\backslash\{a\}
+  \end{aligned}
+$$
+```
+
+```{block2, type="myexample",latex.options="_"}
+\begin{letIn}T ::= C \ a \text{ be a type application.}\end{letIn}
+We will later see that $a$ may be substituted by the quantified type $\forall a.a$.
+This would lead to $T::= C \ (\forall a.a)$, but as quantifiers always move to the upper most level, it results in $\forall a.T::= C \ a$ instead.
+```
+
+```{block2, type="myexample",latex.options="_"}
+$\forall a.\mathit{List} \ a ::= \mathit{Empty} \ | \ \mathit{Cons} \ a \ (\mathit{List} \ a)$ is a poly type.
+```
+
+```{definition,name="partial function"}
+\begin{letIn}
+T_1,T_2 \text{ be types}.
+\end{letIn}
+We define $f \subseteq T_1\times T_2$ as a partial function from $T_1$ to $T_2$.
+```
+
+When ever we write $f \subseteq T_1\times T_2$, we assume that f is univariant: $$(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_2$$
+
+```{definition,name="Sets of Types"}
+We define
+
+* $\mathcal{V} := \{a| a \text{ is a type variable} \}$ as the set of all type variables, evidently the set of all symbols.
+* $\mathcal{T}::= \{T| T \text{ is a type}\}$ as the set of all types.
+
+&nbsp;
+```
+
+A type can be substituted by replacing a bounded type variable with a mono type:
+
+```{definition,name="Type substitution"}
+\begin{letIn}
+n\in\mathbb{N},\quad
+\Theta\subseteq\mathcal{V}\times\mathcal{T},\quad
+a\in\mathcal{V},\quad
+T,T_1,T_2,S\in\mathcal{T},\quad
+k\in\mathbb{N}_1^n\to\mathbb{N}_0,\\
+\text{ and } T_{i,k(j)}\in\mathcal{T}\text{ for all } i\in\mathbb{N}_1^n\text{ and } j\in\mathbb{N}_1^n.
+\end{letIn}
+We define the substitute of a type $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
+$$
+  \begin{aligned}[]
+    [a]_\Theta :=& \begin{cases} S & \text{if } (a,S) \in \Theta\\ a &\text{else} \end{cases}\\
+    \begin{bmatrix*}[l]
+C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \dots \\
+    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    \end{bmatrix*}_\Theta:=&
+    \begin{matrix*}[l]
+    C_1 \ [T_{1,1}]_\Theta \dots [T_{1,k_1}]_\Theta \\
+    | \dots \\
+    | \ C_n \ [T_{n,1}]_\Theta \dots [T_{n,k_n}]_\Theta
+    \end{matrix*}\\
+    [\{l_1:T_1,\dots,l_n:T_n\}]_\Theta:=&\{l_1:[T_1]_\Theta,\dots,l_n:[T_n]_\Theta\}\\
+    [T_1\to T_2]_\Theta :=& [T_1]_\Theta\to [T_2]_\Theta\\
+    [\forall a.T]_\Theta :=& \begin{cases} [T]_\Theta & \text{if } \exists (b,\_)\in \Theta\\
+    \forall b. [T]_\Theta & \text{else.}\end{cases}
+  \end{aligned}
+$$
+$\Theta$ is called the set of substitutions.
+```
+
+The type substitution gives raise to a partial order $\sqsubseteq$:
+
+```{block2, type="axiom" ,latex.options="[Type Order]_"}
+\begin{letIn}
+n,m\in\mathbb{N}\text{ with } m\leq n,\quad
+T_1,T_2\in\mathcal{T},\quad
+a_i,b_i\in\mathcal{V},\quad
+S_i\in\mathcal{T},\quad
+\text{for all } i\in\mathbb{N}_0^n\\
+\text{and }\Theta = \bigcup\{(a_i,S_i)\}
+\quad
+\end{letIn}
+We define the partial order $\sqsubseteq$ such that
+$$
+\dfrac
+{T_2=[T_1]_\Theta\quad
+\forall i\in\mathbb{N}_0^m.b_i\not\in \text{free}(\forall a_1 \dots \forall a_n.T)\quad
+m \leq n
+}
+{\forall a_1 \dots \forall a_n.T_1 \sqsubseteq \forall b_1 \dots \forall b_m.T_2}
+$$
+```
+
+The rule can be read as follows:
+
+* First replace all bounded variables with types.
+* Next rebound any new variables (variables that were previously not free).

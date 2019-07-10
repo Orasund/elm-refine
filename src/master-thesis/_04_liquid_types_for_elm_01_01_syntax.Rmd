@@ -1,17 +1,19 @@
 ### Syntax
 
-Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-letter>`$\in\mathcal{V}$ for variables with the first letter capitalized and `<lower-var>`$\in\mathcal{V}$ for variables without.
+Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-var>`$\in\mathcal{T}$ for variables with the first letter capitalized and `<lower-var>`$\in\mathcal{T}$ for variables without.
 
 Syntactically we can build our types from booleans, integers, lists, tuples, records, functions, custom types and type variables.
 
 We will define our syntax in a Backus-Naur-Form [@backus-naur-form].
 
 ```{definition,name="Type Signiture Syntax"}
-\begin{letIn}
-  \mf{<upper-letter>}\in\mathcal{V};\quad
-  \mf{<lower-var>}\in\mathcal{V}.
-\end{letIn}
 We define the following types:
+$$
+  \mf{<upper-var>}\in\mathcal{T}
+$$
+$$
+  \mf{<lower-var>}\in\mathcal{T}
+$$
 $$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
 $$
 \begin{aligned}
@@ -37,10 +39,6 @@ $$
 For matching expressions we allow various pattern.
 
 ```{definition,name="Pattern Syntax"}
-\begin{letIn}
-  \mf{<upper-letter>}\in\mathcal{V};\quad
-  \mf{<lower-var>}\in\mathcal{V}.
-\end{letIn}
 We define the following types:
 $$
 \begin{aligned}
@@ -85,9 +83,9 @@ Because Elm is a pure functional programming language, a program contains just a
                |& \ \mf{<exp> "|>" <exp>}\\
                |& \ \mf{<exp> ">>" <exp>}\\
                |& \ \mf{"if" <exp> "then" <exp> "else" <exp>}\\
-               |& \ \mf{"{" <list-exp-field> "}"}\\
-               |& \ \mf{"{}"}\\
-               |& \ \mf{"{" <lower-var> "|" <list-exp-field> "}"}\\
+               |& \ \mf{"\{" <list-exp-field> "\}"}\\
+               |& \ \mf{"\{\}"}\\
+               |& \ \mf{"\{" <lower-var> "|" <list-exp-field> "\}"}\\
                |& \ \mf{<lower-var> "." <lower-var>}\\
                |& \ \mf{"let" <maybe-signature> <lower-var> "=" <exp> "in" <exp>}\\
                |& \ \mf{"case" <exp> "of" "[" <list-case> "]"}\\
@@ -107,10 +105,6 @@ Because Elm is a pure functional programming language, a program contains just a
 \end{figure}
 
 ```{definition,name="Expression Syntax"}
-\begin{letIn}
-  \mf{<upper-letter>}\in\mathcal{V};\quad
-  \mf{<lower-var>}\in\mathcal{V}.
-\end{letIn}
 We define the following types:
 $$
 \begin{aligned}
@@ -135,10 +129,6 @@ The definition of `<exp>` can be found in figure \ref{fig:exp-syntax}.
 Additionally, Elm also allows global constants, type aliases and custom types.
 
 ```{definition,name="Statement Syntax"}
-\begin{letIn}
-  \mf{<upper-letter>}\in\mathcal{V};\quad
-  \mf{<lower-var>}\in\mathcal{V}.
-\end{letIn}
 We define the following types:
 $$
 \begin{aligned}
