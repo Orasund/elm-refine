@@ -21,7 +21,7 @@
     topline=false,
     bottomline=false,
     rightline=false,
-    linecolor=yellow!10!orange!20,
+    linecolor=green!20,
     linewidth=2pt,
     skipabove=12,
     %needspace=4\baselineskip,
@@ -35,7 +35,7 @@
         %anchor=north east,
         %text width=2.5cm,
         minimum height=4ex,
-        fill=yellow!10!orange!20,
+        fill=green!20,
       ] at (O|-P)%
       {\strut \textbf{Example~\theexample}};
       },
@@ -48,7 +48,7 @@
         %anchor=north east,
         %text width=2.5cm,
         minimum height=4ex,
-        fill=yellow!10!orange!20,
+        fill=green!20,
       ] at (O|-P)%
       {\strut \textbf{Example~\theexample}};
       }}
@@ -71,7 +71,7 @@
         right,
         outer sep=0pt,
         rectangle,
-        fill=green!20
+        fill=yellow!10!orange!20
       ] at (O|-P)
       {\strut \textbf{Axiom~\theaxiom\ifstrempty{#1}{}{:~#1}}
       };
@@ -83,14 +83,14 @@
         right,
         outer sep=0pt,
         rectangle,
-        fill=green!20
+        fill=yellow!10!orange!20
       ] at (O|-P)
       {\strut \textbf{Axiom~\theaxiom\ifstrempty{#1}{}{:~#1}}
       };
     }
   }
   \mdfsetup{
-    innertopmargin=1.2\baselineskip,linecolor=green!20,%
+    innertopmargin=1.2\baselineskip,linecolor=yellow!10!orange!20,%
     linewidth=2pt,topline=true,%
     frametitleaboveskip=\dimexpr-\ht\strutbox\relax
   }

@@ -1,7 +1,3 @@
-\setcounter{section}{2}
-
-# Liquid Types
-
 ## Defining the Type System
 
 First, we define some notations:
@@ -26,43 +22,40 @@ $$
 We write $v:T$ to declare that $v$ has the type $T$.
 ```
 
-```{definition,name="Mono types, Poly types"}
-\begin{letIn}
-n \in \mathbb{N}.\quad
-\end{letIn}
+```{definition,name="Type variable, Mono types, Poly types"}
 We say
 
 $$
 \begin{aligned}
+  T\text{ is a } \mathit{type} \ \mathit{variable}:\Leftrightarrow
+         & T \text{ is a symbol}\\
   T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow 
-      & T \text{ is a symbol}\\
-  \lor& T ::= C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}\\
-  \lor& T ::= \{l_1:T_1,..,l_n:T_n\}\\
-  \lor& T ::= T_1 \rightarrow T_2\\
+         & T \text{ is a type variable}\\
+  \lor \ & T ::= C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}\\
+  \lor \ & T ::= \{l_1:T_1,..,l_n:T_n\}\\
+  \lor \ & T ::= T_1 \rightarrow T_2\\
   T \text{is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow & T ::= \forall a.T' 
 \end{aligned}
 $$
 
-where $T_1, T_2, T_i, T_{i,j}$ are a mono types and $l_i,C_i$ are symbols for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_0^{k_i}$; $T'$ is a type and $a$ is a symbol in $T'$.
+where $T_1, T_2, T_i, T_{i,j}$ are a mono types, $n\in\mathbb{N}$, 
+$k\in\mathbb{N}_1^n\to\mathbb{N}_0$, $l_i,C_i$ are symbols for all $i\in\mathbb{N}_1^n$, $j\in\mathbb{N}_0^{k_i}$, $T'$ is a type and $a$ is a symbol in $T'$.
 
 &nbsp;
 ```
 
-```{definition,name="Type variable"}
-$T$ is a _type variable_ $:\Leftrightarrow T$ is a symbol.
-```
-
 ```{block2, type="myexample",latex.options="_"}
-The symbol `string` is a type variable. It can be though of as a type, whose implementation is unknown. For real programming languages this is not allowed.
+The symbol `string` is a type variable. It can be though of as a type, whose implementation is unknown. For real programming languages, a set of type-variables with fixed interpretations is assumed.
 ```
 
 ```{definition,name="Type application, Sort, Value, Constructor"}
 \begin{letIn}
-n\in\mathbb{N},\quad
-k_j\in\mathbb{N}\quad
-T_{i,j}\text{ be a mono type}\quad
-C_i\text{ be a symbol}\\
-\text{and }t_j: T_{i,j}\text{ for all } j\in\mathbb{N}_1^n \text{ and } i\in\mathbb{N}_1^n.
+$n\in\mathbb{N}$,
+$k_j\in\mathbb{N}$,
+$T_{i,j}$ be a mono type,
+$C_i$ be a symbol,
+$t_j: T_{i,j}$ for all $j\in\mathbb{N}_1^n$ and 
+$i\in\mathbb{N}_1^n.$
 \end{letIn}
 
 We call $T ::= C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}$ a _type application_.
@@ -107,8 +100,9 @@ $$\mathit{Int} ::= 0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mat
 
 ```{definition,name="Product type"}
 \begin{letIn}
-n \in \mathbb{N},\quad
-T_i\text{ be a type}\text{ and } l_i \text{ be a unique symbol for all } i\in\mathbb{N}_1^n.
+$n \in \mathbb{N}$,
+$T_i$ be a type and 
+$l_i$ be a unique symbol for all $i\in\mathbb{N}_1^n$.
 \end{letIn}
 
 We call $T = \{l_1:T_1,..,l_n:T_n\}$ a _product type_.
@@ -128,25 +122,25 @@ We most general example of a product type is a record. Tuples can be represented
 
 ```{definition,name="Functions"}
 \begin{letIn}
-T_1\text{ and }T_2\text{ be types}.
+$T_1$ and $T_2$ be types.
 \end{letIn}
 We call $T_1 \rightarrow T_2$ a _function_. A function type acts exactly the same as a function over sets.
 ```
 
 ```{block2, type="myexample",latex.options="_"}
 \begin{letIn}
-T_1, T_2, T_3\text{ be types}.
+$T_1, T_2 and T_3$ be types.
 \end{letIn}
 Then $(T_1 \times T_2 \rightarrow T_3)$ is isomorphic to $T_1 \rightarrow (T_2 \rightarrow T_3)$. This was originally proven by Gottlob Frege [@Schönfinkel]. This method for translating multivariable functions into single variable functions is nowadays called _currying_ and named after Haskell Curry who further developed the theory [@curry]. 
 ```
 
 ```{definition,name="Bounded, Free, Set of free variables"}
 \begin{letIn}
-n\in\mathbb{N},\quad
-a \text{ be a type variable},\quad
-T \text{ be a type},\quad
-k\in\mathbb{N}_1^n\to\mathbb{N}_0,\\
-\text{ and } T_{i,k(j)} \text{ be a type for all } i\in\mathbb{N}_1^n\text{ and } j\in\mathbb{N}_1^n.
+$n\in\mathbb{N}$,
+$a$ be a type variable,
+$T$ be a type,
+$k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and 
+$T_{i,k(j)}$ be a type for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
 \end{letIn}
 
 $a\in\mathcal{V}$ is called _bounded_. Unbounded type variables are called _free_. 
@@ -165,7 +159,7 @@ $$
 ```
 
 ```{block2, type="myexample",latex.options="_"}
-\begin{letIn}T ::= C \ a \text{ be a type application.}\end{letIn}
+\begin{letIn}$T ::= C \ a$ be a type application.\end{letIn}
 We will later see that $a$ may be substituted by the quantified type $\forall a.a$.
 This would lead to $T::= C \ (\forall a.a)$, but as quantifiers always move to the upper most level, it results in $\forall a.T::= C \ a$ instead.
 ```
@@ -176,7 +170,7 @@ $\forall a.\mathit{List} \ a ::= \mathit{Empty} \ | \ \mathit{Cons} \ a \ (\math
 
 ```{definition,name="partial function"}
 \begin{letIn}
-T_1,T_2 \text{ be types}.
+$T_1, T_2$ be types.
 \end{letIn}
 We define $f \subseteq T_1\times T_2$ as a partial function from $T_1$ to $T_2$.
 ```
@@ -196,12 +190,12 @@ A type can be substituted by replacing a bounded type variable with a mono type:
 
 ```{definition,name="Type substitution"}
 \begin{letIn}
-n\in\mathbb{N},\quad
-\Theta\subseteq\mathcal{V}\times\mathcal{T},\quad
-a\in\mathcal{V},\quad
-T,T_1,T_2,S\in\mathcal{T},\quad
-k\in\mathbb{N}_1^n\to\mathbb{N}_0,\\
-\text{ and } T_{i,k(j)}\in\mathcal{T}\text{ for all } i\in\mathbb{N}_1^n\text{ and } j\in\mathbb{N}_1^n.
+$n\in\mathbb{N}$,
+$\Theta\subseteq\mathcal{V}\times\mathcal{T}$,
+$a\in\mathcal{V}$,
+$T,T_1,T_2,S\in\mathcal{T}$,
+$k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
+$T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
 \end{letIn}
 We define the substitute of a type $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
 $$
@@ -230,13 +224,12 @@ The type substitution gives raise to a partial order $\sqsubseteq$:
 
 ```{block2, type="axiom" ,latex.options="[Type Order]_"}
 \begin{letIn}
-n,m\in\mathbb{N}\text{ with } m\leq n,\quad
-T_1,T_2\in\mathcal{T},\quad
-a_i,b_i\in\mathcal{V},\quad
-S_i\in\mathcal{T},\quad
-\text{for all } i\in\mathbb{N}_0^n\\
-\text{and }\Theta = \bigcup\{(a_i,S_i)\}
-\quad
+$n,m\in\mathbb{N}$ with $m\leq n$,
+$T_1,T_2\in\mathcal{T}$,
+$a_i,b_i\in\mathcal{V}$,
+$S_i\in\mathcal{T}$,
+for all $i\in\mathbb{N}_0^n$ and 
+$\Theta = \bigcup\{(a_i,S_i)\}$.
 \end{letIn}
 We define the partial order $\sqsubseteq$ such that
 $$

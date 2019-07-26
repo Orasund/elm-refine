@@ -14,21 +14,21 @@ $$
 $$
   \mf{<lower-var>}\in\mathcal{T}
 $$
-$$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
+$$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
 $$
 \begin{aligned}
-\mf{<list-type-fields>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var> ":" <type>} \\
+\mf{<list-type-fields>} \ ::=& \ \mf{""} \\
                        |& \mf{<lower-var> ":" <type> "," <list-type-fields>}
 \end{aligned}
 $$
-$$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type> \ | \ <type>} \ \mf{<list-type>}$$
+$$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type>} \ \mf{<list-type>}$$
 $$
 \begin{aligned}
 \mf{<type>} ::=& \mf{"Bool"}\\
               |& \mf{"Int"}\\
               |& \mf{"List" <type>}\\
               |& \mf{"(" <type> "," <type> ")"}\\
-              |& \mf{"{" <list-type-fields> "}"}\\
+              |& \mf{"\{" <list-type-fields> "\}"}\\
               |& \mf{<type> "->" <type>}\\
               |& \mf{<upper-var> <list-type>}\\
               |& \mf{<lower-var>}\\
@@ -42,15 +42,13 @@ For matching expressions we allow various pattern.
 We define the following types:
 $$
 \begin{aligned}
-\mf{<list-pattern-list>} \ ::=& \ \mf{""} \ | \ \mf{<pattern>} \\
-                             |& \ \mf{<pattern> "," <list-pattern-list>}
+\mf{<list-pattern-list>} \ ::=& \ \mf{""} \ | \ \mf{<pattern> "," <list-pattern-list>}
 \end{aligned}
 $$
-$$\mf{<list-pattern-sort>} \ ::= \ \mf{""} \ | \ \mf{<pattern>} \ | \ \mf{<pattern> <list-pattern-sort>}$$
+$$\mf{<list-pattern-sort>} \ ::= \ \mf{""} \ | \ \mf{<pattern> <list-pattern-sort>}$$
 $$
 \begin{aligned}
-\mf{<list-pattern-vars>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var>} \\
-                             |& \ \mf{<lower-var> "," <list-pattern-vars>}\\
+\mf{<list-pattern-vars>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var> "," <list-pattern-vars>}\\
 \end{aligned}
 $$
 $$
@@ -121,7 +119,7 @@ $$
 $$
 $$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
 $$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
-$$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp>} \ | \ \mf{<exp> "," <list-exp>}$$
+$$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
 
 The definition of `<exp>` can be found in figure \ref{fig:exp-syntax}.
 ```
@@ -138,8 +136,7 @@ $$
 $$
 $$
 \begin{aligned}
-  \mf{<list-statement>} \ ::=& \ \mf{""} \ | \ \mf{<statement> ";"} \\
-                            |& \ \mf{<statement> ";" <list-statement>}\\
+  \mf{<list-statement>} \ ::=& \ \mf{""} \ | \ \mf{<statement> ";" <list-statement>}\\
 \end{aligned}
 $$
 $$
