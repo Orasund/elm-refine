@@ -233,7 +233,7 @@ We define
 $\{l_1=t_1,\dots,l_n=t_n\}:=A$ such that $A=\{t_1,...,t_n\}$ and $A.l_i:=t_i$ for all $i\in\mathbb{N}_1^n$.
 Note that values of ordered product types are tuples:
 
-$${1=t_1,\dots,n=t_n} = (t_1,\dots,t_n)$$
+$$\{1=t_1,\dots,n=t_n\} = (t_1,\dots,t_n)$$
 ```
 
 Next we define the values of a type.
