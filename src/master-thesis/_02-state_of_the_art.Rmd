@@ -2,7 +2,7 @@
 
 # State of the art
 
-In 1902, Bertrand Russell wrote Gottlob Frege a letter, pointing out a paradox in Gottlob's _Begriffsschrift_ [@Frege]. Up until this point mathematicians expected that the naive theory of sets is well formed. Russell's paradox gave a contradiction to this assumption:
+In 1902, Bertrand Russell wrote Gottlob Frege a letter, pointing out a paradox in Gottlob's definition of sets in his paper _Begriffsschrift_ [@Frege]. Up until this point mathematicians expected that the naive theory of sets is well formed. Russell's paradox gave a contradiction to this assumption:
 
 Given the set of all sets that do not contain themselfs $R = \{x|x\not \in x\}$, then $R\in R$ and $R\not\in R$.
 
@@ -12,9 +12,20 @@ To fix this problem, Russell added a basic theory of types in the appendix of _p
 
 Russell thought that the main pain point of set theory was that sets could be defined implicitly, (without listing all elements). Type theory is therefore by design constructive. Every element has exactly one type. Once the type of an element is given, it can not change. This is a big difference to sets, where elements can live in any amount of different sets.
 
-In Russells original theory defined a order amongst the predicates. The lowest predicates could only reason about types. Higher predicates could reason only about lower predicates. This made the type of functions not only depend on the types of its arguments but also on the types of predicates contained in the definition of the function. Thus the type of a functions could get very complicated even for simple functions.
+In Russells original _ramified theory of types_ defined a order amongst the predicates. The lowest predicates could only reason about types. Higher predicates could reason only about lower predicates. This made the type of functions not only depend on the types of its arguments but also on the types of predicates contained in the definition of the function. Thus the type of a functions could get very complicated even for simple functions [@modern_perspective_on_type_theory].
 
-In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is general referred as _simple type theory_, tough its still far from simple.
+In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is general referred as _simple type theory_. It does as follows
+
+```{definition,name="sime type theory"}
+\begin{enumerate}
+\item \mf{0} is a type;
+\item If $t_1,\dots,t_n$ are simple types, then also $(t_1,\dots,t_n)$ is a simple type, $n=0$ is allowed: then we obtain the simple type $()$;
+\item All simple types can be constructed using rules 1 and 2.
+\end{enumerate}
+We use $t,u,t_1,...$ as metavariables over simple types [@modern_perspective_on_type_theory].
+```
+
+$()$ stands for the type of the propositions and the type of the individuals [@modern_perspective_on_type_theory].
 
 At that time another method of dealing with Russell's paradox was Ernst Zermelo's axiomatic set theory. That then was further refined by Abraham Fraenkel in 1920 to what is now known as Zermelo-Fraenkels set theory (ZF). Mathematicians would then continue using ZF over type theory, as is was more expressive.
 
