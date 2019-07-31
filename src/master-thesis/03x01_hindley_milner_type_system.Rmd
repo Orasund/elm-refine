@@ -175,7 +175,7 @@ $$\forall x\in T_1,y\in T_2.(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_
 ```{definition,name="Sets of Types"}
 We define
 
-* $\mathcal{V} := \{a| a \text{ is a symobol} \}$ as the set of all type variables(symobls).
+* $\mathcal{V} := \{a| a \text{ is a symbol} \}$ as the set of all type variables(symobls).
 * $\mathcal{T} := \{T| T \text{ is a type}\}$ as the set of all types.
 
 &nbsp;
@@ -250,6 +250,8 @@ The rule can be read as follows:
 
 ### Interpretation of types
 
+Before we interprete a type, we will first introduce a set of labeled elements as a record.
+
 ```{definition,name="Record"}
 \begin{letIn}
 $n$ in $\mathbb{N}$, $l_i$ be a symbol, $t_i$ arbitary for all $i$ in $\mathbb{N}_1^n$.
@@ -258,7 +260,7 @@ We define
 $$
 \begin{aligned}
 \{l_1=t_1,\dots,l_n=t_n\}:&\{l_1,\dots,l_n\}\to\{t_1,\dots,t_n\}\\
-\{l_1=t_1,\dots,l_n=t_n\}(l):=&t\text{ such that } \exists i \in \mathbb{N}_1^n. l = l_i \land t = t_i
+\{l_1=t_1,\dots,l_n=t_n\}(l):=&\ t\text{ such that } \exists i \in \mathbb{N}_1^n. l = l_i \land t = t_i
 \end{aligned}
 $$
 
@@ -269,53 +271,66 @@ $$\forall i\in \mathbb{N}_1^n.\{1=t_1,\dots,n=t_n\}(i) = (t_1,\dots,t_n).i$$
 Thus we will use the notation of tuples for values of a ordered product type.
 ```
 
-```{definition,name="Constructor"}
-For any terminal $C_i$ we also define the function
+```{definition,name="Application Constructor"}
+\begin{letIn}
+$n\in\mathbb{N}_0$.
+\text{ Let }$a_i$ be a symbol for all $i\in\mathbb{N}_1^n$
+$\forall a_1 \dots a_n$. $T$ be a poly type and $T$ be a mono type.
+\end{letIn}
+We call
 $$
-  \begin{aligned}
-  \text{cons}_{C_i}&: T_{i,1} \to\dots \to T_{i,k_1} \to T\\
-  \text{cons}_{C_i}&(t_1,\dots,t_n) := C_i \ t_1 \dots \ t_n
-  \end{aligned}
+\begin{aligned}
+f :& \mathcal{T} \to \dots \to \mathcal{T} \to \mathcal{T}\\
+f(T_1,\dots,T_n) :=& [ \forall a_1 \dots a_n. T]_{(a_1,T_1),\dots,(a_n,T_n)}
+\end{aligned}
 $$
-called a _constructor_ of $T$.
+an _application constructor_.
+
+We define $\mathcal{C}=\{f| f \text{ is a application constructor}\}$ as the set of all application constructors. 
 ```
 
-```{definition,name="Declaration"}
+```{definition,name="Context"}
+$\Gamma : \mathcal{V}\nrightarrow\mathcal{C}$ is a _context_ $:\Leftrightarrow$
 $$
-D \text{ is a } \textit{declaraction} :\Leftrightarrow \mu c_1\dots c_n.  C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}
+\begin{aligned}
+  &\Gamma = \{\}\\
+  \lor& \ \exists a. a \text{ is a type variable}\land \Gamma = \Delta \cup \{(a,T)\} \text{ where } T \text{ is a mono type and } \Delta \text{ is a}\\  
+      &\text{context}.\\
+  \lor& \ \exists T . T \text{is a type application} \land \Gamma = \Delta \cup \{(C,f)\} \text{ where } T = C \ T_1 \dots T_n, T_i \text{ are}\\
+      & \text{mono types for } i\in\mathbb{N}_1^n\text{ and }f\text{ is a application constructor such that } f(T_1,\dots,T_n)\\
+      &\text{ is a mono type}.
+\end{aligned}
 $$
-We define $\mathcal{D} := \{D|D \text{ is a declaraction}\}$.
 
-$$declare : \mathcal{D} \to \text{Construtor Eren}
-$$
 ```
 
 ```{definition,name="Value"}
 \begin{letIn}
 $\mathcal{S}$ the class of all finite sets,
 $n\in\mathbb{N}$,
-$\Theta\subseteq\mathcal{V}\times\mathcal{T}$,
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$,
 $a\in\mathcal{V}$,
 $T,T_1,T_2,S\in\mathcal{T}$,
 $k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
 $T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+Let $\Gamma$ be a context.
 \end{letIn}
+
 We define
 $$
 \begin{aligned}
-\text{value} &: \mathcal{V} \to \mathcal{S}\\
-\text{value}(a) &:= \{a\}\\
-\text{value}\small\begin{pmatrix*}[l]
+\text{value}_\Gamma &: \mathcal{V} \to \mathcal{S}\\
+\text{value}_\Gamma(a) &:= \Gamma(a)\\
+\text{value}_\Gamma(C \ T_1 \ \dots \ T_n) &:= \Gamma(C)(T_1,\dots,T_n)\\
+\text{value}_\Gamma\small\begin{pmatrix*}[l]
 C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
     | \dots \\
     | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
     \end{pmatrix*} &:=\\
-  \{C_i \ t_{i,1}& \dots \ t_{i,k(1)} \ | \ \forall i\in\mathbb{N}_1^n,j\in\mathbb{N}_1^{k(i)}. t_{i,j}\in\text{value}(T_{i,j})\}\\
-\text{value}(\{l_1:T_1,\dots,l_n:T_n\}) &:=\big\{\{l_1=t_1,\dots,l_n=t_n\} \ | \ \forall i\in\mathbb{N}_1^n.t_i \in\text{value}(T_i)\big\}\\
-\text{value}(T_1 \to T_2) &:=\{f \ | \ f:\text{value}(T_1)\to\text{value}(T_2)\}\\
-\text{value}(\forall a.T) &:= \{\forall a. x | x \in \text{value}(T)\}
+  \{C_i \ t_{i,1}& \dots \ t_{i,k(1)} \ | \ \forall i\in\mathbb{N}_1^n,j\in\mathbb{N}_1^{k(i)}. t_{i,j}\in\text{value}_\Gamma(T_{i,j})\}\\
+\text{value}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\}) &:=\big\{\{l_1=t_1,\dots,l_n=t_n\} \ | \ \forall i\in\mathbb{N}_1^n.t_i \in\text{value}_\Gamma(T_i)\big\}\\
+\text{value}_\Gamma(T_1 \to T_2) &:=\{f \ | \ f:\text{value}_\Gamma(T_1)\to\text{value}_\Gamma(T_2)\}\\
+\text{value}_\Gamma(\forall a.T) &:= \lambda b.\text{value}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does not occur in } T.
 \end{aligned}
 $$
 ```
-
-For free type variables the corresponding set of values may change.
