@@ -30,13 +30,14 @@ $$
 T \text{ is a } \mathit{type} \ \mathit{variable}:\Leftrightarrow \
          & T \text{ is a symbol.}\\
 T \text{ is a } \mathit{type} \ \mathit{application}:\Leftrightarrow \
-         & \text{Let }n\in\mathbb{N}, C \text{ be a symbol}. \text{ Let } T_i \text{be mono types for all }\\
+         & \text{Let }n\in\mathbb{N}, C \text{ be a symbol}. \text{ Let } T_i \text{ be mono types for all }\\
          & i\in\mathbb{N}_1^n \text{ in}\\
          & C \ T_1 \dots T_n\\
 T \text{ is a } \mathit{algebraic} \ \mathit{type}:\Leftrightarrow \
          & \text{Let } n\in\mathbb{N},k\in\mathbb{N}_1^n\to\mathbb{N}_0, C \text{ be a symbol}. \text{ Let } T_{i,k(j)} \text{ be a}\\
          & \text{mono type or } C \text{ for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k(i)} \text{ in}\\ 
          & \mu C. C_1 \ T_{1,1} \dots T_{1,k(1)} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k(n)}\\
+         & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k(i)}.T_{i,j}\neq C.\\
 T \text{ is a } \mathit{product} \ \mathit{type}:\Leftrightarrow \
          & \text{Let }n\in\mathbb{N}_0.\text{ Let } l_i \text{ symbols and } T_i \text{ be a mono types for}\\
          & \text{all } i\in\mathbb{N}_1^n \text{ in}\\
@@ -57,12 +58,12 @@ for any symbols $a,b$ and mono types $T_1,T_2$.
 ```
 
 ```{block2, type="myexample",latex.options="_"}
-The symbol `Char` is a type variable. $Sequence Char$ is a type application. They can be thought of as types, whose implementation is unknown. The interpretation of a type variable or a type application depends on its context.
+The symbol `Char` is a type variable. $\mf{Sequence} \ \mf{Char}$ is a type application. They can be thought of as types, whose implementation is unknown. The interpretation of a type variable or a type application depends on its context.
 ```
 
 ```{block2, type="myexample",latex.options="_"}
 \label{ex:bool_list}
-$\mathit{Bool} = \mu _.\mathit{True} \ | \ \mathit{False}$ is an algebraic type.
+$\mathit{Bool} = \mu \_.\mathit{True} \ | \ \mathit{False}$ is an algebraic type.
 ```
 
 ```{block2, type="myexample",latex.options="_"}
@@ -175,7 +176,7 @@ $$\forall x\in T_1,y\in T_2.(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_
 ```{definition,name="Sets of Types"}
 We define
 
-* $\mathcal{V} := \{a| a \text{ is a symbol} \}$ as the set of all type variables(symobls).
+* $\mathcal{V} := \{a| a \text{ is a symbol} \}$ as the set of all type variables(symbols).
 * $\mathcal{T} := \{T| T \text{ is a type}\}$ as the set of all types.
 
 &nbsp;
@@ -221,32 +222,32 @@ The type substitution gives raise to a partial order $\sqsubseteq$:
 
 ```{definition,name="Type Order"}
 \begin{letIn}
-$n,m\in\mathbb{N}$ with $m\leq n$,
+$n,m\in\mathbb{N}$,
 $T_1,T_2\in\mathcal{T}$,
-$a_i,b_i\in\mathcal{V}$,
-$S_i\in\mathcal{T}$,
-for all $i\in\mathbb{N}_0^n$ and 
+$a_i$
+for all $i\in\mathbb{N}_0^n$ and $b_i\in\mathcal{V}$ for all $i\in\mathbb{N}_0^m$
 .
 \end{letIn}
 We define the partial order $\sqsubseteq$ as
 $$
 \begin{aligned}
 \forall a_1 \dots \forall a_n.T_1 \sqsubseteq \forall b_1 \dots \forall b_m.T_2:\Leftrightarrow 
-  & \exists \Theta = \{(a_i,S_i)|i\in\mathcal{T}\}.\\
+  & \exists \Theta = \{(a_i,S_i)|i\in\mathbb{N}_1^n\land a_i\in\mathcal{V}\land
+S_i\in\mathcal{T}\}.\\
   & T_2=[T_1]_\Theta \land \forall i\in\mathbb{N}_0^m.b_i\not\in \text{free}(\forall a_1 \dots \forall a_n.T)
 \end{aligned}
 $$
-```
-
-```{block2, type="myexample",latex.options="_"}
-$\forall a.a$ is the smallest type in the type system.
-the partial order forms a tree strcture with $\forall a.a$ at the root and branches for $\forall a.\forall b. (a,b)$, $\forall a. C a$, $\forall a.\forall b. a \to b$ and so on. The leaves of the tree are all possible mono types.
 ```
 
 The rule can be read as follows:
 
 * First replace all bounded variables with types.
 * Next rebound any new variables (variables that were previously not free).
+
+```{block2, type="myexample",latex.options="_"}
+$\forall a.a$ is the smallest type in the type system.
+The partial order forms a tree structure with $\forall a.a$ at the root and different branches for $\forall a.\forall b. (a,b)$, $\forall a. C \ a$, $\forall a.\forall b. a \to b$ and so on. The leaves of the tree are all possible mono types.
+```
 
 ### Interpretation of types
 
@@ -274,14 +275,13 @@ Thus we will use the notation of tuples for values of a ordered product type.
 ```{definition,name="Application Constructor"}
 \begin{letIn}
 $n\in\mathbb{N}_0$.
-\text{ Let }$a_i$ be a symbol for all $i\in\mathbb{N}_1^n$
-$\forall a_1 \dots a_n$. $T$ be a poly type and $T$ be a mono type.
+\text{ Let }$a_i$ be a symbol for all $i\in\mathbb{N}_1^n$. 
 \end{letIn}
 We call
 $$
 \begin{aligned}
-f :& \mathcal{T} \to \dots \to \mathcal{T} \to \mathcal{T}\\
-f(T_1,\dots,T_n) :=& [ \forall a_1 \dots a_n. T]_{(a_1,T_1),\dots,(a_n,T_n)}
+f :& \underbrace{\mathcal{T} \to \dots \to \mathcal{T}}_{n \text{ times}} \to \mathcal{T}\\
+f(T_1,\dots,T_n) :=& [ \forall a_1 \dots a_n. T]_{\{(a_1,T_1),\dots,(a_n,T_n)\}} \text{ for a mono type $T$.}
 \end{aligned}
 $$
 an _application constructor_.
@@ -294,17 +294,16 @@ $\Gamma : \mathcal{V}\nrightarrow\mathcal{C}$ is a _context_ $:\Leftrightarrow$
 $$
 \begin{aligned}
   &\Gamma = \{\}\\
-  \lor& \ \exists a. a \text{ is a type variable}\land \Gamma = \Delta \cup \{(a,T)\} \text{ where } T \text{ is a mono type and } \Delta \text{ is a}\\  
-      &\text{context}.\\
-  \lor& \ \exists T . T \text{is a type application} \land \Gamma = \Delta \cup \{(C,f)\} \text{ where } T = C \ T_1 \dots T_n, T_i \text{ are}\\
-      & \text{mono types for } i\in\mathbb{N}_1^n\text{ and }f\text{ is a application constructor such that } f(T_1,\dots,T_n)\\
+  \lor& \ \Gamma = \Delta \cup \{(a,T)\} \text{ where } T \text{ is a mono type, } \Delta \text{ is a context and } a \text{ is a type variable}\\
+  \lor& \ \Gamma = \Delta \cup \{(C,f)\} \text{ where } T = C \ T_1 \dots T_n \text{ is a type application and } T_i \text{ is a}\\
+      & \text{mono type for } i\in\mathbb{N}_1^n\text{ and }f\text{ is a application constructor such that } f(T_1,\dots,T_n)\\
       &\text{ is a mono type}.
 \end{aligned}
 $$
 
 ```
 
-```{definition,name="Value"}
+```{definition,name="Values"}
 \begin{letIn}
 $\mathcal{S}$ the class of all finite sets,
 $n\in\mathbb{N}$,
@@ -319,18 +318,203 @@ Let $\Gamma$ be a context.
 We define
 $$
 \begin{aligned}
-\text{value}_\Gamma &: \mathcal{V} \to \mathcal{S}\\
-\text{value}_\Gamma(a) &:= \Gamma(a)\\
-\text{value}_\Gamma(C \ T_1 \ \dots \ T_n) &:= \Gamma(C)(T_1,\dots,T_n)\\
-\text{value}_\Gamma\small\begin{pmatrix*}[l]
-C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+\text{values}_\Gamma :& \mathcal{V} \to \mathcal{S}\\
+\text{values}_\Gamma(a) :=& \text{values}_\Gamma(\Gamma(a))\\
+\text{values}_\Gamma(C \ T_1 \ \dots \ T_n) :=& \text{values}_\Gamma(\Gamma(C)(T_1,\dots,T_n))\\
+\text{values}_\Gamma\small\begin{pmatrix*}[l]
+    \mu C.\\
+    | C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
     | \dots \\
     | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
-    \end{pmatrix*} &:=\\
-  \{C_i \ t_{i,1}& \dots \ t_{i,k(1)} \ | \ \forall i\in\mathbb{N}_1^n,j\in\mathbb{N}_1^{k(i)}. t_{i,j}\in\text{value}_\Gamma(T_{i,j})\}\\
-\text{value}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\}) &:=\big\{\{l_1=t_1,\dots,l_n=t_n\} \ | \ \forall i\in\mathbb{N}_1^n.t_i \in\text{value}_\Gamma(T_i)\big\}\\
-\text{value}_\Gamma(T_1 \to T_2) &:=\{f \ | \ f:\text{value}_\Gamma(T_1)\to\text{value}_\Gamma(T_2)\}\\
-\text{value}_\Gamma(\forall a.T) &:= \lambda b.\text{value}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does not occur in } T.
+    \end{pmatrix*} :=&\bigcup_{i\in\mathbb{N}_0} \text{rvalues}_\Gamma
+  \begin{pmatrix*}[l]
+  i,&
+  \small\begin{matrix*}[l]
+    \mu C.\\
+    | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \dots \\
+    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+  \end{matrix*}
+  \end{pmatrix*}\\
+\text{values}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\}) :=\\
+  \big\{\{l_1=t_1,&\dots,l_n=t_n\} \ | \ \forall i\in\mathbb{N}_1^n.t_i \in\text{values}_\Gamma(T_i)\big\}\\
+\text{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f:\text{values}_\Gamma(T_1)\to\text{values}_\Gamma(T_2)\}\\
+\text{values}_\Gamma(\forall a.T) :=& \lambda b.\text{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
+  &\text{ not occur in } T.
 \end{aligned}
 $$
+using the following helper function.
+  
+Let $l\in\mathbb{N},T := \mu C.\ | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\ | \dots \ | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}$ in
+$$
+\begin{aligned}
+\text{rvalues}_\Gamma(0,T):=&
+  \begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. T_{i,j} \neq C \land v_j \in \text{values}_\Gamma(T_{i,j})
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+\text{rvalues}_\Gamma({l+1},T):=&
+  \small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \text{rvalues}_\Gamma(l,T)&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}
+\end{aligned} 
+$$
+```
+The base case of this recursive function is in $\text{rvalue}(0,T)$ for a given T.
+
+```{theorem,name="rvalue is nested"}
+\begin{letIn}
+$n\in\mathbb{N}_0$. Let $T := \mu C.\ | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\ | \dots \ | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}$.
+\end{letIn}
+$$\bigcup_{i\in\mathbb{N}_0^n} \text{rvalues}_\Gamma(i,T)=\text{rvalues}_\Gamma(n,T)
+$$
+```
+```{proof}
+Its sufficient to prove by induction over $n$ that $$\forall n\in\mathbb{N}_0.\text{rvalues}_\Gamma(n,T)\subseteq\text{rvalues}_\Gamma(n+1,T).$$
+\textbf{Base case}: We'll show $\text{rvalues}_\Gamma(0,T)\subseteq\text{rvalues}_\Gamma(1,T)$.
+$$
+\begin{aligned}
+&\text{rvalues}_\Gamma(1,T)\\
+&=\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \text{rvalues}_\Gamma(0,T)&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+&\supseteq\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. T_{i,j} \neq C \land
+        v_j \in
+        \text{values}_\Gamma(T_{i,j})
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+&=\text{rvalues}_\Gamma(0,T).
+\end{aligned}
+$$
+\textbf{Inductive step}: Assuming $\text{rvalues}_\Gamma(n,T)\subseteq\text{rvalues}_\Gamma(n+1,T)$, we'll prove
+$$\text{rvalues}_\Gamma(n+1,T)\subseteq\text{rvalues}_\Gamma(n+2,T).$$
+$$
+  \begin{aligned}
+  &\text{rvalues}_\Gamma(n+2,T)\\
+  &=\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \text{rvalues}_\Gamma(n+1,T)&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+  &\supseteq\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \text{rvalues}_\Gamma(n,T)&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+  &=\text{rvalues}_\Gamma(n+1,T)
+  \end{aligned}
+$$
+```
+
+As an example we can now prove that the values of $Nat$ from example \label{ex:int} are isomorphic to the natural numbers.
+```{theorem}
+\begin{letIn}
+$Nat:=\mu C.1| \mathit{Succ} \ C$
+\end{letIn}
+$$\text{values}(\mathit{Nat})\cong\mathbb{N}$$
+```
+```{proof}
+$$
+\begin{aligned}
+\text{value}(\mu C.1| Succ \ C)&=\bigcup_{i\in\mathbb{N}_0}\text{rvalue}(i,\mu C.1| Succ \ C)\\
+&=\lim_{n\to\infty}\bigcup_{i\in\mathbb{N}_0^n}\text{rvalue}(i,\mu C.1| Succ \ C)\\
+&=\lim_{n\to\infty}\text{rvalue}(n,\mu C.1| \mathit{Succ} \ C).
+\end{aligned}$$
+
+We'll now show by induction over $n\in\mathbb{N}_0$ that
+$$\text{rvalue}(n,\mu C.1| \mathit{Succ} \ C)
+=\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n \text{ times}}\}.$$
+
+\begin{addmargin}[1cm]{0cm}
+\textbf{Base case}: $rvalue(0,\mu C.1| Succ \ C) = \{1\}$\newline
+\textbf{Inductive step}:\newline
+Assuming $\text{rvalue}(n,\mu C.1| \mathit{Succ} \ C)
+=\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n \text{ times}}\},$
+we'll prove $\text{rvalue}(n+1,\mu C.1| \mathit{Succ} \ C)
+=\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n+1 \text{ times}}\}.$
+  
+$$
+\begin{aligned}
+&\text{rvalue}(n+1,\mu C.1| \mathit{Succ} \ C)\\
+&=\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \text{rvalues}_\Gamma(n,T)&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+&=\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+      C_i \ v_1 \dots v_n
+      & \begin{matrix*}[l]
+        i\in\mathbb{N}_1^n\\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \begin{cases}
+          \{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n \text{ times}}\}&\text{if } T_{i,j} = C\\
+          \text{values}_\Gamma(T_{i,j})&\text{else}
+        \end{cases}
+        \end{matrix*}
+    \end{array}
+  \end{Bmatrix*}\\
+&=\{1\}\cup\big\{\mathit{Succ} \ v,v\in\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n \text{ times}}\}\big\}\\
+&=\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n+1 \text{ times}}\}
+\end{aligned}
+$$
+\end{addmargin}
+We define a order on $$\text{value}(\mathit{Nat})=\lim_{n\to\infty}\{1,\underbrace{\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \dots \ \mathit{Succ} \ 1}_{n \text{ times}}\}=\{1,\mathit{Succ} \ 1,\dots,\mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
+by $v_1 < v_2 :\Leftrightarrow v_2 = \mathit{Succ} \dots \mathit{Succ} \ v_1$ for $v_1,v_2\in\text{value}(\mathit{Nat})$.
+This is a well-ordering, thus the set is isomorphic to $\mathbb{N}$.
 ```

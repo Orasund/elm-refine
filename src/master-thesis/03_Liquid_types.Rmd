@@ -9,3 +9,4 @@ First, we define some notations:
 * $\mathbb{N}_a^b:=\{i\in \mathbb{N}_0 | a \leq i \land i \leq b\}$ are the natural numbers between $a$ and $b$.
 * We'll use "$.$" to separate a quantifier from a statement: $\forall a . b$ and $\exists a . b$.
 * Function types will be written as $a_1 \to \dots \to a_n \to b$ instead of $a_1 \times \dots \times a_n \to b$.
+* We allow the use of lambda notation for functions: $\lambda x.x$ instead of $f(x) = x$ for a function $f$.

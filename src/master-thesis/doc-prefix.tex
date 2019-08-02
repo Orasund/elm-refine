@@ -143,4 +143,48 @@
   \label{#2}
 }
 {\end{mdframed}}
+
+%%
+%% THEOREM
+%%
+\newcounter{theo}[section]\setcounter{theo}{0}
+\renewcommand{\thetheo}{\arabic{section}.\arabic{theo}}
+\provideenvironment{theorem}{}{}
+\renewenvironment{theorem}[2][]{%
+  \refstepcounter{theo}%
+  \mdfsetup{%
+    singleextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=blue!20
+      ] at (O|-P)
+      {\strut \textbf{Theorem~\thetheo\ifstrempty{#1}{}{:~#1}}
+      };
+    },
+    firstextra={%
+      \node[
+        overlay,
+        xshift=10pt,
+        right,
+        outer sep=0pt,
+        rectangle,
+        fill=blue!20
+      ] at (O|-P)
+      {\strut \textbf{Theorem~\thetheo\ifstrempty{#1}{}{:~#1}}
+      };
+    }
+  }
+  \mdfsetup{
+    innertopmargin=1.2\baselineskip,linecolor=blue!20,%
+    linewidth=2pt,topline=true,%
+    frametitleaboveskip=\dimexpr-\ht\strutbox\relax
+  }
+  \begin{mdframed}[skipabove=20pt]\relax%
+  \label{#2}
+}
+{\end{mdframed}}
 \fi
