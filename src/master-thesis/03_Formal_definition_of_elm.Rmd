@@ -1,6 +1,6 @@
 \setcounter{section}{2}
 
-# Liquid types
+# Formal definition of Elm
 
 First, we define some notations:
 

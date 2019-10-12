@@ -1,4 +1,6 @@
-### Syntax
+\setcounter{subsection}{1}
+
+## Syntax
 
 Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-var>`$\in\mathcal{T}$ for variables with the first letter capitalized and `<lower-var>`$\in\mathcal{T}$ for variables without.
 
