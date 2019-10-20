@@ -518,35 +518,36 @@ $$
 $$
 \end{addmargin}
 
-Finally, we will be proving $$\textrm{values}(\mu C.1| Succ \ C)=\{Succ^n \ 1|n\in\mathbb{N}_0\}.$$
+Finally, we will be proving $$\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.$$
 
 \begin{addmargin}[1cm]{0cm}
 "$\subseteq$":
-Let $x\in\textrm{values}(\mu C.1| Succ \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| Succ \ C)$.
+Let $x\in\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)$.
 $$
 \begin{aligned}
-&x\in\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| Succ \ C)\\
-\Rightarrow&\exists i\in\mathbb{N}_0.x\in\mathrm{rvalues}_\Gamma(i,\mu C.1| Succ \ C)=\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\} \\
+&x\in\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)\\
+\Rightarrow&\exists i\in\mathbb{N}_0.x\in\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\} \\
 \Rightarrow&\exists i\in\mathbb{N}_0.\exists k\in\mathbb{N}^i_0.x = \mathit{Succ}^k \ 1\\
 \Rightarrow&x\in\{Succ^n \ 1|n\in\mathbb{N}_0\}
 \end{aligned}
 $$
 
 "$\supseteq$":
-Let $x \in\{Succ^n \ 1|n\in\mathbb{N}_0\}$.
-Then there exists $k\in\mathbb{N}_0$ such that $x = Succ^k \ 1$.
+Let $x \in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$.
+Then there exists $k\in\mathbb{N}_0$ such that $x = \mathit{Succ}^k \ 1$.
 We know that
 $$
-Succ^k \ 1 \in \{Succ^i \ 1|i\in\mathbb{N}^k_0\}= \mathrm{rvalues}_\Gamma(k,\mu C.1| Succ \ C)\subseteq \{Succ^n \ 1|n\in\mathbb{N}_0\}.
+\mathit{Succ}^k \ 1 \in \{\mathit{Succ}^i \ 1|i\in\mathbb{N}^k_0\}= \mathrm{rvalues}_\Gamma(k,\mu C.1| \mathit{Succ} \ C)\subseteq \{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.
 $$
-Therefore $x = Succ^k \ 1 \in \{Succ^n \ 1|n\in\mathbb{N}_0\}$.
+Therefore $x = \mathit{Succ}^k \ 1 \in \{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$.
 \end{addmargin}
 
-In conclusion, we have now shown that $\mathrm{values}(\mathit{Nat})=\{Succ^n \ 1|n\in\mathbb{N}_0\}$. Using the bijection
+In conclusion, we have now shown that $\mathrm{values}(\mathit{Nat})=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$. Using the bijection
 $$
 \begin{aligned}
-&f:\{Succ^n \ 1|n\in\mathbb{N}_0\}\to\mathbb{N}\\
-&f(Succ^n \ 1) = n+1
+&f:\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}\to\mathbb{N}\\
+&f(\mathit{Succ}^n \ 1) = n+1\\
+&f^{-1}(n) = \mathit{Succ}^{n-1} \ 1
 \end{aligned}
 $$
 we see that $\{Succ^n \ 1|n\in\mathbb{N}_0\}\cong\mathbb{N}$.
