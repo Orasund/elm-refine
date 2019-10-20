@@ -1,0 +1,125 @@
+---
+title: "Refinement Types for Elm"
+subtitle: "Master Thesis Report"
+author: "Lucas Payr"
+date: "30 Oktober 2019"
+output:
+  beamer_presentation:
+    theme: "metropolis" #"Boadilla" # "Rochester"
+    colortheme: "default" #"dolphin" #"dove" #"beaver" #"default" #"seagull"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Elm Programming Language
+
+* Invented by Evan Czaplicki as his master-thesis in 2012.
+* Goal: Bring Function Programming to Web-Development
+* Side-Goal: Learning-friendly design decisions
+
+### Characteristics
+
+* Pure Functional Language (immutable, no side effect, everything is a function)
+* Statically typed
+* Compiles to JavaScript (in the future also to WebAssembly)
+* ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
+* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
+* "No Runtimes errors" (running out of memory, Function equality and non-terminating functions still give runtime errors.)
+
+## Introduction to Type Theory
+
+We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
+
+We say
+$$
+\begin{aligned}
+  T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow
+       \ & T \text{ is a type variable}\\
+  \lor \ & T \text{ is a type application}\\
+  \lor \ & T \text{ is a algebraic type}\\
+  \lor \ & T \text{ is a product type}\\
+  \lor \ & T \text{ is a function type}\\
+  T \text{ is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow
+       \ & T = \forall a.T'\\
+         & \text{ where } T' \text{ is a mono type or poly type}\\
+         & \text{ and } a \text{ is a symbol}\\
+  T \text{ is a }\mathit{type} :\Leftrightarrow 
+       \ & T \text{ is a mono type} \ \lor \ T \text{ is a poly type}.
+\end{aligned}
+$$  
+
+## Introduction to Type Theory
+
+### Example
+
+1. $\mathit{Nat} ::= \mu C.1 \ | \ \mathit{Succ} \ C$
+2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
+3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
+
+## Introduction to Type Theory
+The $values$ of a type is the set corresponding to the type:
+
+$$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
+$$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{values}_n(\mathit{List} \ \mathit{Nat})$$
+$$\text{values}_0(List \ Nat) = \{[\ ]\}$$
+$$\text{values}_n(List \ Nat) = \{[\ ]\}\cup\{Cons \ a \ b|a\in Nat,b\in values_{n-1}(List \ Nat)\}$$
+
+## Refinement Types
+
+* Restricts the values of an existing type
+* Liquid Types (Logically Quantified Data Types)
+
+\begin{definition}[Liquid Types]
+Let $T$ be a Type Application of $\mathit{Int}$, tuples and functions.
+Let $q$ be a predicate consisting of
+
+\begin{itemize}
+\item Logical operations $\neg,\land,\lor$
+\item Logical constants $True, False$
+\item Comparisons $<,\leq,=,\neq$
+\item Integer operations $+, \cdot c$ where c is a constant
+\item Integer constants $0,3,42,\dots$
+\item Bound variables $a,b,c,\dots$
+\end{itemize}
+
+Then we call $\{ a:T | q(a) \}$ a \textit{Liquid Type}.
+\end{definition}
+
+## Refinement Types
+
+### Example
+
+Let $Nat = \{a:Int| a > 0\}$ in
+$$
+\begin{aligned}
+&\{ \ \{(a:\mathit{Nat},b:\mathit{Nat}) \ | a+b < 42\}\rightarrow \{(c:\mathit{Nat},d:\mathit{Nat})|c \leq d\} \\
+&| \  (a=c\land b = d)\lor (b=c\land a=d)\\
+&\}
+\end{aligned}
+$$
+
+## Solvable Problems
+
+* Division by zero errors $$(/):\mathit{Int} \rightarrow \{a:\mathit{Int}|a\neq 0\} \rightarrow \mathit{Int}$$
+* Off by one errors
+    $$\begin{aligned}
+      &\text{Let } \mathit{Pos} = \{a:\mathit{Int}|0\leq a \land a<8\} \text{ in}\\
+      &get: (\mathit{Pos},\mathit{Pos}) \rightarrow \mathit{Chessboard} \rightarrow \mathit{Maybe} \ \mathit{Figure}
+    \end{aligned}$$
+* Proving the correctness of very simple programs $$\text{swap}:\{(a:\mathit{Int},b:\mathit{Int})\rightarrow(c:\mathit{Int},d:\mathit{Int})|b=c\land a = d\}$$
+* Clearer Interfaces $$\text{length}: \mathit{List} \ a \rightarrow \{a:\mathit{Int}| a \geq 0\}$$
+
+## Goal and Current State
+
+1. A formal syntax. **(DONE)**
+3. A formal type system. **(WORK IN PROGRESS)**
+4. A high level denotational semantic.
+5. A proof, using the denotational semantics, that the type system rules out runtime errors.
+6. A low level small step semantic (with the help of K Framework).
+7. A type checker for Elm
+
+**Started thesis** in July 2019
+
+**Expected finish** at the end of 2020
