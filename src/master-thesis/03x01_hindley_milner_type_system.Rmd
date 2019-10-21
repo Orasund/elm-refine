@@ -377,88 +377,7 @@ $$
 ```
 The base case of this recursive function is in $\mathrm{rvalues}_\Gamma(0,T)$ for a given $T$.
 
-```{theorem,name="rvalue is nested"}
-\begin{letIn}
-$n\in\mathbb{N}_0$. Let $T := \mu C.\ | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\ | \dots \ | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}$. Let $\Gamma$ be a context.
-\end{letIn}
-We then have:
-$$\bigcup_{i\in\mathbb{N}_0^n} \mathrm{rvalues}_\Gamma(i,T)=\mathrm{rvalues}_\Gamma(n,T)
-$$
-```
-```{proof}
-It should be clear that $\bigcup_{i\in\mathbb{N}_0^n}\mathrm{rvalues}_\Gamma(i,T)\supseteq\mathrm{rvalues}_\Gamma(n,T)$. This follows directly from the definition of the union.
-In order to show $\bigcup_{i\in\mathbb{N}_0^n}\mathrm{rvalues}_\Gamma(i,T)\subseteq\mathrm{rvalues}_\Gamma(n,T)$, it is sufficient to prove by induction over $n$ that
-$$
-\forall n\in\mathbb{N}_0.\mathrm{rvalues}_\Gamma(n,T)\subseteq\mathrm{rvalues}_\Gamma(n+1,T).
-$$
-\textbf{Base case}: We will show $\mathrm{rvalues}_\Gamma(0,T)\subseteq\mathrm{rvalues}_\Gamma(1,T)$.
-$$
-\begin{aligned}
-&\mathrm{rvalues}_\Gamma(1,T)\\
-&=\small\begin{Bmatrix*}[l]
-    \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
-      & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
-        \begin{cases}
-          \mathrm{rvalues}_\Gamma(0,T)&\text{if } T_{i,j} = C\\
-          \mathrm{values}_\Gamma(T_{i,j})&\text{else}
-        \end{cases}
-        \end{matrix*}
-    \end{array}
-  \end{Bmatrix*}\\
-&\supseteq\small\begin{Bmatrix*}[l]
-    \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
-      & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. T_{i,j} \neq C \land
-        v_j \in
-        \mathrm{values}_\Gamma(T_{i,j})
-        \end{matrix*}
-    \end{array}
-  \end{Bmatrix*}\\
-&=\mathrm{rvalues}_\Gamma(0,T).
-\end{aligned}
-$$
-\textbf{Inductive step}: Assuming $\mathrm{rvalues}_\Gamma(n,T)\subseteq\mathrm{rvalues}_\Gamma(n+1,T)$, we will prove
-$$\mathrm{rvalues}_\Gamma(n+1,T)\subseteq\mathrm{rvalues}_\Gamma(n+2,T).$$
-$$
-  \begin{aligned}
-  &\mathrm{rvalues}_\Gamma(n+2,T)\\
-  &=\small\begin{Bmatrix*}[l]
-    \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
-      & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
-        \begin{cases}
-          \mathrm{rvalues}_\Gamma(n+1,T)&\text{if } T_{i,j} = C\\
-          \mathrm{values}_\Gamma(T_{i,j})&\text{else}
-        \end{cases}
-        \end{matrix*}
-    \end{array}
-  \end{Bmatrix*}\\
-  &\supseteq\small\begin{Bmatrix*}[l]
-    \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
-      & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
-        \begin{cases}
-          \mathrm{rvalues}_\Gamma(n,T)&\text{if } T_{i,j} = C\\
-          \mathrm{values}_\Gamma(T_{i,j})&\text{else}
-        \end{cases}
-        \end{matrix*}
-    \end{array}
-  \end{Bmatrix*}\\
-  &=\mathrm{rvalues}_\Gamma(n+1,T)
-  \end{aligned}
-$$
-```
-
-As an example we can now prove that the values of $\mathit{Nat}$ from example \ref{ex:int} are isomorphic to the natural numbers.
+As an example we will prove that the values of $\mathit{Nat}$ from example \ref{ex:int} are isomorphic to the natural numbers.
 ```{theorem}
 \begin{letIn}
 the algebraic type $\mathit{Nat}$ defined as $\mathit{Nat}:=\mu C.1| \mathit{Succ} \ C$.
@@ -473,8 +392,9 @@ First we will introduce a new notation in order to simplify the proof:
 For any $n\in\mathbb{N}_0$ We define $Succ^n \ 1 := \underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{n \text{ times}} \ 1$. Note that $\mathit{Succ}^0 \ 1 = 1$.
 
 Next we show by induction over $n\in\mathbb{N}_0$ that
-$$\textrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)
-=\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}.$$
+\begin{equation}\label{proof:natProof1}
+\textrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}.
+\end{equation}
 
 \begin{addmargin}[1cm]{0cm}
 \textbf{Base case}: $\mathrm{rvalues}_\Gamma(0,\mu C.1| Succ \ C) =\{1\}= \{\mathit{Succ}^0\}$. This is true.\newline
@@ -518,37 +438,33 @@ $$
 $$
 \end{addmargin}
 
-Finally, we will be proving $$\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.$$
+Now we will prove 
+\begin{equation}\label{proof:natProof2}
+\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.
+\end{equation}
 
 \begin{addmargin}[1cm]{0cm}
 "$\subseteq$":
-Let $x\in\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)$.
-$$
-\begin{aligned}
-&x\in\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)\\
-\Rightarrow&\exists i\in\mathbb{N}_0.x\in\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\} \\
-\Rightarrow&\exists i\in\mathbb{N}_0.\exists k\in\mathbb{N}^i_0.x = \mathit{Succ}^k \ 1\\
-\Rightarrow&x\in\{Succ^n \ 1|n\in\mathbb{N}_0\}
-\end{aligned}
-$$
+Let $$x\in\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C).$$
+This means, there exists an $i\in\mathbb{N}_0$ such that $$x\in\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)\overset{(\ref{proof:natProof1})}{=}\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\}.$$ Therefore there exists a $k\in\mathbb{N}^i_0$ in dependence of said $i$, such that $x = \mathit{Succ}^k \ 1$. Thus, in conclusion, $x\in\{Succ^n \ 1|n\in\mathbb{N}_0\}$.
 
 "$\supseteq$":
-Let $x \in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$.
-Then there exists $k\in\mathbb{N}_0$ such that $x = \mathit{Succ}^k \ 1$.
-We know that
+Let $x \in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$. We have to show that 
 $$
-\mathit{Succ}^k \ 1 \in \{\mathit{Succ}^i \ 1|i\in\mathbb{N}^k_0\}= \mathrm{rvalues}_\Gamma(k,\mu C.1| \mathit{Succ} \ C)\subseteq \{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.
-$$
-Therefore $x = \mathit{Succ}^k \ 1 \in \{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$.
-\end{addmargin}
-
-In conclusion, we have now shown that $\mathrm{values}(\mathit{Nat})=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$. Using the bijection
+x \in \textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C).$$
+From the assumption we know that there exists a $n\in\mathbb{N}_0$ such that $x = \mathit{Succ}^n \ 1$. Therefore, we can infer
 $$
 \begin{aligned}
-&f:\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}\to\mathbb{N}\\
-&f(\mathit{Succ}^n \ 1) = n+1\\
-&f^{-1}(n) = \mathit{Succ}^{n-1} \ 1
+\mathit{Succ}^n \ 1 \in \{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}&\overset{(\ref{proof:natProof1})}{=} \mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)\\
+&\subseteq\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)
 \end{aligned}
 $$
-we see that $\{Succ^n \ 1|n\in\mathbb{N}_0\}\cong\mathbb{N}$.
+and are done.
+\end{addmargin}
+
+To summarize, we have just shown that $$\mathrm{values}(\mathit{Nat})=\textrm{values}(\mu C.1| \mathit{Succ} \ C)\overset{(\ref{proof:natProof2})}{=}\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.$$
+For the last step, we define a well-order on $\{Succ^n \ 1|n\in\mathbb{N}_0\}$:
+$$\forall n,m\in\mathbb{N}_0. \mathit{Succ}^n < \mathit{Succ}^m :\Leftrightarrow n < m$$
+The order is defined over the order on the natural numbers and thus a well-order.
+We know that a set with a well-order is isomorph to the natural numbers and thus, $\{Succ^n \ 1|n\in\mathbb{N}_0\}\cong\mathbb{N}$.
 ```
