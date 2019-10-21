@@ -40,35 +40,57 @@ knitr::include_graphics('model-view-update.png')
 
 ## Background: Refinement Types
 
-* Restricts the values of an existing type using a predicate.
-* Initial paper in 1991 by Tim Freeman and Frank Pfenning
-    * Initial concept was done in ML.
-    * Allows predicates with only $\land,\lor,=$ and constants.
-    * Operates over algebraic types.
-    * Needed to specify **explicitly** all possible Values.
-* Liquid Types (Logically Quantified Data Types) introduces in 2008
-    * Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
-    * Initial concept done in OCaml. Later also C, Haskell and TypeScript.
-    * Operates over Integers and Booleans. Later also Tuples and Functions.
-    * Allows predicates with logical operators, comparisons and addition.
+Restricts the values of an existing type using a predicate.
 
-## Problem & Goal
+Initial paper in 1991 by Tim Freeman and Frank Pfenning
 
-### Solvable Problems
+* Initial concept was done in ML.
+* Allows predicates with only $\land,\lor,=$, constants and basic pattern matching.
+* Operates over algebraic types.
+* Needed to specify **explicitly** all possible Values.
+    
+### Example
+$$
+\{ a:(\mathit{Bool},\mathit{Bool})| \ a=(\mathit{True},\mathit{False}) \lor (a=(\mathit{False},\mathit{True})\}
+$$
+$$
+\forall t.\{a:List \ t| a = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
+$$
+
+
+## Background: Refinement Types
+
+Liquid Types (Logically Quantified Data Types) introduced in 2008
+
+* Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
+* Initial concept done in OCaml. Later also C, Haskell and TypeScript.
+* Operates over Integers and Booleans. Later also Tuples and Functions.
+* Allows predicates with logical operators, comparisons and addition.
+
+### Example
+$$\{(a:Bool,b:Bool)|(a\lor b) \land \neg (a\land b)\}$$
+$$\{(a:Int,b:Int)|a \leq b\}$$
+
+## Goals of Thesis
+
+1. Formal language similar to Elm
+    1. A formal syntax
+    2. A formal type system
+    3. A denotational semantic
+    4. A small step semantic (using K Framework) for rapid prototyping the language
+2. Extension of the formal language with Liquid Types
+    1. A formal syntax
+    2. A formal type system
+    3. A denotational semantic
+    4. A small step semantic (using K Framework) for rapid prototyping the type checker
+3. A type checker implementation written in Elm for Elm.
+
+## Problems Addressed by the Type System
 
 * Division by zero errors
 * Off by one errors
 * Proving the correctness of very simple programs
 * Clearer interfaces
-
-### Goals
-
-1. A formal syntax of Elm.
-3. A formal type system of Elm with Liquid Types.
-4. A high level denotational semantic.
-5. A proof, using the denotational semantics, that the type system rules out runtime errors.
-6. A low level small step semantic (with the help of K Framework).
-7. A type checker for Elm.
 
 ## Formalization of the Elm Type System
 
@@ -110,9 +132,9 @@ $$\text{values}_n(List \ Nat) = \{[\ ]\}\cup\{Cons \ a \ b|a\in Nat,b\in values_
 
 ## Definition of Liquid Types
 
-\begin{definition}[Liquid Types]
+\begin{definition}[Sketch]
 Let $T$ be a Type Application of $\mathit{Int}$, tuples and functions.
-Let $q$ be a predicate consisting of
+Let $q$ be a logical formula consisting of
 
 \begin{itemize}
 \item Logical operations $\neg,\land,\lor$
@@ -123,7 +145,7 @@ Let $q$ be a predicate consisting of
 \item Bound variables $a,b,c,\dots$
 \end{itemize}
 
-Then we call $\{ a:T | q(a) \}$ a \textit{Liquid Type}.
+Then we call the syntactic phrase $\{ a:T | q(a) \}$ a \textit{Liquid Type}.
 \end{definition}
 
 ## Definition of Liquid Types
@@ -152,12 +174,19 @@ $$
 
 ## Current State
 
-1. A formal syntax. **(DONE)**
-3. A formal type system. **(WORK IN PROGRESS)**
-4. A high level denotational semantic.
-5. A proof, using the denotational semantics, that the type system rules out runtime errors.
-6. A low level small step semantic (with the help of K Framework).
-7. A type checker for Elm
+1. Formal language similar to Elm
+    1. A formal syntax **(DONE)**
+    2. A formal type system **(DONE)**
+    3. A denotational semantic **(WORK IN PROGRESS)**
+    4. A small step semantic (using K Framework) for rapid prototyping the language
+    5. Proof that the type system is valid with respect of the semantics.
+2. Extension of the formal language with Liquid Types
+    1. A formal syntax
+    2. A formal type system
+    3. A denotational semantic
+    4. A small step semantic (using K Framework) for rapid prototyping the type checker
+    5. Proof that the extension infers the correct types.
+3. A type checker implementation written in Elm for Elm.
 
 **Started thesis** in July 2019
 
