@@ -1,72 +1,58 @@
-### Types system
+\setcounter{section}{3}
+\setcounter{subsection}{2}
 
-We have already defined Boolean and lists in example \ref{ex:bool_list}. Integers where defined in example \ref{ex:int}. For records we use unordered union types and for tuples we use ordered union types. Note that tuples in Elm only come as pairs $T_1\times T_2$. Algebraic types are type applications. Functions and type variables have the expected definition.
+## Type Inference
 
-```{definition,name="Algebraic types"}
-$$
-\begin{aligned}
-\mathit{Algebraic} ::=
-  Algebraic \mathit{List} (\mathcal{V},\mathit{List} \ \mathcal{T})
-\end{aligned}
-$$
-```
+We will now discuss the methods used to infer a type from a given expression.
 
-```{definition,name="Type names"}
-$$
-\begin{aligned}
-\mathit{Type} ::=& Bool\\
-                |& Int\\
-                |& List \ Type\\
-                |& Tuple \ Type Type\\
-                |& Record \ \mathit{List} \ (\mathcal{V},Type)\\
-                |& Function \ Type \ Type\\
-                |& Algebraic \ \mathcal{V} \ \mathit{List} \ (\mathcal{V},\mathit{List} \ Type)\\
-                |& Variable \ \mathcal{V}
-\end{aligned}
-$$
+```{definition,name="Type of an expression"}
+\begin{letIn}
+$T \in\mathcal{T}$. Let $\Gamma$ be a type context. Let $e$ be arbitary.
+\end{letIn}
+We say $e$ _is of type_ $T$ _in the context of_ $\Gamma$ (Notation: $e:T$)$:\Leftrightarrow$
   
 $$
-
+e \in values_\Gamma(T)
 $$
 ```
 
-To reason about the syntax we need a interpretation of the most basic elements.
-```{definition,name="Semantics"}
+Next we will need the semantics of $mf{<type>}, namely a function that maps $\text{value}(\mf{<type>})$ to $\mathcal{T}$. Note that the general discussion about semantics will occur in a later section of this chapter.
+
+```{definition,name="Semantics of <type>"}
 \begin{letIn}
-n\in\mathbb{N};\quad
-t:mf{<type>};\quad
-c:\mf{<upper-var>};\quad
-\forall i\in\mathbb{N}_1^2.t_i:\mf{<type>};\\
-\forall i\in\mathbb{N}_3^n.t_i:\mf{<type>};\quad
-\forall i\in\mathbb{N}_1^n.v_i:\mf{<lower-var>};\quad
-\syntax{.}:\mf{<lower-var>}\to\mathcal{V};\\
-\syntax{.}:\mf{<upper-var>}\to\mathcal{V};\quad
-\syntax{.}:\mf{<type>}\to\mathcal{T}.
+$n\in\mathbb{N}. Let $t,t_1,t_2:\mf{<type>}$ and $c:\mf{<upper-var>}$.
+Let $t_i:\mf{<type>}$ for all $i\in\mathbb{N}_3^n$ and $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$.Let $\Gamma$ be a type context. Let $\mathit{Nat}=\mu C.1 \ | \ \mathit{Succ} \ C$.
 \end{letIn}
-We call $I$ a semantic iff
+We define
 
 $$
 \begin{aligned}
-  \syntax{Bool} =& \mathit{Bool}\\
-  \syntax{Int} =& \mathit{Int}\\
-  \syntax{List \ $t$} =& \mathit{List} \ \syntax{$t$})\\
-  \syntax{"(" $t_1$ , $t_2$ ")"} =& \syntax{$t_1$} \times \syntax{$t_2$}\\
-  \syntax{"\{\}"} =& \mathit{\{\}}\\
-  \syntax{"\{" $v_1$ ":" $t_1$ "," \dots "," $v_1$ ":" $t_n$ "\}"} =& \{\syntax{$v_1$}:\syntax{$t_1$} , \dots , \syntax{$v_n$}:\syntax{$t_n$}\}\\
-  \syntax{$t_1$ "->" $t_2$} =& \syntax{$t_1$} \to \syntax{$t_2$}\\
-  \syntax{$c$ $t_1$ .. $t_n$} =& [\syntax{$c$}]_{a_1\mapsto t_1,\dots,a_n\mapsto t_n}
+  \syntaxt{.}_\Gamma:&\text{value}(\mf{<type>})\to\mathcal{T}\\
+  \syntax{Bool}_\Gamma =& \mu\_.\mathit{True}\ | \ \mathit{False}\\
+  \syntax{Int}_\Gamma =& \mu\_.0 \ | \ \mathit{Pos} \ \mathit{Nat} | \mathit{Neg} \ \mathit{Nat}\\
+  \syntax{List}_\Gamma =& \forall a.\mu C.[ \ ] \ | \ \mathit{Cons} \ a \ C\\
+  \syntax{"(" $t_1$ , $t_2$ ")"}_\Gamma =& \{1:\syntax{$t_1$}, 2: \syntax{$t_2$}\}\\
+  \syntax{"\{\}"}_\Gamma =& \mathit{\{\}}\\
+  \syntax{"\{" $v_1$ ":" $t_1$ "," $\dots$ "," $v_n$ ":" $t_n$ "\}"}_\Gamma =& \{v_1:\syntax{$t_1$}_\Gamma , \dots , v_n:\syntax{$t_n$}_\Gamma\}\\
+  \syntax{$t_1$ "->" $t_2$}_\Gamma =& \syntax{$t_1$}_\Gamma \to \syntax{$t_2$}_\Gamma\\
+  \syntax{$c$ \ $t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(a_1,\dots,a_n)
 \end{aligned}
 $$
+We say $\syntax{.}_\Gamma$ is the _interpretation_ of \mf{<type>}. For any $t\in\mf{<type>}$,we call $\syntax{$t$}_\Gamma$ the _semantic_ of $t$.
 ```
-The interpretation is only partial, as it does not say consider interprating patterns, expressions or statements. This will be done after we have ensured that the types are valid.
 
-#### Type inference
+For this section we will also use a interpretation function for expressions
 
-Before we define the type inference, we first need to define the Context $\Gamma$. This context will then hold the conditions under which the type can be inferred.
+$$
+\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A
+$$
+for some non empty set $A$. We will discuss the definition of such a function as well as the definition of $A$ in the next chapter. For now they will be arbitary.
 
-```{definition,name="Context"}
-We define $\Gamma\subseteq \mathcal{V} \times \mathcal{T}$ to be the _variable context_ and $\Delta\subseteq\mathcal{V}\times \mathit{Type}$ the _type context_ of a type inference.
+```{definition,name="Variable Context"}
+$\Delta:\mathcal{V} \nleftrightarrow \mathcal{T}$ is called the _variable context_.
 ```
+
+Types are typically infered using so called _inference rules_. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find to most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the inference rules. This is called _type inference_ \cite{Types_and_Programming_Languages}.
 
 The first two universial inference rules for any Hindley-Milner type system are the instantiation and the generalization.
 
@@ -98,11 +84,11 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 
 ```{definition,name="type inference for statement"}
 \begin{letIn}
-T:\mathcal{T};\quad
+$T:\mathcal{T};\quad
 v:\mf{<lower-var>};\quad
 a:\mathcal{V};\quad
 e:\mf{<exp>};\quad
-s:\mf{<statement>};\quad
+s:\mf{<statement>};\quad$
 \end{letIn}
 
 \begin{center}
@@ -157,7 +143,7 @@ s:\mf{<statement>};\quad
 
 ```{definition,name="type inference for expressions"}
 \begin{letIn}
-n\in\mathbb{N};\quad
+$n\in\mathbb{N};\quad
 T:\mathcal{T};\quad
 v:\mf{<lower-var>};\quad
 a:\mathcal{V};\quad
@@ -175,7 +161,7 @@ p:\mf{<pattern>};\quad
 \mathit{lc}:\mf{<list-case>};\\
 \mathit{lef}:\mf{<list-exp-field>};\quad
 c:\mf{<upper-var>};\quad
-t:\mf{<type>}.
+t:\mf{<type>}.$
 \end{letIn}
 \begin{center}
 \begin{xtabular}{c l}
@@ -470,7 +456,7 @@ $(1)\mathit{[TCall]},(2)\mathit{[TEmptyList]},(3)\mathit{[TCons]},(4)\mathit{[TF
 For pattern matching we do not only want to infer a type that matches the pattern, but also find all substitutions for doing so. We will see that patterns also allow for variable declarations by using the `as` keyword.
 
 ```{definition,name="Type inference for pattern matching"}
-\begin{letIn}\Theta\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
+\begin{letIn}$\Theta\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
 p:\mf{<pattern>};\quad
 v:\mf{<lower-var>};\quad
 T:\mathcal{T};\\
@@ -480,7 +466,7 @@ T:\mathcal{T};\\
 \forall i\in\mathbb{N}_0^n.T_i:\mathcal{T};\\
 \forall i\in\mathbb{N}_0^3.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
 \forall i\in\mathbb{N}_4^n.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\\
-lpl:\mf{<list-pattern-list>}
+lpl:\mf{<list-pattern-list>}$
 \end{letIn}
 
 we say a pattern $p$ matches a type $T$ for the context $\Gamma$ using the bindings $\Theta$ if $\Gamma\vdash \text{match}_\Theta(T,p)$.
