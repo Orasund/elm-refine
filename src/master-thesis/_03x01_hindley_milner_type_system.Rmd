@@ -195,7 +195,7 @@ A type can be substituted by replacing a bound type variable with a mono type:
 ```{definition,name="Type substitution"}
 \begin{letIn}
 $n\in\mathbb{N}$,
-$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$,
+$\Theta:\mathcal{V}\nrightarrow\{t\in\mathcal{T}| t is a mono type\}$,
 $a\in\mathcal{V}$.
 Let $T,T_1,T_2$,
 $k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
@@ -219,8 +219,12 @@ $$
     \end{matrix*}\\
     [\{l_1:T_1,\dots,l_n:T_n\}]_\Theta:=&\{l_1:[T_1]_\Theta,\dots,l_n:[T_n]_\Theta\}\\
     [T_1\to T_2]_\Theta :=& [T_1]_\Theta\to [T_2]_\Theta\\
-    [\forall b.T]_\Theta :=& \begin{cases} [T]_\Theta & \text{if } \exists (b,\_)\in \Theta\\
-    \forall b. [T]_\Theta & \text{else.}\end{cases}
+    [\forall b.T]_\Theta :=&
+        \begin{cases}
+            [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\not\in\mathcal{V}\\
+            \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
+            \forall b. [T]_\Theta & \text{else.}
+        \end{cases}
   \end{aligned}
 $$
 $\Theta$ is called the set of substitutions.
@@ -297,8 +301,8 @@ the _application constructor_ of $T$.
 We define $\mathcal{C}=\{f| f \text{ is an application constructor}\}$ as the set of all application constructors. 
 ```
 
-```{definition,name="Context"}
-$\Gamma : \mathcal{V}\nrightarrow\mathcal{C}$ is called a _context_.
+```{definition,name="Type Context"}
+$\Gamma : \mathcal{V}\nrightarrow\mathcal{C}$ is called a _type context_.
 ```
 
 Note that mono types with no free variables are considered to be application constructors with no arguments.
@@ -312,7 +316,7 @@ $a\in\mathcal{V}$,
 $T,T_1,T_2,S\in\mathcal{T}$,
 $k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
 $T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
-Let $\Gamma$ be a context.
+Let $\Gamma$ be a type context.
 \end{letIn}
 
 We define

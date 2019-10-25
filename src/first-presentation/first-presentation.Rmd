@@ -58,7 +58,7 @@ $$
 $$
 
 
-## Background: Refinement Types
+## Background: Liquid Types
 
 Liquid Types (Logically Quantified Data Types) introduced in 2008
 
@@ -78,11 +78,13 @@ $$\{(a:Int,b:Int)|a \leq b\}$$
     2. A formal type system
     3. A denotational semantic
     4. A small step semantic (using K Framework) for rapid prototyping the language
+    5. Proof that the type system is valid with respect to the semantics.
 2. Extension of the formal language with Liquid Types
     1. A formal syntax
     2. A formal type system
     3. A denotational semantic
     4. A small step semantic (using K Framework) for rapid prototyping the type checker
+    5. Proof that the extension infers the correct types.
 3. A type checker implementation written in Elm for Elm.
 
 ## Problems Addressed by the Type System
@@ -92,7 +94,7 @@ $$\{(a:Int,b:Int)|a \leq b\}$$
 * Proving the correctness of very simple programs
 * Clearer interfaces
 
-## Formalization of the Elm Type System
+## Theory: Formalization of the Elm Type System
 
 We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
 
@@ -114,7 +116,7 @@ $$
 \end{aligned}
 $$  
 
-## Formalization of the Elm Type System
+## Theory: Formalization of the Elm Type System
 
 ### Example
 
@@ -122,7 +124,7 @@ $$
 2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
 3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
 
-## Introduction to Type Theory
+## Theory: Formalization of the Elm Type System
 The $values$ of a type is the set corresponding to the type:
 
 $$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
@@ -130,25 +132,25 @@ $$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{v
 $$\text{values}_0(List \ Nat) = \{[\ ]\}$$
 $$\text{values}_n(List \ Nat) = \{[\ ]\}\cup\{Cons \ a \ b|a\in Nat,b\in values_{n-1}(List \ Nat)\}$$
 
-## Definition of Liquid Types
+## Theory: Definition of Liquid Types
 
 \begin{definition}[Sketch]
 Let $T$ be a Type Application of $\mathit{Int}$, tuples and functions.
 Let $q$ be a logical formula consisting of
 
 \begin{itemize}
-\item Logical operations $\neg,\land,\lor$
-\item Logical constants $True, False$
-\item Comparisons $<,\leq,=,\neq$
-\item Integer operations $+, \cdot c$ where c is a constant
-\item Integer constants $0,3,42,\dots$
-\item Bound variables $a,b,c,\dots$
+\item Logical operations: $\neg,\land,\lor$
+\item Logical constants: $True, False$
+\item Comparisons: $<,\leq,=,\neq$
+\item Integer operations: $+, \cdot c$ where c is a constant
+\item Integer constants: $0,3,42,\dots$
+\item Bound variables: $a,b,c,\dots$
 \end{itemize}
 
 Then we call the syntactic phrase $\{ a:T | q(a) \}$ a \textit{Liquid Type}.
 \end{definition}
 
-## Definition of Liquid Types
+## Theory: Definition of Liquid Types
 
 ### Example
 
@@ -161,7 +163,7 @@ $$
 \end{aligned}
 $$
 
-## Revisiting the Problems
+## Theory: Revisiting the Problems
 
 * Division by zero errors $$(/):\mathit{Int} \rightarrow \{a:\mathit{Int}|a\neq 0\} \rightarrow \mathit{Int}$$
 * Off by one errors
@@ -179,13 +181,8 @@ $$
     2. A formal type system **(DONE)**
     3. A denotational semantic **(WORK IN PROGRESS)**
     4. A small step semantic (using K Framework) for rapid prototyping the language
-    5. Proof that the type system is valid with respect of the semantics.
+    5. Proof that the type system is valid with respect to the semantics.
 2. Extension of the formal language with Liquid Types
-    1. A formal syntax
-    2. A formal type system
-    3. A denotational semantic
-    4. A small step semantic (using K Framework) for rapid prototyping the type checker
-    5. Proof that the extension infers the correct types.
 3. A type checker implementation written in Elm for Elm.
 
 **Started thesis** in July 2019
