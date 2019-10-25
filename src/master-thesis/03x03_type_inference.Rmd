@@ -20,14 +20,14 @@ Next we will need the semantics of $mf{<type>}, namely a function that maps $\te
 
 ```{definition,name="Semantics of <type>"}
 \begin{letIn}
-$n\in\mathbb{N}. Let $t,t_1,t_2:\mf{<type>}$ and $c:\mf{<upper-var>}$.
+$n\in\mathbb{N}$. Let $t,t_1,t_2:\mf{<type>}$ and $c:\mf{<upper-var>}$.
 Let $t_i:\mf{<type>}$ for all $i\in\mathbb{N}_3^n$ and $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$.Let $\Gamma$ be a type context. Let $\mathit{Nat}=\mu C.1 \ | \ \mathit{Succ} \ C$.
 \end{letIn}
 We define
 
 $$
 \begin{aligned}
-  \syntaxt{.}_\Gamma:&\text{value}(\mf{<type>})\to\mathcal{T}\\
+  \syntax{.}_\Gamma:&\text{value}(\mf{<type>})\to\mathcal{T}\\
   \syntax{Bool}_\Gamma =& \mu\_.\mathit{True}\ | \ \mathit{False}\\
   \syntax{Int}_\Gamma =& \mu\_.0 \ | \ \mathit{Pos} \ \mathit{Nat} | \mathit{Neg} \ \mathit{Nat}\\
   \syntax{List}_\Gamma =& \forall a.\mu C.[ \ ] \ | \ \mathit{Cons} \ a \ C\\
@@ -35,10 +35,10 @@ $$
   \syntax{"\{\}"}_\Gamma =& \mathit{\{\}}\\
   \syntax{"\{" $v_1$ ":" $t_1$ "," $\dots$ "," $v_n$ ":" $t_n$ "\}"}_\Gamma =& \{v_1:\syntax{$t_1$}_\Gamma , \dots , v_n:\syntax{$t_n$}_\Gamma\}\\
   \syntax{$t_1$ "->" $t_2$}_\Gamma =& \syntax{$t_1$}_\Gamma \to \syntax{$t_2$}_\Gamma\\
-  \syntax{$c$ \ $t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(a_1,\dots,a_n)
+  \syntax{$c \ t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(a_1,\dots,a_n)
 \end{aligned}
 $$
-We say $\syntax{.}_\Gamma$ is the _interpretation_ of \mf{<type>}. For any $t\in\mf{<type>}$,we call $\syntax{$t$}_\Gamma$ the _semantic_ of $t$.
+We say $\syntax{.}_\Gamma$ is the _interpretation_ of \mf{<type>}. For any $t\in\mf{<type>}$,we call \(\syntax{$t$}_\Gamma\) the _semantic_ of $t$.
 ```
 
 For this section we will also use a interpretation function for expressions
@@ -54,24 +54,27 @@ $\Delta:\mathcal{V} \nleftrightarrow \mathcal{T}$ is called the _variable contex
 
 Types are typically infered using so called _inference rules_. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find to most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the inference rules. This is called _type inference_ \cite{Types_and_Programming_Languages}.
 
-The first two universial inference rules for any Hindley-Milner type system are the instantiation and the generalization.
+There are two universial inference rules for any Hindley-Milner type system.
 
 ```{definition,name="Instantiation, Generalization"}
+\begin{letIn}
+$T',T\in\mathcal{T}$ and $e:\mf{<type>}$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$
+\end{letIn}
 \begin{center}
 \begin{tabular}{c l}
 \logicRule
 {
 T' \sqsubseteq T\quad
-\Gamma\vdash\syntax{e}:T'
+\Gamma,\Delta\vdash\syntax{e}:T'
 }
-{\Gamma\vdash \syntax{e}:T}
+{\Gamma,\Delta\vdash \syntax{e}:T}
 {Instantiation}
 
 \logicRule
-{(a,\_)\not\in\Gamma\quad
-\Gamma\vdash \syntax{e}:T
+{(a,\_)\not\in\Delta\quad
+\Gamma,\Delta\vdash \syntax{e}:T
 }
-{\Gamma\vdash \syntax{e}:\mathit{\forall a.T}}
+{\Gamma,\Delta\vdash \syntax{e}:\mathit{\forall a.T}}
 {Generalization}
 \end{tabular}
 \end{center}
@@ -84,42 +87,54 @@ The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free 
 
 ```{definition,name="type inference for statement"}
 \begin{letIn}
-$T:\mathcal{T};\quad
-v:\mf{<lower-var>};\quad
-a:\mathcal{V};\quad
-e:\mf{<exp>};\quad
-s:\mf{<statement>};\quad$
+$T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>}$ and $s:\mf{<statement>}$.
+Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set and
+$\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
 
 \begin{center}
 \begin{xtabular}{c l}
 
 \logicRule
-{(v,\_)\not\in\Gamma\quad
-\Gamma\vdash\syntax{$e$}:T_1\quad
-\Gamma\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}
+{(v,\_)\not\in\Delta\quad
+\Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
+\Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}
 }
-{\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2}
+{\Delta\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2
+}
 {TConstant}
 
 \logicRule
 {
-(v,\_)\not\in\Gamma\quad
-\Gamma\vdash\syntax{$e$}:T_1\quad
-\Gamma\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}\quad
-\syntax{$t$}:T_2
+(v,\_)\not\in\Delta\quad
+\Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
+\Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}\quad
+\syntax{$t$}_\Gamma = T_2
 }
-{\Gamma\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$}:T_2}
+{\Gamma,\Delta\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$}:T_2
+}
 {TConstant2}
 
 \logicRule
-{}
-{\Gamma\vdash\syntax{"type alias" $c$ $v_1$ \dots $v_n$ "=" $t$ ";" $s$ }}
+{\begin{gathered}
+(c,T_1)\not\in\Gamma\quad
+\syntax{t}_\Gamma=T_1\\
+\forall v_1. \dots \forall v_n. T_2 = T_1\quad
+T_2 \text{ is a mono type}\quad
+\Gamma,\Delta\vdash\syntax{s}:T_3
+\end{gathered}
+}
+{\Gamma\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$ }:T_3}
 {TAlias}
 
 \logicRule
 {}
-{\Gamma\vdash\syntax{"type" $c$ $v_1$ \dots $v_n$ "=" $ls$ ";" $s$}}
+{\Gamma,\Delta\vdash\Bigg\llbracket
+\begin{aligned}
+\mf{"type"} c v_1 \dots v_n &\mf{"="} c_1 \ t_{1,1} \dots t_{1,k_1}\\
+| \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m} \mf{";"} s
+\end{aligned}\Bigg\rrbracket:T
+}
 {TCustomType}
 
 \logicRule
