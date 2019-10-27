@@ -5,6 +5,7 @@
 \usepackage{elm-highlighting}
 \usepackage{bussproofs} %prooftrees
 \usepackage{xtab} %tabular over multiple pages
+\usepackage{longtable} %tabular over multiple pages
 
 % Fonts and typesetting
 \setmainfont{TeX Gyre Pagella}
@@ -31,3 +32,76 @@
 {\newline
 \text{\textemdash}
 }
+
+% tbxtabular
+\makeatletter
+\newif\ifST@tb
+\@namedef{tbxtabular*}#1{%
+  \@ifnextchar[{\@nameuse{@tbsupertabular*}{#1}}%
+               {\@nameuse{@tbsupertabular*}{#1}[]}%]
+}
+
+\@namedef{@tbsupertabular*}#1[#2]#3{%
+  \ST@trace\tw@{Starting a new tbxtabular*}%
+  \def\ST@tableformat{#3}%
+  \ST@wd=#1\relax
+  \global\ST@startrue
+  \global\ST@tbtrue
+  \ST@rightskip \rightskip
+  \ST@leftskip \leftskip
+  \ST@parfillskip \parfillskip
+  \x@supertabular
+  \csname table*\endcsname[t]
+  \noindent\expandafter\csname org@tabular*\expandafter\endcsname
+  \expandafter{\expandafter\ST@wd\expandafter}%
+  \expandafter{\ST@tableformat}%
+  \@@tablehead}
+
+\def\endtbxtabular{%
+  \ifx\@table@last@tail\undefined
+    \@tabletail
+  \else
+    \@table@last@tail
+  \fi
+  \csname endtabular\ifST@star*\fi\endcsname
+  \csname endtable*\endcsname
+  \x@endsupertabular
+  \ST@trace\tw@{Ended an tbxtabular\ifST@star*\fi}}
+  \expandafter\let\csname endtbxtabular*\endcsname\endtbxtabular
+\def\ST@newpage{%
+  \noalign{\ST@trace\tw@{Starting new page, writing tail}}%
+  \@tabletail
+  \ifST@star
+    \csname endtabular*\endcsname
+  \else
+    \endtabular
+  \fi
+  \ifST@mp
+    \endminipage
+  \fi
+  \ifST@tb
+    \csname endtable*\endcsname
+  \fi
+  \global\let\ST@skippage\ST@newpage
+  \newpage\PWSTcalnextpageht
+  \ST@trace\tw@{writing head}%
+  \PWSTsethead
+  \ifST@mp
+    \noindent\minipage{\columnwidth}%
+    \parfillskip\ST@parfillskip
+    \rightskip \ST@rightskip
+    \leftskip \ST@leftskip
+  \fi
+  \ifST@tb
+    \noindent\csname table*\endcsname[t]
+  \fi
+  \noindent
+  \ifST@star
+    \expandafter\csname org@tabular*\expandafter\endcsname
+    \expandafter{\expandafter\ST@wd\expandafter}%
+    \expandafter{\ST@tableformat}%
+  \else
+    \expandafter\org@tabular\expandafter{\ST@tableformat}%
+  \fi}
+
+\makeatother

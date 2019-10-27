@@ -1,3 +1,5 @@
+\setcounter{section}{3}
+
 ## Hindley-Milner Type System
 
 For functional languages considered in this thesis we will use a Hindley-Milner type system [@Principal_Type-Schemes_for_Functional_Programs].
@@ -343,7 +345,7 @@ $$
 \mathrm{values}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\}) :=\\
   \big\{\{l_1=t_1,&\dots,l_n=t_n\} \ | \ \forall i\in\mathbb{N}_1^n.t_i \in\mathrm{values}_\Gamma(T_i)\big\}\\
 \mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f:\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
-\mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
+\mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,(b))\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
   &\text{ not occur in } T.
 \end{aligned}
 $$

@@ -58,7 +58,7 @@ There are two universial inference rules for any Hindley-Milner type system.
 
 ```{definition,name="Instantiation, Generalization"}
 \begin{letIn}
-$T',T\in\mathcal{T}$ and $e:\mf{<type>}$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$
+$T',T\in\mathcal{T}$ and $e\in\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$
 \end{letIn}
 \begin{center}
 \begin{tabular}{c l}
@@ -83,24 +83,32 @@ T' \sqsubseteq T\quad
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
 
-#### type inference for Statements
+### Type inference for statement
+
+The inference Rules for statements are as follows.
 
 ```{definition,name="type inference for statement"}
 \begin{letIn}
-$T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>}$ and $s:\mf{<statement>}$.
+$n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$. Let $T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$.
 Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set and
 $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
+The inference rules for statements are defined in table \ref{tab:inf_state}.
+```
+
+\tablefirsthead{Table \ref{tab:inf_state}: Inference rule for statements\\ \hline}
+\tablelasttail{\hline}
 
 \begin{center}
-\begin{xtabular}{c l}
-
+\begin{xtabular*}{\textwidth}{c l}
+\label{tab:inf_state}
+& \\
 \logicRule
 {(v,\_)\not\in\Delta\quad
 \Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
 \Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}
 }
-{\Delta\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2
+{\Delta,\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2
 }
 {TConstant}
 
@@ -109,7 +117,7 @@ $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\
 (v,\_)\not\in\Delta\quad
 \Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
 \Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}\quad
-\syntax{$t$}_\Gamma = T_2
+\syntax{$t$}_\Gamma = T_1
 }
 {\Gamma,\Delta\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$}:T_2
 }
@@ -117,134 +125,170 @@ $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\
 
 \logicRule
 {\begin{gathered}
-(c,T_1)\not\in\Gamma\quad
+(c,\_)\not\in\Gamma\quad
+(c,\_)\not\in\Delta\quad
 \syntax{t}_\Gamma=T_1\\
+T_2 \text{ is a mono type}\quad\quad
+\{v_1 \dots v_n \} = \text{free}(T_2)\\
 \forall v_1. \dots \forall v_n. T_2 = T_1\quad
-T_2 \text{ is a mono type}\quad
-\Gamma,\Delta\vdash\syntax{s}:T_3
+\Gamma\cup\{(c,(T_1))\},\Delta\cup\{(c,T_1)\}\vdash\syntax{s}:T_3
 \end{gathered}
 }
 {\Gamma\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$ }:T_3}
 {TAlias}
 
 \logicRule
-{}
+{\begin{gathered}
+(c,\_)\not\in\Gamma\quad
+(c,\_)\not\in\Delta\quad
+\{v_1 \dots v_n \} = \text{free}(T_2)\\
+\mu C.c_1 \ \syntax{$t_{1,1}$}_\Gamma \ \dots \ \syntax{$t_{1,k_1}$}_\Gamma \ | \ \dots \ | \ c_m \ \syntax{$t_{m,1}$}_\Gamma \ \dots \ \syntax{$t_{m,k_m}$}_\Gamma=T_2\\
+\forall v_1. \dots \forall v_n. T_2 = T_1\quad
+\Gamma\cup\{(c,(T_1))\},\Delta\cup\{(c,T_1)\}\vdash\syntax{s}:T_3
+\end{gathered}
+}
 {\Gamma,\Delta\vdash\Bigg\llbracket
 \begin{aligned}
-\mf{"type"} c v_1 \dots v_n &\mf{"="} c_1 \ t_{1,1} \dots t_{1,k_1}\\
-| \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m} \mf{";"} s
-\end{aligned}\Bigg\rrbracket:T
+&\mf{"type"} \ c \ v_1 \dots v_n \mf{"="}\\
+&c_1 \ t_{1,1} \dots t_{1,k_1} \ | \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m} \mf{";"} s
+\end{aligned}\Bigg\rrbracket:T_3
 }
 {TCustomType}
 
+& \\
+
 \logicRule
-{\Gamma\vdash\syntax{$e$}:T}
-{\Gamma\vdash\syntax{"main" $e$}T}
+{\Gamma,\Delta\vdash\syntax{$e$}:T}
+{\Gamma,\Delta\vdash\syntax{"main" $e$}:T}
 {TMain}
 
 \logicRule
 {
-\Gamma\vdash\syntax{$e$}:T\quad
-\Gamma\vdash\syntax{"main : " $t$}:T
+\Gamma,\Delta\vdash\syntax{$e$}:T\quad
+\syntax{$t$}_\Gamma=T
 }
-{\Gamma\vdash\syntax{"main :" $t$ "; main" $e$}:T}
+{\Gamma,\Delta\vdash\syntax{"main :" $t$ "; main" $e$}:T}
 {TMain2}
-
-\end{xtabular}
+\end{xtabular*}
 \end{center}
-```
 
-#### type inference for Expressions
+\begin{description}
+\item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evulate the next statement.
+\item[TAlias] Check if $c$ is still free. $\{v_1,\dots,v_2\}$ need to be set set of all free variables in $T_2$. If all checks are valid we add $(v,T_1)$ to the type context and evaluate the next satement.
+\item[TCustomType] Similar to [TAlias] we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as a algebraic type.
+\item[TMain,TMain2] Evaluate $e$.
+\end{description}
+
+### Type inference for expressions
+
+For the inference rules of expression we will need to introduce a pattern matching function:
+
+$$
+\text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
+$$
+for a given substitution $\Theta$.
+
+The function will be defined afterwards. For now its definition will be arbitrary.
 
 ```{definition,name="type inference for expressions"}
 \begin{letIn}
-$n\in\mathbb{N};\quad
-T:\mathcal{T};\quad
-v:\mf{<lower-var>};\quad
-a:\mathcal{V};\quad
-e:\mf{<exp>};\quad
-\forall i\in\mathbb{N}_0^3.T_i:\mathcal{T};\\
-\forall i\in\mathbb{N}_4^n.T_i:\mathcal{T};\quad
-\forall i\in\mathbb{N}_0^3.v_i:\mf{<lower-var>};\quad
-\forall i\in\mathbb{N}_4^n.v_i:\mf{<lower-var>};\\
-\forall i\in\mathbb{N}_0^3.a_i:\mathcal{V};\quad
-\forall i\in\mathbb{N}_4^n.a_i:\mathcal{V};\quad
-\forall i\in\mathbb{N}_0^3.e_i:\mf{<exp>};\quad
-\forall i\in\mathbb{N}_4^n.e_i:\mf{<exp>};\\
-p:\mf{<pattern>};\quad
-\mathit{le}:\mf{<list.exp>};\quad
-\mathit{lc}:\mf{<list-case>};\\
-\mathit{lef}:\mf{<list-exp-field>};\quad
-c:\mf{<upper-var>};\quad
-t:\mf{<type>}.$
+$n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3:\mathcal{T}$.
+Let $v,v_0,v_1,v_2,v_3:\mf{<lower-var>}$.
+Let $a,a_0,a_1,a_2,a_3:\mathcal{V}$
+Let $e,e_0,e_1,e_2,e_3:\mf{<exp>}$.
+Let $T_i:\mathcal{T}$ for all $i\in\mathbb{N}_4^n$.
+Let $v_i:\mf{<lower-var>}$ for $i\in\mathbb{N}_4^n$.
+Let $a_i:\mathcal{V}$ for all $i\in\mathbb{N}_4^n$.
+Let $e_i:\mf{<exp>}$ for all $i\in\mathbb{N}_4^n$.
+Let $p:\mf{<pattern>}$,
+$\mathit{le}:\mf{<list.exp>}$,
+$\mathit{lc}:\mf{<list-case>}$,
+$\mathit{lef}:\mf{<list-exp-field>}$,
+$c:\mf{<upper-var>}$ and
+$t:\mf{<type>}.$
+Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set and
+$\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
-\begin{center}
-\begin{xtabular}{c l}
 
+The inference rules for expressions can be found in table \ref{tab:inf_exp}.
+```
+
+\tablefirsthead{Table \ref{tab:inf_exp}: Inference rule for expressions\\ \hline}
+\tablelasttail{\hline}
+
+\begin{center}
+\begin{xtabular*}{\textwidth}{c l}
+\label{tab:inf_exp}
+&\\
 \logicRule
-{\syntax{$v$}=a
-(a,T)\in\Gamma
+{(v,T)\in\Delta
 }
-{\Gamma\vdash\syntax{$v$}:T}
+{\Gamma,\Delta\vdash\syntax{$v$}:T}
 {TVariable}
 
 \logicRule
-{\syntax{$c$}=a\quad
-(a,T)\in\Gamma
+{(v,T)\in\Delta
 }
-{\Gamma\vdash\syntax{$c$}:T}
+{\Gamma,\Delta\vdash\syntax{$c$}:T}
 {TConstructor}
 
 \logicRule
-{\Gamma\vdash match_\Theta(T_1,\syntax{$p$})\quad
-\Gamma\cup\Theta\vdash\syntax{$e$}:T_2
+{\Gamma,\Delta\vdash match_\Theta(T_1,p)\quad
+\Gamma,\Delta\cup\Theta\vdash\syntax{$e$}:T_2
 }
-{\Gamma\vdash\syntax{"\" $p$ "->" $e$}:T_1\to T_2}
+{\Gamma,\Delta\vdash\syntax{"\textbackslash" $p$ "->" $e$}:T_1\to T_2}
 {TLambda}
 
 \logicRule
-{\Gamma\vdash\syntax{$e_1$}:T_1\quad
-\Gamma\vdash\syntax{$e_2$}:T_2
+{\syntax{$e_1$}_\Gamma:T_1\quad
+\syntax{$e_2$}_\Gamma:T_2
 }
-{\Gamma\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:T_1\times T_2}
+{\Gamma,\Delta\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:\{1:T_1, 2:T_2\}}
 {TTuple}
 
 \logicRule
 {}
-{\vdash\syntax{"[]"}:\forall a.\mathit{List} \ a}
+{\Gamma,\Delta\vdash\syntax{"[]"}:\forall a.\mathit{List} \ a}
 {TEmptyList}
 
 \logicRule
 {
-\Gamma\vdash\syntax{$e$}:T\quad
-\Gamma\vdash\syntax{$\mathit{le}$}:\mathit{List} \ T
+\Gamma\vdash\syntax{$e$}:T
 }
-{\Gamma\vdash\syntax{" $e$ "," $\mathit{le}$ "}: \mathit{List} \ T}
+{\Gamma\vdash\syntax{"[" $e$ "]"}: \mathit{List} \ T}
+{TSingleList}
+
+\logicRule
+{
+\Gamma\vdash\syntax{$e$}:T\quad
+\Gamma\vdash\syntax{"[" $\mathit{le}$ "]"}:\mathit{List} \ T
+}
+{\Gamma\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}: \mathit{List} \ T}
 {TList}
 
 \logicRule
-{}
-{\vdash\syntax{$\_$:<int>}:\mathit{Int}}
+{e:\mf{<int>}}
+{\Gamma,\Delta\vdash\syntax{$e$}:\mathit{Int}}
 {TInt}
 
 \logicRule
-{}
-{\vdash\syntax{$\_$:<bool>}:\mathit{Bool}}
+{e:\mf{<bool>}}
+{\Gamma,\Delta\vdash\syntax{$e$}:\mathit{Bool}}
 {TBool}
 
 \logicRule
-{\Gamma\vdash\syntax{$e_1$}:T_1\to T_2\quad
-\Gamma\vdash\syntax{$e_2$}:T_1
+{\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\to T_2\quad
+\Gamma,\Delta\vdash\syntax{$e_2$}:T_1
 }
-{\Gamma\vdash\syntax{$e_1$ $e_2$}:T_2}
+{\Gamma,\Delta\vdash\syntax{$e_1$ $e_2$}:T_2}
 {TCall}
 
 \logicRule
-{\Gamma\vdash\syntax{$e_1$}:T_1\quad
-\Gamma\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
-\Gamma\cup\Theta\vdash\syntax{$e_2$}:T_2
+{\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
+\Gamma,\Delta\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
+\Gamma,\Delta\cup\Theta\vdash\syntax{$e_2$}:T_2
 }
-{\Gamma\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:T_2}
+{\Gamma\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:T_2}
 {TSingleCaseOf}
 
 \logicRule
@@ -409,9 +453,8 @@ T_1=\{a_2:T_2,..\}\quad
 {\vdash\syntax{"foldl"}:\forall a.\forall b.(a\to b\to b)\to b\to\mathit{List}\ a\to b}
 {TFoldl}
 
-\end{xtabular}
+\end{xtabular*}
 \end{center}
-```
 
 \begin{description}
 \item[TVariable,TConstructor] Interprete the syntactical variable and find the type in the context.
@@ -432,7 +475,7 @@ T_1=\{a_2:T_2,..\}\quad
 \end{description}
 
 ```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We can now proof the typing of the `reverse` function for $\Gamma = \varnothing$ and $T = \forall a.List a to List \ a$.
+In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We can now prove the typing of the `reverse` function for $\Gamma = \varnothing$ and $T = \forall a.List \ a \to List \ a$.
 
 \begin{lstlisting}[language=elm]
 reverse : List a -> List a
