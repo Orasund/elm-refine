@@ -34,6 +34,12 @@ knitr::opts_chunk$set(echo = FALSE)
 knitr::include_graphics('model-view-update.png')
 ```
 
+## Background: The Elm Architecture
+
+```{r gameGraph2, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics('model-view-update2.png')
+```
+
 ### Example
 
 * Online Editor: \alert{ellie-app.com}
@@ -51,7 +57,7 @@ Initial paper in 1991 by Tim Freeman and Frank Pfenning
     
 ### Example
 $$
-\{ a:(\mathit{Bool},\mathit{Bool})| \ a=(\mathit{True},\mathit{False}) \lor (a=(\mathit{False},\mathit{True})\}
+\{ a:(\mathit{Bool},\mathit{Bool})| \ a=(\mathit{True},\mathit{False}) \lor a=(\mathit{False},\mathit{True})\}
 $$
 $$
 \forall t.\{a:List \ t| a = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
@@ -130,7 +136,10 @@ The $values$ of a type is the set corresponding to the type:
 $$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
 $$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{values}_n(\mathit{List} \ \mathit{Nat})$$
 $$\text{values}_0(List \ Nat) = \{[\ ]\}$$
-$$\text{values}_n(List \ Nat) = \{[\ ]\}\cup\{Cons \ a \ b|a\in Nat,b\in values_{n-1}(List \ Nat)\}$$
+$$\begin{aligned}
+\text{values}_n&(List \ Nat) =\\
+&\{[\ ]\}\cup\{Cons \ a \ b|a\in \text{values}(Nat),b\in \text{values}_{n-1}(\textit{List} \ \textit{Nat})\}
+\end{aligned}$$
 
 ## Theory: Definition of Liquid Types
 
