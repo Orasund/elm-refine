@@ -1,0 +1,235 @@
+#### type inference for Patterns
+
+For pattern matching we do not only want to infer a type that matches the pattern, but also find all substitutions for doing so. We will see that patterns also allow for variable declarations by using the `as` keyword.
+
+```{definition,name="Type inference for pattern matching"}
+\begin{letIn}$\Theta\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
+p:\mf{<pattern>};\quad
+v:\mf{<lower-var>};\quad
+T:\mathcal{T};\\
+\forall i\in\mathbb{N}_0^2.p_i:\mf{<pattern>};\quad
+\forall i\in\mathbb{N}_3^n.p_i:\mf{<pattern>};\\
+\forall i\in\mathbb{N}_0^n.v_i:\mf{<lower-var>};\quad
+\forall i\in\mathbb{N}_0^n.T_i:\mathcal{T};\\
+\forall i\in\mathbb{N}_0^3.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\quad
+\forall i\in\mathbb{N}_4^n.\Theta_i\subseteq \mf{<lower-var>}\times\mathcal{T};\\
+lpl:\mf{<list-pattern-list>}$
+\end{letIn}
+
+we say a pattern $p$ matches a type $T$ for the context $\Gamma$ using the bindings $\Theta$ if $\Gamma\vdash \text{match}_\Theta(T,p)$.
+
+$\Theta$ contains the minimal substitutions and variable bindings needed to match the type to the pattern.
+
+Instantiation and Generalization applies to pattern matching as well.
+
+\begin{center}
+\begin{tabular}{c l}
+\logicRule
+{
+ T' \sqsubseteq T\quad
+ \Gamma\vdash \text{match}_\Theta(T',\syntax{e})
+}
+{
+  \Gamma\vdash \text{match}_\Theta(T,\syntax{e})
+}
+{PInstantiation}
+
+\logicRule
+{(a,\_)\not\in\Gamma\quad
+\Gamma\vdash \text{match}_\Theta(T,\syntax{e})
+}
+{
+  \Gamma\vdash \text{match}_\Theta(\forall a.T,\syntax{e})
+}
+{PGeneralization}
+\end{tabular}
+\end{center}
+
+The type inference rules for pattern matching are as follows
+
+\begin{center}
+\begin{xtabular}{c l}
+\logicRule
+{}
+{\vdash \text{match}_\varnothing(\mathit{Bool},$\_$:\syntax{<bool>})}
+{PBool}
+
+\logicRule{}
+{\vdash \text{match}_\varnothing(\mathit{Int},$\_$:\syntax{<int>})}
+{PInt}
+
+\logicRule{}
+{\vdash \text{match}_\varnothing(\forall a.\mathit{List} \ a,\syntax{"[]"})}
+{PEmptyList}
+
+\logicRule
+{\begin{gathered}
+\Gamma\vdash \text{match}_{\Theta_1}(T_1,\syntax{$p$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(T_2,\syntax{"[" $lpl$ "]"})\\
+\Theta_1\cap\Theta_2=\varnothing\quad
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\\
+\Theta_1\cup\Theta_2=\Theta_3\quad
+T_2 = \textit{List} \ T_1
+\end{gathered}
+}
+{\Gamma\vdash \text{match}_{\Theta_3}(T_2,\syntax{"[" $p$ "," $lpl$ "]"}
+}
+{PList}
+
+\logicRule
+{\begin{gathered}
+\Gamma\vdash \text{match}_{\Theta_1}(T_1,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(T_2,\syntax{$p_2$})\quad\\
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\quad
+\Theta_1\cup\Theta_2=\Theta_3
+\end{gathered}
+}
+{
+\Gamma\vdash \text{match}_{\Theta_3}(T_1 \times T_2,\syntax{"(" $p_1$ "," $p_2$ ")"})
+}
+{PTuple}
+
+\logicRule
+{\syntax{$v$}=a\quad
+(a,\_)\not\in\Gamma\quad
+\Theta = \{(a,T)\}
+}
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{$v$})
+}
+{PVariable}
+
+\logicRule
+{
+\syntax{$v$}=a\quad
+(v,T)\in\Gamma\quad
+}
+{
+\Gamma\vdash\text{match}_\varnothing(T,\syntax{$v$})
+}
+{PSingleApplication}
+
+\logicRule
+{
+\begin{gathered}
+\Gamma\vdash \forall i\in\mathbb{N}_1^n.\text{match}_{\Theta_i}(\syntax{$p_i$}:T_i)\quad\\
+(p_0,T_1\to \dots \to T_n\to T_0)\in\Gamma\quad\\
+\forall i\in\mathbb{N}_1^n.\forall j\in\mathbb{N}_1^n.i\neq j \Rightarrow\forall (a_1,\_)\in \Theta_i,(a_2,\_)\in\Theta_j.a_1 \neq a_2\\
+\Theta_0 = \bigcup_{i\in\mathbb{N}_1^n}\Theta_i
+\end{gathered} 
+}
+{
+\Gamma\vdash \text{match}_{\Theta_0}(T_0,\syntax{$p_0$ $p_1$ .. $p_n$})
+}
+{PApplication}
+\logicRule
+{(v,\_)\not\in\Gamma\quad
+(v,T)\in\Theta\quad
+\Gamma\vdash \text{match}_{\Theta\backslash\{(v,T)\}}(T,\syntax{$p$})
+}
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{$p$ "as" $v$})}
+{PAs}
+
+\logicRule
+{}
+{\vdash \text{match}_\varnothing(\{\},\syntax{"\{\}"})}
+{PEmptyRecord}
+
+\logicRule
+{
+\begin{gathered}
+k:\mathbb{N}_1^m\to\mathbb{N}_1^n\quad
+k \text{ is injective}\quad\quad
+\forall i\in\mathcal{N}_1^n.(v_{k(i)},\_)\not\in\Gamma\\
+\Theta = \bigcup_{i\in\mathbb{N}_1^n} \{(v_{k(i)},T_{k(i))}\}\quad
+T = \{v_1:T_1,\dots,v_n:T_n\}
+\end{gathered}
+}
+{\Gamma\vdash \text{match}_\Theta(T,\syntax{"\{" $v_{k_1}$ "," $\dots$ "," $v_{k_m}$ "\}"})
+}
+{PRecord}
+
+\logicRule
+{
+\begin{gathered}
+\Gamma\vdash \text{match}_{\Theta_1}(T,\syntax{$p_1$})\quad
+\Gamma\vdash \text{match}_{\Theta_2}(List \ T,\syntax{$p_2$})\quad\\
+\forall (a_1,\_)\in \Theta_1,(a_2,\_)\in\Theta_2.a_1 \neq a_2\quad
+\Theta_1\cup\Theta_2=\Theta_3
+\end{gathered}
+}
+{
+\Gamma\vdash \text{match}_{\Theta_3}(\textit{List} \ T,\syntax{$p_1$ "::" $p_2$})
+}
+{PHeadAndTail}
+
+\logicRule
+{}
+{\Gamma\vdash \text{match}_\varnothing(\forall a. a,\syntax{"\_"})}
+{PWildcard}
+
+
+
+\end{xtabular}
+\end{center}
+```
+
+\begin{description}
+\item[PBool,PInt,PEmptyList] The type of literals can be infered without any restrictions.
+\item[PList,PTuple] Recursively we need to ensure that every element has the same type. Additionally every binding needs to be unique.
+\item[PVariable] If the variable is not yet bound in context, will can be added to $\Theta$.
+\item[PSingleApplication] A single application ist just a Terminal. Its type is defined in the context $\Gamma$.
+\item[PApplication] For a generell application the constructor can again be found in the context.Again we need to ensure that the elements of all $\Theta_i$ sets are unique in the first element.
+\item[PAs] We bind the variable in $\Theta$ and then ensure that it can not be bound again. Note that binding are done bottom up, so $\Theta$ contains all bindings that occure in $p$.
+\item[PEmptyRecord] The empty record ist just a literal.
+\item[PRecord] Here the variable names and the field names are the same. For every field that we name, the type will be bound to the variable that has the same name. This requires that all the field names are not yet bound in $\Gamma$.
+\item[PHeadAndTail] This is the same as $\mathit{[PList]}$ with the difference that now we intentially look at one elment at a time, where as PList has already given the length of the list.
+\item[PWildcard] Anything is allowed, thus we infere the smalles type: $\forall a.a$.
+\end{description}
+
+```{block2, type="myexample",latex.options="_"}
+In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. Now we can check the type of the following pattern matching code.
+
+\begin{lstlisting}[language=elm]
+  case [1,2,3] |> reverse of
+  [
+    a :: _ ->
+      a;
+    _ ->
+      -1
+  ]
+\end{lstlisting}
+  
+Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$ and $\Gamma = \varnothing$.
+
+We start by proving $\vdash \text{match}_\varnothing(\mathit{List} \ \mathit{Int},\syntax{"\_"})$.
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+  \RightLabel{$\mathit{[PWildcard]}$}
+  \UnaryInfC{$\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
+\RightLabel{$\mathit{[PInstantiation]}$}
+\UnaryInfC{$\vdash \text{match}_\varnothing(\textit{List} \ \text{Int},\syntax{"\_"})$}
+\end{prooftree}
+\end{center}
+
+Next we prove $\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{\(a\):<lower-var> " :: \_"})$ for $\Theta=\{(a,\textit{Int})\}$.
+
+\begin{center}
+\begin{prooftree}
+    \AxiomC{$\top$}
+    \UnaryInfC{$(a,\_)\not\in\varnothing$}
+    \LeftLabel{$(4)$}
+  \UnaryInfC{$\vdash \text{match}_\Theta(\textit{Int},\syntax{a})$}
+    \AxiomC{$\top$}
+  \UnaryInfC{$\Theta\cap\varnothing=\varnothing$}
+      \AxiomC{$\top$}
+    \RightLabel{$(3)$}
+    \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
+  \RightLabel{$(2)$}
+  \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\textit{List} \ \textit{Int},\syntax{"\_"})$}
+\RightLabel{$(1)$}
+\TrinaryInfC{$\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{a:<lower-var> " :: \_"})$}
+\end{prooftree}
+\end{center}
+$(1) \mathit{[PHeadAndTail]}, (2) \mathit{[PInstantiation]}, (3) \mathit{[PWildcard]},(4) \mathit{[PVariable]}$
+```
