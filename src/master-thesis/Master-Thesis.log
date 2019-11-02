@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  2 NOV 2019 14:21
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  2 NOV 2019 15:16
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -2776,9 +2776,9 @@ Package mdframed Info: mdframed detected package amsthm
 ]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 467.
+(mdframed)              on input line 466.
 
-Underfull \hbox (badness 1184) in paragraph at lines 470--472
+Underfull \hbox (badness 1184) in paragraph at lines 469--471
 []\TU/TeXGyrePagella(0)/m/n/10.95 Let  $\OML/lmm/m/it/10.95 T[]; T \OMS/lmsy/m/
 n/10.95 2 T$ \TU/TeXGyrePagella(0)/m/n/10.95 and $\OML/lmm/m/it/10.95 e \OMS/lm
 sy/m/n/10.95 2 []\OT1/lmr/m/n/10.95 ([]) \OMS/lmsy/m/n/10.95 [ []\OT1/lmr/m/n/1
@@ -2786,7 +2786,7 @@ sy/m/n/10.95 2 []\OT1/lmr/m/n/10.95 ([]) \OMS/lmsy/m/n/10.95 [ []\OT1/lmr/m/n/1
  []
 
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 9.59915pt on input line 480.
+(Font)              scaled to size 9.59915pt on input line 479.
 Package microtype Info: Character `ﬆ' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -2878,39 +2878,39 @@ Package microtype Info: Character `―' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 480.
+(Font)              <10> on input line 479.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 480.
+(Font)              <7> on input line 479.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 6.7194pt on input line 480.
+(Font)              scaled to size 6.7194pt on input line 479.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 4.79958pt on input line 480.
+(Font)              scaled to size 4.79958pt on input line 479.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 504.
+(mdframed)              on input line 503.
 
-Underfull \hbox (badness 10000) in alignment at lines 522--522
+Underfull \hbox (badness 10000) in alignment at lines 521--521
 [][]
  []
 
 [2]
-Underfull \hbox (badness 10000) in alignment at lines 522--591
+Underfull \hbox (badness 10000) in alignment at lines 521--590
 [][]
  []
 
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 615.
+(mdframed)              on input line 614.
 [3]
-Package mdframed Info: Not enough space on this page on input line 638.
+Package mdframed Info: Not enough space on this page on input line 637.
 
-Underfull \hbox (badness 10000) in alignment at lines 644--732
+Underfull \hbox (badness 10000) in alignment at lines 643--731
 [][]
  []
 
 [4]
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/it' will be
-(Font)              scaled to size 9.32907pt on input line 793.
+(Font)              scaled to size 9.32907pt on input line 792.
 Package microtype Info: Character `‥' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -2984,21 +2984,21 @@ Package microtype Info: Character `―' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
 (microtype)             Ignoring protrusion settings for this character.
 
-Overfull \hbox (4.39735pt too wide) in alignment at lines 732--866
+Overfull \hbox (4.39735pt too wide) in alignment at lines 731--865
 [][]
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 885--886
+Underfull \hbox (badness 10000) in paragraph at lines 884--885
 []\TU/TeXGyrePagella(0)/m/n/10.95 These
  []
 
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 889.
+(mdframed)              on input line 888.
 
 LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 88
-9.
+8.
 
 \myBox1=\box106
 \myScoreStart1=\dimen331
@@ -3010,7 +3010,7 @@ LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 88
 \myScoreEnd2=\dimen336
 [6]
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/sc' will be
-(Font)              scaled to size 10.51106pt on input line 926.
+(Font)              scaled to size 10.51106pt on input line 925.
 Package microtype Info: Character `ﬆ' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/sc/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -3108,11 +3108,11 @@ Package microtype Info: Character `ﬆ' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/sc/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 929.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 929.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 928.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 928.
 (master-thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 929.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 929.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 928.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 928.
 Package rerunfilecheck Info: File `master-thesis.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
 
@@ -3127,8 +3127,8 @@ Package logreq Info: Writing requests to 'master-thesis.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
  45742 strings out of 427748
- 879354 string characters out of 3146823
- 1501856 words of memory out of 3000000
+ 879351 string characters out of 3146823
+ 1501845 words of memory out of 3000000
  49217 multiletter control sequences out of 15000+200000
  592255 words of font info for 111 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191

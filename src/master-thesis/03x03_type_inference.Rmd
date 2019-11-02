@@ -52,9 +52,9 @@ for some nonempty set $A$. We will discuss the definition of such a function as 
 $\Delta:\mathcal{V} \nleftrightarrow \mathcal{T}$ is called the _variable context_.
 ```
 
-Types are typically inferred using so called _inference rules_ \cite{Types_and_Programming_Languages}. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find the most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the inference rules. This is called _type inference_.
+Types are typically inferred using so called _typing rules_ \cite{Types_and_Programming_Languages}. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find the most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the typing rules. This is called _type inference_.
 
-There are two universal inference rules for any Hindley-Milner type system.
+There are two universal typing rules for any Hindley-Milner type system.
 
 ```{definition,name="Instantiation, Generalization"}
 \begin{letIn}
@@ -83,21 +83,21 @@ T' \sqsubseteq T\quad
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be inferred, then the same holds for a poly type, binding the free variable.
 
-### Type inference for statement
+### Typing rules for statements
 
-The inference rules for statements are as follows.
+The typing rules for statements are as follows.
 
-```{definition,name="type inference for statement"}
+```{definition,name="typing rules for statements"}
 \begin{letIn}
 $n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$.
 Let $T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$.
 Let $\Gamma$ be a type context and $\Delta$ a variable context.
 Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
-The inference rules for statements are defined in table \ref{tab:inf_state}.
+The typing rules for statements are defined in table \ref{tab:inf_state}.
 ```
 
-\tablefirsthead{Table \ref{tab:inf_state}: Inference rule for statements\\ \hline}
+\tablefirsthead{Table \ref{tab:inf_state}: Typing rules for statements\\ \hline}
 \tablelasttail{\hline}
 
 \begin{center}
@@ -180,9 +180,9 @@ T_2 \text{ is a mono type}\quad\quad
 \item[TMain,TMain2] Evaluate $e$.
 \end{description}
 
-### Type inference for expressions
+### Typing rules for expressions
 
-For the inference rules of expressions we will need to introduce a pattern matching function:
+For the typing rules of expressions we will need to introduce a pattern matching function:
 
 $$
 \text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
@@ -210,10 +210,10 @@ Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set
 $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
 
-The inference rules for expressions can be found in table \ref{tab:inf_exp}.
+The typing rules for expressions can be found in table \ref{tab:inf_exp}.
 ```
 
-\tablefirsthead{Table \ref{tab:inf_exp}: Inference rule for expressions\\ \hline}
+\tablefirsthead{Table \ref{tab:inf_exp}: Typing rules for expressions\\ \hline}
 \tablelasttail{\hline}
 
 \begin{center}
