@@ -16,7 +16,7 @@ e \in values_\Gamma(T)
 $$
 ```
 
-Next we will need the semantics of $mf{<type>}, namely a function that maps $\text{value}(\mf{<type>})$ to $\mathcal{T}$. Note that the general discussion about semantics will occur in a later section of this chapter.
+Next we will need the semantics of $\mf{<type>}$, namely a function that maps $\text{value}(\mf{<type>})$ to $\mathcal{T}$. Note that the general discussion about semantics will occur in a later chapter.
 
 ```{definition,name="Semantics of <type>"}
 \begin{letIn}
@@ -41,20 +41,20 @@ $$
 We say $\syntax{.}_\Gamma$ is the _interpretation_ of \mf{<type>}. For any $t\in\mf{<type>}$,we call \(\syntax{$t$}_\Gamma\) the _semantic_ of $t$.
 ```
 
-For this section we will also use a interpretation function for expressions
+For this section we will also use an interpretation function for expressions
 
 $$
 \syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A
 $$
-for some non empty set $A$. We will discuss the definition of such a function as well as the definition of $A$ in the next chapter. For now they will be arbitary.
+for some nonempty set $A$. We will discuss the definition of such a function as well as the definition of $A$ in the next chapter. For now, they will be arbitrary.
 
 ```{definition,name="Variable Context"}
 $\Delta:\mathcal{V} \nleftrightarrow \mathcal{T}$ is called the _variable context_.
 ```
 
-Types are typically infered using so called _inference rules_. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find to most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the inference rules. This is called _type inference_ \cite{Types_and_Programming_Languages}.
+Types are typically inferred using so called _inference rules_ \cite{Types_and_Programming_Languages}. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find the most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the inference rules. This is called _type inference_.
 
-There are two universial inference rules for any Hindley-Milner type system.
+There are two universal inference rules for any Hindley-Milner type system.
 
 ```{definition,name="Instantiation, Generalization"}
 \begin{letIn}
@@ -81,17 +81,18 @@ T' \sqsubseteq T\quad
 ```
 
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
-The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be infered, then the same holds for a poly type, binding the free variable.
+The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be inferred, then the same holds for a poly type, binding the free variable.
 
 ### Type inference for statement
 
-The inference Rules for statements are as follows.
+The inference rules for statements are as follows.
 
 ```{definition,name="type inference for statement"}
 \begin{letIn}
-$n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$. Let $T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$.
-Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set and
-$\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
+$n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$.
+Let $T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$.
+Let $\Gamma$ be a type context and $\Delta$ a variable context.
+Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
 The inference rules for statements are defined in table \ref{tab:inf_state}.
 ```
@@ -134,7 +135,7 @@ T_2 \text{ is a mono type}\quad\quad
 \Gamma\cup\{(c,(T_1))\},\Delta\cup\{(c,T_1)\}\vdash\syntax{s}:T_3
 \end{gathered}
 }
-{\Gamma\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$ }:T_3}
+{\Gamma\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$}:T_3}
 {TAlias}
 
 \logicRule
@@ -173,15 +174,15 @@ T_2 \text{ is a mono type}\quad\quad
 \end{center}
 
 \begin{description}
-\item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evulate the next statement.
-\item[TAlias] Check if $c$ is still free. $\{v_1,\dots,v_2\}$ need to be the set of all free variables in $T_2$. If all checks are valid we add $(v,T_1)$ to the type context and evaluate the next satement.
-\item[TCustomType] Similar to [TAlias] we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as a algebraic type.
+\item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evaluate the next statement.
+\item[TAlias] Check if $c$ is still free. $\{v_1,\dots,v_2\}$ needs to be the set of all free variables in $T_2$. If all checks are valid we add $(v,T_1)$ to the type context and evaluate the next statement.
+\item[TCustomType] Similar to [TAlias] we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as an algebraic type.
 \item[TMain,TMain2] Evaluate $e$.
 \end{description}
 
 ### Type inference for expressions
 
-For the inference rules of expression we will need to introduce a pattern matching function:
+For the inference rules of expressions we will need to introduce a pattern matching function:
 
 $$
 \text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
@@ -194,7 +195,6 @@ The function will be defined afterwards. For now its definition will be arbitrar
 \begin{letIn}
 $n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3:\mathcal{T}$.
 Let $v,v_0,v_1,v_2,v_3:\mf{<lower-var>}$.
-Let $a,a_0,a_1,a_2,a_3:\mathcal{V}$
 Let $e,e_0,e_1,e_2,e_3:\mf{<exp>}$.
 Let $T_i:\mathcal{T}$ for all $i\in\mathbb{N}_4^n$.
 Let $v_i:\mf{<lower-var>}$ for $i\in\mathbb{N}_4^n$.
@@ -227,12 +227,6 @@ The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 {TVariable}
 
 \logicRule
-{(v,T)\in\Delta
-}
-{\Gamma,\Delta\vdash\syntax{$c$}:T}
-{TConstructor}
-
-\logicRule
 {\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
 \Gamma,\Delta\cup\Theta\vdash\syntax{$e$}:T_2
 }
@@ -253,17 +247,17 @@ The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 
 \logicRule
 {
-\Gamma\vdash\syntax{$e$}:T
+\Gamma,\Delta\vdash\syntax{$e$}:T
 }
-{\Gamma\vdash\syntax{"[" $e$ "]"}: \mathit{List} \ T}
+{\Gamma,\Delta\vdash\syntax{"[" $e$ "]"}: \mathit{List} \ T}
 {TSingleList}
 
 \logicRule
 {
-\Gamma\vdash\syntax{$e$}:T\quad
-\Gamma\vdash\syntax{"[" $\mathit{le}$ "]"}:\mathit{List} \ T
+\Gamma,\Delta\vdash\syntax{$e$}:T\quad
+\Gamma,\Delta\vdash\syntax{"[" $\mathit{le}$ "]"}:\mathit{List} \ T
 }
-{\Gamma\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}: \mathit{List} \ T}
+{\Gamma,\Delta\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}: \mathit{List} \ T}
 {TList}
 
 \logicRule
@@ -359,7 +353,7 @@ T_1=\{v_2:T_2,..\}\quad
 {TEmptyRecord}
 
 \logicRule
-\Gamma,\Delta\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:T_i
+{\Gamma,\Delta\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:T_i
 }
 {\Gamma,\Delta\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," \dots "," $v_n$ "=" $e_n$ "\}"}:\{v_1:T_1,\dots,v_n:T_n\}
 }
@@ -449,35 +443,34 @@ T_1=\{v_2:T_2,..\}\quad
 \end{center}
 
 \begin{description}
-\item[TVariable,TConstructor] Interprete the syntactical variable and find the type in the context.
-\item[TLambda] Elm allows the parameters of a function to be pattern matched. Therefore we first need to find a patching type $T_1$ and can then infer the type of $e$ by including the additional bindings $\Theta$ to the context.
-\item[TEmptyList] The empty list is a literal for every list, therefore we can infer the most general of all lists.
-\item[TList] Recursively we check that every element has the same type.
-\item[TInt,TBool] The type of Literals infered without any restrictions.
+\item[TVariable] Find the type in the context.
+\item[TLambda] Elm allows the parameters of a function to be pattern matched. Therefore, we first need to find a matching type $T_1$ and can then infer the type of $e$ by including the additional bindings $\Theta$ to the context.
+\item[TTuple] Find the types of $e_1$ and $e_2$, then construct the tuple.
+\item[TEmptyList] The empty list is a literal for every list, therefore we can infer the list poly type.
+\item[TSingleList,TList] Recursively we check that every element has the same type.
+\item[TInt,TBool] The type of literals can be inferred without any restrictions.
 \item[TCall] The first expression needs to be a function that the the second type can be passed to.
 \item[TSingleCaseOf,TCaseOf] First match the type of the expression $e_1$ to the pattern, then use the additional bindings $\Theta$ to obtain the type of $e_2$. As all patterns need to have the same type, we can then recursively check the other patterns as well.
-\item[TLetIn,TLetIn2] The variable $v$ may not have a value assined in the conext $\Gamma$. If so, we can infer the type $T_1$ of $e_1$ and add $(v,T_1)$ to the context before we evaluate $e_2$. For $[TLetIn2]$ we already the type is already given as $t$. Note that $t$ can more specific as the type we would usually infer.
+\item[TLetIn,TLetIn2] The variable $v$ may not have a value assined in the conext $\Gamma$. If so, we can infer the type $T_1$ of $e_1$ and add $(v,T_1)$ to the context before we evaluate $e_2$. For $[TLetIn2]$ we already the type is already given as $t$. Note that $t$ can be more specific as the type we would usually infer.
 \item[TGetter] The second variable $v_2$ is a label of the record, that is bound to $v_1$.
-\item[TSingleSetter,TSetter] Setters can not change the type in Elm. But we still need to ensure that the field are also correctly typed.
-\item[TElmptyRecord] The empty record is a type with just a single element.
-\item[TRecord] Each field and its value must be given at the same time. Thats why we can not use a recursive definition.
+\item[TSingleSetter,TSetter] Setters can not change the type in Elm. But we still need to ensure that the fields are also correctly typed.
+\item[TElmptyRecord] The empty record can be directly infered, as it has only one element.
+\item[TRecord] Each field and its value must be given at the same time. That is why we can not use a recursive definition.
 \item[TIfElse] The first expression $e_1$ needs to be a boolean and the branches $e_2,e_3$ must have the same type.
 \item[TComposition,TPipe] The pipe applies the first expression to the second. The composition is similar to the pipe, but results in a function.
 \item[TOr,TAnd,TNot,TEqual,TDivide,TMultiply,TMinus,TPlus,TCons,TFoldl] These functions can be seen as lambda function literals.
 \end{description}
 
 ```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We can now prove the typing of the `reverse` function for $\Gamma = \varnothing$ and $T = \forall a.List \ a \to List \ a$.
+In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now prove the typing of the `reverse` function for $\Gamma = \varnothing$, $\Delta = \varnothing$ and $T = \forall a.List \ a \to List \ a$.
 
 \begin{lstlisting}[language=elm]
 reverse : List a -> List a
 reverse =
-  foldl
-    (::)
-    []
+  foldl (::) []
 \end{lstlisting}
 
-We will add brackets around $foldl (::)$ to make it more readable. The bracket do not change the type inference or evaluation. Let $T_1 = \mathit{List} \ a$, $T_0 = \mathit{List} \ a \to \mathit{List} \ a$ and $T_2 = a \to \mathit{List} \ a \to \mathit{List} \ a$
+Let $T_1 = \mathit{List} \ a$, $T_0 = \mathit{List} \ a \to \mathit{List} \ a$ and $T_2 = a \to \mathit{List} \ a \to \mathit{List} \ a$
 
 \begin{center}
 \small
