@@ -3,78 +3,120 @@
 
 ## Type Inference
 
-We will now discuss the methods used to infer a type from a given expression.
+Lets assume we can define a function
 
-```{definition,name="Type of an expression"}
+$$
+\syntax{.}:\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})\to A
+$$
+where $\Gamma$ is a type context and $A$ is a nonempty set. We call such a function an _interpretation_ and for a given $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}$ we refer to \(\syntax{$e$}\) as being the _semantic_ of $e$. We will discuss the definition of such a function as well as the definition of $A$ in the next section.
+
+Instead we are more intested in the judgment $\syntax{e}\in \text{values}_\Gamma(T)$ for a given type $T$ a type context $\Gamma$ and an expression $e$. For now lets assume that the definition of $A$ actually allows this.
+
+### Typing Judgments
+
+The judgment can arise from set of logical inference rules \cite{Types_and_Programming_Languages}.
+
+```{definition,name="inference rules"}
+\begin{letIn}
+$n\in\mathbb{N}$, $P_i$ be a sequents for all $i\in\mathbb{N}$.
+Let $C$ be a sequent.
+\end{letIn}
+We call
+$$
+\frac
+{P_1 \dots P_n}
+{C}
+$$
+a _inference rule_.
+```
+
+We will see that the initial judgment is dependent on another context, this time for variables instead of types:
+
+```{definition,name="Variable Context"}
+$\Delta\in\mathcal{V} \nrightarrow \mathcal{T}$ is called the _variable context_.
+```
+
+We also introduce a new syntax for saying a value is of some type.
+```{definition,name="type of value"}
 \begin{letIn}
 $T \in\mathcal{T}$. Let $\Gamma$ be a type context. Let $e$ be arbitary.
 \end{letIn}
-We say $e$ _is of type_ $T$ _in the context of_ $\Gamma$ (Notation: $e:T$)$:\Leftrightarrow$
+We say $e$ _is of type_ $T$ _in the context of_ $\Gamma$ (Notation: $e:_\Gamma T$)$:\Leftrightarrow$
   
 $$
-e \in values_\Gamma(T)
+e \in \text{values}_\Gamma(T)
 $$
+  
+Is $\Gamma = \varnothing$ then we may write $e:T$ instead of $e:_\Gamma T$.
 ```
 
-Next we will need the semantics of $\mf{<type>}$, namely a function that maps $\text{value}(\mf{<type>})$ to $\mathcal{T}$. Note that the general discussion about semantics will occur in a later chapter.
+The judgment in question is now are more general case of the orignal question, namely
+
+$$
+\Delta\vdash\syntax{e}:_\Gamma T
+$$
+where $\Gamma$ is a type context, $\Delta$ is a variable context,  $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})$ and $T$ is a type. Note that the values of `<program>` and `<expression>` are disjoint and therefore we will look at $e:\mf{<program>}$ and $e:\mf{<expression>}$ seperatly.
+
+If the type $T$ is known then we talk about _type checking_ else we call the judgment a _type inference_. For infering a type, the result is not nessarly unique, that is why we might only want to find the most general type, meaning a type $T_1$ such that
+
+$$
+(\forall T_2\in\mathcal{T}\land T_1\sqsubseteq T_2.e:_\Gamma T_2) \land (\forall T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1. \exists T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3.\neg (e:_\Gamma T_3)).
+$$
+
+### Auxiliary Definitions
+
+We will need the semantics of $\mf{<type>}$, namely a function that maps $\text{values}_\Gamma(\mf{<type>})$ to $\mathcal{T}$.
 
 ```{definition,name="Semantics of <type>"}
 \begin{letIn}
 $n\in\mathbb{N}$. Let $t,t_1,t_2:\mf{<type>}$ and $c:\mf{<upper-var>}$.
-Let $t_i:\mf{<type>}$ for all $i\in\mathbb{N}_3^n$ and $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$.Let $\Gamma$ be a type context. Let $\mathit{Nat}=\mu C.1 \ | \ \mathit{Succ} \ C$.
+Let $t_i:\mf{<type>}$ for all $i\in\mathbb{N}_3^n$ and $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $C$ be a symbol. Let $\Gamma$ be a type context. Let $\mathit{Nat}=\mu C.1 \ | \ \mathit{Succ} \ C$.
 \end{letIn}
 We define
 
 $$
 \begin{aligned}
-  \syntax{.}_\Gamma:&\text{value}(\mf{<type>})\to\mathcal{T}\\
+  \syntax{.}_\Gamma: \ &\text{values}_\Gamma(\mf{<type>})\to\mathcal{T}\\
   \syntax{Bool}_\Gamma =& \mu\_.\mathit{True}\ | \ \mathit{False}\\
   \syntax{Int}_\Gamma =& \mu\_.0 \ | \ \mathit{Pos} \ \mathit{Nat} | \mathit{Neg} \ \mathit{Nat}\\
   \syntax{List}_\Gamma =& \forall a.\mu C.[ \ ] \ | \ \mathit{Cons} \ a \ C\\
-  \syntax{"(" $t_1$ , $t_2$ ")"}_\Gamma =& \{1:\syntax{$t_1$}, 2: \syntax{$t_2$}\}\\
+  \syntax{"(" $t_1$ , $t_2$ ")"}_\Gamma =& \{1:\syntax{$t_1$}_\Gamma, 2: \syntax{$t_2$}_\Gamma\}\\
   \syntax{"\{\}"}_\Gamma =& \mathit{\{\}}\\
   \syntax{"\{" $v_1$ ":" $t_1$ "," $\dots$ "," $v_n$ ":" $t_n$ "\}"}_\Gamma =& \{v_1:\syntax{$t_1$}_\Gamma , \dots , v_n:\syntax{$t_n$}_\Gamma\}\\
   \syntax{$t_1$ "->" $t_2$}_\Gamma =& \syntax{$t_1$}_\Gamma \to \syntax{$t_2$}_\Gamma\\
-  \syntax{$c \ t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(a_1,\dots,a_n)
+  \syntax{$c \ t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(t_1,\dots,t_n)
 \end{aligned}
 $$
-We say $\syntax{.}_\Gamma$ is the _interpretation_ of \mf{<type>}. For any $t\in\mf{<type>}$,we call \(\syntax{$t$}_\Gamma\) the _semantic_ of $t$.
 ```
 
-For this section we will also use an interpretation function for expressions
+Additionally, we will need to introduce a pattern matching function:
 
 $$
-\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A
+\text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
 $$
-for some nonempty set $A$. We will discuss the definition of such a function as well as the definition of $A$ in the next chapter. For now, they will be arbitrary.
+for a given substitution $\Theta$. The function will be defined afterwards. For now its definition will be arbitrary.
 
-```{definition,name="Variable Context"}
-$\Delta:\mathcal{V} \nleftrightarrow \mathcal{T}$ is called the _variable context_.
-```
-
-Types are typically inferred using so called _typing rules_ \cite{Types_and_Programming_Languages}. Using these rules we can construct a truth tree, who's leafs are axioms, to prove that $\Delta\vdash\syntax{e}:T$ for an expression $e$, a type $T$, a variable context $\Delta$ and a interpretation function for expressions $\Delta$. Such a proving process is called _type checking_. It is also possible to find the most general $T$ such that $\Delta\vdash\syntax{e}:T$ using the typing rules. This is called _type inference_.
-
-There are two universal typing rules for any Hindley-Milner type system.
+We can already state two universal inference rules for any Hindley-Milner type system.
 
 ```{definition,name="Instantiation, Generalization"}
 \begin{letIn}
-$T',T\in\mathcal{T}$ and $e\in\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$
+$T',T\in\mathcal{T}$ and $e\in\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})\to A$
 \end{letIn}
 \begin{center}
 \begin{tabular}{c l}
 \logicRule
 {
 T' \sqsubseteq T\quad
-\Gamma,\Delta\vdash\syntax{e}:T'
+\Delta\vdash\syntax{e}:_\Gamma T'
 }
-{\Gamma,\Delta\vdash \syntax{e}:T}
+{\Delta\vdash \syntax{e}:_\Gamma T}
 {Instantiation}
 
 \logicRule
 {(a,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash \syntax{e}:T
+\Delta\vdash \syntax{e}:_\Gamma T
 }
-{\Gamma,\Delta\vdash \syntax{e}:\mathit{\forall a.T}}
+{\Delta\vdash \syntax{e}:_\Gamma \mathit{\forall a.T}}
 {Generalization}
 \end{tabular}
 \end{center}
@@ -83,95 +125,101 @@ T' \sqsubseteq T\quad
 The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be inferred, then the same holds for a poly type, binding the free variable.
 
-### Typing rules for statements
+### Inference Rules for programs
 
-The typing rules for statements are as follows.
+The inference rules for programs will done statement for statement. Note that every statement has one rule that can be applied, statement with optional parameters have a rule with and one without the optional parameter.
 
-```{definition,name="typing rules for statements"}
+```{definition,name="Inference rules for programs"}
 \begin{letIn}
 $n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$.
-Let $T,T_1,T_2,T_3:\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$.
+Let $T,T_1,T_2,T_3\in\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<list-statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$. Let $mt:\mf{<maybe-main-sign>}$ and $me:\mf{<exp>}$.
 Let $\Gamma$ be a type context and $\Delta$ a variable context.
-Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
+Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
-The typing rules for statements are defined in table \ref{tab:inf_state}.
+The inference rules for programs are defined in table \ref{tab:inf_state}.
 ```
 
-\tablefirsthead{Table \ref{tab:inf_state}: Typing rules for statements\\ \hline}
-\tablelasttail{\hline}
-
-\begin{center}
-\begin{xtabular*}{\textwidth}{c l}
+\begin{table}
+\caption{Inference rules for programs}
 \label{tab:inf_state}
+\begin{center}
+\begin{tabular}{c l}
+\hline
 & \\
 \logicRule
-{(v,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
-\Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}
+{\begin{gathered}
+(v,\_)\not\in\Delta\quad
+\Delta\vdash\syntax{$e$}:_\Gamma T_1\\
+\Delta\cup\{(v,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_\Gamma T_2
+\end{gathered}
 }
-{\Delta,\Gamma\vdash\syntax{$v$ "=" $e$ ";" $s$}:T_2
+{\Delta\vdash\syntax{$v$ "=" $e$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_2
 }
 {TConstant}
 
 \logicRule
-{
+{\begin{gathered}
 (v,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash\syntax{$e$}:T_1\quad
-\Gamma,\Delta\cup\{(v,T_1)\vdash\syntax{$s$}:T_2\}\quad
-\syntax{$t$}_\Gamma = T_1
+\Delta\vdash\syntax{$e$}:_\Gamma T_1\quad
+\syntax{$t$}_\Gamma = T_1\\
+\Delta\cup\{(v,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_\Gamma T_2\quad
+\end{gathered}
 }
-{\Gamma,\Delta\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$}:T_2
+{\Delta\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_2
 }
 {TConstant2}
 
 \logicRule
 {\begin{gathered}
 (c,\_)\not\in\Gamma\quad
-(c,\_)\not\in\Delta\quad
-\syntax{t}_\Gamma=T_1\\
-T_2 \text{ is a mono type}\quad\quad
-\{v_1 \dots v_n \} = \text{free}(T_2)\\
-\forall v_1. \dots \forall v_n. T_2 = T_1\quad
-\Gamma\cup\{(c,(T_1))\},\Delta\cup\{(c,T_1)\}\vdash\syntax{s}:T_3
+(c,\_)\not\in\Delta\\
+\syntax{t}_\Gamma=T_1\quad
+T_2 \text{ is a mono type}\\
+\{v_1 \dots v_n \} = \text{free}(T_2)\quad
+\forall v_1. \dots \forall v_n. T_2 = T_1\\
+\Delta\cup\{(c,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_{\Gamma\cup\{(c,(T_1))\}}T_3
 \end{gathered}
 }
-{\Gamma\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$}:T_3}
+{\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_3}
 {TAlias}
 
 \logicRule
 {\begin{gathered}
 (c,\_)\not\in\Gamma\quad
 (c,\_)\not\in\Delta\quad
-\{v_1 \dots v_n \} = \text{free}(T_2)\\
+\{v_1 \dots v_n \} = \text{free}(T_2)\quad
+\forall v_1. \dots \forall v_n. T_2 = T_1\\
 \mu C.c_1 \ \syntax{$t_{1,1}$}_\Gamma \ \dots \ \syntax{$t_{1,k_1}$}_\Gamma \ | \ \dots \ | \ c_m \ \syntax{$t_{m,1}$}_\Gamma \ \dots \ \syntax{$t_{m,k_m}$}_\Gamma=T_2\\
-\forall v_1. \dots \forall v_n. T_2 = T_1\quad
-\Gamma\cup\{(c,(T_1))\},\Delta\cup\{(c,T_1)\}\vdash\syntax{s}:T_3
+\Delta\cup\{(c,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_{\Gamma\cup\{(c,(T_1))\}}T_3
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\Bigg\llbracket
+{\Delta\vdash\Bigg\llbracket
 \begin{aligned}
 &\mf{"type"} \ c \ v_1 \dots v_n \mf{"="}\\
-&c_1 \ t_{1,1} \dots t_{1,k_1} \ | \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m} \mf{";"} s
-\end{aligned}\Bigg\rrbracket:T_3
+&c_1 \ t_{1,1} \dots t_{1,k_1} \ | \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m}\\ &\mf{";"} s \ mt \mf{"main = "} me
+\end{aligned}\Bigg\rrbracket:_\Gamma T_3
 }
 {TCustomType}
 
 & \\
 
 \logicRule
-{\Gamma,\Delta\vdash\syntax{$e$}:T}
-{\Gamma,\Delta\vdash\syntax{"main" $e$}:T}
+{\Delta\vdash\syntax{$e$}:_\Gamma T}
+{\Delta\vdash\syntax{"main = " $e$}:_\Gamma T}
 {TMain}
 
 \logicRule
 {
-\Gamma,\Delta\vdash\syntax{$e$}:T\quad
+\Delta\vdash\syntax{$e$}:_\Gamma T\quad
 \syntax{$t$}_\Gamma=T
 }
-{\Gamma,\Delta\vdash\syntax{"main :" $t$ "; main" $e$}:T}
+{\Delta\vdash\syntax{"main :" $t$ "; main = " $e$}:_\Gamma T}
 {TMain2}
-\end{xtabular*}
+
+\hline
+\end{tabular}
 \end{center}
+\end{table}
 
 \begin{description}
 \item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evaluate the next statement.
@@ -180,20 +228,13 @@ T_2 \text{ is a mono type}\quad\quad
 \item[TMain,TMain2] Evaluate $e$.
 \end{description}
 
-### Typing rules for expressions
+### Inference Rules for Expressions
 
-For the typing rules of expressions we will need to introduce a pattern matching function:
+In the inference rules $[TConstant],[TConstant2]$ and $[Main],[Main2]$ we used a judgment for expression. We will now give the corresponding inference rules. As before, each expression has one or two rules depending on optional parameters
 
-$$
-\text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
-$$
-for a given substitution $\Theta$.
-
-The function will be defined afterwards. For now its definition will be arbitrary.
-
-```{definition,name="type inference for expressions"}
+```{definition,name="type Inference for expressions"}
 \begin{letIn}
-$n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3:\mathcal{T}$.
+$n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3\in\mathcal{T}$.
 Let $v,v_0,v_1,v_2,v_3:\mf{<lower-var>}$.
 Let $e,e_0,e_1,e_2,e_3:\mf{<exp>}$.
 Let $T_i:\mathcal{T}$ for all $i\in\mathbb{N}_4^n$.
@@ -210,15 +251,17 @@ Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set
 $\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
 \end{letIn}
 
-The typing rules for expressions can be found in table \ref{tab:inf_exp}.
+The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 ```
 
-\tablefirsthead{Table \ref{tab:inf_exp}: Typing rules for expressions\\ \hline}
+
+\topcaption{Inference rules for expressions}\label{tab:inf_exp}
+\tablefirsthead{\hline}
 \tablelasttail{\hline}
 
 \begin{center}
 \begin{xtabular*}{\textwidth}{c l}
-\label{tab:inf_exp}
+
 &\\
 \logicRule
 {(v,T)\in\Delta
