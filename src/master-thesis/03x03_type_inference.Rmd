@@ -3,22 +3,22 @@
 
 ## Type Inference
 
-Lets assume we can define a function
+Let us assume we can define a _interpretation_ function
 
 $$
 \syntax{.}:\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})\to A
 $$
-where $\Gamma$ is a type context and $A$ is a nonempty set. We call such a function an _interpretation_ and for a given $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}$ we refer to \(\syntax{$e$}\) as being the _semantic_ of $e$. We will discuss the definition of such a function as well as the definition of $A$ in the next section.
+where $\Gamma$ is a type context and $A$ is a non-empty set. We will discuss the definition of such a function as well as the definition of $A$ in the next section.
 
-Instead we are more intested in the judgment $\syntax{e}\in \text{values}_\Gamma(T)$ for a given type $T$ a type context $\Gamma$ and an expression $e$. For now lets assume that the definition of $A$ actually allows this.
+In this section we are more interested in the judgment $\syntax{e}\in \text{values}_\Gamma(T)$ for a given type $T$ a type context $\Gamma$ and an expression $e$. For now let us assume that the definition of $A$ actually allows this.
 
 ### Typing Judgments
 
-The judgment can arise from set of logical inference rules \cite{Types_and_Programming_Languages}.
+A judgment can arise from a set of logical inference rules \cite{Types_and_Programming_Languages}.
 
 ```{definition,name="inference rules"}
 \begin{letIn}
-$n\in\mathbb{N}$, $P_i$ be a sequents for all $i\in\mathbb{N}$.
+$n\in\mathbb{N}$, $P_i$ be sequents for all $i\in\mathbb{N}$.
 Let $C$ be a sequent.
 \end{letIn}
 We call
@@ -27,10 +27,12 @@ $$
 {P_1 \dots P_n}
 {C}
 $$
-a _inference rule_.
+an _inference rule_.
 ```
 
-We will see that the initial judgment is dependent on another context, this time for variables instead of types:
+If a judgment holds, then there exists a set of logical inference rules that proves it.
+
+We will see that the initial judgment ($\syntax{e}\in \text{values}_\Gamma(T)$) is dependent on another context, this time for variables instead of types:
 
 ```{definition,name="Variable Context"}
 $\Delta\in\mathcal{V} \nrightarrow \mathcal{T}$ is called the _variable context_.
@@ -50,17 +52,17 @@ $$
 Is $\Gamma = \varnothing$ then we may write $e:T$ instead of $e:_\Gamma T$.
 ```
 
-The judgment in question is now are more general case of the orignal question, namely
+The judgment in question can now be expressed more generally as
 
 $$
 \Delta\vdash\syntax{e}:_\Gamma T
 $$
-where $\Gamma$ is a type context, $\Delta$ is a variable context,  $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})$ and $T$ is a type. Note that the values of `<program>` and `<expression>` are disjoint and therefore we will look at $e:\mf{<program>}$ and $e:\mf{<expression>}$ seperatly.
+where $\Gamma$ is a type context, $\Delta$ is a variable context,  $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})$ and $T$ is a type. Note that we originally assumed $\Delta = \varnothing$. Also, note that the values of `<program>` and `<expression>` are disjoint and therefore we will look at $e:\mf{<program>}$ and $e:\mf{<expression>}$ separately.
 
-If the type $T$ is known then we talk about _type checking_ else we call the judgment a _type inference_. For infering a type, the result is not nessarly unique, that is why we might only want to find the most general type, meaning a type $T_1$ such that
+If the type $T$ is known then we talk about _type checking_ else we call the judgment a _type inference_. For inferring a type, the result is not necessary unique, that is why we might only want to find the most general type, meaning a type $T_1$ such that
 
 $$
-(\forall T_2\in\mathcal{T}\land T_1\sqsubseteq T_2.e:_\Gamma T_2) \land (\forall T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1. \exists T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3.\neg (e:_\Gamma T_3)).
+\underbrace{(\forall T_2\in\mathcal{T}\land T_1\sqsubseteq T_2.e:_\Gamma T_2)}_{T_1 \text{ is a infered type}} \land \underbrace{(\forall T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1. \exists T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3.\neg (e:_\Gamma T_3))}_{T_1 \text{ is sharp}}.
 $$
 
 ### Auxiliary Definitions
@@ -122,10 +124,10 @@ T' \sqsubseteq T\quad
 \end{center}
 ```
 
-The $[\mathit{Instantiation}]$ rule says that if a type can be infered, the same holds for a more specific type.
+The $[\mathit{Instantiation}]$ rule says that if a type can be inferred, the same holds for a more specific type.
 The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be inferred, then the same holds for a poly type, binding the free variable.
 
-### Inference Rules for programs
+### Inference Rules for Programs
 
 The inference rules for programs will done statement for statement. Note that every statement has one rule that can be applied, statement with optional parameters have a rule with and one without the optional parameter.
 
@@ -224,15 +226,15 @@ T_2 \text{ is a mono type}\\
 \begin{description}
 \item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evaluate the next statement.
 \item[TAlias] Check if $c$ is still free. $\{v_1,\dots,v_2\}$ needs to be the set of all free variables in $T_2$. If all checks are valid we add $(v,T_1)$ to the type context and evaluate the next statement.
-\item[TCustomType] Similar to [TAlias] we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as an algebraic type.
+\item[TCustomType] Similar to $[\mathit{TAlias}]$ we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as an algebraic type.
 \item[TMain,TMain2] Evaluate $e$.
 \end{description}
 
 ### Inference Rules for Expressions
 
-In the inference rules $[TConstant],[TConstant2]$ and $[Main],[Main2]$ we used a judgment for expression. We will now give the corresponding inference rules. As before, each expression has one or two rules depending on optional parameters
+In the inference rules $[\mathit{TConstant}],[\mathit{TConstant2}]$ and $[\mathit{Main}],[\mathit{Main2}]$ we used a judgment for expressions. We will now give the corresponding inference rules. As before, each expression has one or two rules depending on optional parameters.
 
-```{definition,name="type Inference for expressions"}
+```{definition,name="Inference rules for expressions"}
 \begin{letIn}
 $n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3\in\mathcal{T}$.
 Let $v,v_0,v_1,v_2,v_3:\mf{<lower-var>}$.
@@ -266,87 +268,85 @@ The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 \logicRule
 {(v,T)\in\Delta
 }
-{\Gamma,\Delta\vdash\syntax{$v$}:T}
+{\Delta\vdash\syntax{$v$}:_\Gamma T}
 {TVariable}
 
 \logicRule
 {\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\Delta\cup\Theta\vdash\syntax{$e$}:T_2
+\Delta\cup\Theta\vdash\syntax{$e$}:_\Gamma T_2
 }
-{\Gamma,\Delta\vdash\syntax{"\textbackslash" $p$ "->" $e$}:T_1\to T_2}
+{\Delta\vdash\syntax{"\textbackslash" $p$ "->" $e$}:_\Gamma T_1\to T_2}
 {TLambda}
 
 \logicRule
 {\syntax{$e_1$}_\Gamma:T_1\quad
 \syntax{$e_2$}_\Gamma:T_2
 }
-{\Gamma,\Delta\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:\{1:T_1, 2:T_2\}}
+{\Delta\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:_\Gamma\{1:T_1, 2:T_2\}}
 {TTuple}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\syntax{"[]"}:\forall a.\mathit{List} \ a}
+{\Delta\vdash\syntax{"[]"}:_\Gamma\forall a.\mathit{List} \ a}
 {TEmptyList}
 
 \logicRule
-{
-\Gamma,\Delta\vdash\syntax{$e$}:T
-}
-{\Gamma,\Delta\vdash\syntax{"[" $e$ "]"}: \mathit{List} \ T}
+{\Delta\vdash\syntax{$e$}:_\Gamma T}
+{\Delta\vdash\syntax{"[" $e$ "]"}:_\Gamma \mathit{List} \ T}
 {TSingleList}
 
 \logicRule
 {
-\Gamma,\Delta\vdash\syntax{$e$}:T\quad
-\Gamma,\Delta\vdash\syntax{"[" $\mathit{le}$ "]"}:\mathit{List} \ T
+\Delta\vdash\syntax{$e$}:_\Gamma T\quad
+\Delta\vdash\syntax{"[" $\mathit{le}$ "]"}:_\Gamma \mathit{List} \ T
 }
-{\Gamma,\Delta\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}: \mathit{List} \ T}
+{\Delta\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}:_\Gamma \mathit{List} \ T}
 {TList}
 
 \logicRule
 {e:\mf{<int>}}
-{\Gamma,\Delta\vdash\syntax{$e$}:\mathit{Int}}
+{\Delta\vdash\syntax{$e$}:_\Gamma \mathit{Int}}
 {TInt}
 
 \logicRule
 {e:\mf{<bool>}}
-{\Gamma,\Delta\vdash\syntax{$e$}:\mathit{Bool}}
+{\Delta\vdash\syntax{$e$}:_\Gamma \mathit{Bool}}
 {TBool}
 
 \logicRule
-{\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\to T_2\quad
-\Gamma,\Delta\vdash\syntax{$e_2$}:T_1
+{\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\to T_2\quad
+\Delta\vdash\syntax{$e_2$}:_\Gamma T_1
 }
-{\Gamma,\Delta\vdash\syntax{$e_1$ $e_2$}:T_2}
+{\Delta\vdash\syntax{$e_1$ $e_2$}:_\Gamma T_2}
 {TCall}
 
 \logicRule
-{\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
+{\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
 \Gamma,\Delta\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
-\Gamma,\Delta\cup\Theta\vdash\syntax{$e_2$}:T_2
+\Delta\cup\Theta\vdash\syntax{$e_2$}:_\Gamma T_2
 }
-{\Gamma,\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:T_2}
+{\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:_\Gamma T_2}
 {TSingleCaseOf}
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
+\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
 \Gamma,\Delta\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
-\Gamma,\Delta\cup\Theta\vdash\syntax{$e_2$}:T_2\\
-\Gamma,\Delta\vdash\syntax{"case" $e_1$ "of" "[" $\mathit{lc}$ "]"}:T_2
+\Delta\cup\Theta\vdash\syntax{$e_2$}:_\Gamma T_2\\
+\Delta\vdash\syntax{"case" $e_1$ "of" "[" $\mathit{lc}$ "]"}:_\Gamma T_2
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ ";" $\mathit{lc}$ "]"}:T_2}
+{\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ ";" $\mathit{lc}$ "]"}:_\Gamma T_2}
 {TCaseOf}
 
 \logicRule
 {
 (v,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
-\Gamma,\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
+\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
+\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:_\Gamma T_2
 }
 {
-\Gamma,\Delta\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:T_2
+\Delta\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:_\Gamma T_2
 }
 {TLetIn}
 
@@ -354,40 +354,40 @@ The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 {\begin{gathered}
 (v,\_)\not\in\Delta\quad
 \syntax{$t$}_\Gamma = T_1\quad
-\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
-\Gamma,\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:T_2
+\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
+\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:_\Gamma T_2
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:T_2
+{\Delta\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:_\Gamma T_2
 }
 {TLetIn2}
 
 \logicRule
 {(v_1,\{v_2:T,\dots\})\in\Delta
 }
-{\Gamma,\Delta\vdash\syntax{$v_1$ "." $v_2$}:T}
+{\Delta\vdash\syntax{$v_1$ "." $v_2$}:_\Gamma T}
 {TGetter}
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta\vdash\syntax{$e$}:T_2\\
+\Delta\vdash\syntax{$e$}:_\Gamma T_2\\
 T_1=\{v_2:T_2,\dots\}\quad
 (v_1,T_1)\in\Delta
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\syntax{"\{" $v1$ "|" $v2$ "=" $e$ "\}"}:T_1}
+{\Delta\vdash\syntax{"\{" $v1$ "|" $v2$ "=" $e$ "\}"}:_\Gamma T_1}
 {TSingleSetter}
 
 \logicRule
 {\begin{gathered}
 \mathit{lef}:\mf{<list-exp-field>}\quad
-\Gamma,\Delta\vdash\syntax{$e$}:T_2\\
+\Delta\vdash\syntax{$e$}:_\Gamma T_2\\
 T_1=\{v_2:T_2,..\}\quad
 (v_1,T_1)\in\Delta\quad
-\Gamma,\Delta\vdash\syntax{"\{" $v$ "|" $\mathit{lef}$ "\}"}:T_1
+\Delta\vdash\syntax{"\{" $v$ "|" $\mathit{lef}$ "\}"}:_\Gamma T_1
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\syntax{"\{" $v$ "|" $v2$ "=" $e$ "," $\mathit{lef}$ "\}"}:T_1}
+{\Delta\vdash\syntax{"\{" $v$ "|" $v2$ "=" $e$ "," $\mathit{lef}$ "\}"}:_\Gamma T_1}
 {TSetter}
 
 \logicRule
@@ -396,35 +396,35 @@ T_1=\{v_2:T_2,..\}\quad
 {TEmptyRecord}
 
 \logicRule
-{\Gamma,\Delta\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:T_i
+{\Delta\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:_\Gamma T_i
 }
-{\Gamma,\Delta\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," \dots "," $v_n$ "=" $e_n$ "\}"}:\{v_1:T_1,\dots,v_n:T_n\}
+{\Delta\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," \dots "," $v_n$ "=" $e_n$ "\}"}:_\Gamma \{v_1:T_1,\dots,v_n:T_n\}
 }
 {TRecord}
 
 \logicRule
 {
-\Gamma,\Delta\vdash\syntax{$e_1$}:\textit{Bool}\quad
-\Gamma,\Delta\vdash\syntax{$e_2$}:T\quad
-\Gamma,\Delta\vdash\syntax{$e_3$}:T
+\Delta\vdash\syntax{$e_1$}:_\Gamma\textit{Bool}\quad
+\Delta\vdash\syntax{$e_2$}:_\Gamma T\quad
+\Delta\vdash\syntax{$e_3$}:_\Gamma T
 }
-{\Gamma,\Delta\vdash\syntax{"if" $e_1$ "then" $e_2$ "else" $e_3$}:T}
+{\Delta\vdash\syntax{"if" $e_1$ "then" $e_2$ "else" $e_3$}:_\Gamma T}
 {TIfElse}
 
 \logicRule
 {
-\Gamma,\Delta\vdash\syntax{$e_1$}:T_1 \to T_2\quad
-\Gamma,\Delta\vdash\syntax{$e_2$}:T_2 \to T_3
+\Delta\vdash\syntax{$e_1$}:_\Gamma T_1 \to T_2\quad
+\Delta\vdash\syntax{$e_2$}:_\Gamma T_2 \to T_3
 }
-{\Gamma,\Delta\vdash\syntax{$e_1$ ">>" $e_2$}:T_1 \to T_3}
+{\Delta\vdash\syntax{$e_1$ ">>" $e_2$}:_\Gamma T_1 \to T_3}
 {TComposition}
 
 \logicRule
 {
-\Gamma,\Delta\vdash\syntax{$e_1$}:T_1\quad
-\Gamma,\Delta\vdash\syntax{$e_2$}:T_1 \to T_2
+\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
+\Delta\vdash\syntax{$e_2$}:_\Gamma T_1 \to T_2
 }
-{\Gamma,\Delta\vdash\syntax{$e_1$ "|>" $e_2$}:T_2}
+{\Delta\vdash\syntax{$e_1$ "|>" $e_2$}:_\Gamma T_2}
 {TPipe}
 
 \logicRule
