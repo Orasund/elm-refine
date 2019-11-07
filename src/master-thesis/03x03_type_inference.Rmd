@@ -291,11 +291,6 @@ The inference rules for expressions can be found in table \ref{tab:inf_exp}.
 {TEmptyList}
 
 \logicRule
-{\Delta\vdash\syntax{$e$}:_\Gamma T}
-{\Delta\vdash\syntax{"[" $e$ "]"}:_\Gamma \mathit{List} \ T}
-{TSingleList}
-
-\logicRule
 {
 \Delta\vdash\syntax{$e$}:_\Gamma T\quad
 \Delta\vdash\syntax{"[" $\mathit{le}$ "]"}:_\Gamma \mathit{List} \ T
