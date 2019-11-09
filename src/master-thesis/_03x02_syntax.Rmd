@@ -1,21 +1,17 @@
+\setcounter{section}{3}
 \setcounter{subsection}{1}
 
 ## Syntax
 
-Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-var>`$\in\mathcal{T}$ for variables with the first letter capitalized and `<lower-var>`$\in\mathcal{T}$ for variables without.
+Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-var>` for variables with the first letter capitalized and `<lower-var>` for variables without.
 
 Syntactically we can build our types from booleans, integers, lists, tuples, records, functions, custom types and type variables.
 
 We will define our syntax in a Backus-Naur-Form [@backus-naur-form].
 
 ```{definition,name="Type Signiture Syntax"}
-We define the following types:
-$$
-  \mf{<upper-var>}\in\mathcal{T}
-$$
-$$
-  \mf{<lower-var>}\in\mathcal{T}
-$$
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
+  
 $$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
 $$
 \begin{aligned}
@@ -41,7 +37,7 @@ $$
 For matching expressions we allow various pattern.
 
 ```{definition,name="Pattern Syntax"}
-We define the following types:
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
 $$
 \begin{aligned}
 \mf{<list-pattern-list>} \ ::=& \ \mf{""} \ | \ \mf{<pattern> "," <list-pattern-list>}
@@ -71,10 +67,27 @@ $$
 
 Because Elm is a pure functional programming language, a program contains just a single expression.
 
-\begin{figure}[htbp]
-\begin{mdframed}
-\begin{center}
-\begin{align*}
+
+```{definition,name="Expression Syntax"}
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
+$$
+\begin{aligned}
+\mf{<list-exp-field>} \ ::=& \ \mf{<lower-var> "=" <exp>} \\
+                          |& \ \mf{<lower-var> "=" <exp> "," <list-exp-field>}
+\end{aligned}
+$$
+$$\mf{<maybe-signature>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
+$$
+\begin{aligned}
+\mf{<list-case>} \ ::=& \ \mf{<pattern> "->" <exp>}\\ 
+                     |& \ \mf{<pattern> "->" <exp> ";" <list-case>}
+\end{aligned}
+$$
+$$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
+$$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
+$$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
+$$
+\begin{aligned}
 \mf{<exp>} \ ::=& \ \mf{"foldl"}\\
                |& \ \mf{"(::)"}\\
                |& \ \mf{"(+)"} \ | \ \mf{"(-)"} \ | \ \mf{"(*)"} \ | \ \mf{"(//)"}\\
@@ -97,39 +110,14 @@ Because Elm is a pure functional programming language, a program contains just a
                |& \ \mf{"\textbackslash" <pattern> "->" <exp>}\\
                |& \ \mf{<upper-var>}\\
                |& \ \mf{<lower-var>}
-\end{align*}
-\end{center}
-\end{mdframed}
-\caption{Syntax for Expressions}
-\label{fig:exp-syntax}
-\end{figure}
-
-```{definition,name="Expression Syntax"}
-We define the following types:
-$$
-\begin{aligned}
-\mf{<list-exp-field>} \ ::=& \ \mf{<lower-var> "=" <exp>} \\
-                          |& \ \mf{<lower-var> "=" <exp> "," <list-exp-field>}
 \end{aligned}
 $$
-$$\mf{<maybe-signature>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
-$$
-\begin{aligned}
-\mf{<list-case>} \ ::=& \ \mf{<pattern> "->" <exp>}\\ 
-                     |& \ \mf{<pattern> "->" <exp> ";" <list-case>}
-\end{aligned}
-$$
-$$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
-$$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
-$$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
-
-The definition of `<exp>` can be found in figure \ref{fig:exp-syntax}.
 ```
 
 Additionally, Elm also allows global constants, type aliases and custom types.
 
 ```{definition,name="Statement Syntax"}
-We define the following types:
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
 $$
 \begin{aligned}
 \mf{<list-sort>} ::=& \mf{<upper-var> <list-type>} \\

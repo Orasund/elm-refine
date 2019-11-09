@@ -3,34 +3,55 @@
 
 ## Type Inference
 
-Let us assume we can define a _interpretation_ function
-
-$$
-\syntax{.}:\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})\to A
-$$
-where $\Gamma$ is a type context and $A$ is a non-empty set. We will discuss the definition of such a function as well as the definition of $A$ in the next section.
-
-In this section we are more interested in the judgment $\syntax{e}\in \text{values}_\Gamma(T)$ for a given type $T$ a type context $\Gamma$ and an expression $e$. For now let us assume that the definition of $A$ actually allows this.
+In the first section of this chapter we definied a type system, in the second section we introduced a syntax for our language. Now we want to define rules how to obtain the type of a given program written in our langauge.
 
 ### Typing Judgments
 
-A judgment can arise from a set of logical inference rules \cite{Types_and_Programming_Languages}.
+To state that a program $p$ is of type $T$ (and therefor well-formed) we write
 
-```{definition,name="inference rules"}
-\begin{letIn}
-$n\in\mathbb{N}$, $P_i$ be sequents for all $i\in\mathbb{N}$.
-Let $C$ be a sequent.
-\end{letIn}
-We call
+\begin{equation}
+p:T
+\end{equation}
+
+We call such statements a judgment. Judgments are generally written in meta-language , thus we also need to provide a system of inference rules how to infer such a judgment. These _inferene rules_ have the following form
+
 $$
 \frac
 {P_1 \dots P_n}
 {C}
 $$
-an _inference rule_.
-```
+where $P_1$ up to $P_n$ are premises and $C$ is a conclusion.
 
-If a judgment holds, then there exists a set of logical inference rules that proves it.
+We can read it in both ways:
+
+* "if all premises hold then the conclusion holds as well" or
+* "to prove the conclusion we need to prove all premises"
+
+The premises as well as the conclusion are sequents, meaning a meta-langauge statement in the following form
+
+$$A_1,\dots,A_n \vdash B.$$
+
+Such a sequent would be generally read as "If we know $A_1,\dots,A_n$, then we can prove B".
+
+we will now provide a judgment for every production rule definied in the last section.
+
+#### Type Signiture Judments
+
+Let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$.
+
+For $l\in\mf{<list-lower-var>}$ the judgment is
+$$l:(a_1,\dots,a_n).$$
+
+For $l\in\mf{<list-type-fields>}$ the judgment is
+$$\Gamma\vdash l:\{a_1:T_1,\dots,a_n:T_n\}.$$
+
+For $l\in\mf{<list-type>}$ the judgment is
+$$\Gamma\vdash l:(T_1,\dots,T_n)$$
+
+For $t\in\mf{<txpe>}$ the judgment is
+$$\Gamma\vdash t:T$$
+
+#### Pattern Judgments
 
 We will see that the initial judgment ($\syntax{e}\in \text{values}_\Gamma(T)$) is dependent on another context, this time for variables instead of types:
 
