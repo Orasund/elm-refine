@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  10 NOV 2019 13:22
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  10 NOV 2019 17:15
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -2751,20 +2751,15 @@ Package mdframed Info: mdframed detected package amsthm
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/bx/n' will be
 (Font)              scaled to size 10.39528pt on input line 468.
 [2] [3] [4]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 697.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 697.
+
+LaTeX Warning: Empty bibliography on input line 692.
+
 [5]
-
-LaTeX Warning: Empty bibliography on input line 705.
-
-[6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 708.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 708.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 695.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 695.
 (master-thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 708.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 708.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 695.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 695.
 Package rerunfilecheck Info: File `master-thesis.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
 Package logreq Info: Writing requests to 'master-thesis.run.xml'.
@@ -2772,12 +2767,12 @@ Package logreq Info: Writing requests to 'master-thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 45390 strings out of 427748
- 872662 string characters out of 3146823
- 1484586 words of memory out of 3000000
- 48880 multiletter control sequences out of 15000+200000
- 575295 words of font info for 87 fonts, out of 3000000 for 9000
+ 45343 strings out of 427748
+ 871966 string characters out of 3146823
+ 1483586 words of memory out of 3000000
+ 48846 multiletter control sequences out of 15000+200000
+ 558426 words of font info for 72 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 83i,12n,116p,9114b,969s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 83i,8n,116p,9114b,969s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on master-thesis.pdf (6 pages).
+Output written on master-thesis.pdf (5 pages).

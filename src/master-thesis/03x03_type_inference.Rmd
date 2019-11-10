@@ -3,7 +3,7 @@
 
 ## Type Inference
 
-In the first section of this chapter we definied a type system, in the second section we introduced a syntax for our language. Now we want to define rules how to obtain the type of a given program written in our langauge.
+In the first section of this chapter we defined a type system, in the second section we introduced a syntax for our language. Now we want to define rules how to obtain the type of a given program written in our language.
 
 ### Typing Judgments
 
@@ -11,7 +11,7 @@ To state that a program $e$ is of type $T$ (and therefor well-formed) we write
 
 $$e:T$$
 
-We call such statements a judgment. Judgments are generally written in meta-language , thus we also need to provide a system of inference rules how to infer such a judgment. These _inferene rules_ have the following form
+We call such a statement a judgment. Judgments are generally written in meta-language, thus we also need to provide a system of inference rules how to infer such a judgment. These _inference rules_ have the following form
 
 $$
 \frac
@@ -20,22 +20,22 @@ $$
 $$
 where $P_1$ up to $P_n$ are premises and $C$ is a conclusion.
 
-We can read it in both ways:
+We can read it in two ways:
 
 * "if all premises hold then the conclusion holds as well" or
 * "to prove the conclusion we need to prove all premises"
 
-The premises as well as the conclusion are sequents, meaning a meta-langauge statement in the following form
+The premises as well as the conclusion are  meta-language statements in the following form
 
 $$A_1,\dots,A_n \vdash B.$$
 
-Such a sequent would be generally read as "If we know $A_1,\dots,A_n$, then we can prove B".
+Such a sequent would be generally read as "If we know $A_1,\dots,A_n$ then we can prove B".
 
-we will now provide a judgment for every production rule definied in the last section.
+We will now provide a judgment for every production rule defined in the last section.
 
-#### Type Signiture Judments
+#### Type Signiture Judgments
 
-For type signiture judments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
+For type signiture judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
 
 For $l\in\mf{<list-lower-var>}$ the judgment is
 $$l:(a_1,\dots,a_n).$$
@@ -57,11 +57,11 @@ We will now introduce another context, this time for variables instead of types:
 $\Delta\in\mathcal{V} \nrightarrow \mathcal{T}$ is called the _variable context_.
 ```
 
-For pattern judments, let $\Gamma$ be a type context and $\Delta,\Theta$ be variable contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
+For pattern judgments, let $\Gamma$ be a type context and $\Delta,\Theta$ be variable contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
 
 For $l\in\mf{<list-pattern-list>}$ the judgment is
 $$\Gamma,\Delta\vdash:\text{match}_\Theta ((T_1,\dots,T_n),l).$$
-This can be read as "Given $\Gamma$ and $\Delta$,we can match $(T_1,\dots,T_n)$ with the pattern $l$ by using the variable context $\Theta$".
+This can be read as "given $\Gamma$ and $\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $l$ by using the variable context $\Theta$".
 
 For $l\in\mf{<list-pattern-sort>}$ the judgment is
 $$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),l)$$
@@ -74,7 +74,7 @@ $$\Gamma,\Delta\vdash\text{match}_\Theta(T,p)$$
 
 #### Expression Judgments
 
-For expression judments, let $\Gamma$ be a type context, $\Delta$ be a variable context, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
+For expression judgments, let $\Gamma$ be a type context, $\Delta$ be a variable context, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
 
 For $l\in\mf{<list-exp-field>}$ the judgment is
 $$\Gamma,\Delta\vdash l:\{a_1:T_1,\dots, a_n:T_n\}$$
@@ -98,14 +98,14 @@ $$\Gamma,\Delta\vdash l:(T_1,\dots,T_n)$$
 For $e\in\mf{<exp>}$ the judgment is
 $$\Gamma,\Delta\vdash e:T$$
 
-If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type infering_. For inferring a type (for the judgment $\Gamma,\Delta\vdash e:T$), the result is not necessary unique. Therefore we want to find the most general type, meaning a type $T_1$ such that
+If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type inferring_. For inferring a type (for the judgment $\Gamma,\Delta\vdash e:T$), the result is not necessary unique. Therefore, we want to find the most general type, meaning a type $T_1$ such that
 
-* $T_1$ is a infered type: for all $T_2\in\mathcal{T}\land T_1\sqsubseteq T_2$ the judgment $\Gamma,\Delta\vdash e:T_2$ holds.
+* $T_1$ is an inferred type: for all $T_2\in\mathcal{T}\land T_1\sqsubseteq T_2$ the judgment $\Gamma,\Delta\vdash e:T_2$ holds.
 * $T_1$ is sharp: for all $T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1$ we can find $T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3$ such that the judgment $\Gamma,\Delta\vdash e:T_3$ does not hold.
 
 #### Statement Judgments
 
-For expression judments, let $\Gamma,\Gamma_1,\Gamma_2$ be type contexts, $\Delta,\Delta_1,\Delta_2$ be a variable contexts, $T,T_1,T_2\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$
+For statement judgments, let $\Gamma,\Gamma_1,\Gamma_2$ be type contexts, $\Delta,\Delta_1,\Delta_2$ be a variable contexts, $T,T_1,T_2\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$
 and $T_{i,j}\in\mathcal{T}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N},j\in\mathbb{N}_0^{k_i}$ and $k_i\in\mathbb{N}$.
 
 For $l\in\mf{<list-sort>}$ the judgment is
@@ -131,9 +131,9 @@ $$e:T$$
 
 We will use $(e,T)\in\Gamma$ and $(e,T)\in\Delta$ to denote that a tuple $(e,T)$ exists in $\Gamma$ or $\Delta$. We will also sometimes use a wildcard $\_$ instead of a T if we are only interested in e.
 
-We will use $T_1 \sqsubseteq T_2$ for given types $T_1,T_2$ to denote that $T_1$ is more general then $T_2$.
+We will use $T_1 \sqsubseteq T_2$ for given types $T_1,T_2$ to denote that $T_1$ is more general than $T_2$.
 
-We will use "$T \text{ is a mono type}$" as well as type equivanence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
+We will use "$T \text{ is a mono type}$", $T \text{ is a type variable}$ and type equivalence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
 
 We will use ${a_1,\dots,a_n}=\text{free}(T)$ to get all free variables of $T$.
 
@@ -152,7 +152,7 @@ For an empty list we return the empty tuple.
 {l:(a_1,\dots,a_n)\quad (a_0,a_1,\dots,a_n)=T}
 {a_0 \ l:T}
 {}
-For a non empty list, we append the head $a$ to the type $T$ of the tail $l$.
+For a nonempty list, we append the head $a$ to the type $T$ of the tail $l$.
 
 #### list-type-fields
 
@@ -171,7 +171,7 @@ Judgment: $\Gamma\vdash l:\{a_1:T_1,\dots,a_n:T_n\}$
 {\Gamma\vdash a_0 \ \mf{":"} \ t \ \mf{","} \ l:T}
 {}
 
-The type context $\Gamma$ is used in the judgment $\Gamma\vdash t:T_0$ that turns the type signiture $t$ into a type $T_0$.
+The type context $\Gamma$ is used in the judgment $\Gamma\vdash t:T_0$ that turns the type signature $t$ into a type $T_0$.
 
 #### list-type
 
@@ -219,7 +219,7 @@ The resulting type is a type application $\mathit{List} \ T$ for the type $\math
 
 \logicRule
 {\Gamma\vdash l:T}
-{\Gamma\vdash\mf{"{"} l \mf{"}"}:T}
+{\Gamma\vdash\mf{"\{"} l \mf{"\}"}:T}
 {}
 
 \logicRule
@@ -232,7 +232,7 @@ The resulting type is a type application $\mathit{List} \ T$ for the type $\math
 \logicRule
 {(c,f)\in\Gamma\quad
 \Gamma\vdash l:(T_1,\dots,T_n)\quad
-f T_1 \dots T_n = T
+f \ T_1 \dots T_n = T
 }
 {\Gamma\vdash c \ l:T}
 {}
@@ -244,4 +244,4 @@ T \text{ is a type variable}
 }
 {\Gamma\vdash a:T}
 {}
-For a given type $T$ we write the appication constructor as $(T)$.
+For a given type $T$ we write the application constructor as $(T)$.
