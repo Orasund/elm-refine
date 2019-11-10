@@ -17,10 +17,22 @@
 \newcommand{\logicRule}[3]{
   \ifstrempty{#1}
   {
-    \small{$#2$}& \small{$[\mathit{#3}]$}\\[10pt]
+    \ifstrempty{#3}
+    {
+      \[#2\]
+    }
+    {
+      \[\tag*{[#3]} #2\]
+    }
   }
   {
-    \small{$\dfrac{#1}{#2}$}&\small{$[\mathit{#3}]$}\\[20pt]
+    \ifstrempty{#3}
+    {
+      \[\dfrac{#1}{#2}\]
+    }
+    {
+      \[\tag*{[#3]} \dfrac{#1}{#2}\]
+    }
   }
   
 }

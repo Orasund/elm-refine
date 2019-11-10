@@ -76,7 +76,7 @@ $$
                           |& \ \mf{<lower-var> "=" <exp> "," <list-exp-field>}
 \end{aligned}
 $$
-$$\mf{<maybe-signature>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
+$$\mf{<maybe-exp-sign>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
 $$
 \begin{aligned}
 \mf{<list-case>} \ ::=& \ \mf{<pattern> "->" <exp>}\\ 
@@ -100,7 +100,7 @@ $$
                |& \ \mf{"\{\}"}\\
                |& \ \mf{"\{" <lower-var> "|" <list-exp-field> "\}"}\\
                |& \ \mf{<lower-var> "." <lower-var>}\\
-               |& \ \mf{"let" <maybe-signature> <lower-var> "=" <exp> "in" <exp>}\\
+               |& \ \mf{"let" <maybe-exp-sign> <lower-var> "=" <exp> "in" <exp>}\\
                |& \ \mf{"case" <exp> "of" "[" <list-case> "]"}\\
                |& \ \mf{<exp> <exp>}\\
                |& \ \mf{<bool>}\\
@@ -131,7 +131,12 @@ $$
 $$
 $$
 \begin{aligned}
-\mf{<statement>} \ ::=& \ \mf{<maybe-signature> <lower-var> "=" <exp>}\\
+  \mf{<maybe-statement-sign>} \ ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}\\
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\mf{<statement>} \ ::=& \ \mf{<maybe-statement-sign> <lower-var> "=" <exp>}\\
                      |& \ \mf{"type" "alias" <upper-var> <list-lower-var>}\\
                       &\quad\mf{"=" <type>}\\
                      |& \ \mf{"type" <upper-var> <list-lower-var>}\\

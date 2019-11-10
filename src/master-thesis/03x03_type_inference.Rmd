@@ -7,11 +7,9 @@ In the first section of this chapter we definied a type system, in the second se
 
 ### Typing Judgments
 
-To state that a program $p$ is of type $T$ (and therefor well-formed) we write
+To state that a program $e$ is of type $T$ (and therefor well-formed) we write
 
-\begin{equation}
-p:T
-\end{equation}
+$$e:T$$
 
 We call such statements a judgment. Judgments are generally written in meta-language , thus we also need to provide a system of inference rules how to infer such a judgment. These _inferene rules_ have the following form
 
@@ -37,7 +35,7 @@ we will now provide a judgment for every production rule definied in the last se
 
 #### Type Signiture Judments
 
-Let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$.
+For type signiture judments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
 
 For $l\in\mf{<list-lower-var>}$ the judgment is
 $$l:(a_1,\dots,a_n).$$
@@ -53,502 +51,197 @@ $$\Gamma\vdash t:T$$
 
 #### Pattern Judgments
 
-We will see that the initial judgment ($\syntax{e}\in \text{values}_\Gamma(T)$) is dependent on another context, this time for variables instead of types:
+We will now introduce another context, this time for variables instead of types:
 
 ```{definition,name="Variable Context"}
 $\Delta\in\mathcal{V} \nrightarrow \mathcal{T}$ is called the _variable context_.
 ```
 
-We also introduce a new syntax for saying a value is of some type.
-```{definition,name="type of value"}
-\begin{letIn}
-$T \in\mathcal{T}$. Let $\Gamma$ be a type context. Let $e$ be arbitary.
-\end{letIn}
-We say $e$ _is of type_ $T$ _in the context of_ $\Gamma$ (Notation: $e:_\Gamma T$)$:\Leftrightarrow$
-  
-$$
-e \in \text{values}_\Gamma(T)
-$$
-  
-Is $\Gamma = \varnothing$ then we may write $e:T$ instead of $e:_\Gamma T$.
-```
+For pattern judments, let $\Gamma$ be a type context and $\Delta,\Theta$ be variable contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
 
-The judgment in question can now be expressed more generally as
+For $l\in\mf{<list-pattern-list>}$ the judgment is
+$$\Gamma,\Delta\vdash:\text{match}_\Theta ((T_1,\dots,T_n),l).$$
+This can be read as "Given $\Gamma$ and $\Delta$,we can match $(T_1,\dots,T_n)$ with the pattern $l$ by using the variable context $\Theta$".
 
-$$
-\Delta\vdash\syntax{e}:_\Gamma T
-$$
-where $\Gamma$ is a type context, $\Delta$ is a variable context,  $e\in\text{values}_\Gamma(\mf{<program>})\cup\text{values}_\Gamma(\mf{<expression>})$ and $T$ is a type. Note that we originally assumed $\Delta = \varnothing$. Also, note that the values of `<program>` and `<expression>` are disjoint and therefore we will look at $e:\mf{<program>}$ and $e:\mf{<expression>}$ separately.
+For $l\in\mf{<list-pattern-sort>}$ the judgment is
+$$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),l)$$
 
-If the type $T$ is known then we talk about _type checking_ else we call the judgment a _type inference_. For inferring a type, the result is not necessary unique, that is why we might only want to find the most general type, meaning a type $T_1$ such that
+For $l\in\mf{<list-pattern-vars>}$ the judgment is
+$$l:(a_1,\dots,a_n)$$
 
-$$
-\underbrace{(\forall T_2\in\mathcal{T}\land T_1\sqsubseteq T_2.e:_\Gamma T_2)}_{T_1 \text{ is a infered type}} \land \underbrace{(\forall T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1. \exists T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3.\neg (e:_\Gamma T_3))}_{T_1 \text{ is sharp}}.
-$$
+For $p\in\mf{<pattern>}$ the judgment is
+$$\Gamma,\Delta\vdash\text{match}_\Theta(T,p)$$
+
+#### Expression Judgments
+
+For expression judments, let $\Gamma$ be a type context, $\Delta$ be a variable context, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
+
+For $l\in\mf{<list-exp-field>}$ the judgment is
+$$\Gamma,\Delta\vdash l:\{a_1:T_1,\dots, a_n:T_n\}$$
+
+For $m\in\mf{<maybe-exp-sign>}$ the judgment is
+$$m:T_1\vdash a:T_2$$
+It can be read as "given that $m$ has the type $T_1$, $a$ has the type $T_2$".
+
+For $l\in\mf{<list-case>}$ the judgment is
+$$\Gamma,\Delta\vdash l:T$$
+
+For $e\in\mf{<bool>}$ the judgment is
+$$e:T$$
+
+For $e\in\mf{<int>}$ the judgment is
+$$e:T$$
+
+For $l\in\mf{<list-exp>}$ the judgment is
+$$\Gamma,\Delta\vdash l:(T_1,\dots,T_n)$$
+
+For $e\in\mf{<exp>}$ the judgment is
+$$\Gamma,\Delta\vdash e:T$$
+
+If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type infering_. For inferring a type (for the judgment $\Gamma,\Delta\vdash e:T$), the result is not necessary unique. Therefore we want to find the most general type, meaning a type $T_1$ such that
+
+* $T_1$ is a infered type: for all $T_2\in\mathcal{T}\land T_1\sqsubseteq T_2$ the judgment $\Gamma,\Delta\vdash e:T_2$ holds.
+* $T_1$ is sharp: for all $T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1$ we can find $T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3$ such that the judgment $\Gamma,\Delta\vdash e:T_3$ does not hold.
+
+#### Statement Judgments
+
+For expression judments, let $\Gamma,\Gamma_1,\Gamma_2$ be type contexts, $\Delta,\Delta_1,\Delta_2$ be a variable contexts, $T,T_1,T_2\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$
+and $T_{i,j}\in\mathcal{T}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N},j\in\mathbb{N}_0^{k_i}$ and $k_i\in\mathbb{N}$.
+
+For $l\in\mf{<list-sort>}$ the judgment is
+$$l:(a_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,a_n:(T_{n,1}, \dots,T_{n,k_1}))$$
+
+For $l\in\mf{<maybe-statement-sign>}$ the judgment is
+$$m:T_1\vdash a:T_2$$
+
+For $l\in\mf{<list-statement>}$ the judgment is
+$$\Gamma_1,\Delta_2,l\vdash \Gamma_2,\Delta_2$$
+
+For $e\in\mf{<statement>}$ the judgment is
+$$\Gamma_1,\Delta_2,e\vdash \Gamma_2,\Delta_2$$
+It can be read as "the statement $e$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
+
+For $m\in\mf{<maybe-main-sign>}$ the judgment is
+$$m:T_1\vdash \text{main}:T_2$$
+
+For $e\in\mf{<program>}$ the judgment is
+$$e:T$$
 
 ### Auxiliary Definitions
 
-We will need the semantics of $\mf{<type>}$, namely a function that maps $\text{values}_\Gamma(\mf{<type>})$ to $\mathcal{T}$.
+We will use $(e,T)\in\Gamma$ and $(e,T)\in\Delta$ to denote that a tuple $(e,T)$ exists in $\Gamma$ or $\Delta$. We will also sometimes use a wildcard $\_$ instead of a T if we are only interested in e.
 
-```{definition,name="Semantics of <type>"}
-\begin{letIn}
-$n\in\mathbb{N}$. Let $t,t_1,t_2:\mf{<type>}$ and $c:\mf{<upper-var>}$.
-Let $t_i:\mf{<type>}$ for all $i\in\mathbb{N}_3^n$ and $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $C$ be a symbol. Let $\Gamma$ be a type context. Let $\mathit{Nat}=\mu C.1 \ | \ \mathit{Succ} \ C$.
-\end{letIn}
-We define
+We will use $T_1 \sqsubseteq T_2$ for given types $T_1,T_2$ to denote that $T_1$ is more general then $T_2$.
 
-$$
-\begin{aligned}
-  \syntax{.}_\Gamma: \ &\text{values}_\Gamma(\mf{<type>})\to\mathcal{T}\\
-  \syntax{Bool}_\Gamma =& \mu\_.\mathit{True}\ | \ \mathit{False}\\
-  \syntax{Int}_\Gamma =& \mu\_.0 \ | \ \mathit{Pos} \ \mathit{Nat} | \mathit{Neg} \ \mathit{Nat}\\
-  \syntax{List}_\Gamma =& \forall a.\mu C.[ \ ] \ | \ \mathit{Cons} \ a \ C\\
-  \syntax{"(" $t_1$ , $t_2$ ")"}_\Gamma =& \{1:\syntax{$t_1$}_\Gamma, 2: \syntax{$t_2$}_\Gamma\}\\
-  \syntax{"\{\}"}_\Gamma =& \mathit{\{\}}\\
-  \syntax{"\{" $v_1$ ":" $t_1$ "," $\dots$ "," $v_n$ ":" $t_n$ "\}"}_\Gamma =& \{v_1:\syntax{$t_1$}_\Gamma , \dots , v_n:\syntax{$t_n$}_\Gamma\}\\
-  \syntax{$t_1$ "->" $t_2$}_\Gamma =& \syntax{$t_1$}_\Gamma \to \syntax{$t_2$}_\Gamma\\
-  \syntax{$c \ t_1 \dots t_n$} =& [\syntax{$c$}]_\Gamma(t_1,\dots,t_n)
-\end{aligned}
-$$
-```
+We will use "$T \text{ is a mono type}$" as well as type equivanence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
 
-Additionally, we will need to introduce a pattern matching function:
+We will use ${a_1,\dots,a_n}=\text{free}(T)$ to get all free variables of $T$.
 
-$$
-\text{match}_\Theta:\text{value}(\mf{<type>})\times\text{value}(\mf{<exp>})\to\{\mathit{True},\mathit{False}\}
-$$
-for a given substitution $\Theta$. The function will be defined afterwards. For now its definition will be arbitrary.
+### Inference Rules for type signitures
 
-We can already state two universal inference rules for any Hindley-Milner type system.
-
-```{definition,name="Instantiation, Generalization"}
-\begin{letIn}
-$T',T\in\mathcal{T}$ and $e\in\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})$. Let $a$ be a type variable. Let $\Delta$ be a variable context. Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})\to A$
-\end{letIn}
-\begin{center}
-\begin{tabular}{c l}
-\logicRule
-{
-T' \sqsubseteq T\quad
-\Delta\vdash\syntax{e}:_\Gamma T'
-}
-{\Delta\vdash \syntax{e}:_\Gamma T}
-{Instantiation}
-
-\logicRule
-{(a,\_)\not\in\Delta\quad
-\Delta\vdash \syntax{e}:_\Gamma T
-}
-{\Delta\vdash \syntax{e}:_\Gamma \mathit{\forall a.T}}
-{Generalization}
-\end{tabular}
-\end{center}
-```
-
-The $[\mathit{Instantiation}]$ rule says that if a type can be inferred, the same holds for a more specific type.
-The $[\mathit{Generalization}]$ rule states the opposite: if a type with a free variable can be inferred, then the same holds for a poly type, binding the free variable.
-
-### Inference Rules for Programs
-
-The inference rules for programs will done statement for statement. Note that every statement has one rule that can be applied, statement with optional parameters have a rule with and one without the optional parameter.
-
-```{definition,name="Inference rules for programs"}
-\begin{letIn}
-$n,m\in\mathbb{N}$. Let $k_i\in\mathbb{N}$ for all $i\in\mathbb{N}_1^m$.
-Let $T,T_1,T_2,T_3\in\mathcal{T}$ Let $v:\mf{<lower-var>},e:\mf{<exp>},t:\mf{<type>}$. Let $v_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^n$. Let $s:\mf{<list-statement>}$. Let $c:\mf{<lower-var>}$ and $c_i:\mf{<lower-var>}$ for all $i\in\mathbb{N}_1^m$. Let $t_{i,j}:\mf{<type>}$ for all $i\in\mathbb{N}_1^m$ and $j\in\mathbb{N}_1^{k_i}$. Let $mt:\mf{<maybe-main-sign>}$ and $me:\mf{<exp>}$.
-Let $\Gamma$ be a type context and $\Delta$ a variable context.
-Let $A$ be a set and $\syntax{.}:\text{values}(\mf{<program>})\cup\text{values}(\mf{<expression>})\to A$.
-\end{letIn}
-The inference rules for programs are defined in table \ref{tab:inf_state}.
-```
-
-\begin{table}
-\caption{Inference rules for programs}
-\label{tab:inf_state}
-\begin{center}
-\begin{tabular}{c l}
-\hline
-& \\
-\logicRule
-{\begin{gathered}
-(v,\_)\not\in\Delta\quad
-\Delta\vdash\syntax{$e$}:_\Gamma T_1\\
-\Delta\cup\{(v,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_\Gamma T_2
-\end{gathered}
-}
-{\Delta\vdash\syntax{$v$ "=" $e$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_2
-}
-{TConstant}
-
-\logicRule
-{\begin{gathered}
-(v,\_)\not\in\Delta\quad
-\Delta\vdash\syntax{$e$}:_\Gamma T_1\quad
-\syntax{$t$}_\Gamma = T_1\\
-\Delta\cup\{(v,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_\Gamma T_2\quad
-\end{gathered}
-}
-{\Delta\vdash\syntax{$v$ ":" $t$ ";" $v$ "=" $e$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_2
-}
-{TConstant2}
-
-\logicRule
-{\begin{gathered}
-(c,\_)\not\in\Gamma\quad
-(c,\_)\not\in\Delta\\
-\syntax{t}_\Gamma=T_1\quad
-T_2 \text{ is a mono type}\\
-\{v_1 \dots v_n \} = \text{free}(T_2)\quad
-\forall v_1. \dots \forall v_n. T_2 = T_1\\
-\Delta\cup\{(c,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_{\Gamma\cup\{(c,(T_1))\}}T_3
-\end{gathered}
-}
-{\Delta\vdash\syntax{"type alias" $c$ $v_1 \dots v_n$ "=" $t$ ";" $s$ \ $mt$ "main = " $me$}:_\Gamma T_3}
-{TAlias}
-
-\logicRule
-{\begin{gathered}
-(c,\_)\not\in\Gamma\quad
-(c,\_)\not\in\Delta\quad
-\{v_1 \dots v_n \} = \text{free}(T_2)\quad
-\forall v_1. \dots \forall v_n. T_2 = T_1\\
-\mu C.c_1 \ \syntax{$t_{1,1}$}_\Gamma \ \dots \ \syntax{$t_{1,k_1}$}_\Gamma \ | \ \dots \ | \ c_m \ \syntax{$t_{m,1}$}_\Gamma \ \dots \ \syntax{$t_{m,k_m}$}_\Gamma=T_2\\
-\Delta\cup\{(c,T_1)\}\vdash\syntax{$s$ \ $mt$ "main = " $me$}:_{\Gamma\cup\{(c,(T_1))\}}T_3
-\end{gathered}
-}
-{\Delta\vdash\Bigg\llbracket
-\begin{aligned}
-&\mf{"type"} \ c \ v_1 \dots v_n \mf{"="}\\
-&c_1 \ t_{1,1} \dots t_{1,k_1} \ | \ \dots | \ c_m \ t_{m,1} \dots t_{m,k_m}\\ &\mf{";"} s \ mt \mf{"main = "} me
-\end{aligned}\Bigg\rrbracket:_\Gamma T_3
-}
-{TCustomType}
-
-& \\
-
-\logicRule
-{\Delta\vdash\syntax{$e$}:_\Gamma T}
-{\Delta\vdash\syntax{"main = " $e$}:_\Gamma T}
-{TMain}
-
-\logicRule
-{
-\Delta\vdash\syntax{$e$}:_\Gamma T\quad
-\syntax{$t$}_\Gamma=T
-}
-{\Delta\vdash\syntax{"main :" $t$ "; main = " $e$}:_\Gamma T}
-{TMain2}
-
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-\begin{description}
-\item[TConstant,TConstant2] Check if $v$ is still free then add $(v,T_1)$ to the variable context and evaluate the next statement.
-\item[TAlias] Check if $c$ is still free. $\{v_1,\dots,v_2\}$ needs to be the set of all free variables in $T_2$. If all checks are valid we add $(v,T_1)$ to the type context and evaluate the next statement.
-\item[TCustomType] Similar to $[\mathit{TAlias}]$ we add $(v,T_1)$ to the type context with the only difference that we explicitly define $T_1$ as an algebraic type.
-\item[TMain,TMain2] Evaluate $e$.
-\end{description}
-
-### Inference Rules for Expressions
-
-In the inference rules $[\mathit{TConstant}],[\mathit{TConstant2}]$ and $[\mathit{Main}],[\mathit{Main2}]$ we used a judgment for expressions. We will now give the corresponding inference rules. As before, each expression has one or two rules depending on optional parameters.
-
-```{definition,name="Inference rules for expressions"}
-\begin{letIn}
-$n\in\mathbb{N}$. Let $T,T_0,T_1,T_2,T_3\in\mathcal{T}$.
-Let $v,v_0,v_1,v_2,v_3:\mf{<lower-var>}$.
-Let $e,e_0,e_1,e_2,e_3:\mf{<exp>}$.
-Let $T_i:\mathcal{T}$ for all $i\in\mathbb{N}_4^n$.
-Let $v_i:\mf{<lower-var>}$ for $i\in\mathbb{N}_4^n$.
-Let $a_i:\mathcal{V}$ for all $i\in\mathbb{N}_4^n$.
-Let $e_i:\mf{<exp>}$ for all $i\in\mathbb{N}_4^n$.
-Let $p:\mf{<pattern>}$,
-$\mathit{le}:\mf{<list.exp>}$,
-$\mathit{lc}:\mf{<list-case>}$,
-$\mathit{lef}:\mf{<list-exp-field>}$,
-$c:\mf{<upper-var>}$ and
-$t:\mf{<type>}.$
-Let $\Gamma$ be a type context and $\Delta$ a variable context. Let $A$ be a set and
-$\syntax{.}:\text{values}(\mf{<statement>})\cup\text{values}(\mf{<expression>})\to A$.
-\end{letIn}
-
-The inference rules for expressions can be found in table \ref{tab:inf_exp}.
-```
-
-
-\topcaption{Inference rules for expressions}\label{tab:inf_exp}
-\tablefirsthead{\hline}
-\tablelasttail{\hline}
-
-\begin{center}
-\begin{xtabular*}{\textwidth}{c l}
-
-&\\
-\logicRule
-{(v,T)\in\Delta
-}
-{\Delta\vdash\syntax{$v$}:_\Gamma T}
-{TVariable}
-
-\logicRule
-{\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Delta\cup\Theta\vdash\syntax{$e$}:_\Gamma T_2
-}
-{\Delta\vdash\syntax{"\textbackslash" $p$ "->" $e$}:_\Gamma T_1\to T_2}
-{TLambda}
-
-\logicRule
-{\syntax{$e_1$}_\Gamma:T_1\quad
-\syntax{$e_2$}_\Gamma:T_2
-}
-{\Delta\vdash\syntax{"(" $e_1$ "," $e_2$ ")"}:_\Gamma\{1:T_1, 2:T_2\}}
-{TTuple}
+#### list-lower-var
+Judgment: $l:(a_1,\dots,a_n)$
 
 \logicRule
 {}
-{\Delta\vdash\syntax{"[]"}:_\Gamma\forall a.\mathit{List} \ a}
-{TEmptyList}
+{\mf{""}:()}
+{}
+For an empty list we return the empty tuple.
 
 \logicRule
-{
-\Delta\vdash\syntax{$e$}:_\Gamma T\quad
-\Delta\vdash\syntax{"[" $\mathit{le}$ "]"}:_\Gamma \mathit{List} \ T
-}
-{\Delta\vdash\syntax{"[" $e$ "," $\mathit{le}$ "]"}:_\Gamma \mathit{List} \ T}
-{TList}
+{l:(a_1,\dots,a_n)\quad (a_0,a_1,\dots,a_n)=T}
+{a_0 \ l:T}
+{}
+For a non empty list, we append the head $a$ to the type $T$ of the tail $l$.
 
-\logicRule
-{e:\mf{<int>}}
-{\Delta\vdash\syntax{$e$}:_\Gamma \mathit{Int}}
-{TInt}
+#### list-type-fields
 
-\logicRule
-{e:\mf{<bool>}}
-{\Delta\vdash\syntax{$e$}:_\Gamma \mathit{Bool}}
-{TBool}
-
-\logicRule
-{\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\to T_2\quad
-\Delta\vdash\syntax{$e_2$}:_\Gamma T_1
-}
-{\Delta\vdash\syntax{$e_1$ $e_2$}:_\Gamma T_2}
-{TCall}
-
-\logicRule
-{\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
-\Gamma,\Delta\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
-\Delta\cup\Theta\vdash\syntax{$e_2$}:_\Gamma T_2
-}
-{\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ "]"}:_\Gamma T_2}
-{TSingleCaseOf}
-
-\logicRule
-{\begin{gathered}
-\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
-\Gamma,\Delta\vdash\text{match}_\Theta(T_1,\syntax{$p$})\quad
-\Delta\cup\Theta\vdash\syntax{$e_2$}:_\Gamma T_2\\
-\Delta\vdash\syntax{"case" $e_1$ "of" "[" $\mathit{lc}$ "]"}:_\Gamma T_2
-\end{gathered}
-}
-{\Delta\vdash\syntax{"case" $e_1$ "of" "[" $p$ "->" $e_2$ ";" $\mathit{lc}$ "]"}:_\Gamma T_2}
-{TCaseOf}
-
-\logicRule
-{
-(v,\_)\not\in\Delta\quad
-\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
-\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:_\Gamma T_2
-}
-{
-\Delta\vdash\syntax{"let" $v$ "=" $e_1$ "in" $e_2$}:_\Gamma T_2
-}
-{TLetIn}
-
-\logicRule
-{\begin{gathered}
-(v,\_)\not\in\Delta\quad
-\syntax{$t$}_\Gamma = T_1\quad
-\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
-\Delta\cup\{(v,T_1)\}\vdash\syntax{$e_2$}:_\Gamma T_2
-\end{gathered}
-}
-{\Delta\vdash\syntax{"let" $v$ ":" $t$ ";" $v$ "=" $e_1$ "in" $e_2$}:_\Gamma T_2
-}
-{TLetIn2}
-
-\logicRule
-{(v_1,\{v_2:T,\dots\})\in\Delta
-}
-{\Delta\vdash\syntax{$v_1$ "." $v_2$}:_\Gamma T}
-{TGetter}
-
-\logicRule
-{\begin{gathered}
-\Delta\vdash\syntax{$e$}:_\Gamma T_2\\
-T_1=\{v_2:T_2,\dots\}\quad
-(v_1,T_1)\in\Delta
-\end{gathered}
-}
-{\Delta\vdash\syntax{"\{" $v1$ "|" $v2$ "=" $e$ "\}"}:_\Gamma T_1}
-{TSingleSetter}
-
-\logicRule
-{\begin{gathered}
-\mathit{lef}:\mf{<list-exp-field>}\quad
-\Delta\vdash\syntax{$e$}:_\Gamma T_2\\
-T_1=\{v_2:T_2,..\}\quad
-(v_1,T_1)\in\Delta\quad
-\Delta\vdash\syntax{"\{" $v$ "|" $\mathit{lef}$ "\}"}:_\Gamma T_1
-\end{gathered}
-}
-{\Delta\vdash\syntax{"\{" $v$ "|" $v2$ "=" $e$ "," $\mathit{lef}$ "\}"}:_\Gamma T_1}
-{TSetter}
+Judgment: $\Gamma\vdash l:\{a_1:T_1,\dots,a_n:T_n\}$
 
 \logicRule
 {}
-{\vdash\syntax{"\{\}"}:\{\}}
-{TEmptyRecord}
+{\Gamma\vdash \mf{""}:\{\}}
+{}
 
 \logicRule
-{\Delta\vdash\forall i \in\mathbb{N}_1^n.\syntax{$e_i$}:_\Gamma T_i
+{\Gamma\vdash t : T_0\quad
+\Gamma\vdash l : \{a_1:T_1,\dots,a_n:T_n\}\quad
+\{a_0:T_0,a_1:T_1,\dots,a_n:T_n\}=T
 }
-{\Delta\vdash\syntax{"\{" $v_1$ "=" $e_1$ "," \dots "," $v_n$ "=" $e_n$ "\}"}:_\Gamma \{v_1:T_1,\dots,v_n:T_n\}
+{\Gamma\vdash a_0 \ \mf{":"} \ t \ \mf{","} \ l:T}
+{}
+
+The type context $\Gamma$ is used in the judgment $\Gamma\vdash t:T_0$ that turns the type signiture $t$ into a type $T_0$.
+
+#### list-type
+
+Judgment: $\Gamma\vdash l:(T_1,\dots,T_n)$
+
+\logicRule
+{}
+{\Gamma\vdash \mf{""}:()}
+{}
+
+\logicRule
+{\Gamma\vdash t:T_0\quad
+\Gamma\vdash l:(T_1,\dots,T_n)\quad
+(T_0,T_1,\dots,T_n)=T
 }
-{TRecord}
+{\Gamma\vdash t \ l:T}
+{}
+
+#### type
+
+Judgment: $\Gamma\vdash t:T$
 
 \logicRule
-{
-\Delta\vdash\syntax{$e_1$}:_\Gamma\textit{Bool}\quad
-\Delta\vdash\syntax{$e_2$}:_\Gamma T\quad
-\Delta\vdash\syntax{$e_3$}:_\Gamma T
+{}
+{\Gamma\vdash \mf{"Bool"}:Bool}
+{}
+
+\logicRule
+{}
+{\Gamma\vdash\mf{"Int"}:Int}
+{}
+
+\logicRule
+{\Gamma\vdash t:T}
+{\Gamma\vdash\mf{"List" t}:(\forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C) \ T}
+{}
+The resulting type is a type application $\mathit{List} \ T$ for the type $\mathit{List} = \forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C$.
+
+\logicRule
+{\Gamma\vdash t_1:T_1\quad
+\Gamma\vdash t_2:T_2
 }
-{\Delta\vdash\syntax{"if" $e_1$ "then" $e_2$ "else" $e_3$}:_\Gamma T}
-{TIfElse}
+{\Gamma\vdash\mf{"("} \ t_1 \ \mf{","} \ t_2 \ \mf{")"}:(T_1,T_2)}
+{}
 
 \logicRule
-{
-\Delta\vdash\syntax{$e_1$}:_\Gamma T_1 \to T_2\quad
-\Delta\vdash\syntax{$e_2$}:_\Gamma T_2 \to T_3
+{\Gamma\vdash l:T}
+{\Gamma\vdash\mf{"{"} l \mf{"}"}:T}
+{}
+
+\logicRule
+{\Gamma\vdash t_1:T_1\quad
+\Gamma\vdash t_2:T_2
 }
-{\Delta\vdash\syntax{$e_1$ ">>" $e_2$}:_\Gamma T_1 \to T_3}
-{TComposition}
+{\Gamma\vdash t_1 \to t_2:T_1 \to T_2}
+{}
 
 \logicRule
-{
-\Delta\vdash\syntax{$e_1$}:_\Gamma T_1\quad
-\Delta\vdash\syntax{$e_2$}:_\Gamma T_1 \to T_2
+{(c,f)\in\Gamma\quad
+\Gamma\vdash l:(T_1,\dots,T_n)\quad
+f T_1 \dots T_n = T
 }
-{\Delta\vdash\syntax{$e_1$ "|>" $e_2$}:_\Gamma T_2}
-{TPipe}
+{\Gamma\vdash c \ l:T}
+{}
+Note that $\Gamma$ maps variables to application constructors.
 
 \logicRule
+{(a,(T))\in\Gamma\quad
+T \text{ is a type variable}
+}
+{\Gamma\vdash a:T}
 {}
-{\vdash\syntax{"(||)"}:\mathit{Bool}\to \mathit{Bool}\to \mathit{Bool}}
-{TOr}
-
-\logicRule
-{}
-{\vdash\syntax{"(\&\&)"}:\mathit{Bool}\to \mathit{Bool}\to \mathit{Bool}}
-{TAnd}
-
-\logicRule
-{}
-{\vdash\syntax{"not"}:\mathit{Bool}\to \mathit{Bool}}
-{TNot}
-
-\logicRule
-{}
-{\vdash\syntax{"(==)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Bool}}
-{TEqual}
-
-\logicRule
-{}
-{\vdash\syntax{"(<)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Bool}}
-{TLess}
-
-\logicRule
-{}
-{\vdash\syntax{"(//)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
-{TDivide}
-
-\logicRule
-{}
-{\vdash\syntax{"(*)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
-{TMultiply}
-
-\logicRule
-{}
-{\vdash\syntax{"(-)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
-{TMinus}
-
-\logicRule
-{}
-{\vdash\syntax{"(+)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
-{TPlus}
-
-\logicRule
-{}
-{\vdash\syntax{"(::)"}:\forall a.a\to\mathit{List}\ a\to\mathit{List}\ a}
-{TCons}
-
-\logicRule
-{}
-{\vdash\syntax{"foldl"}:\forall a.\forall b.(a\to b\to b)\to b\to\mathit{List}\ a\to b}
-{TFoldl}
-
-\end{xtabular*}
-\end{center}
-
-\begin{description}
-\item[TVariable] Find the type in the context.
-\item[TLambda] Elm allows the parameters of a function to be pattern matched. Therefore, we first need to find a matching type $T_1$ and can then infer the type of $e$ by including the additional bindings $\Theta$ to the context.
-\item[TTuple] Find the types of $e_1$ and $e_2$, then construct the tuple.
-\item[TEmptyList] The empty list is a literal for every list, therefore we can infer the list poly type.
-\item[TSingleList,TList] Recursively we check that every element has the same type.
-\item[TInt,TBool] The type of literals can be inferred without any restrictions.
-\item[TCall] The first expression needs to be a function that the the second type can be passed to.
-\item[TSingleCaseOf,TCaseOf] First match the type of the expression $e_1$ to the pattern, then use the additional bindings $\Theta$ to obtain the type of $e_2$. As all patterns need to have the same type, we can then recursively check the other patterns as well.
-\item[TLetIn,TLetIn2] The variable $v$ may not have a value assined in the conext $\Gamma$. If so, we can infer the type $T_1$ of $e_1$ and add $(v,T_1)$ to the context before we evaluate $e_2$. For $[TLetIn2]$ we already the type is already given as $t$. Note that $t$ can be more specific as the type we would usually infer.
-\item[TGetter] The second variable $v_2$ is a label of the record, that is bound to $v_1$.
-\item[TSingleSetter,TSetter] Setters can not change the type in Elm. But we still need to ensure that the fields are also correctly typed.
-\item[TElmptyRecord] The empty record can be directly infered, as it has only one element.
-\item[TRecord] Each field and its value must be given at the same time. That is why we can not use a recursive definition.
-\item[TIfElse] The first expression $e_1$ needs to be a boolean and the branches $e_2,e_3$ must have the same type.
-\item[TComposition,TPipe] The pipe applies the first expression to the second. The composition is similar to the pipe, but results in a function.
-\item[TOr,TAnd,TNot,TEqual,TDivide,TMultiply,TMinus,TPlus,TCons,TFoldl] These functions can be seen as lambda function literals.
-\end{description}
-
-```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now prove the typing of the `reverse` function for $\Gamma = \varnothing$, $\Delta = \varnothing$ and $T = \forall a.List \ a \to List \ a$.
-
-\begin{lstlisting}[language=elm]
-reverse : List a -> List a
-reverse =
-  foldl (::) []
-\end{lstlisting}
-
-Let $T_1 = \mathit{List} \ a$, $T_0 = \mathit{List} \ a \to \mathit{List} \ a$ and $T_2 = a \to \mathit{List} \ a \to \mathit{List} \ a$
-
-\begin{center}
-\small
-\begin{prooftree}
-      \AxiomC{$\top$}
-    \LeftLabel{$(4)$}
-    \UnaryInfC{$\vdash \syntax{"foldl"}:\forall a. T_2\to T_1 \to T_0$}
-      \AxiomC{$\top$}
-    \RightLabel{$(3)$}
-    \UnaryInfC{$\vdash \syntax{"(::)"}:T_2$}
-  \LeftLabel{$(1)$}
-  \BinaryInfC{$\vdash \syntax{"foldl (::)"}:\forall a.T_1 \to T_0$}
-    \AxiomC{$\top$}
-  \RightLabel{$(2)$}
-  \UnaryInfC{$\vdash \syntax{"[]"}:\forall a.T_1$}
-\RightLabel{$(1)$}
-\BinaryInfC {$\vdash  \syntax{"(foldl (::)) []"}:\forall a.T_0$}
-\end{prooftree}
-\end{center}
-
-$(1)\mathit{[TCall]},(2)\mathit{[TEmptyList]},(3)\mathit{[TCons]},(4)\mathit{[TFoldl]}$
-```
+For a given type $T$ we write the appication constructor as $(T)$.
