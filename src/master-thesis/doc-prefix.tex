@@ -12,7 +12,8 @@
 %%
 %% example
 %%
-%%\newcounter{example}[section]\setcounter{example}{0}
+%%switch off if your doc has an example but no definition/theorem
+\newcounter{example}[section]\setcounter{example}{0} %%defined the counter
 \providecommand{\theexample}{}
 \renewcommand{\theexample}{\arabic{section}.\arabic{example}}
 \renewenvironment{myexample}[2][]

@@ -7,125 +7,124 @@ In the first section of this chapter we defined a type system, in the second sec
 
 ### Typing Judgments
 
-To state that a program $e$ is of type $T$ (and therefor well-formed) we write
-
-$$e:T$$
-
-We call such a statement a judgment. Judgments are generally written in meta-language, thus we also need to provide a system of inference rules how to infer such a judgment. These _inference rules_ have the following form
+A type system is a set of inference rules to derive various kinds of typing judgments. These _inference rules_ have the following form
 
 $$
 \frac
 {P_1 \dots P_n}
 {C}
 $$
-where $P_1$ up to $P_n$ are premises and $C$ is a conclusion.
+where the judgments $P_1$ up to $P_n$ are the premises of the rule and the judgment $C$ is its conclusion.
 
 We can read it in two ways:
 
 * "if all premises hold then the conclusion holds as well" or
 * "to prove the conclusion we need to prove all premises"
 
-The premises as well as the conclusion are  meta-language statements in the following form
+We will now provide a judgment for every production rule defined in the last section. Ultimatly, we will have a judgment $p:T$ which indicates that a program $p$ is of a type $T$ and therefore well-formed.
 
-$$A_1,\dots,A_n \vdash B.$$
+#### Type Signature Judgments
 
-Such a sequent would be generally read as "If we know $A_1,\dots,A_n$ then we can prove B".
+For type signature judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
 
-We will now provide a judgment for every production rule defined in the last section.
+For $llv\in\mf{<list-lower-var>}$ the judgment has the form
+$$llv:(a_1,\dots,a_n)$$
+which can be read as "$llv$ defines the list $(a_1,\dots,a_n$)".
 
-#### Type Signiture Judgments
+For $ltf\in\mf{<list-type-fields>}$ the judgment has the form
+$$\Gamma\vdash ltf:\{a_1:T_1,\dots,a_n:T_n\}$$
+which can be read as "given $\Gamma$, $ltf$ has the type $\{a_1:T_1,\dots,a_n:T_n\}$".
 
-For type signiture judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
+For $lt\in\mf{<list-type>}$ the judgment has the form
+$$\Gamma\vdash lt:(T_1,\dots,T_n)$$
+which can be read as "given $\Gamma$, $lt$ defines the list $(T_1,\dots,T_n)$".
 
-For $l\in\mf{<list-lower-var>}$ the judgment is
-$$l:(a_1,\dots,a_n).$$
-
-For $l\in\mf{<list-type-fields>}$ the judgment is
-$$\Gamma\vdash l:\{a_1:T_1,\dots,a_n:T_n\}.$$
-
-For $l\in\mf{<list-type>}$ the judgment is
-$$\Gamma\vdash l:(T_1,\dots,T_n)$$
-
-For $t\in\mf{<txpe>}$ the judgment is
+For $t\in\mf{<type>}$ the judgment has the form
 $$\Gamma\vdash t:T$$
+which can be read as "given $\Gamma$, $t$ has the type $T$".
 
 #### Pattern Judgments
 
-We will now introduce another context, this time for variables instead of types:
+For pattern judgments, let $\Gamma,\Delta$ and $\Theta$ be type contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
 
-```{definition,name="Variable Context"}
-$\Delta\in\mathcal{V} \nrightarrow \mathcal{T}$ is called the _variable context_.
-```
+For $lpl\in\mf{<list-pattern-list>}$ the judgment has the form
+$$\Gamma,\Delta\vdash:\text{match}_\Theta ((T_1,\dots,T_n),lpl)$$
+which can be read as "given $\Gamma,\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $lpl$ by using the context $\Theta$".
 
-For pattern judgments, let $\Gamma$ be a type context and $\Delta,\Theta$ be variable contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
+For $lps\in\mf{<list-pattern-sort>}$ the judgment has the form
+$$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$$
+which can be read as "Given $\Gamma$ and $\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $lps$ by using the context $\Theta$".
 
-For $l\in\mf{<list-pattern-list>}$ the judgment is
-$$\Gamma,\Delta\vdash:\text{match}_\Theta ((T_1,\dots,T_n),l).$$
-This can be read as "given $\Gamma$ and $\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $l$ by using the variable context $\Theta$".
+For $lpv\in\mf{<list-pattern-vars>}$ the judgment has the form
+$$lpv:(a_1,\dots,a_n)$$
+which can be read as "$lpv$ defines the list $(a_1,\dots,a_n)$".
 
-For $l\in\mf{<list-pattern-sort>}$ the judgment is
-$$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),l)$$
-
-For $l\in\mf{<list-pattern-vars>}$ the judgment is
-$$l:(a_1,\dots,a_n)$$
-
-For $p\in\mf{<pattern>}$ the judgment is
+For $p\in\mf{<pattern>}$ the judgment has the form
 $$\Gamma,\Delta\vdash\text{match}_\Theta(T,p)$$
+which can be read as "Given $\Gamma$ and $\Delta$, we can match $T$ with the pattern $p$ by using the context $\Theta$".
 
 #### Expression Judgments
 
-For expression judgments, let $\Gamma$ be a type context, $\Delta$ be a variable context, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
+For expression judgments, let $\Gamma,\Delta$ be type contexts, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
 
-For $l\in\mf{<list-exp-field>}$ the judgment is
-$$\Gamma,\Delta\vdash l:\{a_1:T_1,\dots, a_n:T_n\}$$
+For $lef\in\mf{<list-exp-field>}$ the judgment has the form
+$$\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$$
+which can be read as "given $\Gamma$ and $\Delta$, $lef$ has the type $\{a_1:T_1,\dots,a_n:T_n\}$".
 
-For $m\in\mf{<maybe-exp-sign>}$ the judgment is
-$$m:T_1\vdash a:T_2$$
-It can be read as "given that $m$ has the type $T_1$, $a$ has the type $T_2$".
+For $mes\in\mf{<maybe-exp-sign>}$ the judgment has the form
+$$mes:T_1\vdash a:T_2$$
+which can be read as "given that $mes$ has the type $T_1$, $a$ has the type $T_2$".
 
-For $l\in\mf{<list-case>}$ the judgment is
-$$\Gamma,\Delta\vdash l:T$$
+For $lc\in\mf{<list-case>}$ the judgment has the form
+$$\Gamma,\Delta,T_1\vdash lc:T_2$$
+which can be read as "given $\Gamma$ and $\Delta$ and a type $T_1$, $lc$ has the type $T_2$".
 
-For $e\in\mf{<bool>}$ the judgment is
+For $b\in\mf{<bool>}$ the judgment has the form
+$$b:T$$
+which can be read as "$b$ has the type $T$".
+
+For $i\in\mf{<int>}$ the judgment has the form
 $$e:T$$
+which can be read as "$i$ has the type $T$".
 
-For $e\in\mf{<int>}$ the judgment is
-$$e:T$$
+For $le\in\mf{<list-exp>}$ the judgment has the form
+$$\Gamma,\Delta\vdash le:T$$
+which can be read as "given $\Gamma$ and $\Delta$, $le$ has the type $\mathit{List} \ T$".
 
-For $l\in\mf{<list-exp>}$ the judgment is
-$$\Gamma,\Delta\vdash l:(T_1,\dots,T_n)$$
-
-For $e\in\mf{<exp>}$ the judgment is
+For $e\in\mf{<exp>}$ the judgment has the form
 $$\Gamma,\Delta\vdash e:T$$
+which can be read as "given $\Gamma$ and $\Delta$, $e$ is of type $T$".
 
-If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type inferring_. For inferring a type (for the judgment $\Gamma,\Delta\vdash e:T$), the result is not necessary unique. Therefore, we want to find the most general type, meaning a type $T_1$ such that
-
-* $T_1$ is an inferred type: for all $T_2\in\mathcal{T}\land T_1\sqsubseteq T_2$ the judgment $\Gamma,\Delta\vdash e:T_2$ holds.
-* $T_1$ is sharp: for all $T_2\in\mathcal{T}\land T_2 \sqsubseteq T_1$ we can find $T_3\in\mathcal{T} \land T_2 \sqsubseteq T_3$ such that the judgment $\Gamma,\Delta\vdash e:T_3$ does not hold.
+If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type inference_.
 
 #### Statement Judgments
 
-For statement judgments, let $\Gamma,\Gamma_1,\Gamma_2$ be type contexts, $\Delta,\Delta_1,\Delta_2$ be a variable contexts, $T,T_1,T_2\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$
+For statement judgments, let $\Gamma,\Gamma_1,\Gamma_2,\Delta,\Delta_1,\Delta_2$ be a type contexts, $T,T_1,T_2\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i,A_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$
 and $T_{i,j}\in\mathcal{T}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N},j\in\mathbb{N}_0^{k_i}$ and $k_i\in\mathbb{N}$.
 
-For $l\in\mf{<list-sort>}$ the judgment is
-$$l:(a_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,a_n:(T_{n,1}, \dots,T_{n,k_1}))$$
+For $lss\in\mf{<list-statement-sort>}$ the judgment has the form
+$$lss:((c_1:(T_{1,1}, \dots,T_{1,k_1}),T'_1),\dots,(c_n:(T_{n,1}, \dots,T_{n,k_n}),T'_n))$$
+which can be read as "$lss$ is a tuple of sorts $c_i$ for $i\in\mathbb{N}_1^n$ that each define a list $(T_{i,1},\dots,T_{i,k_i})$ and provide a curresponding constructor function with type $T'_i$".
 
-For $l\in\mf{<maybe-statement-sign>}$ the judgment is
-$$m:T_1\vdash a:T_2$$
+For $mss\in\mf{<maybe-statement-sign>}$ the judgment has the form
+$$mss:T_1\vdash a:T_2$$
+which can be read as "$a$ has the type $T_2$ under the assumtion that $mss$ has the type $T_1$".
 
-For $l\in\mf{<list-statement>}$ the judgment is
-$$\Gamma_1,\Delta_2,l\vdash \Gamma_2,\Delta_2$$
+For $ls\in\mf{<list-statement>}$ the judgment has the form
+$$\Gamma_1,\Delta_2,ls\vdash \Gamma_2,\Delta_2$$
+which can be read as "the list of statements $ls$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
 
-For $e\in\mf{<statement>}$ the judgment is
-$$\Gamma_1,\Delta_2,e\vdash \Gamma_2,\Delta_2$$
-It can be read as "the statement $e$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
+For $s\in\mf{<statement>}$ the judgment has the form
+$$\Gamma_1,\Delta_2,s\vdash \Gamma_2,\Delta_2$$
+which can be read as "the statement $s$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
 
-For $m\in\mf{<maybe-main-sign>}$ the judgment is
-$$m:T_1\vdash \text{main}:T_2$$
+For $mms\in\mf{<maybe-main-sign>}$ the judgment has the form
+$$mms:T_1\vdash \text{main}:T_2$$
+which can be read as "the main function has type $T_2$ under the assumtion that $mms$ has the type $T_1$".
 
-For $e\in\mf{<program>}$ the judgment is
-$$e:T$$
+For $\textit{prog}\in\mf{<program>}$ the judgment has the form
+$$\textit{prog}:T$$
+which can be read as "the program $prog$ is wellformed and has the type $T$".
 
 ### Auxiliary Definitions
 
@@ -137,111 +136,13 @@ We will use "$T \text{ is a mono type}$", $T \text{ is a type variable}$ and typ
 
 We will use ${a_1,\dots,a_n}=\text{free}(T)$ to get all free variables of $T$.
 
-### Inference Rules for type signitures
+Additionally, we define
 
-#### list-lower-var
-Judgment: $l:(a_1,\dots,a_n)$
-
-\logicRule
-{}
-{\mf{""}:()}
-{}
-For an empty list we return the empty tuple.
-
-\logicRule
-{l:(a_1,\dots,a_n)\quad (a_0,a_1,\dots,a_n)=T}
-{a_0 \ l:T}
-{}
-For a nonempty list, we append the head $a$ to the type $T$ of the tail $l$.
-
-#### list-type-fields
-
-Judgment: $\Gamma\vdash l:\{a_1:T_1,\dots,a_n:T_n\}$
-
-\logicRule
-{}
-{\Gamma\vdash \mf{""}:\{\}}
-{}
-
-\logicRule
-{\Gamma\vdash t : T_0\quad
-\Gamma\vdash l : \{a_1:T_1,\dots,a_n:T_n\}\quad
-\{a_0:T_0,a_1:T_1,\dots,a_n:T_n\}=T
-}
-{\Gamma\vdash a_0 \ \mf{":"} \ t \ \mf{","} \ l:T}
-{}
-
-The type context $\Gamma$ is used in the judgment $\Gamma\vdash t:T_0$ that turns the type signature $t$ into a type $T_0$.
-
-#### list-type
-
-Judgment: $\Gamma\vdash l:(T_1,\dots,T_n)$
-
-\logicRule
-{}
-{\Gamma\vdash \mf{""}:()}
-{}
-
-\logicRule
-{\Gamma\vdash t:T_0\quad
-\Gamma\vdash l:(T_1,\dots,T_n)\quad
-(T_0,T_1,\dots,T_n)=T
-}
-{\Gamma\vdash t \ l:T}
-{}
-
-#### type
-
-Judgment: $\Gamma\vdash t:T$
-
-\logicRule
-{}
-{\Gamma\vdash \mf{"Bool"}:Bool}
-{}
-
-\logicRule
-{}
-{\Gamma\vdash\mf{"Int"}:Int}
-{}
-
-\logicRule
-{\Gamma\vdash t:T}
-{\Gamma\vdash\mf{"List" t}:(\forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C) \ T}
-{}
-The resulting type is a type application $\mathit{List} \ T$ for the type $\mathit{List} = \forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C$.
-
-\logicRule
-{\Gamma\vdash t_1:T_1\quad
-\Gamma\vdash t_2:T_2
-}
-{\Gamma\vdash\mf{"("} \ t_1 \ \mf{","} \ t_2 \ \mf{")"}:(T_1,T_2)}
-{}
-
-\logicRule
-{\Gamma\vdash l:T}
-{\Gamma\vdash\mf{"\{"} l \mf{"\}"}:T}
-{}
-
-\logicRule
-{\Gamma\vdash t_1:T_1\quad
-\Gamma\vdash t_2:T_2
-}
-{\Gamma\vdash t_1 \to t_2:T_1 \to T_2}
-{}
-
-\logicRule
-{(c,f)\in\Gamma\quad
-\Gamma\vdash l:(T_1,\dots,T_n)\quad
-f \ T_1 \dots T_n = T
-}
-{\Gamma\vdash c \ l:T}
-{}
-Note that $\Gamma$ maps variables to application constructors.
-
-\logicRule
-{(a,(T))\in\Gamma\quad
-T \text{ is a type variable}
-}
-{\Gamma\vdash a:T}
-{}
-For a given type $T$ we write the application constructor as $(T)$.
+$$
+\begin{aligned}
+\mathit{Bool}&:=\mu \_.\mathit{True} | \mathit{False}\\
+\mathit{Nat}&:=\mu C. 1 | \mathit{Succ} \ 1\\
+\mathit{Int}&:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}\\
+\mathit{List}&:=\forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C
+\end{aligned}
+$$

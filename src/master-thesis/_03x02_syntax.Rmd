@@ -120,8 +120,8 @@ Additionally, Elm also allows global constants, type aliases and custom types.
 Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
 $$
 \begin{aligned}
-\mf{<list-sort>} ::=& \mf{<upper-var> <list-type>} \\
-                   |& \ \mf{<upper-var> <list-type> | <list-sort>}
+\mf{<list-statement-sort>} ::=\\ \mf{<upper-var>} \ &\ \mf{<list-type>} \\
+                   | \ \mf{<upper-var>} \ &\ \mf{<list-type> "|" <list-statement-sort>}
 \end{aligned}
 $$
 $$
@@ -140,7 +140,7 @@ $$
                      |& \ \mf{"type" "alias" <upper-var> <list-lower-var>}\\
                       &\quad\mf{"=" <type>}\\
                      |& \ \mf{"type" <upper-var> <list-lower-var>}\\
-                      &\quad\mf{"=" <upper-var> <list-sort>}\\
+                      &\quad\mf{"=" <upper-var> <list-statement-sort>}\\
 \end{aligned}
 $$
 $$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$
