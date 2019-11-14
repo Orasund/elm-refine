@@ -60,7 +60,7 @@ $$
                    |& \ \mf{<pattern> "as" <lower-var>}\\
                    |& \ \mf{"\{" <list-pattern-vars> "\}"}\\
                    |& \ \mf{<pattern> "::" <pattern>}\\
-                   |& \ \mf{"-"}
+                   |& \ \mf{"\_"}
 \end{aligned}
 $$
 ```
@@ -120,6 +120,7 @@ Additionally, Elm also allows global constants, type aliases and custom types.
 Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
 $$
 \begin{aligned}
+\mf{<list-statement-var>} ::=& \ \mf{""} \ | \mf{<lower-var> <list-statement-var}\\
 \mf{<list-statement-sort>} ::=\\ \mf{<upper-var>} \ &\ \mf{<list-type>} \\
                    | \ \mf{<upper-var>} \ &\ \mf{<list-type> "|" <list-statement-sort>}
 \end{aligned}
@@ -137,10 +138,10 @@ $$
 $$
 \begin{aligned}
 \mf{<statement>} \ ::=& \ \mf{<maybe-statement-sign> <lower-var> "=" <exp>}\\
-                     |& \ \mf{"type" "alias" <upper-var> <list-lower-var>}\\
+                     |& \ \mf{"type" "alias" <upper-var> <list-statement-var>}\\
                       &\quad\mf{"=" <type>}\\
-                     |& \ \mf{"type" <upper-var> <list-lower-var>}\\
-                      &\quad\mf{"=" <upper-var> <list-statement-sort>}\\
+                     |& \ \mf{"type" <upper-var> <list-statement-var>}\\
+                      &\quad\mf{"=" <list-statement-sort>}\\
 \end{aligned}
 $$
 $$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$

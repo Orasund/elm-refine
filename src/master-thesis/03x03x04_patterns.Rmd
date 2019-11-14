@@ -1,0 +1,168 @@
+### Inference Rules for patterns
+
+#### list-pattern-list
+
+Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash:\text{match}_\varnothing (\forall a. List \ a,\mf{""})}
+{}
+
+\logicRule
+{\begin{gathered}
+\Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T,p)\\
+\Gamma,\Delta\vdash:\text{match}_{\Theta_2} (\mathit{List} \ T,lpl)\quad
+\Theta_1\cap\Theta_2 = \varnothing\quad
+\Theta_3 = \Theta_1\cup\Theta_2
+\end{gathered}
+}
+{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \mf{","} lpl)}
+{}
+$\Theta_3$ is the set of all bindings in the list with head $p$ and tail $lpl$. Variables may only bound once, therefore we need to ensure that the binding $\Theta_1$ of $p$ and the binding $\Theta_2$ of $lpl$ are disjoint.
+
+#### list-pattern-sort
+
+Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash:\text{match}_\Theta ((),\mf{""})}
+{}
+
+\logicRule
+{\begin{gathered}
+\Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T_0,p)\\
+\Gamma,\Delta\vdash:\text{match}_{\Theta_2} ((T_1,\dots,T_n),lps)\quad
+\Theta_1\cap\Theta_2 = \varnothing\quad
+\Theta_3 = \Theta_1\cup\Theta_2
+\end{gathered}
+}
+{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ lps)}
+{}
+
+#### list-pattern-vars
+
+Judgment: $lpv:(a_1,\dots,a_n)$
+
+\logicRule
+{}
+{\mf{""}:()}
+{}
+
+\logicRule
+{lpv:(a_1,\dots,a_n)}
+{a_0 \mf{""} lpv:(a_0,a_1,\dots,a_n)}
+{}
+
+#### pattern
+
+\logicRule
+{b:\mathit{Bool}}
+{\Gamma,\Delta\vdash \text{match}_\varnothing(\mathit{Bool},b)}
+{PBool}
+
+\logicRule
+{i:\mathit{Int}}
+{\Gamma,\Delta\vdash \text{match}_\varnothing(\mathit{Int},i)}
+{PInt}
+
+\logicRule
+{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,lpl)
+}
+{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,\mf{"["} lpl \mf{"]"})}
+{PList}
+
+\logicRule
+{\begin{gathered}
+\Gamma,\Delta\vdash \text{match}_{\Theta_1}(T_1,p_1)\quad
+\Gamma,\Delta\vdash \text{match}_{\Theta_2}(T_2,p_2)\quad\\
+\Theta_1\cap\Theta_2=\varnothing
+\Theta_1\cup\Theta_2=\Theta_3
+\end{gathered}
+}
+{
+\Gamma,\Delta\vdash \text{match}_{\Theta_3}((T_1,T_2),\mf{"("} p_1 \mf{","} p_2 \mf{")"})
+}
+{PTuple}
+
+\logicRule
+{
+(c,T_1\to\dots\to T_n \to T_0)\in\Delta\quad
+\Gamma,\Delta\vdash\text{match}_{\Theta} ((T_1,\dots,T_n),lps)
+}
+{
+\Gamma,\Delta\vdash \text{match}_{\Theta}(T_0,c \ lps)
+}
+{PApplication}
+
+\logicRule
+{(a,\_)\not\in\Delta\quad
+\Theta = \{(a,T)\}
+}
+{\Gamma,\Delta\vdash \text{match}_\Theta(T,a)
+}
+{PVariable}
+
+\logicRule
+{(a,\_)\not\in\Delta\quad
+(a,\_)\not\in\Theta_1\quad
+\Theta_1\cup\{(a,T)\}=\Theta_2\quad
+\Gamma,\Delta\vdash \text{match}_{\Theta_1}(T,p)
+}
+{\Gamma,\Delta\vdash \text{match}_{\Theta_2}(T,p \mf{"as"} a)}
+{PAs}
+
+\logicRule
+{\begin{gathered}
+lpv = (a_1,\dots,a_n)\quad
+T = \{a_1:T_1,\dots,a_n:T_n\}\\
+\Delta\cup\{(a_1,\_),\dots,(a_n,\_)\}=\varnothing\quad
+\Theta = \{(a_1,T_1),\dots,(a_n,T_n)\}
+\end{gathered}
+}
+{\Gamma,\Delta\vdash \text{match}_\Theta(T,\mf{"\{"} lpv \mf{"\}"})
+}
+{PRecord}
+
+\logicRule
+{
+\begin{gathered}
+\Gamma,\Delta\vdash\text{match}_{\Theta_1}(T,p_1)\quad
+\Gamma,\Delta\vdash\text{match}_{\Theta_2}(List \ T,p_2)\\
+\Theta_1\cap\Theta_2=\varnothing
+\Theta_1\cup\Theta_2=\Theta_3
+\end{gathered}
+}
+{
+\Gamma,\Delta\vdash\text{match}_{\Theta_3}(\textit{List} \ T,p_1 \mf{"::"} p_2)
+}
+{PHeadAndTail}
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash \text{match}_\varnothing(\forall a. a,\mf{"\_"})}
+{PWildcard}
+
+\textemdash
+
+There rules do not work on there own, as the type might be too specific or a poly type needs to be instancated. Therefore the hindley-Milner type system comes with two additional rules:
+
+\logicRule
+{\Gamma,\Delta\vdash match_\Theta(T_2,p)\quad
+T_2 \sqsubseteq T_1
+}
+{\Gamma,\Delta\vdash match_\Theta(T_1,p)}
+{Instantiation}
+Read top to bottom, this rule states that if a pattern $p$ matches the type $T_2$ then we may also conclude that $p$ matches a more specific type $T_1$.
+
+\logicRule
+{(a,\_)\not\in\Delta\quad
+\Gamma,\Delta\vdash match_\Theta(T,p)
+}
+{\Gamma,\Delta\vdash match_\Theta(\forall a.T,p)}
+{Generalization}
+Read bottom up, for a poly type $\forall a.T$ we may remove the the for-all-quantor if the variable $a$ has already a binding in $\Delta$.
+
+Taking these two new rules into account, the resulting inference rules do not have a unique rule for every pattern any longer. This means we are able to type check but not to infer a type.
+

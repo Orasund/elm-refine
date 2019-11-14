@@ -19,21 +19,21 @@ Judgment: $\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$
 
 #### maybe-exp-sign
 
-Judgment: $mes:T_1\vdash a:T_2$
+Judgment: $\Gamma,mes\vdash a:T$
 
 \logicRule
 {}
-{\mf{""} : T_1 \vdash a : T_2}
+{\Gamma,\mf{""} \vdash a : T}
 {}
-If no argument is given, then we do nothing, therefore the additional information of $T_1$ will be discarded.
+If no argument is given, then we do nothing.
 
 \logicRule
-{a_1 = a_2\quad
-T_2 \sqsubseteq T_1
+{\Gamma\vdash t:T
+a_1 = a_2
 }
-{a_1 : T_1 \vdash a_2 \ \mf{";"}: T_2}
+{\Gamma,a_1 \mf{":"} t \mf{";"} \vdash a_2 : T}
 {}
-If we have a variable $a_1$ and a type $T_1$, then the variables $a_2$ need to match. The type signiture $T_1$ defines the type of $a_2$, even if we would be able to infer a weaker type $T_2$.
+If we have a variable $a_1$ and a type $T$, then the variables $a_2$ need to match. The type signiture $t$ defines the type of $a_2$.
 
 #### list-case
 
@@ -278,7 +278,7 @@ In Elm function arguments may be pattern matched, this mostly used to "unwrap" a
 
 \textemdash
 
-There rules do not work on there own, as the type might be too specific or a poly type needs to be instancated. Therefore the hindley-Milner type system comes with two additional rules:
+Same as for patterns, we also include a instantation rule as well as a generalization rule:
 
 \logicRule
 {\Gamma,\Delta\vdash e: T_2\quad
@@ -286,16 +286,14 @@ T_2 \sqsubseteq T_1
 }
 {\Gamma,\Delta\vdash e: T_1}
 {Instantiation}
-Read top to bottom, this rule states that if an expression $e$ is of type $T_2$ is we may also conclude that $e$ is of a more specific type $T_1$.
 
 \logicRule
 {(a,\_)\not\in\Delta\quad
 \Gamma,\Delta\vdash e: T
 }
-{\Gamma,\Delta\vdash e:\mathit{\forall a.T}}
+{\Gamma,\Delta\vdash e:\forall a.T}
 {Generalization}
-Read bottom up, for a poly type $\forall a.T$ we may remove the the for-all-quantor if the variable $a$ has already a binding in $\Delta$.
 
-Taking these two new rules into account, the resulting inference rules do not have a unique rule for every expression any longer. This means we are able to type check but not to infer a type.
+Thus, our inference rule has no longer a unique rule for every expression.
 
 We will fix this problem at the end of the chapter by introducing two different methods how to imbedd these two rules amoung the others.

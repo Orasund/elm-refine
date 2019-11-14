@@ -48,8 +48,8 @@ which can be read as "given $\Gamma$, $t$ has the type $T$".
 For pattern judgments, let $\Gamma,\Delta$ and $\Theta$ be type contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
 
 For $lpl\in\mf{<list-pattern-list>}$ the judgment has the form
-$$\Gamma,\Delta\vdash:\text{match}_\Theta ((T_1,\dots,T_n),lpl)$$
-which can be read as "given $\Gamma,\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $lpl$ by using the context $\Theta$".
+$$\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$$
+which can be read as "given $\Gamma,\Delta$, we can match $\mathit{List} \ T$ with the pattern $lpl$ by using the context $\Theta$".
 
 For $lps\in\mf{<list-pattern-sort>}$ the judgment has the form
 $$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$$
@@ -72,8 +72,8 @@ $$\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$$
 which can be read as "given $\Gamma$ and $\Delta$, $lef$ has the type $\{a_1:T_1,\dots,a_n:T_n\}$".
 
 For $mes\in\mf{<maybe-exp-sign>}$ the judgment has the form
-$$mes:T_1\vdash a:T_2$$
-which can be read as "given that $mes$ has the type $T_1$, $a$ has the type $T_2$".
+$$\Gamma,mes\vdash a:T$$
+which can be read as "Given $Gamma$, $a$ has the type $T$ under the assumption $mes$".
 
 For $lc\in\mf{<list-case>}$ the judgment has the form
 $$\Gamma,\Delta,T_1\vdash lc:T_2$$
@@ -103,24 +103,28 @@ For statement judgments, let $\Gamma,\Gamma_1,\Gamma_2,\Delta,\Delta_1,\Delta_2$
 and $T_{i,j}\in\mathcal{T}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N},j\in\mathbb{N}_0^{k_i}$ and $k_i\in\mathbb{N}$.
 
 For $lss\in\mf{<list-statement-sort>}$ the judgment has the form
-$$lss:((c_1:(T_{1,1}, \dots,T_{1,k_1}),T'_1),\dots,(c_n:(T_{n,1}, \dots,T_{n,k_n}),T'_n))$$
-which can be read as "$lss$ is a tuple of sorts $c_i$ for $i\in\mathbb{N}_1^n$ that each define a list $(T_{i,1},\dots,T_{i,k_i})$ and provide a curresponding constructor function with type $T'_i$".
+$$lss:(c_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,c_n:(T_{n,1}, \dots,T_{n,k_n}))$$
+which can be read as "$lss$ is a tuple of sorts $c_i$ for $i\in\mathbb{N}_1^n$ such that that each define a list $(T_{i,1},\dots,T_{i,k_i})$.
 
-For $mss\in\mf{<maybe-statement-sign>}$ the judgment has the form
-$$mss:T_1\vdash a:T_2$$
-which can be read as "$a$ has the type $T_2$ under the assumtion that $mss$ has the type $T_1$".
+For $lsv\in\mf{<list-statement-var}$ the judgment has the form
+$$lsv:(a_1,\dots,a_n)$$
+which can be read as "$lsv$ describes the list $(a_1,\dots,a_n)$".
 
 For $ls\in\mf{<list-statement>}$ the judgment has the form
 $$\Gamma_1,\Delta_2,ls\vdash \Gamma_2,\Delta_2$$
 which can be read as "the list of statements $ls$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
 
+For $mss\in\mf{<maybe-statement-sign>}$ the judgment has the form
+$$\Gamma,mss\vdash a:T$$
+which can be read as "Given $\Gamma$, $a$ has the type $T_2$ under the assumption $mss$".
+
 For $s\in\mf{<statement>}$ the judgment has the form
-$$\Gamma_1,\Delta_2,s\vdash \Gamma_2,\Delta_2$$
+$$\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$$
 which can be read as "the statement $s$ maps $\Gamma_1$ to $\Gamma_2$ and $\Delta_1$ to $\Delta_2$".
 
 For $mms\in\mf{<maybe-main-sign>}$ the judgment has the form
-$$mms:T_1\vdash \text{main}:T_2$$
-which can be read as "the main function has type $T_2$ under the assumtion that $mms$ has the type $T_1$".
+$$\Gamma,mms\vdash \text{main}:T$$
+which can be read as "the main function has type $T$ under the assumtion $mms$".
 
 For $\textit{prog}\in\mf{<program>}$ the judgment has the form
 $$\textit{prog}:T$$

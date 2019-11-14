@@ -16,7 +16,7 @@ In Russells original _ramified theory of types_ defined a order amongst the pred
 
 In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is general referred as _simple type theory_. It does as follows
 
-```{definition,name="sime type theory"}
+```{definition,name="simple type theory"}
 \begin{enumerate}
 \item \mf{0} is a type;
 \item If $t_1,\dots,t_n$ are simple types, then also $(t_1,\dots,t_n)$ is a simple type, $n=0$ is allowed: then we obtain the simple type $()$;
