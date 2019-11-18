@@ -18,14 +18,14 @@ where the judgments $P_1$ up to $P_n$ are the premises of the rule and the judgm
 
 We can read it in two ways:
 
-* "if all premises hold then the conclusion holds as well" or
-* "to prove the conclusion we need to prove all premises"
+* "If all premises hold then the conclusion holds as well" or
+* "To prove the conclusion we need to prove all premises".
 
-We will now provide a judgment for every production rule defined in the last section. Ultimatly, we will have a judgment $p:T$ which indicates that a program $p$ is of a type $T$ and therefore well-formed.
+We will now provide a judgment for every production rule defined in the last section. Ultimately, we will have a judgment $p:T$ which indicates that a program $p$ is of a type $T$ and therefore well-formed.
 
 #### Type Signature Judgments
 
-For type signature judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
+For type signature judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
 
 For $llv\in\mf{<list-lower-var>}$ the judgment has the form
 $$llv:(a_1,\dots,a_n)$$
@@ -45,7 +45,7 @@ which can be read as "given $\Gamma$, $t$ has the type $T$".
 
 #### Pattern Judgments
 
-For pattern judgments, let $\Gamma,\Delta$ and $\Theta$ be type contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
+For pattern judgments, let $\Gamma,\Delta$ and $\Theta$ be type contexts. Let $T\in\mathcal{T}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for all $i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$.
 
 For $lpl\in\mf{<list-pattern-list>}$ the judgment has the form
 $$\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$$
@@ -53,7 +53,7 @@ which can be read as "given $\Gamma,\Delta$, we can match $\mathit{List} \ T$ wi
 
 For $lps\in\mf{<list-pattern-sort>}$ the judgment has the form
 $$\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$$
-which can be read as "Given $\Gamma$ and $\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $lps$ by using the context $\Theta$".
+which can be read as "given $\Gamma$ and $\Delta$, we can match $(T_1,\dots,T_n)$ with the pattern $lps$ by using the context $\Theta$".
 
 For $lpv\in\mf{<list-pattern-vars>}$ the judgment has the form
 $$lpv:(a_1,\dots,a_n)$$
@@ -61,11 +61,11 @@ which can be read as "$lpv$ defines the list $(a_1,\dots,a_n)$".
 
 For $p\in\mf{<pattern>}$ the judgment has the form
 $$\Gamma,\Delta\vdash\text{match}_\Theta(T,p)$$
-which can be read as "Given $\Gamma$ and $\Delta$, we can match $T$ with the pattern $p$ by using the context $\Theta$".
+which can be read as "given $\Gamma$ and $\Delta$, we can match $T$ with the pattern $p$ by using the context $\Theta$".
 
 #### Expression Judgments
 
-For expression judgments, let $\Gamma,\Delta$ be type contexts, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
+For expression judgments, let $\Gamma,\Delta$ be type contexts, $T\in\mathcal{T}$, $a\in\mathcal{V}$ and $T_i\in\mathcal{T},a_i\in\mathcal{V}$ for all $i\in\mathbb{N}_0^n,n\in\mathbb{N}$.
 
 For $lef\in\mf{<list-exp-field>}$ the judgment has the form
 $$\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$$
@@ -73,7 +73,7 @@ which can be read as "given $\Gamma$ and $\Delta$, $lef$ has the type $\{a_1:T_1
 
 For $mes\in\mf{<maybe-exp-sign>}$ the judgment has the form
 $$\Gamma,mes\vdash a:T$$
-which can be read as "Given $Gamma$, $a$ has the type $T$ under the assumption $mes$".
+which can be read as "given $\Gamma$, $a$ has the type $T$ under the assumption $mes$".
 
 For $lc\in\mf{<list-case>}$ the judgment has the form
 $$\Gamma,\Delta,T_1\vdash lc:T_2$$
@@ -88,7 +88,7 @@ $$e:T$$
 which can be read as "$i$ has the type $T$".
 
 For $le\in\mf{<list-exp>}$ the judgment has the form
-$$\Gamma,\Delta\vdash le:T$$
+$$\Gamma,\Delta\vdash le:\mathit{List} \ T$$
 which can be read as "given $\Gamma$ and $\Delta$, $le$ has the type $\mathit{List} \ T$".
 
 For $e\in\mf{<exp>}$ the judgment has the form
@@ -116,7 +116,7 @@ which can be read as "the list of statements $ls$ maps $\Gamma_1$ to $\Gamma_2$ 
 
 For $mss\in\mf{<maybe-statement-sign>}$ the judgment has the form
 $$\Gamma,mss\vdash a:T$$
-which can be read as "Given $\Gamma$, $a$ has the type $T_2$ under the assumption $mss$".
+which can be read as "given $\Gamma$, $a$ has the type $T_2$ under the assumption $mss$".
 
 For $s\in\mf{<statement>}$ the judgment has the form
 $$\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$$
@@ -132,11 +132,11 @@ which can be read as "the program $prog$ is wellformed and has the type $T$".
 
 ### Auxiliary Definitions
 
-We will use $(e,T)\in\Gamma$ and $(e,T)\in\Delta$ to denote that a tuple $(e,T)$ exists in $\Gamma$ or $\Delta$. We will also sometimes use a wildcard $\_$ instead of a T if we are only interested in e.
+We will use $(e,T)\in\Gamma$ and $(e,T)\in\Delta$ to denote that a tuple $(e,T)$ exists in $\Gamma$ or $\Delta$. We will also sometimes use a wildcard $\_$ instead of a T if we are only interested in $e$.
 
 We will use $T_1 \sqsubseteq T_2$ for given types $T_1,T_2$ to denote that $T_1$ is more general than $T_2$.
 
-We will use "$T \text{ is a mono type}$", $T \text{ is a type variable}$ and type equivalence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
+We will use $"T \text{ is a mono type}"$, $"T \text{ is a type variable}"$ and type equivalence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
 
 We will use ${a_1,\dots,a_n}=\text{free}(T)$ to get all free variables of $T$.
 
@@ -145,7 +145,7 @@ Additionally, we define
 $$
 \begin{aligned}
 \mathit{Bool}&:=\mu \_.\mathit{True} | \mathit{False}\\
-\mathit{Nat}&:=\mu C. 1 | \mathit{Succ} \ 1\\
+\mathit{Nat}&:=\mu C. 1 | \mathit{Succ} \ C\\
 \mathit{Int}&:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}\\
 \mathit{List}&:=\forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C
 \end{aligned}

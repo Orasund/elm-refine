@@ -153,11 +153,11 @@ $$\mf{<program>} \ ::= \ \mf{<list-statement> <maybe-main-sign> "main" "=" <exp>
 Using this syntax we can now write a function that reverses a list.
 
 \begin{lstlisting}[language=elm]
-reverse : List a -> List a
+reverse : List a -> List a;
 reverse =
   foldl (::) [];
 
-main : Int
+main : Int;
 main =
   case [1,2,3] |> reverse of
   [

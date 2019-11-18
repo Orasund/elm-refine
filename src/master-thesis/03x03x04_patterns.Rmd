@@ -17,7 +17,7 @@ Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$
 \Theta_3 = \Theta_1\cup\Theta_2
 \end{gathered}
 }
-{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \mf{","} lpl)}
+{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ lpl)}
 {}
 $\Theta_3$ is the set of all bindings in the list with head $p$ and tail $lpl$. Variables may only bound once, therefore we need to ensure that the binding $\Theta_1$ of $p$ and the binding $\Theta_2$ of $lpl$ are disjoint.
 
@@ -52,7 +52,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 
 \logicRule
 {lpv:(a_1,\dots,a_n)}
-{a_0 \mf{""} lpv:(a_0,a_1,\dots,a_n)}
+{a_0 \ \mf{""} \ lpv:(a_0,a_1,\dots,a_n)}
 {}
 
 #### pattern
@@ -60,18 +60,18 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 \logicRule
 {b:\mathit{Bool}}
 {\Gamma,\Delta\vdash \text{match}_\varnothing(\mathit{Bool},b)}
-{PBool}
+{}
 
 \logicRule
 {i:\mathit{Int}}
 {\Gamma,\Delta\vdash \text{match}_\varnothing(\mathit{Int},i)}
-{PInt}
+{}
 
 \logicRule
 {\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,lpl)
 }
 {\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,\mf{"["} lpl \mf{"]"})}
-{PList}
+{}
 
 \logicRule
 {\begin{gathered}
@@ -84,7 +84,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {
 \Gamma,\Delta\vdash \text{match}_{\Theta_3}((T_1,T_2),\mf{"("} p_1 \mf{","} p_2 \mf{")"})
 }
-{PTuple}
+{}
 
 \logicRule
 {
@@ -94,7 +94,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {
 \Gamma,\Delta\vdash \text{match}_{\Theta}(T_0,c \ lps)
 }
-{PApplication}
+{}
 
 \logicRule
 {(a,\_)\not\in\Delta\quad
@@ -102,7 +102,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 }
 {\Gamma,\Delta\vdash \text{match}_\Theta(T,a)
 }
-{PVariable}
+{}
 
 \logicRule
 {(a,\_)\not\in\Delta\quad
@@ -111,7 +111,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 \Gamma,\Delta\vdash \text{match}_{\Theta_1}(T,p)
 }
 {\Gamma,\Delta\vdash \text{match}_{\Theta_2}(T,p \mf{"as"} a)}
-{PAs}
+{}
 
 \logicRule
 {\begin{gathered}
@@ -123,37 +123,37 @@ T = \{a_1:T_1,\dots,a_n:T_n\}\\
 }
 {\Gamma,\Delta\vdash \text{match}_\Theta(T,\mf{"\{"} lpv \mf{"\}"})
 }
-{PRecord}
+{}
 
 \logicRule
 {
 \begin{gathered}
 \Gamma,\Delta\vdash\text{match}_{\Theta_1}(T,p_1)\quad
-\Gamma,\Delta\vdash\text{match}_{\Theta_2}(List \ T,p_2)\\
+\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\textit{List} \ T,p_2)\\
 \Theta_1\cap\Theta_2=\varnothing
 \Theta_1\cup\Theta_2=\Theta_3
 \end{gathered}
 }
 {
-\Gamma,\Delta\vdash\text{match}_{\Theta_3}(\textit{List} \ T,p_1 \mf{"::"} p_2)
+\Gamma,\Delta\vdash\text{match}_{\Theta_3}(\textit{List} \ T,p_1 \ \mf{"::"} \ p_2)
 }
-{PHeadAndTail}
+{}
 
 \logicRule
 {}
 {\Gamma,\Delta\vdash \text{match}_\varnothing(\forall a. a,\mf{"\_"})}
-{PWildcard}
+{}
 
 \textemdash
 
-There rules do not work on there own, as the type might be too specific or a poly type needs to be instancated. Therefore the hindley-Milner type system comes with two additional rules:
+These rules do not work on their own, as the type might be too specific or a poly type needs to be instantiated. Therefore, the Hindley-Milner type system comes with two additional rules:
 
 \logicRule
 {\Gamma,\Delta\vdash match_\Theta(T_2,p)\quad
 T_2 \sqsubseteq T_1
 }
 {\Gamma,\Delta\vdash match_\Theta(T_1,p)}
-{Instantiation}
+{PInstantiation}
 Read top to bottom, this rule states that if a pattern $p$ matches the type $T_2$ then we may also conclude that $p$ matches a more specific type $T_1$.
 
 \logicRule
@@ -161,8 +161,38 @@ Read top to bottom, this rule states that if a pattern $p$ matches the type $T_2
 \Gamma,\Delta\vdash match_\Theta(T,p)
 }
 {\Gamma,\Delta\vdash match_\Theta(\forall a.T,p)}
-{Generalization}
-Read bottom up, for a poly type $\forall a.T$ we may remove the the for-all-quantor if the variable $a$ has already a binding in $\Delta$.
+{PGeneralization}
+Read bottom up, for a poly type $\forall a.T$ we may remove the for-all-quantor if the variable $a$ has already a binding in $\Delta$.
 
 Taking these two new rules into account, the resulting inference rules do not have a unique rule for every pattern any longer. This means we are able to type check but not to infer a type.
 
+```{block2, type="myexample",latex.options="_"}
+In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We will now find the bindings $\Theta_0$ for the following pattern used in the reversing function.
+
+\begin{lstlisting}[language=elm]
+  a :: _
+\end{lstlisting}
+  
+We assume that the type of the expression being matched is $\mathit{List} \ \mathit{Int}$ and $\Gamma =\Delta = \varnothing$.
+
+\begin{center}
+\tiny
+\begin{prooftree}
+      \AxiomC{}
+    \UnaryInfC{$(a,\_)\not\in\varnothing$}
+      \AxiomC{}
+    \UnaryInfC{$\Theta_1 = \{(a,\textit{Int})\}$}
+  \BinaryInfC{$\Gamma,\Delta\vdash\text{match}_{\Theta_1}(\textit{Int},a)$}
+        \AxiomC{}
+      \UnaryInfC{$\Theta_2=\varnothing$}
+    \UnaryInfC{$\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\forall a.a,\mf{\_})$}
+  \UnaryInfC{$\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\textit{List} \ \textit{Int},\mf{\_})$}
+    \AxiomC{}
+  \UnaryInfC{$\Theta_1\cup\Theta_2=\Theta_0$}
+  \AxiomC{$\Theta_1\cap\Theta_2=\varnothing$}
+\QuaternaryInfC{$\varnothing,\varnothing\vdash \text{match}_{\Theta_0}(\textit{List} \ \textit{Int},\mf{a " :: \_"})$}
+\end{prooftree}
+\end{center}
+
+After ensuring $\Theta_1\cap\Theta_2=\{(a,\textit{Int})\}\cap\varnothing=\varnothing$ we can conclude $$\Theta_0=\{(a,\textit{Int})\}\cup\varnothing=\{(a,\textit{Int})\}.$$
+```

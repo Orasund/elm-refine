@@ -26,7 +26,7 @@ Judgment: $lss:(c_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,c_n:(T_{n,1}, \dots,T_{n,k_
 
 \logicRule
 {\begin{gathered}
-\Gamma\vdash lt:(T_{0,1},\dots,T_{0,k_n})\\
+\Gamma\vdash lt:(T_{0,1},\dots,T_{0,k_n})\quad
 lss:\begin{pmatrix*}[l]
 a_1:(T_{1,1}, \dots,T_{1,k_1}),\\
 \vdots\\
@@ -91,7 +91,7 @@ Judgment: $\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$
 }
 {\Gamma_1,\Delta_1, mss \ a \ \mf{"="} e\vdash \Gamma_2,\Delta_2
 }
-{TConstant}
+{}
 
 \logicRule
 {\begin{gathered}
@@ -107,7 +107,7 @@ lsv:(a_1,\dots,a_n)\quad
 }
 {\Gamma_1,\Delta_1,\mf{"type alias"} \ c \ lsv \ \mf{"="} \ t \vdash \Gamma_2,\Delta_2
 }
-{TAlias}
+{}
 
 \logicRule
 {\begin{gathered}
@@ -129,8 +129,8 @@ lss:(c_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,c_n:(T_{n,1}, \dots,T_{n,k_n}))\\
 }
 {\Gamma_1,\Delta_1,\mf{"type"} \ c \ lsv \mf{"="} lss \vdash\Gamma_2,\Delta_2
 }
-{TCustomType}
-Algebraic types are called "Custom Types" in Elm. The list $lss$ provides us with the structure of the type. From there we construct the type $T_2$ and bind all variables, thus creating the poly type $T_1$. Additionally, every sort $c_i$ for $i\in\mathbb{N}_1^n$ has its own constructor that gets added to $\Delta_1$ under the name $c_i$. In Elm these constructors are the only constants beginning with an upper-case letter.
+{}
+The list $lss$ provides us with the structure of the type. From there we construct the type $T_2$ and bind all variables, thus creating the poly type $T_1$. Additionally, every sort $c_i$ for $i\in\mathbb{N}_1^n$ has its own constructor that gets added to $\Delta_1$ under the name $c_i$. In Elm these constructors are the only constants beginning with an upper-case letter.
 
 #### maybe-main-sign
 
@@ -156,88 +156,5 @@ Judgment: $\textit{prog}:T$
 \Gamma,mms\vdash \text{main}:T\quad
 \Gamma,\Delta\vdash e:T
 }
-{ls \ mms \ \mf{"main = "} e}
+{ls \ mms \ \mf{"main = "} \ e:T}
 {}
-
-
-
-```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. Now we can check the type of the following pattern matching code.
-
-\begin{lstlisting}[language=elm]
-  case [1,2,3] |> reverse of
-  [
-    a :: _ ->
-      a;
-    _ ->
-      -1
-  ]
-\end{lstlisting}
-  
-Lets say we know `[1,2,3] |> reverse` is of type $\mathit{List} \ \mathit{Int}$ and $\Gamma = \varnothing$.
-
-We start by proving $\vdash \text{match}_\varnothing(\mathit{List} \ \mathit{Int},\syntax{"\_"})$.
-\begin{center}
-\begin{prooftree}
-    \AxiomC{$\top$}
-  \RightLabel{$\mathit{[PWildcard]}$}
-  \UnaryInfC{$\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
-\RightLabel{$\mathit{[PInstantiation]}$}
-\UnaryInfC{$\vdash \text{match}_\varnothing(\textit{List} \ \text{Int},\syntax{"\_"})$}
-\end{prooftree}
-\end{center}
-
-Next we prove $\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{\(a\):<lower-var> " :: \_"})$ for $\Theta=\{(a,\textit{Int})\}$.
-
-\begin{center}
-\begin{prooftree}
-    \AxiomC{$\top$}
-    \UnaryInfC{$(a,\_)\not\in\varnothing$}
-    \LeftLabel{$(4)$}
-  \UnaryInfC{$\vdash \text{match}_\Theta(\textit{Int},\syntax{a})$}
-    \AxiomC{$\top$}
-  \UnaryInfC{$\Theta\cap\varnothing=\varnothing$}
-      \AxiomC{$\top$}
-    \RightLabel{$(3)$}
-    \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\forall a.a,\syntax{"\_"})$}
-  \RightLabel{$(2)$}
-  \UnaryInfC{$\varnothing\vdash \text{match}_\varnothing(\textit{List} \ \textit{Int},\syntax{"\_"})$}
-\RightLabel{$(1)$}
-\TrinaryInfC{$\vdash \text{match}_\Theta(\textit{List} \ \textit{Int},\syntax{a:<lower-var> " :: \_"})$}
-\end{prooftree}
-\end{center}
-$(1) \mathit{[PHeadAndTail]}, (2) \mathit{[PInstantiation]}, (3) \mathit{[PWildcard]},(4) \mathit{[PVariable]}$
-```
-
-```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now prove the typing of the `reverse` function for $\Gamma = \varnothing$, $\Delta = \varnothing$ and $T = \forall a.List \ a \to List \ a$.
-
-\begin{lstlisting}[language=elm]
-reverse : List a -> List a
-reverse =
-  foldl (::) []
-\end{lstlisting}
-
-Let $T_1 = \mathit{List} \ a$, $T_0 = \mathit{List} \ a \to \mathit{List} \ a$ and $T_2 = a \to \mathit{List} \ a \to \mathit{List} \ a$
-
-\begin{center}
-\small
-\begin{prooftree}
-      \AxiomC{$\top$}
-    \LeftLabel{$(4)$}
-    \UnaryInfC{$\vdash \syntax{"foldl"}:\forall a. T_2\to T_1 \to T_0$}
-      \AxiomC{$\top$}
-    \RightLabel{$(3)$}
-    \UnaryInfC{$\vdash \syntax{"(::)"}:T_2$}
-  \LeftLabel{$(1)$}
-  \BinaryInfC{$\vdash \syntax{"foldl (::)"}:\forall a.T_1 \to T_0$}
-    \AxiomC{$\top$}
-  \RightLabel{$(2)$}
-  \UnaryInfC{$\vdash \syntax{"[]"}:\forall a.T_1$}
-\RightLabel{$(1)$}
-\BinaryInfC {$\vdash  \syntax{"(foldl (::)) []"}:\forall a.T_0$}
-\end{prooftree}
-\end{center}
-
-$(1)\mathit{[TCall]},(2)\mathit{[TEmptyList]},(3)\mathit{[TCons]},(4)\mathit{[TFoldl]}$
-```

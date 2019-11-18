@@ -1,4 +1,4 @@
-### Inference Rules for type signatures
+### Inference Rules for Type Signatures
 
 #### list-lower-var
 Judgment: $llv:(a_1,\dots,a_n)$
@@ -56,26 +56,27 @@ Judgment: $\Gamma\vdash lt:(T_1,\dots,T_n)$
 Judgment: $\Gamma\vdash t:T$
 
 \logicRule
-{}
-{\Gamma\vdash \mf{"Bool"}:\mathit{Bool}}
-{}
-
-\logicRule
-{}
-{\Gamma\vdash\mf{"Int"}:\mathit{Int} }
+{\mathit{Bool} = T}
+{\Gamma\vdash \mf{"Bool"}:T}
 {}
 
 \logicRule
-{\Gamma\vdash t:T}
-{\Gamma\vdash\mf{"List" t}:\mathit{List} \ T}
+{\mathit{Int} = T}
+{\Gamma\vdash\mf{"Int"}:T}
 {}
-The resulting type is a type application $\mathit{List} \ T$ for the type $\mathit{List} = \forall a.\mu C. [ \ ] \ | \mathit{Cons} \ a \ C$.
 
 \logicRule
-{\Gamma\vdash t_1:T_1\quad
+{\mathit{List} \ T_2 = T_1\quad
+\Gamma\vdash t:T_2}
+{\Gamma\vdash\mf{"List" t}:T_1}
+{}
+
+\logicRule
+{(T_1,T_2) = T_0
+\Gamma\vdash t_1:T_1\quad
 \Gamma\vdash t_2:T_2
 }
-{\Gamma\vdash\mf{"("} \ t_1 \ \mf{","} \ t_2 \ \mf{")"}:(T_1,T_2)}
+{\Gamma\vdash\mf{"("} \ t_1 \ \mf{","} \ t_2 \ \mf{")"}:T_0}
 {}
 
 \logicRule
@@ -84,10 +85,11 @@ The resulting type is a type application $\mathit{List} \ T$ for the type $\math
 {}
 
 \logicRule
-{\Gamma\vdash t_1:T_1\quad
+{T_1 \to T_2 = T_0\quad
+\Gamma\vdash t_1:T_1\quad
 \Gamma\vdash t_2:T_2
 }
-{\Gamma\vdash t_1 \to t_2:T_1 \to T_2}
+{\Gamma\vdash t_1 \to t_2:T_0}
 {}
 
 \logicRule
@@ -100,8 +102,34 @@ The resulting type is a type application $\mathit{List} \ T$ for the type $\math
 For a given type $T$ we write the application constructor as $\overline{T}$.
 
 \logicRule
-{(a,T)\in\Gamma\quad
-T \text{ is a type variable}
-}
+{\forall a.a = T}
 {\Gamma\vdash a:T}
 {}
+
+```{block2, type="myexample",latex.options="_"}
+In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function.
+
+The type signiture for the $\mf{reverse}$ function was $\mf{List a -> List a}$. We will now show how we can obtain the curresponding type $T_0$. For that, let $\Gamma = \varnothing$.
+  
+\begin{center}
+\small
+\begin{prooftree}
+        \AxiomC{}
+      \UnaryInfC{$\forall a.a=T_3$}
+    \UnaryInfC{$\varnothing \vdash a:T_3$}
+      \AxiomC{}
+    \UnaryInfC{$List \ T_3=T_1$}
+  \BinaryInfC{$\varnothing \vdash \mathit{List} a:T_1$}
+        \AxiomC{}
+      \UnaryInfC{$\forall a.a=T_4$}
+    \UnaryInfC{$\varnothing \vdash a:T_4$}
+      \AxiomC{}
+    \UnaryInfC{$\mathit{List} \ T_4=T_2$}
+  \BinaryInfC{$\varnothing \vdash \mathit{List} a:T_2$}
+\BinaryInfC{$T_1 \to T_2 = T_0$}
+\UnaryInfC{$\varnothing\vdash \mf{List a -> List a}:T_0$}
+\end{prooftree}
+\end{center}
+```
+
+We can therefore conclude that $T_0 = \mathit{List} \ (\forall a.a) \to \mathit{List} \ (\forall a.a)= \forall a. \mathit{List} \ a \to \mathit{List} \ a$.
