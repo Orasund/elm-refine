@@ -72,7 +72,7 @@ Judgment: $\Gamma\vdash t:T$
 {}
 
 \logicRule
-{(T_1,T_2) = T_0
+{(T_1,T_2) = T_0\quad
 \Gamma\vdash t_1:T_1\quad
 \Gamma\vdash t_2:T_2
 }

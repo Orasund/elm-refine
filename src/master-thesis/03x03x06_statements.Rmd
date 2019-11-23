@@ -86,7 +86,7 @@ Judgment: $\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$
 (a,\_)\not\in\Delta_1\\
 \Gamma_1,mss\vdash e:T\quad
 \Gamma_1,\Delta_1\vdash e : T\quad
-\Delta_2 = \Delta_1\cup\{(a,T)\}
+\Delta_2 = \text{insert}_\Delta_1(\{(a,T)\})
 \end{gathered}
 }
 {\Gamma_1,\Delta_1, mss \ a \ \mf{"="} e\vdash \Gamma_2,\Delta_2
@@ -119,12 +119,12 @@ lss:(c_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,c_n:(T_{n,1}, \dots,T_{n,k_n}))\\
 \mu C.c_1 \ T_{1,1} \ \dots \ T_{1,k_1} \ | \ \dots \ | \ c_n \ T_{n,1} \ \dots \ T_{n,k_n}=T_2\quad
 \forall a_1. \dots \forall a_n. T_2 = T_1\\
 \Gamma_1\cup\{(c,T_1)\} = \Gamma_2\quad
-\Delta_1\cup
+\text{insert}_\Delta_1(
 \begin{Bmatrix*}[l]
 (c_1,T_{1,1}\to\dots\to T_{1,k_1}\to T_1),\\
 \vdots\\
 (c_n,T_{n,1}\to\dots\to T_{n,k_n}\to T_1)
-\end{Bmatrix*} = \Delta_2
+\end{Bmatrix*}) = \Delta_2
 \end{gathered}
 }
 {\Gamma_1,\Delta_1,\mf{"type"} \ c \ lsv \mf{"="} lss \vdash\Gamma_2,\Delta_2

@@ -41,7 +41,7 @@ Judgment: $\Gamma,\Delta,T_1\vdash lc:T_2$
 
 \logicRule
 {\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\Delta\cup\Theta\vdash e:T_2
+\Gamma,\text{insert}_\Delta(\Theta)\vdash e:T_2
 }
 {\Gamma,\Delta,T_1\vdash p \ \mf{"->"} \ e:T_2}
 {}
@@ -51,7 +51,7 @@ Finally, we unify $\Delta$ with $\Theta$.
 
 \logicRule
 {\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\Delta\cup\Theta\vdash e:T_2\quad
+\Gamma,\text{insert}_\Delta(\Theta)\vdash e:T_2\quad
 \Gamma,\Delta,T_1\vdash lc:T_2
 }
 {\Gamma,\Delta,T_1\vdash p \ \mf{"->"} \ e \ \mf{";"} \ lc:T_2}
@@ -192,7 +192,7 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 \logicRule
 {\begin{gathered}
 \Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}\\
-\Gamma,\Delta\vdash (a,T_0)\in\Delta\quad
+\Gamma,\Delta\vdash \Delta(a) \sqsubseteq T_0\quad
 T_0=\{a_1:T_1,\dots,a_n:T_n,\dots \}
 \end{gathered}
 }
@@ -211,7 +211,7 @@ Since Elm version 0.19, released in 2018, setters are not allowed to change the 
 (a,\_)\not\in\Delta\quad
 \Gamma,\Delta\vdash e_1:T_1\quad
 mes:T_1\vdash a:T_1\\
-\Gamma,\Delta\cup(a,T_1)\vdash e_2:T_2
+\Gamma,\text{insert}_\Delta(\{(a,T_1)\})\vdash e_2:T_2
 \end{gathered}
 }
 {\Gamma,\Delta\vdash\mf{"let"} \ mes \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
@@ -258,45 +258,23 @@ mes:T_1\vdash a:T_1\\
 
 \logicRule
 {\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\Delta\cup\Theta\vdash e: T_2
+\Gamma,\text{insert}_\Delta(\Theta)\vdash e: T_2
 }
 {\Gamma,\Delta\vdash\mf{"\textbackslash"} p \mf{"->"} e: T_1\to T_2}
 {}
 In Elm function arguments may be pattern matched, this mostly used to "unwrap" a type, meaning to bind contained elements to variables.
 
 \logicRule
-{(c,T)\in\Delta
+{\Delta(c)\sqsubseteq T
 }
 {\Gamma,\Delta\vdash c: T}
 {}
 
 \logicRule
-{(a,T)\in\Delta
+{\Delta(a)\sqsubseteq T
 }
 {\Gamma,\Delta\vdash a: T}
 {}
-
-\textemdash
-
-Same as for patterns, we also include an instantiation rule as well as a generalization rule:
-
-\logicRule
-{\Gamma,\Delta\vdash e: T_2\quad
-T_2 \sqsubseteq T_1
-}
-{\Gamma,\Delta\vdash e: T_1}
-{TInstantiation}
-
-\logicRule
-{(a,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash e: T
-}
-{\Gamma,\Delta\vdash e:\forall a.T}
-{TGeneralization}
-
-Thus, our inference rule has no longer a unique rule for every expression.
-
-We will fix this problem at the end of the chapter by introducing two different methods how to embed these two rules among the others.
 
 ```{block2, type="myexample",latex.options="_"}
 In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now check the type $T_0 = \forall a.\mathit{List} \ a \to \mathit{List} \ a$ of the `reverse` function for $\Gamma = \Delta = \varnothing$, $\Delta = \varnothing$. The body of the $reverse$ function is as follows:

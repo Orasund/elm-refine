@@ -14,7 +14,7 @@ Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$
 \Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T,p)\\
 \Gamma,\Delta\vdash:\text{match}_{\Theta_2} (\mathit{List} \ T,lpl)\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
-\Theta_3 = \Theta_1\cup\Theta_2
+\Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
 {\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ lpl)}
@@ -35,7 +35,7 @@ Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$
 \Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T_0,p)\\
 \Gamma,\Delta\vdash:\text{match}_{\Theta_2} ((T_1,\dots,T_n),lps)\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
-\Theta_3 = \Theta_1\cup\Theta_2
+\Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
 {\Gamma,\Delta\vdash:\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ lps)}
@@ -77,8 +77,8 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {\begin{gathered}
 \Gamma,\Delta\vdash \text{match}_{\Theta_1}(T_1,p_1)\quad
 \Gamma,\Delta\vdash \text{match}_{\Theta_2}(T_2,p_2)\quad\\
-\Theta_1\cap\Theta_2=\varnothing
-\Theta_1\cup\Theta_2=\Theta_3
+\Theta_1\cap\Theta_2=\varnothing\quad
+\text{insert}_{\Theta_1}(\Theta_2)=\Theta_3
 \end{gathered}
 }
 {
@@ -88,7 +88,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 
 \logicRule
 {
-(c,T_1\to\dots\to T_n \to T_0)\in\Delta\quad
+\Delta(c)\sqsubseteq T_1\to\dots\to T_n \to T_0\quad
 \Gamma,\Delta\vdash\text{match}_{\Theta} ((T_1,\dots,T_n),lps)
 }
 {
@@ -107,7 +107,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 \logicRule
 {(a,\_)\not\in\Delta\quad
 (a,\_)\not\in\Theta_1\quad
-\Theta_1\cup\{(a,T)\}=\Theta_2\quad
+\text{insert}_{\Theta_1}(\{(a,T)\})=\Theta_2\quad
 \Gamma,\Delta\vdash \text{match}_{\Theta_1}(T,p)
 }
 {\Gamma,\Delta\vdash \text{match}_{\Theta_2}(T,p \mf{"as"} a)}
@@ -117,7 +117,7 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {\begin{gathered}
 lpv = (a_1,\dots,a_n)\quad
 T = \{a_1:T_1,\dots,a_n:T_n\}\\
-\Delta\cup\{(a_1,\_),\dots,(a_n,\_)\}=\varnothing\quad
+\Delta\cap\{(a_1,\_),\dots,(a_n,\_)\}=\varnothing\quad
 \Theta = \{(a_1,T_1),\dots,(a_n,T_n)\}
 \end{gathered}
 }
@@ -130,8 +130,8 @@ T = \{a_1:T_1,\dots,a_n:T_n\}\\
 \begin{gathered}
 \Gamma,\Delta\vdash\text{match}_{\Theta_1}(T,p_1)\quad
 \Gamma,\Delta\vdash\text{match}_{\Theta_2}(\textit{List} \ T,p_2)\\
-\Theta_1\cap\Theta_2=\varnothing
-\Theta_1\cup\Theta_2=\Theta_3
+\Theta_1\cap\Theta_2=\varnothing\quad
+\text{insert}_{\Theta_1}(\Theta_2)=\Theta_3
 \end{gathered}
 }
 {
@@ -143,28 +143,6 @@ T = \{a_1:T_1,\dots,a_n:T_n\}\\
 {}
 {\Gamma,\Delta\vdash \text{match}_\varnothing(\forall a. a,\mf{"\_"})}
 {}
-
-\textemdash
-
-These rules do not work on their own, as the type might be too specific or a poly type needs to be instantiated. Therefore, the Hindley-Milner type system comes with two additional rules:
-
-\logicRule
-{\Gamma,\Delta\vdash match_\Theta(T_2,p)\quad
-T_2 \sqsubseteq T_1
-}
-{\Gamma,\Delta\vdash match_\Theta(T_1,p)}
-{PInstantiation}
-Read top to bottom, this rule states that if a pattern $p$ matches the type $T_2$ then we may also conclude that $p$ matches a more specific type $T_1$.
-
-\logicRule
-{(a,\_)\not\in\Delta\quad
-\Gamma,\Delta\vdash match_\Theta(T,p)
-}
-{\Gamma,\Delta\vdash match_\Theta(\forall a.T,p)}
-{PGeneralization}
-Read bottom up, for a poly type $\forall a.T$ we may remove the for-all-quantor if the variable $a$ has already a binding in $\Delta$.
-
-Taking these two new rules into account, the resulting inference rules do not have a unique rule for every pattern any longer. This means we are able to type check but not to infer a type.
 
 ```{block2, type="myexample",latex.options="_"}
 In example \ref{ex:reverse_list} we have looked at the syntax for list reversing function. We will now find the bindings $\Theta_0$ for the following pattern used in the reversing function.

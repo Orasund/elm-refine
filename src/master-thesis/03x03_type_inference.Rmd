@@ -132,13 +132,32 @@ which can be read as "the program $prog$ is wellformed and has the type $T$".
 
 ### Auxiliary Definitions
 
-We will use $(e,T)\in\Gamma$ and $(e,T)\in\Delta$ to denote that a tuple $(e,T)$ exists in $\Gamma$ or $\Delta$. We will also sometimes use a wildcard $\_$ instead of a T if we are only interested in $e$.
-
-We will use $T_1 \sqsubseteq T_2$ for given types $T_1,T_2$ to denote that $T_1$ is more general than $T_2$.
-
 We will use $"T \text{ is a mono type}"$, $"T \text{ is a type variable}"$ and type equivalence $T_1 = T_2$ for two given types $T_1$ and $T_2$.
 
 We will use ${a_1,\dots,a_n}=\text{free}(T)$ to get all free variables of $T$.
+
+#### Instantiation, Generalization
+
+The type system that we are using is polymorphic, meaning that whenever a judgment holds for a type, it will also hold for a more specific type. To counter this polymorphism we will force the types in a judgment to be unique by explicitly stating whenever we want to use a more specific or general type.
+
+First we will use $\Delta(e)\sqsubseteq T :\Leftrightarrow (e,T_0)\in\Delta \land T_0 \sqsubseteq T$. The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
+
+Second we will use a special form of union:
+$$\begin{aligned}
+\text{insert}_{\Delta_1}&(\Delta_2):=\\
+&\Delta_1\cup\small\begin{Bmatrix*}[l]
+    \begin{array}{l|l}
+    (a,\forall b_1\dots\forall b_n.T')&
+    \begin{matrix*}[l]
+    (a,T)\in\Delta_2\\
+    \land \ \forall\_ .\dots\forall\_ T' = T\\
+    \land \ T' \text{ is a mono type}\\
+    \land \ \{b_1,\dots,b_n\}=\{b\ |\ b\in\text{free}(T)\land (a,\_)\not\in\Delta_2\}
+    \end{matrix*}\end{array}\end{Bmatrix*}
+\end{aligned}$$
+This definition essentially states that all quantfied variables of T, that occure in $\Gamma_2$, will be dropped and any free variables will be quantified. The act of removing a quantified variable that is already in the type context is called _Generalization_ and is also typically found as an inference rule in text books.
+
+#### Predefined Types
 
 Additionally, we define
 
