@@ -2,7 +2,7 @@
 
 #### list-pattern-list
 
-Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$
+Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,\mathit{lpl})$
 
 \logicRule
 {}
@@ -12,18 +12,18 @@ Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,lpl)$
 \logicRule
 {\begin{gathered}
 \Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T,p)\\
-\Gamma,\Delta\vdash:\text{match}_{\Theta_2} (\mathit{List} \ T,lpl)\quad
+\Gamma,\Delta\vdash:\text{match}_{\Theta_2} (\mathit{List} \ T,\mathit{lpl})\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
 \Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
-{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ lpl)}
+{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ \mathit{lpl})}
 {}
-$\Theta_3$ is the set of all bindings in the list with head $p$ and tail $lpl$. Variables may only bound once, therefore we need to ensure that the binding $\Theta_1$ of $p$ and the binding $\Theta_2$ of $lpl$ are disjoint.
+$\Theta_3$ is the set of all bindings in the list with head $p$ and tail $\mathit{lpl}$. Variables may only bound once, therefore we need to ensure that the binding $\Theta_1$ of $p$ and the binding $\Theta_2$ of $\mathit{lpl}$ are disjoint.
 
 #### list-pattern-sort
 
-Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$
+Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),\mathit{lps})$
 
 \logicRule
 {}
@@ -33,17 +33,17 @@ Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),lps)$
 \logicRule
 {\begin{gathered}
 \Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T_0,p)\\
-\Gamma,\Delta\vdash:\text{match}_{\Theta_2} ((T_1,\dots,T_n),lps)\quad
+\Gamma,\Delta\vdash:\text{match}_{\Theta_2} ((T_1,\dots,T_n),\mathit{lps})\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
 \Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
-{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ lps)}
+{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ \mathit{lps})}
 {}
 
 #### list-pattern-vars
 
-Judgment: $lpv:(a_1,\dots,a_n)$
+Judgment: $\mathit{lpv}:(a_1,\dots,a_n)$
 
 \logicRule
 {}
@@ -51,8 +51,8 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {}
 
 \logicRule
-{lpv:(a_1,\dots,a_n)}
-{a_0 \ \mf{""} \ lpv:(a_0,a_1,\dots,a_n)}
+{\mathit{lpv}:(a_1,\dots,a_n)}
+{a_0 \ \mf{""} \ \mathit{lpv}:(a_0,a_1,\dots,a_n)}
 {}
 
 #### pattern
@@ -68,9 +68,9 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 {}
 
 \logicRule
-{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,lpl)
+{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,\mathit{lpl})
 }
-{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,\mf{"["} lpl \mf{"]"})}
+{\Gamma,\Delta\vdash \text{match}_{\Theta}(\mathit{List} \ T,\mf{"["} \mathit{lpl} \mf{"]"})}
 {}
 
 \logicRule
@@ -89,10 +89,10 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 \logicRule
 {
 \Delta(c)\sqsubseteq T_1\to\dots\to T_n \to T_0\quad
-\Gamma,\Delta\vdash\text{match}_{\Theta} ((T_1,\dots,T_n),lps)
+\Gamma,\Delta\vdash\text{match}_{\Theta} ((T_1,\dots,T_n),\mathit{lps})
 }
 {
-\Gamma,\Delta\vdash \text{match}_{\Theta}(T_0,c \ lps)
+\Gamma,\Delta\vdash \text{match}_{\Theta}(T_0,c \ \mathit{lps})
 }
 {}
 
@@ -115,13 +115,13 @@ Judgment: $lpv:(a_1,\dots,a_n)$
 
 \logicRule
 {\begin{gathered}
-lpv = (a_1,\dots,a_n)\quad
+\mathit{lpv} = (a_1,\dots,a_n)\quad
 T = \{a_1:T_1,\dots,a_n:T_n\}\\
 \Delta\cap\{(a_1,\_),\dots,(a_n,\_)\}=\varnothing\quad
 \Theta = \{(a_1,T_1),\dots,(a_n,T_n)\}
 \end{gathered}
 }
-{\Gamma,\Delta\vdash \text{match}_\Theta(T,\mf{"\{"} lpv \mf{"\}"})
+{\Gamma,\Delta\vdash \text{match}_\Theta(T,\mf{"\{"} \mathit{lpv} \mf{"\}"})
 }
 {}
 
@@ -166,11 +166,11 @@ We assume that the type of the expression being matched is $\mathit{List} \ \mat
     \UnaryInfC{$\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\forall a.a,\mf{\_})$}
   \UnaryInfC{$\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\textit{List} \ \textit{Int},\mf{\_})$}
     \AxiomC{}
-  \UnaryInfC{$\Theta_1\cup\Theta_2=\Theta_0$}
+  \UnaryInfC{$\text{insert}_{\Theta_1}(\Theta_2)=\Theta_0$}
   \AxiomC{$\Theta_1\cap\Theta_2=\varnothing$}
 \QuaternaryInfC{$\varnothing,\varnothing\vdash \text{match}_{\Theta_0}(\textit{List} \ \textit{Int},\mf{a " :: \_"})$}
 \end{prooftree}
 \end{center}
 
-After ensuring $\Theta_1\cap\Theta_2=\{(a,\textit{Int})\}\cap\varnothing=\varnothing$ we can conclude $$\Theta_0=\{(a,\textit{Int})\}\cup\varnothing=\{(a,\textit{Int})\}.$$
+After ensuring $\Theta_1\cap\Theta_2=\{(a,\textit{Int})\}\cap\varnothing=\varnothing$ we can conclude $$\Theta_0=\text{insert}_{\{(a,Int)\}}(\varnothing)=\{(a,\textit{Int})\}.$$
 ```

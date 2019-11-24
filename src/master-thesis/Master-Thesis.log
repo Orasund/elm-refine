@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  23 NOV 2019 16:15
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  24 NOV 2019 10:56
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -2625,7 +2625,7 @@ LaTeX Font Info:    Try loading font information for U+stmry on input line 320.
 ("C:\Users\Edzgou\AppData\Local\Programs\MiKTeX 2.9\tex/latex/stmaryrd\ustmry.f
 d")
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 8.63924pt on input line 342.
+(Font)              scaled to size 8.63924pt on input line 345.
 Package microtype Info: Character `ﬆ' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -2717,19 +2717,19 @@ Package microtype Info: Character `―' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/bx/n' will be
-(Font)              scaled to size 8.54407pt on input line 342.
+(Font)              scaled to size 8.54407pt on input line 345.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 7.67932pt on input line 348.
+(Font)              scaled to size 7.67932pt on input line 351.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 5.75949pt on input line 348.
+(Font)              scaled to size 5.75949pt on input line 351.
 [1
 
 ] [2] [3]
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 499.
+LaTeX Font Warning: Command \small invalid in math mode on input line 504.
 
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 9.59915pt on input line 499.
+(Font)              scaled to size 9.59915pt on input line 504.
 Package microtype Info: Character `ﬆ' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -2821,21 +2821,21 @@ Package microtype Info: Character `―' is missing
 (microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 500.
+(Font)              <10> on input line 505.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 500.
+(Font)              <7> on input line 505.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 500.
+(Font)              <5> on input line 505.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 6.7194pt on input line 504.
+(Font)              scaled to size 6.7194pt on input line 509.
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
-(Font)              scaled to size 4.79958pt on input line 504.
+(Font)              scaled to size 4.79958pt on input line 509.
 [4] [5]
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/bx/n' will be
-(Font)              scaled to size 10.39528pt on input line 640.
+(Font)              scaled to size 10.39528pt on input line 645.
 
 LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 64
-0.
+5.
 
 \myBox1=\box106
 \myScoreStart1=\dimen331
@@ -2852,7 +2852,7 @@ LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 64
 [6] [7]
 
 LaTeX Warning: Reference `ex:reverse_list' on page 8 undefined on input line 82
-3.
+8.
 
 \myBox4=\box109
 \myScoreStart4=\dimen340
@@ -2860,31 +2860,45 @@ LaTeX Warning: Reference `ex:reverse_list' on page 8 undefined on input line 82
 \myScoreEnd4=\dimen342
 [8] [9]
 
-LaTeX Warning: Reference `ex:int' on page 10 undefined on input line 934.
+LaTeX Warning: Reference `ex:int' on page 10 undefined on input line 939.
 
 [10] [11]
 
 LaTeX Warning: Reference `ex:reverse_list' on page 12 undefined on input line 1
-140.
+145.
 
 
-Overfull \hbox (14.30835pt too wide) in paragraph at lines 1153--1163
+Overfull \hbox (14.30835pt too wide) in paragraph at lines 1158--1168
  [] 
  []
 
-[12]
-! Double subscript.
-<argument> ... \Delta _2 = \text {insert}_\Delta _
-                                                  1(\{(a,T)\}) \end {gathered} 
-l.1267 {}
-          
+[12] [13]
+
+LaTeX Warning: Empty bibliography on input line 1344.
+
+[14]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1347.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1347.
+(master-thesis.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1347.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1347.
+
+Package rerunfilecheck Info: File `master-thesis.out' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
+
+LaTeX Warning: There were undefined references.
+
+Package logreq Info: Writing requests to 'master-thesis.run.xml'.
+\openout1 = `master-thesis.run.xml'.
+
+ ) 
 Here is how much of TeX's memory you used:
- 45406 strings out of 427748
- 873386 string characters out of 3146823
- 1488465 words of memory out of 3000000
- 48897 multiletter control sequences out of 15000+200000
+ 45415 strings out of 427748
+ 873543 string characters out of 3146823
+ 1488568 words of memory out of 3000000
+ 48902 multiletter control sequences out of 15000+200000
  583803 words of font info for 102 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
  83i,25n,116p,9114b,1287s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on master-thesis.pdf (12 pages).
+Output written on master-thesis.pdf (14 pages).

@@ -10,7 +10,7 @@ Judgment: $\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$
 {}
 
 \logicRule
-{\Gamma,\Delta\vdash lef:T\quad
+{\Gamma,\Delta\vdash \mathit{lef}:T\quad
 \Gamma,\Delta\vdash e:T_0\quad
 \{a_0:T_0,\dots,a_n:T_n\}=T
 }
@@ -87,9 +87,9 @@ Judgment: $\Gamma,\Delta\vdash le:\mathit{List} \ T$
 
 \logicRule
 {\Gamma,\Delta\vdash e:T\quad
-\Gamma,\Delta\vdash le:\mathit{List} \ T\quad
+\Gamma,\Delta\vdash \mathit{le}:\mathit{List} \ T\quad
 }
-{\Gamma,\Delta\vdash e \ \mf{","} \ le:\mathit{List} \ T}
+{\Gamma,\Delta\vdash e \ \mf{","} \ \mathit{le}:\mathit{List} \ T}
 {}
 
 #### exp
@@ -177,9 +177,9 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 {}
 
 \logicRule
-{\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}
+{\Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}
 }
-{\Gamma,\Delta\vdash\mf{"\{"} lef \mf{"\}"}: \{a_1:T_1,\dots,a_n:T_n\}
+{\Gamma,\Delta\vdash\mf{"\{"} \mathit{lef} \mf{"\}"}: \{a_1:T_1,\dots,a_n:T_n\}
 }
 {}
 
@@ -191,12 +191,12 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}\\
+\Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}\\
 \Gamma,\Delta\vdash \Delta(a) \sqsubseteq T_0\quad
 T_0=\{a_1:T_1,\dots,a_n:T_n,\dots \}
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\mf{"\{"} \ a \ \mf{"|"} \ lef \ \mf{"\}"}:T_0}
+{\Gamma,\Delta\vdash\mf{"\{"} \ a \ \mf{"|"} \ \mathit{lef} \ \mf{"\}"}:T_0}
 {}
 Since Elm version 0.19, released in 2018, setters are not allowed to change the type of a field in a record.
 
@@ -220,9 +220,9 @@ mes:T_1\vdash a:T_1\\
 
 \logicRule
 {\Gamma,\Delta\vdash e_1: T_1\quad
-\Gamma,\Delta,T_1\vdash lc:T_2
+\Gamma,\Delta,T_1\vdash \mathit{lc}:T_2
 }
-{\Gamma,\Delta\vdash\mf{"case"} \ e_1 \ \mf{"of" "["} \ lc \ \mf{"]"}: T_2
+{\Gamma,\Delta\vdash\mf{"case"} \ e_1 \ \mf{"of" "["} \ \mathit{lc} \ \mf{"]"}: T_2
 }
 {}
 
@@ -244,7 +244,7 @@ mes:T_1\vdash a:T_1\\
 {}
 
 \logicRule
-{\Gamma,\Delta\vdash le:T
+{\Gamma,\Delta\vdash \mathit{le}:T
 }
 {\Gamma,\Delta\vdash\mf{"["} \mathit{le} \mf{"]"}: T}
 {}
