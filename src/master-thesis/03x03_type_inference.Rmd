@@ -155,7 +155,7 @@ $$\begin{aligned}
     \land \ \{b_1,\dots,b_n\}=\{b\ |\ b\in\text{free}(T)\land (a,\_)\not\in\Delta_2\}
     \end{matrix*}\end{array}\end{Bmatrix*}
 \end{aligned}$$
-This definition essentially states that all quantfied variables of T, that occure in $\Gamma_2$, will be dropped and any free variables will be quantified. The act of removing a quantified variable that is already in the type context is called _Generalization_ and is also typically found as an inference rule in text books.
+This definition essentially states that all quantified variables of T, that occur in $\Gamma_2$, will be dropped and any free variables will be quantified. The act of removing a quantified variable that is already in the type context is called _Generalization_ and is also typically found as an inference rule in text books.
 
 #### Predefined Types
 
