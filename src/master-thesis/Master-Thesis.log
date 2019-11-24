@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  24 NOV 2019 10:56
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  24 NOV 2019 11:05
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -2832,10 +2832,10 @@ LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
 (Font)              scaled to size 4.79958pt on input line 509.
 [4] [5]
 LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/bx/n' will be
-(Font)              scaled to size 10.39528pt on input line 645.
+(Font)              scaled to size 10.39528pt on input line 644.
 
 LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 64
-5.
+4.
 
 \myBox1=\box106
 \myScoreStart1=\dimen331
@@ -2852,7 +2852,7 @@ LaTeX Warning: Reference `ex:reverse_list' on page 6 undefined on input line 64
 [6] [7]
 
 LaTeX Warning: Reference `ex:reverse_list' on page 8 undefined on input line 82
-8.
+7.
 
 \myBox4=\box109
 \myScoreStart4=\dimen340
@@ -2860,28 +2860,28 @@ LaTeX Warning: Reference `ex:reverse_list' on page 8 undefined on input line 82
 \myScoreEnd4=\dimen342
 [8] [9]
 
-LaTeX Warning: Reference `ex:int' on page 10 undefined on input line 939.
+LaTeX Warning: Reference `ex:int' on page 10 undefined on input line 938.
 
 [10] [11]
 
 LaTeX Warning: Reference `ex:reverse_list' on page 12 undefined on input line 1
-145.
+144.
 
 
-Overfull \hbox (14.30835pt too wide) in paragraph at lines 1158--1168
+Overfull \hbox (14.30835pt too wide) in paragraph at lines 1157--1167
  [] 
  []
 
 [12] [13]
 
-LaTeX Warning: Empty bibliography on input line 1344.
+LaTeX Warning: Empty bibliography on input line 1343.
 
 [14]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1347.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1347.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1346.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1346.
 (master-thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1347.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1347.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1346.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1346.
 
 Package rerunfilecheck Info: File `master-thesis.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
