@@ -1,0 +1,117 @@
+\setcounter{section}{3}
+\setcounter{subsection}{3}
+
+## Denotational Semantic
+
+We will now define the semantics in a denotational way.
+
+```{definition, name="Variable Context"}
+\begin{letIn}
+$\Gamma$ be a type context.
+\end{letIn}
+$\Delta : \mathcal{V} \nrightarrow \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ is called a _variable context_.
+```
+
+```{definition, name="Type Signature Semantic"}
+\begin{letIn}
+$T,T'\in\mathcal{T}$, $c,a_0,a\in\mathcal{V}$. Let $t_0,t_1,t_2\in\mf{<type>}$, $ltf\in\mf{<list-type-fields>}$ and $lt\in\mf{<list-type>}$. Let $\Gamma$ be a type context.
+\end{letIn}
+We define the following semantic
+
+$$
+\begin{aligned}
+\semantic{.}_\Gamma:&\mf{<list-type-fields>}\to(\mathcal{V}\times\mathcal{T})^*\\
+\semantic{""}_\Gamma = s :\Leftrightarrow& s = (\ )\\
+\semantic{$a_0$ \ ":" \ $t_0$ \ "," \ $\mathit{ltf}$}_\Gamma = s :\Leftrightarrow& T_0 = \semantic{$t_0$}_\Gamma\\
+    &\land s = ((a_0,T_0), \dots, (a_n,T_n))\\
+    &\land \semantic{$\mathit{ltf}$}_\Gamma = ((a_1,T_1), \dots, (a_n,T_n))\\
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}_\Gamma:&\mf{<list-type>}\to\mathcal{T}^*\\
+\semantic{""}_\Gamma = s :\Leftrightarrow& s = (\ )\\
+\semantic{$t_0 \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow&T_0 = \semantic{$t_0$}_\Gamma\\
+    &\land \semantic{$lt$}_\Gamma =  (T_1,\dots,T_n)\\
+    &\land s= (T_0,\dots,T_n)\\
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_0^n.
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}_\Gamma:&\mf{<type>}\to\mathcal{T}\\
+\semantic{"Bool"}_\Gamma = s :\Leftrightarrow& s = \mathit{Bool}\\
+\semantic{"Int"}_\Gamma = s :\Leftrightarrow& s = \mathit{Int}\\
+\semantic{"List" \ $t$}_\Gamma = s :\Leftrightarrow& T=\semantic{t}_\Gamma \land s = \mathit{List} \ T\\
+    &\text{where } T\in\mathcal{T}.\\
+\semantic{"(" \ $t_1$ "," \ $t_2$ \ ")"}_\Gamma = s :\Leftrightarrow& T_1 = \semantic{$t_1$}_\Gamma \land T_2 = \semantic{$t_2$}_\Gamma \land s = (T_1,T_2)\\
+    &\text{where } T_1,T_2\in\mathcal{T}.\\
+\semantic{"\{" \ $\mathit{ltf}$ \ "\}"}_\Gamma = s :\Leftrightarrow& \semantic{$\mathit{ltf}$}_\Gamma = ((a_1,T_1),\dots,(a_n,T_n))\\
+    &\land s= \{a_1:T_1,\dots,a_n:T_n\}\\
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.\\
+\semantic{$t_1$ \ "->" \ $t_2$}_\Gamma = s :\Leftrightarrow& \semantic{$t_1$}_\Gamma = T_1 \land \semantic{$t_2$}_\Gamma = T_2 \land s= T_1 \to T_2\\
+\semantic{$c \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow& (c,T)\in\Gamma\\
+    &\land (T_1,\dots,T_n) = \semantic{$\mathit{lt}$}_\Gamma\\
+    &\land T' = \overline{T} \ T_1 \dots T_n\\
+    &\land s = T'\\
+    &\text{where } n\in\mathbb{N} , T,T'\in\mathcal{T} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_1^n.\\
+\semantic{$a$}_\Gamma = s :\Leftrightarrow& s = \forall b.b
+\end{aligned}
+$$
+```
+
+```{definition, name="Pattern Semantic"}
+$$
+\begin{aligned}
+\text{match}_\Theta:&(\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))\times\mf{<list-pattern-list>}\\
+\text{match}_\Theta(s,\mf{""}):\Leftrightarrow& [ \ ] = s\\
+\text{match}_{\Theta_3}(s,p \ \mf{","} \ \mathit{lpl}):\Leftrightarrow& [a_0,\dots,a_n] = s\\
+    &\land \text{match}_{\Theta_1}(a_0,p) \land \text{match}_{\Theta_2}(a_1,\dots,a_n,\mathit{lpl})\\
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\text{match}_\Theta:&\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)^*\times\mf{<list-pattern-sort>}\\
+\text{match}_\Theta(s,\mf{""}) :\Leftrightarrow& ( \ ) = s\\
+\text{match}_{\Theta_3}(s,p \ \mathit{lps}) :\Leftrightarrow& (s_1,\dots,s_n) = s\\
+    &\land \text{match}_{\Theta_1}(s_1,p) \land \text{match}_{\Theta_2}(s_2,\dots,s_n,\mathit{lps})\\
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.} :& \mf{<list-pattern-vars>} \to \mathcal{V}^*\\
+\semantic{""} = s :\Leftrightarrow& s = (\ )\\
+\semantic{$a_0 \ \mathit{lpv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$} \land (a_0,dots,a_n) = s\\
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\text{match}_\Theta:&\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\times\mf{<pattern>}\\
+\text{match}_\Theta(s,b) :\Leftrightarrow& \land b\in\text{value}_\Gamma(<bool>) \land s = \semantic{b}_{\Gamma,\Delta}\\
+\text{match}_\Theta(s,i) :\Leftrightarrow& \land b\in\text{value}_\Gamma(<int>) \land s = \semantic{b}_{\Gamma,\Delta}\\
+\text{match}_\Theta(s,\mf{"["} \ \mathit{lpl} \ \mf{"]"}) :\Leftrightarrow& \text{match}_\Theta(s,\mathit{lpl})\\
+\text{match}_{\Theta_3}(s,\mf{"("} \ p_1 \ \mf{","} \ p_2 \ \mf{")"}) :\Leftrightarrow& (s_1,s_2) = s\\
+    &\land \text{match}_{\Theta_1}(s_1,p_1) \land \text{match}_{\Theta_2}(s_2,p_2)\\
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+\text{match}_\Theta(s,c \ \mathit{lps}) :\Leftrightarrow& c \ s_1 \ dots \ s_n = s \land \text{match}_\Theta((s_1,\dots,s_n),\mathit{lps})\\
+\text{match}_\Theta(s,a) :\Leftrightarrow& s\in\mathcal{V} \land \Theta = \{(a,s)\}\\
+\text{match}_{\Theta_2}(s,p \ \mf{"as"} \ a) :\Leftrightarrow& \text{match}_{\Theta_1}(s,p)\\
+    &\land \varnothing = \Theta_1\cap\{(a,s)\} \land \Theta_2 = \Theta_1\cup\{(a,s)\}\\
+\text{match}_\Theta(s,\mf{"\{"} \ \mathit{lpv} \ \mf{"\}"}) :\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$}\\
+    &\land \{a_1=e_1,\dots,a_n=e_n\}= s\\
+    &\land \Theta = \{(a_1,e_1),\dots,(a_n,e_n)\}\\
+\text{match}_{\Theta_3}(s,p_1 \ "::" \ p_2):\Leftrightarrow& (s_1,\dots,s_n)= s \land \text{match}_{\Theta_1}(s_1,p_1)\\
+&\land \text{match}_{\Theta_2}((s_2,\dots,s_n),p_2)\\
+&\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+\text{match}_\Theta(\mf{"\_"}):\Leftrightarrow& \varnothing = \Theta
+\end{aligned}
+$$
+```

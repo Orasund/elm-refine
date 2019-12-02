@@ -12,7 +12,6 @@ We will define our syntax in a Backus-Naur-Form [@backus-naur-form].
 ```{definition,name="Type Signiture Syntax"}
 Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
   
-$$\mf{<list-lower-var>} \ ::= \ \mf{""} \ | \ \mf{<lower-var>} \ \mf{<list-lower-var>}$$
 $$
 \begin{aligned}
 \mf{<list-type-fields>} \ ::=& \ \mf{""} \\
@@ -29,7 +28,7 @@ $$
               |& \mf{"\{" <list-type-fields> "\}"}\\
               |& \mf{<type> "->" <type>}\\
               |& \mf{<upper-var> <list-type>}\\
-              |& \mf{<lower-var>}\\
+              |& \mf{<lower-var>}
 \end{aligned}
 $$
 ```
@@ -54,7 +53,7 @@ $$
 \mf{<pattern>} \ ::=& \ \mf{<bool>}\\
                    |& \ \mf{<int>}\\
                    |& \ \mf{"[" <list-pattern-list> "]"}\\
-                   |& \ \mf{"(" <pattern> , <pattern> ")"}\\
+                   |& \ \mf{"(" <pattern> "," <pattern> ")"}\\
                    |& \ \mf{<upper-var> <list-pattern-sort>}\\
                    |& \ \mf{<lower-var>}\\
                    |& \ \mf{<pattern> "as" <lower-var>}\\

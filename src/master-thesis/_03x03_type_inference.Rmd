@@ -29,10 +29,6 @@ If the type $T$ is known then we talk about _type checking_ else we call the pro
 
 For type signature judgments, let $\Gamma$ be a type context, $T\in\mathcal{T}$ and $a_i\in\mathcal{V},T_i\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}$.
 
-For $\mathit{llv}\in\mf{<list-lower-var>}$ the judgment has the form
-$$\mathit{llv}:(a_1,\dots,a_n)$$
-which can be read as "$\mathit{llv}$ defines the list $(a_1,\dots,a_n$)".
-
 For $\mathit{ltf}\in\mf{<list-type-fields>}$ the judgment has the form
 $$\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$$
 which can be read as "given $\Gamma$, $ltf$ has the type $\{a_1:T_1,\dots,a_n:T_n\}$".
@@ -141,7 +137,9 @@ We will write ${a_1,\dots,a_n}=\text{free}(T)$ to denote all free variables $a_1
 The type system that we are using is polymorphic, meaning that whenever a judgment holds for a type, it will also hold for a more specific type. To counter this polymorphism we will force the types in a judgment to be unique by explicitly stating whenever we want to use a more specific or general type.
 
 ```{definition,name="Instantiation"}
-Let $\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context,$T\in\mathcal{T}$ and $e$ be an expression.
+\begin{letIn}
+$\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context,$T\in\mathcal{T}$ and $e$ be an expression.
+\end{letIn}
 
 Then we define
 
@@ -155,7 +153,8 @@ Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be
 The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
 
 ```{definition,name="Generalization"}
-Let $\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$. Let $T,T'\in\mathcal{T}$ such that $T'$ is a mono type $\forall c_1 .\dots\forall c_m T' = T$ for some $c_i\in\mathcal{V},i\in\mathbb{N}_0^m$.
+\begin{letIn}$\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$. Let $T,T'\in\mathcal{T}$ such that $T'$ is a mono type $\forall c_1 .\dots\forall c_m T' = T$ for some $c_i\in\mathcal{V},i\in\mathbb{N}_0^m$.
+\end{letIn}
 
 We define
 
