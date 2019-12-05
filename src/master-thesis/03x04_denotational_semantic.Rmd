@@ -64,13 +64,17 @@ $$
 ```
 
 ```{definition, name="Pattern Semantic"}
+\begin{letIn}
+$\Gamma$ be a type context and let $\Theta,\Theta_1,\Theta_2,\Theta_3$ be variable contexts. Let $p,p_1,p_2\in\mf{<pattern>}$, $\mathit{lpl}\in\mf{<list-pattern-list>}$, $\mathit{lps}\in\mf{<list-pattern-sort>}$ and $\mathit{lpv}\in\mf{<list-pattern-vars>}$. Let $b\in\mf{<bool>}$ and $i\in\mf{<int>}$. Let $c,a\in\mathcal{V}$.
+\end{letIn}
 $$
 \begin{aligned}
 \text{match}_\Theta:&(\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))\times\mf{<list-pattern-list>}\\
 \text{match}_\Theta(s,\mf{""}):\Leftrightarrow& [ \ ] = s\\
 \text{match}_{\Theta_3}(s,p \ \mf{","} \ \mathit{lpl}):\Leftrightarrow& [a_0,\dots,a_n] = s\\
     &\land \text{match}_{\Theta_1}(a_0,p) \land \text{match}_{\Theta_2}(a_1,\dots,a_n,\mathit{lpl})\\
-    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
 \end{aligned}
 $$
 
@@ -89,14 +93,15 @@ $$
 \semantic{.} :& \mf{<list-pattern-vars>} \to \mathcal{V}^*\\
 \semantic{""} = s :\Leftrightarrow& s = (\ )\\
 \semantic{$a_0 \ \mathit{lpv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$} \land (a_0,dots,a_n) = s\\
+    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
 \end{aligned}
 $$
   
 $$
 \begin{aligned}
 \text{match}_\Theta:&\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\times\mf{<pattern>}\\
-\text{match}_\Theta(s,b) :\Leftrightarrow& \land b\in\text{value}_\Gamma(<bool>) \land s = \semantic{b}_{\Gamma,\Delta}\\
-\text{match}_\Theta(s,i) :\Leftrightarrow& \land b\in\text{value}_\Gamma(<int>) \land s = \semantic{b}_{\Gamma,\Delta}\\
+\text{match}_\Theta(s,b) :\Leftrightarrow& \land b\in\mf{<bool>} \land s = \semantic{b}_{\Gamma,\varnothing}\\
+\text{match}_\Theta(s,i) :\Leftrightarrow& \land i\in\mf{<int>} \land s = \semantic{b}_{\Gamma,\varnothing}\\
 \text{match}_\Theta(s,\mf{"["} \ \mathit{lpl} \ \mf{"]"}) :\Leftrightarrow& \text{match}_\Theta(s,\mathit{lpl})\\
 \text{match}_{\Theta_3}(s,\mf{"("} \ p_1 \ \mf{","} \ p_2 \ \mf{")"}) :\Leftrightarrow& (s_1,s_2) = s\\
     &\land \text{match}_{\Theta_1}(s_1,p_1) \land \text{match}_{\Theta_2}(s_2,p_2)\\
@@ -108,10 +113,99 @@ $$
 \text{match}_\Theta(s,\mf{"\{"} \ \mathit{lpv} \ \mf{"\}"}) :\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$}\\
     &\land \{a_1=e_1,\dots,a_n=e_n\}= s\\
     &\land \Theta = \{(a_1,e_1),\dots,(a_n,e_n)\}\\
+    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.\\
 \text{match}_{\Theta_3}(s,p_1 \ "::" \ p_2):\Leftrightarrow& (s_1,\dots,s_n)= s \land \text{match}_{\Theta_1}(s_1,p_1)\\
 &\land \text{match}_{\Theta_2}((s_2,\dots,s_n),p_2)\\
 &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
 \text{match}_\Theta(\mf{"\_"}):\Leftrightarrow& \varnothing = \Theta
+\end{aligned}
+$$
+```
+
+```{definition, name="Expression Semantic"}
+$$
+\begin{aligned}
+\semantic{.}_{\Gamma,\Delta}:& \mf{<list-exp-field>} \to (\mathcal{V}\times\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
+\semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta} = s_1 :\Leftrightarrow& s_2 = \semantic{$e$}_{\Gamma,\Delta} \land ((a,s_2))= s_1\\
+\semantic{$a_1$ \ "=" \ $e$ \ "," \ $lef$}_{\Gamma,\Delta} = s_3 :\Leftrightarrow& ((a_1,s_1)) = \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta}\\
+    &\land ((a_2,s_2),\dots,(a_n,s_n)) = \semantic{$lef$}_{\Gamma,\Delta}\\
+    &\land ((a_1,s_1),\dots,(a_n,s_n)) = s_3
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}_{\Gamma,\Delta}:& \mf{<maybe-exp-sign>}\to(\ )\\
+\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ )= s\\
+\semantic{$a$ \ ":" t \ ";"}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ ) = s
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}_{\Gamma,\Delta}:& \mf{<exp>}\to\mf{<list-case>}\to \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))\\
+\semantic{$e_1,p$ \ "->" \ $e_2$}_{\Gamma,\Delta} = s :\Leftrightarrow& \text{match}_{\Theta}(e_1,p) \land \semantic{$e_2$}_{\Gamma,\Delta\cup\Theta} = s\\
+\semantic{$e_1,p$ \ "->" \ $e_2$ \ ";" \ $lc$}_{\Gamma,\Delta} = s :\Leftrightarrow& s = \begin{cases}
+\semantic{$e_2$}_{\Gamma,\Delta\cup\Theta}&\text{if }\text{match}_{\Theta}(e_1,p)\\
+\semantic{$e_1,lc$}_{\Gamma,\Delta}&\text{else }
+\end{cases}
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<Bool>}\to\text{value}_\varnothing(\mathit{Bool})\\
+\semantic{$b$} = s :\Leftrightarrow& \begin{cases}
+\mathit{True}&\text{if }b = \mf{"True"}\\
+\mathit{False}&\text{if }b = \mf{"False"}
+\end{cases}
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<int>}\to\text{value}_\varnothing(\mathit{Int})\\
+\semantic{"0"} = s :\Leftrightarrow& 0 = s\\
+\semantic{"-" \ $n$} = s :\Leftrightarrow& \mathit{Neg} \ \mathit{Succ}^n \ 1\\
+\semantic{$n$} = s :\Leftrightarrow& \mathit{Pos} \ \mathit{Succ}^n \ 1
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\semantic{.}_{\Gamma,\Delta}:&\mf{<list-exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
+\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ ) = s\\
+\semantic{$e$ \ "," \ $\mathit{le}$}_{\Gamma,\Delta} = s :\Leftrightarrow& s_1 = \semantic{$e$}_{\Gamma,\Delta} \land (s_2,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land (s_1,\dots,s_n) = s
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\semantic{.}_{\Gamma,\Delta}:&\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
+\semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda f. \lambda e_1. \lambda l_1. \begin{cases}
+e_1 &\text{if } [\ ] = l_1\\
+f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
+\end{cases}\\
+\semantic{"(::)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda e. \lambda l. \textit{Cons} \ e \ l\\
+\semantic{"(+)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n + m\\
+\semantic{"(-)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n - m\\
+\semantic{"(*)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n * m\\
+\semantic{"(//)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor\\
+\semantic{"(<)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n < m\\
+\semantic{"(==)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. (n = m)\\
+\semantic{"not"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b. \neg b\\
+\semantic{"(\&\&)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b_1.\lambda b_2. b_1 \land b_2\\
+\semantic{"(||)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b_1.\lambda b_2. b_1 \lor b_2\\
+\semantic{$e_1$ \ "|>" \ $e_2$}_{\Gamma,\Delta} = s_2:\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land f(s_1) = s_2\\
+\semantic{$e_1$ \ ">>" \ $e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow& g = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land
+ g\circ f=s\\
+\Bigg\llbracket\begin{aligned}
+ &\mf{"if"} \ e_1 \ \mf{"then"}\\
+ & \ e_2 \ \mf{"else"} \ e_3
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s:\Leftrightarrow& b = \semantic{$e_1$}_{\Gamma,\Delta} \land s = \begin{cases}
+\semantic{$e_2$}_{\Gamma,\Delta} & \text{if } b\\
+\semantic{$e_3$}_{\Gamma,\Delta} & \text{if } \neg b
+\end{cases}
 \end{aligned}
 $$
 ```
