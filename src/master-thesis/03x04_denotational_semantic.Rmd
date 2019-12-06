@@ -182,7 +182,7 @@ $$
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:&\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
-\semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda f. \lambda e_1. \lambda l_1. \begin{cases}
+\semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda f. \lambda e_1. \lambda l_1.\\ &\small\begin{cases}
 e_1 &\text{if } [\ ] = l_1\\
 f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
 \end{cases}\\
@@ -198,14 +198,37 @@ f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
 \semantic{"(||)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b_1.\lambda b_2. b_1 \lor b_2\\
 \semantic{$e_1$ \ "|>" \ $e_2$}_{\Gamma,\Delta} = s_2:\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land f(s_1) = s_2\\
 \semantic{$e_1$ \ ">>" \ $e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow& g = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land
- g\circ f=s\\
+ f\circ g=s\\
 \Bigg\llbracket\begin{aligned}
  &\mf{"if"} \ e_1 \ \mf{"then"}\\
  & \ e_2 \ \mf{"else"} \ e_3
  \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s:\Leftrightarrow& b = \semantic{$e_1$}_{\Gamma,\Delta} \land s = \begin{cases}
 \semantic{$e_2$}_{\Gamma,\Delta} & \text{if } b\\
 \semantic{$e_3$}_{\Gamma,\Delta} & \text{if } \neg b
-\end{cases}
+\end{cases}\\
+\semantic{"\{" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow& ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
+ &\land \{a_1=s_1,\dots,a_n=s_n\}= s\\
+\semantic{"\{ \}"}_{\Gamma,\Delta} = s:\Leftrightarrow& \{ \}= s\\
+\semantic{"\{" \ $a$ \ "|" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow& ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
+ &\land (a,\small\begin{Bmatrix*}[l]a_1=\_,\dots,a_n=\_,\\a_{n+1}=s_{n+1},\dots,a_m=s_m\end{Bmatrix*})\in\Delta\\
+ &\land \{a_1=s_1,\dots,a_m=s_m\}= s\\
+\semantic{$a_0$ \ "." \ $a_1$}_{\Gamma,\Delta} = s_2 :\Leftrightarrow& (a_0,\{a_1:s_1,\dots\})\Delta \land s_1 = s_2\\
+\Bigg\llbracket\begin{aligned}
+ &\mf{"let"} \ \mathit{ms} \ a \ \mf{"="} \ e_1 \\
+ &\mf{"in"} \ e_2
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s_2 :\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \ \land \semantic{$e_2$}_{\Gamma,\Delta\cup\{(a,s_1)\}} = s_2\\
+\Bigg\llbracket\begin{aligned}
+ &\mf{"case"} \ e \ \mf{"of"} \\
+ &\mf{"["} \ \mathit{lc} \ \mf{"]"}
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s :\Leftrightarrow& \semantic{$e$,$\mathit{lc}$}_{\Gamma,\Delta}= s\\
+\semantic{$e_1 \ e_2$}_{\Gamma,\Delta} = e_3:\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land s_2 = \semantic{$e_2$}_{\Gamma,\Delta}\land s_1(s_2)\\
+\semantic{$b$}_{\Gamma,\Delta} = s:\Leftrightarrow& \semantic{$b$} = s\\
+\semantic{$i$}_{\Gamma,\Delta} = s:\Leftrightarrow& \semantic{$i$} = s\\
+\semantic{"[" \ $\mathit{le}$ \ "]"}_{\Gamma,\Delta} = s:\Leftrightarrow& (s_1,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land [s_1,\dots,s_n]= s\\
+\semantic{"(" \ $e_1$ \ "," \ $e_2$ \ ")"}_{\Gamma,\Delta} = s_3:\Leftrightarrow& s_1=\semantic{$e_1$} \land s_2=\semantic{$e_2$} \land (s_1,s_2) = s_3\\
+\semantic{"\textbackslash" \ $p$ \ "->" \ $e$}_{\Gamma,\Delta} = s:\Leftrightarrow& \text{match}_\Theta(s_1,p)\land s_2=\semantic{$e$}\land \lambda s_1.s_2 = s\\
+\semantic{$c$}_{\Gamma,\Delta} = s:\Leftrightarrow& (c,s)\in\Delta\\
+ \semantic{$a$}_{\Gamma,\Delta} = s:\Leftrightarrow& (a,s)\in\Delta
 \end{aligned}
 $$
 ```

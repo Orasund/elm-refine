@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  2 DEC 2019 16:27
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  6 DEC 2019 19:08
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -1792,6 +1792,9 @@ LaTeX Warning: Label `' multiply defined.
 
 LaTeX Warning: Label `' multiply defined.
 
+
+LaTeX Warning: Label `' multiply defined.
+
 )
 \openout1 = `master-thesis.aux'.
 
@@ -2765,16 +2768,625 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 395.
+Package mdframed Info: Box was splittet wrong
+ starting loop to iterate the splitting point
+(mdframed)              on input line 455.
 [2]
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 458.
 
-LaTeX Warning: Empty bibliography on input line 448.
+LaTeX Font Warning: Command \small invalid in math mode on input line 518.
 
-[3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 451.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 451.
+LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
+(Font)              scaled to size 9.59915pt on input line 518.
+Package microtype Info: Character `ﬆ' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `ﬅ' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‥' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‼' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⌐' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁰' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁴' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁵' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁶' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁷' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁸' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁹' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₀' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₁' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₂' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₃' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₄' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₅' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₆' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₇' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₈' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₉' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₊' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₋' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁺' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁻' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‐' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‑' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‒' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `―' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/n/10'.
+(microtype)             Ignoring protrusion settings for this character.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 519.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 519.
+LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
+(Font)              scaled to size 6.7194pt on input line 519.
+LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/n' will be
+(Font)              scaled to size 4.79958pt on input line 519.
+LaTeX Font Info:    Font shape `TU/TeXGyrePagella(0)/m/it' will be
+(Font)              scaled to size 9.32907pt on input line 520.
+Package microtype Info: Character `‥' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁰' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁴' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁵' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁶' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁷' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁸' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁹' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₀' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₁' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₂' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₃' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₄' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₅' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₆' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₇' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₈' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₉' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₊' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `₋' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁺' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `⁻' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `‒' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+Package microtype Info: Character `―' is missing
+(microtype)             in font `\TU/TeXGyrePagella(0)/m/it/10'.
+(microtype)             Ignoring protrusion settings for this character.
+
+LaTeX Font Warning: Command \small invalid in math mode on input line 546.
+
+Package mdframed Info: You first box width is to small
+ mdframed fixed it
+(mdframed)              on input line 567.
+[3] [4]
+Overfull \vbox (36.4953pt too high) detected at line 567
+ []
+
+Package mdframed Info: Box was splittet wrong
+ starting loop to iterate the splitting point
+(mdframed)              on input line 567.
+
+Overfull \vbox (37.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (38.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (39.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (40.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (41.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (42.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (43.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (44.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (45.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (46.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (47.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (48.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (49.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (50.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (51.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (52.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (53.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (54.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (55.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (56.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (57.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (58.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (59.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (60.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (61.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (62.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (63.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (64.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (65.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (66.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (67.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (68.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (69.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (70.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (71.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (72.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (73.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (74.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (75.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (76.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (77.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (78.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (79.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (80.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (81.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (82.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (83.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (84.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (85.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (86.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (87.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (88.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (89.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (90.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (91.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (92.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (93.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (94.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (95.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (96.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (97.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (98.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (99.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (100.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (101.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (102.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (103.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (104.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (105.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (106.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (107.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (108.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (109.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (110.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (111.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (112.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (113.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (114.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (115.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (116.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (117.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (118.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (119.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (120.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (121.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (122.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (123.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (124.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (125.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (126.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (127.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (128.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (129.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (130.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (131.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (132.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (133.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (134.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (135.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (136.4953pt too high) detected at line 567
+ []
+
+
+Package mdframed Warning: correct box splittet fails
+ It seems you are using a non splittable contents
+(mdframed)                 on input line 567.
+
+
+Overfull \vbox (137.4953pt too high) detected at line 567
+ []
+
+
+Overfull \vbox (42.4953pt too high) has occurred while \output is active []
+
+[5]
+
+LaTeX Warning: Empty bibliography on input line 569.
+
+[6]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 572.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 572.
 (master-thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 451.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 451.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 572.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 572.
 Package rerunfilecheck Info: File `master-thesis.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
 
@@ -2785,12 +3397,12 @@ Package logreq Info: Writing requests to 'master-thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 45386 strings out of 427748
- 872631 string characters out of 3146823
- 1501005 words of memory out of 3000000
- 48877 multiletter control sequences out of 15000+200000
- 575287 words of font info for 86 fonts, out of 3000000 for 9000
+ 45458 strings out of 427748
+ 874518 string characters out of 3146823
+ 1530238 words of memory out of 3000000
+ 48937 multiletter control sequences out of 15000+200000
+ 592231 words of font info for 108 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 83i,13n,116p,9114b,999s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 83i,19n,116p,9114b,1003s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on master-thesis.pdf (3 pages).
+Output written on master-thesis.pdf (6 pages).
