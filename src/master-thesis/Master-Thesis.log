@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  6 DEC 2019 19:08
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.6960 64-bit) (preloaded format=xelatex 2019.3.7)  7 DEC 2019 15:31
 entering extended mode
 **./master-thesis.tex
 (master-thesis.tex
@@ -3378,15 +3378,30 @@ Overfull \vbox (137.4953pt too high) detected at line 567
 Overfull \vbox (42.4953pt too high) has occurred while \output is active []
 
 [5]
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 570.
 
-LaTeX Warning: Empty bibliography on input line 569.
+LaTeX Font Warning: Command \small invalid in math mode on input line 622.
+
+
+LaTeX Font Warning: Command \small invalid in math mode on input line 624.
+
+
+Overfull \hbox (3.66681pt too wide) detected at line 629
+[][]
+ []
 
 [6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 572.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 572.
+
+LaTeX Warning: Empty bibliography on input line 647.
+
+[7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 650.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 650.
 (master-thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 572.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 572.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 650.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 650.
 Package rerunfilecheck Info: File `master-thesis.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E.
 
@@ -3397,12 +3412,12 @@ Package logreq Info: Writing requests to 'master-thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 45458 strings out of 427748
- 874518 string characters out of 3146823
- 1530238 words of memory out of 3000000
- 48937 multiletter control sequences out of 15000+200000
+ 45463 strings out of 427748
+ 874625 string characters out of 3146823
+ 1530191 words of memory out of 3000000
+ 48942 multiletter control sequences out of 15000+200000
  592231 words of font info for 108 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
  83i,19n,116p,9114b,1003s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on master-thesis.pdf (6 pages).
+Output written on master-thesis.pdf (7 pages).

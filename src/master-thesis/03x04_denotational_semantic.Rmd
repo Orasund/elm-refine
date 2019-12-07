@@ -181,7 +181,7 @@ $$
 
 $$
 \begin{aligned}
-\semantic{.}_{\Gamma,\Delta}:&\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
+\semantic{.}_{\Gamma,\Delta}:&\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\\
 \semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda f. \lambda e_1. \lambda l_1.\\ &\small\begin{cases}
 e_1 &\text{if } [\ ] = l_1\\
 f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
@@ -214,7 +214,7 @@ f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
  &\land \{a_1=s_1,\dots,a_m=s_m\}= s\\
 \semantic{$a_0$ \ "." \ $a_1$}_{\Gamma,\Delta} = s_2 :\Leftrightarrow& (a_0,\{a_1:s_1,\dots\})\Delta \land s_1 = s_2\\
 \Bigg\llbracket\begin{aligned}
- &\mf{"let"} \ \mathit{ms} \ a \ \mf{"="} \ e_1 \\
+ &\mf{"let"} \ \mathit{mes} \ a \ \mf{"="} \ e_1 \\
  &\mf{"in"} \ e_2
  \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s_2 :\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \ \land \semantic{$e_2$}_{\Gamma,\Delta\cup\{(a,s_1)\}} = s_2\\
 \Bigg\llbracket\begin{aligned}
@@ -229,6 +229,83 @@ f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
 \semantic{"\textbackslash" \ $p$ \ "->" \ $e$}_{\Gamma,\Delta} = s:\Leftrightarrow& \text{match}_\Theta(s_1,p)\land s_2=\semantic{$e$}\land \lambda s_1.s_2 = s\\
 \semantic{$c$}_{\Gamma,\Delta} = s:\Leftrightarrow& (c,s)\in\Delta\\
  \semantic{$a$}_{\Gamma,\Delta} = s:\Leftrightarrow& (a,s)\in\Delta
+\end{aligned}
+$$
+```
+
+```{definition, name="Statement Semantic"}
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<list-statement-var>}\to\mathcal{V}^*\\
+\semantic{""} = s:\Leftrightarrow& (\ ) = s\\
+\semantic{$a_0$ \ $\mathit{lsv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lsv}$} \land (a_0,\dots,a_n)= s
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\semantic{.}_\Gamma:&\mf{<list-statement-sort>}\to(\mathcal{V}\times\mathcal{T}^*)^*\\
+\semantic{a \ $\mathit{lt}$}_\Gamma = s:\Leftrightarrow& l = \semantic{$\mathit{lt}$}_\Gamma \land ((a,l))\\
+\semantic{$a_0$ \ $\mathit{lt}$ \ $\mathit{lss}$}_\Gamma = s :\Leftrightarrow& ((a_1,l_1),\dots,(a_n,l_n))= \semantic{$\mathit{lss}$}\\
+&\land \ l_0 = \semantic{$\mathit{lt}$}_\Gamma\\
+&\land ((a_0,l_0),\dots,(a_n,l_n)) = s
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}:\mf{<list-statement>}\to&((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\\
+\semantic{""} = s:\Leftrightarrow& \mathit{id} = s\\
+\semantic{$st$ \ "," \ $\mathit{ls}$} = s:\Leftrightarrow& f = \semantic{$st$} \land g = \semantic{$\mathit{ls}$} \land g\circ f= s
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<maybe-statement-sign>}\to(\ )\\
+\semantic{""} = s:\Leftrightarrow& (\ )= s\\
+\semantic{$a$ \ ":" \ $t$ ";"} = s:\Leftrightarrow& (\ )= s
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\semantic{.}:\mf{<statement>} \to&((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\\
+\semantic{$mss$ \ $a$ \ "=" \ $e$}(\Gamma,\Delta) = s_2 :\Leftrightarrow& s_1 = \semantic{$e$}_{\Gamma,\Delta} \land (\Gamma,\Delta\cup\{(a,s_1)\})= s_2\\
+\Bigg\llbracket\begin{aligned}
+&\mf{"type } \mf{alias"} \\
+& c \ \mathit{lsv} \ \mf{"="} \ t
+\end{aligned}\Bigg\rrbracket(\Gamma,\Delta) = s :\Leftrightarrow& T = \semantic{t}_\Gamma \land (\Gamma\cup\{(c,T)\},\Delta)= s\\
+\Bigg\llbracket\begin{aligned}
+&\mf{"type"} \ c \\
+&\mathit{lsv} \ \mf{"="} \ \mathit{lss}
+  \end{aligned}\Bigg\rrbracket(\Gamma_1,\Delta_2) = s:\Leftrightarrow& ((c_1,(T_{1,1},\dots,T_{1,k_1})),\dots,(c_n,(T_{n,1},\dots,T_{n,k_n})))\\
+&\land T_1 = \mu C.c_1 T_{1,1} \dots T_{1,k_1} | \dots | c_n T_{n,1} \dots T_{n,k_n}\\
+&\land (a_1,\dots,a_m) = \semantic{$\mathit{lsv}$}\\
+&\land T_2 = \forall a_1. \dots \forall a_m T_1\\
+&\land \Gamma_2 = \Gamma_1\cup\{(c,T_2)\}\\
+&\land \Delta_2 = \begin{Bmatrix*}[l]
+\small{(c_1,\lambda t_{1,1}. \dots,\lambda t_{1,k_1}.c_1 t_{1,1} \dots t_{1,k_1})}\\
+\vdots\\
+\small{(c_n,\lambda t_{n,1}. \dots,\lambda t_{n,k_n}.c_1 t_{n,1} \dots t_{n,k_n})}
+\end{Bmatrix*}\\
+&\land \Delta_3 = \Delta_1\cup\Delta_2\\
+&\land (\Gamma_2,\Delta_3) = s
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<maybe-main-sign>}\to(\ )\\
+\semantic{""} = s:\Leftrightarrow& (\ )= s\\
+\semantic{"main : " \ $t$ \ ";"} = s:\Leftrightarrow& (\ ) = s
+\end{aligned}
+$$
+  
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<program>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\\
+\semantic{$\mathit{ls}$ \ $\mathit{mms}$ \ "main = " \ $e$} = s:\Leftrightarrow& (\Gamma,\Delta) = \semantic{$\mathit{ls}$}(\varnothing,\varnothing) \land \semantic{$e$}_{\Gamma,\Delta} = s
 \end{aligned}
 $$
 ```
