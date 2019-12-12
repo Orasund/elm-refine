@@ -3,7 +3,7 @@
 
 ## Denotational Semantic
 
-We will now define the semantics in a denotational way.
+We will now expore the semantics of the formal language. To do so, we first define a new context.
 
 ```{definition, name="Variable Context"}
 \begin{letIn}
@@ -12,61 +12,85 @@ $\Gamma$ be a type context.
 $\Delta : \mathcal{V} \nrightarrow \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ is called a _variable context_.
 ```
 
+The semantics of the type signature was already defined in the last section, as the semantic of a type signature is its type. We therefore define the same concept but now in a denotational style.
+
 ```{definition, name="Type Signature Semantic"}
 \begin{letIn}
 $T,T'\in\mathcal{T}$, $c,a_0,a\in\mathcal{V}$. Let $t_0,t_1,t_2\in\mf{<type>}$, $ltf\in\mf{<list-type-fields>}$ and $lt\in\mf{<list-type>}$. Let $\Gamma$ be a type context.
 \end{letIn}
-We define the following semantic
+
+Let $s\in(\mathcal{V}\times\mathcal{T})^*$ for the following function.
 
 $$
 \begin{aligned}
 \semantic{.}_\Gamma:&\mf{<list-type-fields>}\to(\mathcal{V}\times\mathcal{T})^*\\
-\semantic{""}_\Gamma = s :\Leftrightarrow& s = (\ )\\
-\semantic{$a_0$ \ ":" \ $t_0$ \ "," \ $\mathit{ltf}$}_\Gamma = s :\Leftrightarrow& T_0 = \semantic{$t_0$}_\Gamma\\
+\semantic{""}_\Gamma = s :\Leftrightarrow
+    & s = (\ )\\
+\semantic{$a_0$ \ ":" \ $t_0$ \ "," \ $\mathit{ltf}$}_\Gamma = s :\Leftrightarrow
+    & T_0 = \semantic{$t_0$}_\Gamma\\
     &\land s = ((a_0,T_0), \dots, (a_n,T_n))\\
     &\land \semantic{$\mathit{ltf}$}_\Gamma = ((a_1,T_1), \dots, (a_n,T_n))\\
-    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n
 \end{aligned}
 $$
   
+Let $s\in\mathcal{T}^*$ for the following function.
+
 $$
 \begin{aligned}
 \semantic{.}_\Gamma:&\mf{<list-type>}\to\mathcal{T}^*\\
-\semantic{""}_\Gamma = s :\Leftrightarrow& s = (\ )\\
-\semantic{$t_0 \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow&T_0 = \semantic{$t_0$}_\Gamma\\
+\semantic{""}_\Gamma = s :\Leftrightarrow
+    & s = (\ )\\
+\semantic{$t_0 \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow
+    &T_0 = \semantic{$t_0$}_\Gamma\\
     &\land \semantic{$lt$}_\Gamma =  (T_1,\dots,T_n)\\
     &\land s= (T_0,\dots,T_n)\\
-    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_0^n.
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_0^n
 \end{aligned}
 $$
-  
+
+Let $s\in\mathcal{T}$ for the following function.
+
 $$
 \begin{aligned}
 \semantic{.}_\Gamma:&\mf{<type>}\to\mathcal{T}\\
-\semantic{"Bool"}_\Gamma = s :\Leftrightarrow& s = \mathit{Bool}\\
-\semantic{"Int"}_\Gamma = s :\Leftrightarrow& s = \mathit{Int}\\
-\semantic{"List" \ $t$}_\Gamma = s :\Leftrightarrow& T=\semantic{t}_\Gamma \land s = \mathit{List} \ T\\
-    &\text{where } T\in\mathcal{T}.\\
-\semantic{"(" \ $t_1$ "," \ $t_2$ \ ")"}_\Gamma = s :\Leftrightarrow& T_1 = \semantic{$t_1$}_\Gamma \land T_2 = \semantic{$t_2$}_\Gamma \land s = (T_1,T_2)\\
-    &\text{where } T_1,T_2\in\mathcal{T}.\\
-\semantic{"\{" \ $\mathit{ltf}$ \ "\}"}_\Gamma = s :\Leftrightarrow& \semantic{$\mathit{ltf}$}_\Gamma = ((a_1,T_1),\dots,(a_n,T_n))\\
+\semantic{"Bool"}_\Gamma = s :\Leftrightarrow
+    & s = \mathit{Bool}\\
+\semantic{"Int"}_\Gamma = s :\Leftrightarrow
+    & s = \mathit{Int}\\
+\semantic{"List" \ $t$}_\Gamma = s :\Leftrightarrow
+    & T=\semantic{t}_\Gamma \land s = \mathit{List} \ T\\
+    &\text{where } T\in\mathcal{T}\\
+\semantic{"(" \ $t_1$ "," \ $t_2$ \ ")"}_\Gamma = s :\Leftrightarrow
+    & T_1 = \semantic{$t_1$}_\Gamma \land T_2 = \semantic{$t_2$}_\Gamma \land s = (T_1,T_2)\\
+    &\text{where } T_1,T_2\in\mathcal{T}\\
+\semantic{"\{" \ $\mathit{ltf}$ \ "\}"}_\Gamma = s :\Leftrightarrow
+    & \semantic{$\mathit{ltf}$}_\Gamma = ((a_1,T_1),\dots,(a_n,T_n))\\
     &\land s= \{a_1:T_1,\dots,a_n:T_n\}\\
-    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.\\
-\semantic{$t_1$ \ "->" \ $t_2$}_\Gamma = s :\Leftrightarrow& \semantic{$t_1$}_\Gamma = T_1 \land \semantic{$t_2$}_\Gamma = T_2 \land s= T_1 \to T_2\\
-\semantic{$c \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow& (c,T)\in\Gamma\\
+    &\text{where } n\in\mathbb{N} \text{ and } T_i\in\mathcal{T},a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n\\
+\semantic{$t_1$ \ "->" \ $t_2$}_\Gamma = s :\Leftrightarrow
+    & \semantic{$t_1$}_\Gamma = T_1 \land \semantic{$t_2$}_\Gamma = T_2 \land s= T_1 \to T_2\\
+\semantic{$c \ \mathit{lt}$}_\Gamma = s :\Leftrightarrow
+    & (c,T)\in\Gamma\\
     &\land (T_1,\dots,T_n) = \semantic{$\mathit{lt}$}_\Gamma\\
     &\land T' = \overline{T} \ T_1 \dots T_n\\
     &\land s = T'\\
-    &\text{where } n\in\mathbb{N} , T,T'\in\mathcal{T} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_1^n.\\
-\semantic{$a$}_\Gamma = s :\Leftrightarrow& s = \forall b.b
+    &\text{where } n\in\mathbb{N} , T,T'\in\mathcal{T} \text{ and } T_i\in\mathcal{T} \text{ for all } i \in \mathbb{N}_1^n\\
+\semantic{$a$}_\Gamma = s :\Leftrightarrow
+    & s = \forall b.b
 \end{aligned}
 $$
 ```
+
+We have already seen the pattern matching predicate in the last section. It is now time to actually define its meaning.
 
 ```{definition, name="Pattern Semantic"}
 \begin{letIn}
 $\Gamma$ be a type context and let $\Theta,\Theta_1,\Theta_2,\Theta_3$ be variable contexts. Let $p,p_1,p_2\in\mf{<pattern>}$, $\mathit{lpl}\in\mf{<list-pattern-list>}$, $\mathit{lps}\in\mf{<list-pattern-sort>}$ and $\mathit{lpv}\in\mf{<list-pattern-vars>}$. Let $b\in\mf{<bool>}$ and $i\in\mf{<int>}$. Let $c,a\in\mathcal{V}$.
 \end{letIn}
+
+Let $s\in\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))$ for the following predicate.
+
 $$
 \begin{aligned}
 \text{match}_\Theta:&(\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))\times\mf{<list-pattern-list>}\\
@@ -78,35 +102,46 @@ $$
 \end{aligned}
 $$
 
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)^*$ for the following predicate.
+      
 $$
 \begin{aligned}
 \text{match}_\Theta:&\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)^*\times\mf{<list-pattern-sort>}\\
 \text{match}_\Theta(s,\mf{""}) :\Leftrightarrow& ( \ ) = s\\
 \text{match}_{\Theta_3}(s,p \ \mathit{lps}) :\Leftrightarrow& (s_1,\dots,s_n) = s\\
     &\land \text{match}_{\Theta_1}(s_1,p) \land \text{match}_{\Theta_2}(s_2,\dots,s_n,\mathit{lps})\\
-    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+    &\text{where } n\in\mathbb{N} \text{ and } s_i\in\text{value}(T) \text{ with } T\in\mathcal{T} \text{ for all } i \in \mathbb{N}_0^n.\\
 \end{aligned}
 $$
-  
+
+Let $s\in\mathcal{V}^*$ for the following function.
+
 $$
 \begin{aligned}
 \semantic{.} :& \mf{<list-pattern-vars>} \to \mathcal{V}^*\\
 \semantic{""} = s :\Leftrightarrow& s = (\ )\\
-\semantic{$a_0 \ \mathit{lpv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$} \land (a_0,dots,a_n) = s\\
+\semantic{$a_0 \ \mathit{lpv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lpv}$} \land (a_0,\dots,a_n) = s\\
     &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
 \end{aligned}
 $$
+
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ for the following predicate.
   
 $$
 \begin{aligned}
 \text{match}_\Theta:&\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\times\mf{<pattern>}\\
-\text{match}_\Theta(s,b) :\Leftrightarrow& \land b\in\mf{<bool>} \land s = \semantic{b}_{\Gamma,\varnothing}\\
-\text{match}_\Theta(s,i) :\Leftrightarrow& \land i\in\mf{<int>} \land s = \semantic{b}_{\Gamma,\varnothing}\\
+\text{match}_\Theta(s,b) :\Leftrightarrow& \land b\in\mf{<bool>} \land s = \semantic{$b$}_{\Gamma,\varnothing}\\
+\text{match}_\Theta(s,i) :\Leftrightarrow& \land i\in\mf{<int>} \land s = \semantic{$b$}_{\Gamma,\varnothing}\\
 \text{match}_\Theta(s,\mf{"["} \ \mathit{lpl} \ \mf{"]"}) :\Leftrightarrow& \text{match}_\Theta(s,\mathit{lpl})\\
 \text{match}_{\Theta_3}(s,\mf{"("} \ p_1 \ \mf{","} \ p_2 \ \mf{")"}) :\Leftrightarrow& (s_1,s_2) = s\\
     &\land \text{match}_{\Theta_1}(s_1,p_1) \land \text{match}_{\Theta_2}(s_2,p_2)\\
     &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
-\text{match}_\Theta(s,c \ \mathit{lps}) :\Leftrightarrow& c \ s_1 \ dots \ s_n = s \land \text{match}_\Theta((s_1,\dots,s_n),\mathit{lps})\\
+    &\text{where } s_1\in\text{value}(T_1),s_2\in\text{value}(T_2) \text{ for}\\
+    &T_1,T_2\in\mathcal{T}\\
+\text{match}_\Theta(s,c \ \mathit{lps}) :\Leftrightarrow& c \ s_1 \ \dots \ s_n = s \land \text{match}_\Theta((s_1,\dots,s_n),\mathit{lps})\\
+    &\text{where } n\in\mathbb{N} \text{ and } s_i\in\text{value}(T) \text{ with } T\in\mathcal{T} \text{ for}\\
+    &\text{all } i \in \mathbb{N}_0^n.\\
 \text{match}_\Theta(s,a) :\Leftrightarrow& s\in\mathcal{V} \land \Theta = \{(a,s)\}\\
 \text{match}_{\Theta_2}(s,p \ \mf{"as"} \ a) :\Leftrightarrow& \text{match}_{\Theta_1}(s,p)\\
     &\land \varnothing = \Theta_1\cap\{(a,s)\} \land \Theta_2 = \Theta_1\cup\{(a,s)\}\\
@@ -114,164 +149,393 @@ $$
     &\land \{a_1=e_1,\dots,a_n=e_n\}= s\\
     &\land \Theta = \{(a_1,e_1),\dots,(a_n,e_n)\}\\
     &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.\\
-\text{match}_{\Theta_3}(s,p_1 \ "::" \ p_2):\Leftrightarrow& (s_1,\dots,s_n)= s \land \text{match}_{\Theta_1}(s_1,p_1)\\
-&\land \text{match}_{\Theta_2}((s_2,\dots,s_n),p_2)\\
-&\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+\text{match}_{\Theta_3}(s,p_1 \ \mf{"::"} \ p_2):\Leftrightarrow& (s_1,\dots,s_n)= s \land \text{match}_{\Theta_1}(s_1,p_1)\\
+    &\land \text{match}_{\Theta_2}((s_2,\dots,s_n),p_2)\\
+    &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
+    &\text{where } n\in\mathbb{N} \text{ and } s_i\in\text{value}(T) \text{ with } T\in\mathcal{T} \text{ for}\\
+    &\text{all } i \in \mathbb{N}_0^n.\\
 \text{match}_\Theta(\mf{"\_"}):\Leftrightarrow& \varnothing = \Theta
 \end{aligned}
 $$
 ```
 
+An Elm program is nothing more than an expression. Semantics of an expression is therefore the heart piece of this section.
+
 ```{definition, name="Expression Semantic"}
+\begin{letIn}
+$\Gamma$ be a type context and let $\Delta,\Theta$ be variable contexts. Let $a,a_0,a_1\in\mathcal{V}$, $e,e_1,e_2,e_3\in\mf{<exp>}$. Let $\mathit{lef}\in\mf{<list-exp-field>}$, $t\in\mf{<type>}$, $p\in\mf{<pattern>}$, $\mathit{lc}\in\mf{<list-case>}$, $b\in\mf{<bool>}$, $\mathit{nr}\in\mathbb{N}$, $\mathit{le}\in\mf{<list-exp>}$ and $\mathit{mes}\in\mf{<maybe-expression-sign>}$.
+\end{letIn}
+
+Let $s\in(\mathcal{V}\times\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*$ for the following function.
+
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:& \mf{<list-exp-field>} \to (\mathcal{V}\times\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
-\semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta} = s_1 :\Leftrightarrow& s_2 = \semantic{$e$}_{\Gamma,\Delta} \land ((a,s_2))= s_1\\
-\semantic{$a_1$ \ "=" \ $e$ \ "," \ $lef$}_{\Gamma,\Delta} = s_3 :\Leftrightarrow& ((a_1,s_1)) = \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta}\\
+\semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta} = s_1 :\Leftrightarrow
+    &s_2 = \semantic{$e$}_{\Gamma,\Delta} \land ((a,s_2))= s_1\\
+    &\text{where } s_2\in\text{value}_\Gamma(T) \text{ for } T\in\mathcal{T}\\
+\semantic{$a_1$ \ "=" \ $e$ \ "," \ $lef$}_{\Gamma,\Delta} = s_3 :\Leftrightarrow
+    & ((a_1,s_1)) = \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta}\\
     &\land ((a_2,s_2),\dots,(a_n,s_n)) = \semantic{$lef$}_{\Gamma,\Delta}\\
-    &\land ((a_1,s_1),\dots,(a_n,s_n)) = s_3
+    &\land ((a_1,s_1),\dots,(a_n,s_n)) = s_3\\
+    &\text{where } \ n\in\mathbb{N} \text{ and } a_i\in\mathcal{V},s_i\in\text{value}_\Gamma(T_i)\\
+    &\text{ for } T_i\in\mathcal{T} \text{ for } i\in\mathbb{N}_0^n
 \end{aligned}
 $$
-  
+
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:& \mf{<maybe-exp-sign>}\to(\ )\\
-\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ )= s\\
-\semantic{$a$ \ ":" t \ ";"}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ ) = s
+\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & (\ )= s\\
+\semantic{$a$ \ ":" $t$ \ ";"}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & (\ ) = s
 \end{aligned}
 $$
-  
+
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))$ for the following function.
+
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:& \mf{<exp>}\to\mf{<list-case>}\to \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))\\
-\semantic{$e_1,p$ \ "->" \ $e_2$}_{\Gamma,\Delta} = s :\Leftrightarrow& \text{match}_{\Theta}(e_1,p) \land \semantic{$e_2$}_{\Gamma,\Delta\cup\Theta} = s\\
-\semantic{$e_1,p$ \ "->" \ $e_2$ \ ";" \ $lc$}_{\Gamma,\Delta} = s :\Leftrightarrow& s = \begin{cases}
-\semantic{$e_2$}_{\Gamma,\Delta\cup\Theta}&\text{if }\text{match}_{\Theta}(e_1,p)\\
-\semantic{$e_1,lc$}_{\Gamma,\Delta}&\text{else }
-\end{cases}
+\semantic{$e_1,p$ \ "->" \ $e_2$}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & \text{match}_{\Theta}(e_1,p) \land \semantic{$e_2$}_{\Gamma,\Delta\cup\Theta} = s\\
+\semantic{$e_1,p$ \ "->" \ $e_2$ \ ";" \ $lc$}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & s = 
+      \begin{cases}
+        \semantic{$e_2$}_{\Gamma,\Delta\cup\Theta} &\text{if }\text{match}_{\Theta}(e_1,p)\\
+        \semantic{$e_1,lc$}_{\Gamma,\Delta} &\text{else }
+      \end{cases}
 \end{aligned}
 $$
-  
+      
+Let $s\in\text{value}_\varnothing(\mathit{Bool})$ for the following function.
+      
 $$
 \begin{aligned}
 \semantic{.}:&\mf{<Bool>}\to\text{value}_\varnothing(\mathit{Bool})\\
-\semantic{$b$} = s :\Leftrightarrow& \begin{cases}
-\mathit{True}&\text{if }b = \mf{"True"}\\
-\mathit{False}&\text{if }b = \mf{"False"}
-\end{cases}
+\semantic{$b$} = s :\Leftrightarrow
+    & \begin{cases}
+        \mathit{True}&\text{if }b = \mf{"True"}\\
+        \mathit{False}&\text{if }b = \mf{"False"}
+      \end{cases}
 \end{aligned}
 $$
+          
+Let $s\in\text{value}_\varnothing(\mathit{Int})$ for the following function.
   
 $$
 \begin{aligned}
 \semantic{.}:&\mf{<int>}\to\text{value}_\varnothing(\mathit{Int})\\
-\semantic{"0"} = s :\Leftrightarrow& 0 = s\\
-\semantic{"-" \ $n$} = s :\Leftrightarrow& \mathit{Neg} \ \mathit{Succ}^n \ 1\\
-\semantic{$n$} = s :\Leftrightarrow& \mathit{Pos} \ \mathit{Succ}^n \ 1
+\semantic{"0"} = s :\Leftrightarrow
+    & 0 = s\\
+\semantic{"-" \ $\mathit{nr}$} = s :\Leftrightarrow
+    & \mathit{Neg} \ \mathit{Succ}^\mathit{nr} \ 1\\
+\semantic{$\mathit{nr}$} = s :\Leftrightarrow
+    & \mathit{Pos} \ \mathit{Succ}^\mathit{nr} \ 1
 \end{aligned}
 $$
+  
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*$ for the following function.
 
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:&\mf{<list-exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
-\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow& (\ ) = s\\
-\semantic{$e$ \ "," \ $\mathit{le}$}_{\Gamma,\Delta} = s :\Leftrightarrow& s_1 = \semantic{$e$}_{\Gamma,\Delta} \land (s_2,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land (s_1,\dots,s_n) = s
+\semantic{""}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & (\ ) = s\\
+\semantic{$e$ \ "," \ $\mathit{le}$}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & s_1 = \semantic{$e$}_{\Gamma,\Delta} \land (s_2,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land (s_1,\dots,s_n) = s\\
+    & \text{where } \ n\in\mathbb{N} \ \text{ and }\ s_i\in\text{value}_\Gamma(T_i),T_i\in\mathcal{T} \text{ for each } i\in\mathbb{N}_0^n
 \end{aligned}
 $$
-
+      
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ for the following function.
+      
+$$\semantic{.}_{\Gamma,\Delta}:\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$$
+$$\begin{aligned}
+\semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda f. \lambda e_1. \lambda l_1.\\
+    &\small\begin{cases}
+        e_1 &\text{if } [\ ] = l_1\\
+        f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
+      \end{cases}\\
+    &\text{where } \ e_1\in\text{value}_\Gamma(T_1),e_2\in\text{value}_\Gamma(T_2)\\
+    &\text{ and } l_1,l_2\in\text{value}_\Gamma(\mathit{List} \ T_2) \text{ and }\\
+    &f\in\text{value}_\Gamma(T_2\to T_1 \to T_1) \text{ for } T_1,T_2\in\mathcal{T}
+\end{aligned}
+$$
 $$
 \begin{aligned}
-\semantic{.}_{\Gamma,\Delta}:&\mf{<exp>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\\
-\semantic{"foldl"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda f. \lambda e_1. \lambda l_1.\\ &\small\begin{cases}
-e_1 &\text{if } [\ ] = l_1\\
-f(e_2, s(f,e_1,l_2)) & \text{if } \textit{Cons} \ e_2 \ l_2 = l_1
-\end{cases}\\
-\semantic{"(::)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda e. \lambda l. \textit{Cons} \ e \ l\\
-\semantic{"(+)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n + m\\
-\semantic{"(-)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n - m\\
-\semantic{"(*)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n * m\\
-\semantic{"(//)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor\\
-\semantic{"(<)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. n < m\\
-\semantic{"(==)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda n.\lambda m. (n = m)\\
-\semantic{"not"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b. \neg b\\
-\semantic{"(\&\&)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b_1.\lambda b_2. b_1 \land b_2\\
-\semantic{"(||)"}_{\Gamma,\Delta} = s:\Leftrightarrow& s = \lambda b_1.\lambda b_2. b_1 \lor b_2\\
-\semantic{$e_1$ \ "|>" \ $e_2$}_{\Gamma,\Delta} = s_2:\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land f(s_1) = s_2\\
-\semantic{$e_1$ \ ">>" \ $e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow& g = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land
+\semantic{"(::)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda e. \lambda l. \textit{Cons} \ e \ l\\
+    & \text{where } \ e\in\text{value}_\Gamma(T) \text{ and } \ l\in\text{value}_\Gamma(\mathit{List} \ T)\\
+    & \text{ for } T\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(+)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. n + m\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(-)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. n - m\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(*)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. n * m\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(//)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(<)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. n < m\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(==)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda n.\lambda m. (n = m)\\
+    & \text{where } n,m\in\mathbb{N}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"not"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda b. \neg b\\
+    & \text{where }b\in\text{value}_\Gamma(\mathit{Bool})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(\&\&)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda b_1.\lambda b_2. b_1 \land b_2\\
+    & \text{where }b_1,n_2\in\text{value}_\Gamma(\mathit{Bool})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(||)"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s = \lambda b_1.\lambda b_2. b_1 \lor b_2\\
+    & \text{where }b_1,n_2\in\text{value}_\Gamma(\mathit{Bool})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{$e_1$ \ "|>" \ $e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s' = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land f(s_1) = s\\
+    & \text{where }f\in\text{value}(T_1\to T_2),s'\in\text{value}(T_1)\text{ for }T_1,T_2\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{$e_1$ \ ">>" \ $e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & g = \semantic{$e_1$}_{\Gamma,\Delta} \land f = \semantic{$e_2$}_{\Gamma,\Delta} \land
  f\circ g=s\\
-\Bigg\llbracket\begin{aligned}
+    & \text{where } g\in\text{value}(T_1\to T_2),f\in\text{value}(T_2\to T_3)\text{ for }\\
+    & T_1,T_2,T_2\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+ \Bigg\llbracket\begin{aligned}
  &\mf{"if"} \ e_1 \ \mf{"then"}\\
  & \ e_2 \ \mf{"else"} \ e_3
- \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s:\Leftrightarrow& b = \semantic{$e_1$}_{\Gamma,\Delta} \land s = \begin{cases}
-\semantic{$e_2$}_{\Gamma,\Delta} & \text{if } b\\
-\semantic{$e_3$}_{\Gamma,\Delta} & \text{if } \neg b
-\end{cases}\\
-\semantic{"\{" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow& ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
- &\land \{a_1=s_1,\dots,a_n=s_n\}= s\\
-\semantic{"\{ \}"}_{\Gamma,\Delta} = s:\Leftrightarrow& \{ \}= s\\
-\semantic{"\{" \ $a$ \ "|" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow& ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
- &\land (a,\small\begin{Bmatrix*}[l]a_1=\_,\dots,a_n=\_,\\a_{n+1}=s_{n+1},\dots,a_m=s_m\end{Bmatrix*})\in\Delta\\
- &\land \{a_1=s_1,\dots,a_m=s_m\}= s\\
-\semantic{$a_0$ \ "." \ $a_1$}_{\Gamma,\Delta} = s_2 :\Leftrightarrow& (a_0,\{a_1:s_1,\dots\})\Delta \land s_1 = s_2\\
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s:\Leftrightarrow
+    & b = \semantic{$e_1$}_{\Gamma,\Delta} \land s = 
+      \begin{cases}
+        \semantic{$e_2$}_{\Gamma,\Delta} & \text{if } b\\
+        \semantic{$e_3$}_{\Gamma,\Delta} & \text{if } \neg b
+      \end{cases}\\
+    & \text{where } b\in\text{value}(\mathit{Bool})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"\{" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
+    &\land \{a_1=s_1,\dots,a_n=s_n\}= s\\
+    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V},s_i\in\text{value}(T_i),T_i\in\mathcal{T} \text{ for }i\in\mathbb{N}_0^n
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"\{ \}"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & \{ \}= s
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"\{" \ $a$ \ "|" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
+    &\land (a,\small\begin{Bmatrix*}[l]a_1=\_,\dots,a_n=\_,\\a_{n+1}=s_{n+1},\dots,a_m=s_m\end{Bmatrix*})\in\Delta\\
+    &\land \{a_1=s_1,\dots,a_m=s_m\}= s\\
+    &\text{where } n,m\in\mathbb{N} \text{ such that } n \leq m \text{ and } a_i\in\mathcal{V},\\
+    &s_i\in\text{value}(T_i),T_i\in\mathcal{T} \text{ for }i\in\mathbb{N}_0^m
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{$a_0$ \ "." \ $a_1$}_{\Gamma,\Delta} = s :\Leftrightarrow
+    & (a_0,\{a_1:s_1,\dots\})\Delta \land s' = s\\
+    & \text{where } s'\in\text{value}(T) \text{for } T\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
 \Bigg\llbracket\begin{aligned}
  &\mf{"let"} \ \mathit{mes} \ a \ \mf{"="} \ e_1 \\
  &\mf{"in"} \ e_2
- \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s_2 :\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \ \land \semantic{$e_2$}_{\Gamma,\Delta\cup\{(a,s_1)\}} = s_2\\
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s :\Leftrightarrow
+    & s' = \semantic{$e_1$}_{\Gamma,\Delta} \ \land \semantic{$e_2$}_{\Gamma,\Delta\cup\{(a,s')\}} = s\\
+    & \text{where } s' \in\text{value}(T) for T\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
 \Bigg\llbracket\begin{aligned}
  &\mf{"case"} \ e \ \mf{"of"} \\
  &\mf{"["} \ \mathit{lc} \ \mf{"]"}
- \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s :\Leftrightarrow& \semantic{$e$,$\mathit{lc}$}_{\Gamma,\Delta}= s\\
-\semantic{$e_1 \ e_2$}_{\Gamma,\Delta} = e_3:\Leftrightarrow& s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land s_2 = \semantic{$e_2$}_{\Gamma,\Delta}\land s_1(s_2)\\
-\semantic{$b$}_{\Gamma,\Delta} = s:\Leftrightarrow& \semantic{$b$} = s\\
-\semantic{$i$}_{\Gamma,\Delta} = s:\Leftrightarrow& \semantic{$i$} = s\\
-\semantic{"[" \ $\mathit{le}$ \ "]"}_{\Gamma,\Delta} = s:\Leftrightarrow& (s_1,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land [s_1,\dots,s_n]= s\\
-\semantic{"(" \ $e_1$ \ "," \ $e_2$ \ ")"}_{\Gamma,\Delta} = s_3:\Leftrightarrow& s_1=\semantic{$e_1$} \land s_2=\semantic{$e_2$} \land (s_1,s_2) = s_3\\
-\semantic{"\textbackslash" \ $p$ \ "->" \ $e$}_{\Gamma,\Delta} = s:\Leftrightarrow& \text{match}_\Theta(s_1,p)\land s_2=\semantic{$e$}\land \lambda s_1.s_2 = s\\
-\semantic{$c$}_{\Gamma,\Delta} = s:\Leftrightarrow& (c,s)\in\Delta\\
- \semantic{$a$}_{\Gamma,\Delta} = s:\Leftrightarrow& (a,s)\in\Delta
+ \end{aligned}\Bigg\rrbracket_{\Gamma,\Delta} = s :\Leftrightarrow
+    & \semantic{$e$,$\mathit{lc}$}_{\Gamma,\Delta}= s
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{$e_1 \ e_2$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s_1 = \semantic{$e_1$}_{\Gamma,\Delta} \land s_2 = \semantic{$e_2$}_{\Gamma,\Delta}\land s_1(s_2) = s\\
+    & \text{where } s_1 \in\text{value}_\Gamma(T_1\to T_2) \text{ and } s_2\in\text{value}_\Gamma(T_1) \text{for }T_1,T_2\in\mathcal{T} 
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+ \semantic{$b$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & \semantic{$b$} = s
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{$i$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & \semantic{$i$} = s
+ \end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"[" \ $\mathit{le}$ \ "]"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & (s_1,\dots,s_n) = \semantic{$\mathit{le}$}_{\Gamma,\Delta} \land [s_1,\dots,s_n]= s\\
+    & \text{where }n\in\mathbb{N} \text{ and } s_i\in\text{value}_\Gamma(T) \text{ for } T\in\mathcal{T}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{"(" \ $e_1$ \ "," \ $e_2$ \ ")"}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & s_1=\semantic{$e_1$} \land s_2=\semantic{$e_2$} \land (s_1,s_2) = s\\
+    & \text{where }s_1\in\text{value}_\Gamma(T_1) \text{ and } s_2\in\text{value}_\Gamma(T_1)
+\end{aligned}
+$$
+$$
+\begin{aligned} 
+\semantic{"\textbackslash" \ $p$ \ "->" \ $e$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & \text{match}_\Theta(s_1,p)\land s_2=\semantic{$e$}\land \lambda s_1.s_2 = s\\
+    & \text{where }s_1\in\text{value}_\Gamma(T_1) \text{ and } s_2\in\text{value}_\Gamma(T_1)
+\end{aligned}
+$$
+$$
+\begin{aligned} 
+\semantic{$c$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & (c,s)\in\Delta\\
+\end{aligned}
+$$
+$$
+\begin{aligned} 
+\semantic{$a$}_{\Gamma,\Delta} = s:\Leftrightarrow
+    & (a,s)\in\Delta
 \end{aligned}
 $$
 ```
 
+Statements are, semantically speaking, just functions that either map the type- or variable-context. 
+
 ```{definition, name="Statement Semantic"}
-$$
-\begin{aligned}
-\semantic{.}:&\mf{<list-statement-var>}\to\mathcal{V}^*\\
-\semantic{""} = s:\Leftrightarrow& (\ ) = s\\
-\semantic{$a_0$ \ $\mathit{lsv}$} = s:\Leftrightarrow& (a_1,\dots,a_n) = \semantic{$\mathit{lsv}$} \land (a_0,\dots,a_n)= s
-\end{aligned}
-$$
+\begin{letIn}
+$\Gamma$ be a type context. Let $a,a_0\in\mathcal{V}$, $t\in\mf{<type>}$, $\mathit{lsv}\in\mf{<list-statement-var>}$, $\mathit{lt}\in\mf{<list-type>}$, $\mathit{lss}\in\mf{<list-statement-sort>}$, $\mathit{st}\in\mf{<statement>}$, $\mathit{ls}\in\mf{<list-statement>}$, $\mathit{mss}\in\mf{<maybe-statement-sign>}$ and $\mathit{mms}\in\mf{<maybe-main-sign>}$. Let $\mathcal{S}$ be the class of all finite sets.
+\end{letIn}
+
+Let $s\in\mathcal{V}^*$ for the following function.
 
 $$
 \begin{aligned}
-\semantic{.}_\Gamma:&\mf{<list-statement-sort>}\to(\mathcal{V}\times\mathcal{T}^*)^*\\
-\semantic{a \ $\mathit{lt}$}_\Gamma = s:\Leftrightarrow& l = \semantic{$\mathit{lt}$}_\Gamma \land ((a,l))\\
-\semantic{$a_0$ \ $\mathit{lt}$ \ $\mathit{lss}$}_\Gamma = s :\Leftrightarrow& ((a_1,l_1),\dots,(a_n,l_n))= \semantic{$\mathit{lss}$}\\
-&\land \ l_0 = \semantic{$\mathit{lt}$}_\Gamma\\
-&\land ((a_0,l_0),\dots,(a_n,l_n)) = s
+\semantic{.}:&\mf{<list-statement-var>}\to\mathcal{V}^*\\
+\semantic{""} = s:\Leftrightarrow
+    & (\ ) = s\\
+\semantic{$a_0$ \ $\mathit{lsv}$} = s:\Leftrightarrow
+    & (a_1,\dots,a_n) = \semantic{$\mathit{lsv}$} \land (a_0,\dots,a_n)= s\\
+    & \text{where } \ n\in\mathbb{N} \text{ and } a_i\in\mathcal{V}\text{ for }i\in\mathbb{N}_0^n
 \end{aligned}
 $$
+
+Let $s\in(\mathcal{V}\times\mathcal{T}^*)^*$ for the following function.
   
 $$
 \begin{aligned}
-\semantic{.}:\mf{<list-statement>}\to&((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\\
-\semantic{""} = s:\Leftrightarrow& \mathit{id} = s\\
-\semantic{$st$ \ "," \ $\mathit{ls}$} = s:\Leftrightarrow& f = \semantic{$st$} \land g = \semantic{$\mathit{ls}$} \land g\circ f= s
+\semantic{.}_\Gamma:&\mf{<list-statement-sort>}\to(\mathcal{V}\times\mathcal{T}^*)^*\\
+\semantic{$a$ \ $\mathit{lt}$}_\Gamma = s:\Leftrightarrow
+    & l = \semantic{$\mathit{lt}$}_\Gamma \land ((a,l))=s\\
+    & \text{where } l\in\mathcal{T}^*\\
+\semantic{$a_0$ \ $\mathit{lt}$ \ $\mathit{lss}$}_\Gamma = s :\Leftrightarrow
+    & ((a_1,l_1),\dots,(a_n,l_n))= \semantic{$\mathit{lss}$}\\
+    &\land \ l_0 = \semantic{$\mathit{lt}$}_\Gamma\\
+    &\land ((a_0,l_0),\dots,(a_n,l_n)) = s\\
+    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V},l_i\in\mathcal{T}^* \text{ for } i\in\mathbb{N}
+\end{aligned}
+$$
+  
+Let $s\in((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))$ for the following function.  
+
+$$
+\begin{aligned}
+\semantic{.}:\mf{<list-state}&\mf{ment>}\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\\
+\semantic{""} = s:\Leftrightarrow
+    & \mathit{id} = s\\
+\semantic{$st$ \ "," \ $\mathit{ls}$} = s:\Leftrightarrow
+    & f = \semantic{$st$} \land g = \semantic{$\mathit{ls}$} \land g\circ f= s\\
+    & \text{where } f,g\in\small{((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))}
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
 \semantic{.}:&\mf{<maybe-statement-sign>}\to(\ )\\
-\semantic{""} = s:\Leftrightarrow& (\ )= s\\
-\semantic{$a$ \ ":" \ $t$ ";"} = s:\Leftrightarrow& (\ )= s
+\semantic{""} = s:\Leftrightarrow
+    & (\ )= s\\
+\semantic{$a$ \ ":" \ $t$ ";"} = s:\Leftrightarrow
+    & (\ )= s
 \end{aligned}
 $$
-
+  
+Let $s\in((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))$ for the following function.  
+  
 $$
 \begin{aligned}
 \semantic{.}:\mf{<statement>} \to&((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\to((\mathcal{V}\nrightarrow\mathcal{T})\times(\mathcal{V}\nrightarrow\mathcal{S}))\\
-\semantic{$mss$ \ $a$ \ "=" \ $e$}(\Gamma,\Delta) = s_2 :\Leftrightarrow& s_1 = \semantic{$e$}_{\Gamma,\Delta} \land (\Gamma,\Delta\cup\{(a,s_1)\})= s_2\\
+\semantic{$mss$ \ $a$ \ "=" \ $e$}(\Gamma,\Delta) = s :\Leftrightarrow
+    & s' = \semantic{$e$}_{\Gamma,\Delta} \land (\Gamma,\Delta\cup\{(a,s')\})= s\\
+    & \text{where } s'\in \text{value}(T) \text{ for } T\in\mathcal{T}\\
 \Bigg\llbracket\begin{aligned}
 &\mf{"type } \mf{alias"} \\
 & c \ \mathit{lsv} \ \mf{"="} \ t
@@ -290,7 +554,9 @@ $$
 \small{(c_n,\lambda t_{n,1}. \dots,\lambda t_{n,k_n}.c_1 t_{n,1} \dots t_{n,k_n})}
 \end{Bmatrix*}\\
 &\land \Delta_3 = \Delta_1\cup\Delta_2\\
-&\land (\Gamma_2,\Delta_3) = s
+&\land (\Gamma_2,\Delta_3) = s\\
+&\text{where }n,m\in\mathbb{N} \text{ and } k_i\in\mathbb{N},c_i,a_j\in\mathcal{V},T_{i,l_i}\in\mathcal{T}\\
+&\text{ for }i\in\mathbb{N}_1^n,j\in\mathbb{N}_1^m,l_i\in\mathbb{N}_0^{k_i}
 \end{aligned}
 $$
   
@@ -301,11 +567,14 @@ $$
 \semantic{"main : " \ $t$ \ ";"} = s:\Leftrightarrow& (\ ) = s
 \end{aligned}
 $$
-  
+
+Let $s\in\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ for the following function.  
 $$
 \begin{aligned}
 \semantic{.}:&\mf{<program>}\to\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)\\
-\semantic{$\mathit{ls}$ \ $\mathit{mms}$ \ "main = " \ $e$} = s:\Leftrightarrow& (\Gamma,\Delta) = \semantic{$\mathit{ls}$}(\varnothing,\varnothing) \land \semantic{$e$}_{\Gamma,\Delta} = s
+\semantic{$\mathit{ls}$ \ $\mathit{mms}$ \ "main = " \ $e$} = s:\Leftrightarrow& (\Gamma,\Delta) = \semantic{$\mathit{ls}$}(\varnothing,\varnothing) \land \semantic{$e$}_{\Gamma,\Delta} = s\\
+    & \text{where }  \Gamma \text{ is a type context and } \Delta \text{ is a variable}\\
+    & \text{context.}
 \end{aligned}
 $$
 ```
