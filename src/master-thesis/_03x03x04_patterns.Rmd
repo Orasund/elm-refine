@@ -88,7 +88,7 @@ Judgment: $\mathit{lpv}:(a_1,\dots,a_n)$
 
 \logicRule
 {
-\Delta(c)\sqsubseteq T_1\to\dots\to T_n \to T_0\quad
+c \sqsubseteq_\Delta T_1\to\dots\to T_n \to T_0\quad
 \Gamma,\Delta\vdash\text{match}_{\Theta} ((T_1,\dots,T_n),\mathit{lps})
 }
 {

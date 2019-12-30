@@ -144,7 +144,7 @@ $\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context,$T\in\mathcal{T}$
 Then we define
 
 $$
-\Delta(e)\sqsubseteq T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
+e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
 $$
 
 Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be defined if $T_0$ exists. If $T_0$ does no exist, then this predicate will be false.

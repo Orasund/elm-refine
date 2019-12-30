@@ -152,7 +152,7 @@ Judgment: $\textit{prog}:T$
 
 \logicRule
 {
-\varnothing,\varnothing ls \vdash \Gamma,\Delta\quad
+\varnothing,\varnothing, ls \vdash \Gamma,\Delta\quad
 \Gamma,\mathit{mms}\vdash \text{main}:T\quad
 \Gamma,\Delta\vdash e:T
 }
