@@ -108,22 +108,22 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(+)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{\Gamma,\Delta\vdash\mf{"(+)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Int}}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(-)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{\Gamma,\Delta\vdash\mf{"(-)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Int}}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(*)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{\Gamma,\Delta\vdash\mf{"(*)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Int}}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to \mathit{Int}\to\mathit{int}}
+{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Int}}
 {}
 
 \logicRule

@@ -1,8 +1,8 @@
 module ELM-SYNTAX
   syntax LowerVar
-    ::= String
+    ::= Id
   syntax UpperVar
-    ::= String
+    ::= Id
   syntax ListTypeFields
     ::= LowerVar ":" Type
       | LowerVar ":" Type "," ListTypeFields
@@ -10,13 +10,13 @@ module ELM-SYNTAX
     ::= Type
       | Type ListType
   syntax Type
-    ::= "Bool"
-      | "Int"
-      | "List" Type
+    ::= "bool"
+      | "int"
+      | "list" Type
       | "(" Type "," Type ")"
       | "{}"
       | "{" ListTypeFields "}"
-      | Type "->" Type
+      | Type "->" Type                                [right]
       | UpperVar
       | UpperVar ListType
       | LowerVar
@@ -42,7 +42,7 @@ module ELM-SYNTAX
       | Pattern "as" LowerVar
       | "{}"
       | "{" ListPatternVars "}"
-      | Pattern "::" Pattern                          [right]
+      | Pattern "::" Pattern                          [right,strict]
       | "_"
       | "(" Pattern ")"                               [bracket]
   syntax ListExpField
@@ -57,20 +57,20 @@ module ELM-SYNTAX
   syntax Exp
     ::= "foldl"
       | "(::)"
-      | "(+)" | "(-)" | "(*)" | "(//)"
+      | "(+)" | "(-)" | "(*)" | "(/)"
       | "(<)" | "(==)"
       | "not" | "(&&)" | "(||)"
-      | Exp "|>" Exp                                  [left]
-      | Exp ">>" Exp                                  [left]
+      | Exp "|>" Exp                                  [left,strict]
+      | Exp ">>" Exp                                  [left,strict]
       | "if" Exp "then" Exp "else" Exp
       | "{" ListExpField "}"
       | "{}"
       | "{" LowerVar "|" ListExpField "}"
-      | LowerVar "." LowerVar                         [left]
+      | LowerVar "." LowerVar                         [left,strict]
       | "let" LowerVar "=" Exp "in" Exp
       | "let" LowerVar ":" Type ";" LowerVar "=" Exp "in" Exp
       | "case" Exp "of" "[" ListCase "]"
-      | Exp Exp                                       [left]
+      | Exp Exp                                       [left,strict]
       | Bool
       | Int
       | "[]"
