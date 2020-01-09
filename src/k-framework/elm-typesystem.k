@@ -42,27 +42,30 @@ module ELM-TYPESYSTEM
   rule (||)
     => bool -> bool -> bool
   rule E1:Type |> E2:Type
-    => ( E2 = (E1 -> ?T:Type) ~> ?T )
+    => ( E2 =Type (E1 -> ?T:Type) ~> ?T )
   rule E1:Type >> E2:Type
-    => ( E1 = (?T1:Type -> ?T2:Type) ) ~> (E2 = (?T2 -> ?T3:Type) ) ~> (?T1 -> ?T3)
+    => ( E1 =Type (?T1:Type -> ?T2:Type) ) ~> (E2 =Type (?T2 -> ?T3:Type) ) ~> (?T1 -> ?T3)
   rule if E1:Type then E2:Type else E3:Type
-    => E1 = bool ~> E2 = E3 ~> E2
+    => E1 =Type bool ~> E2 =Type E3 ~> E2
   //rule { LEF:ListTypeFields } => toMap { LEF }
   //rule {} => .Map
   //rule <k> { A:Id | M:Map }
   //  => T toMap ?M:Map ~> keys(M) <=Map keys(?M) ~> tenv(TEnv) ...</k>
   //     <tenv>... A |-> T:Type ...</tenv>
 
-  //pattern matching
-  syntax KItem ::= Type "=" Type
-  rule T = T => .
-
   //rule { A:Id = T:Type } toMap (A |-> T) => .
   //rule { A:Id = T:Type , LEF:ListTypeFields } toMap M[A <- T]
   //  => LEF toMap M
 
+  //rule toMap({ A:Id = T:Type , LEF:ListTypeFields })
+  //=> toMap ( { LEF } )
+
   syntax Map ::= "toMap" Type 
   rule toMap {} => .Map
-  //rule (toMap { A:Id = T:Type }) => (A |-> T)
-  //rule toMap({ A:Id = T:Type , LEF:ListTypeFields }) => toMap ( { LEF } )
+  rule toMap T1:Type
+    => T1 match ({ ?A:Id = ?T2:Type }) ~> (.Map[?A <- ?T2])
+
+  //pattern matching
+  syntax KItem ::= Type "=Type" Type
+  rule T =Type T => .
 endmodule
