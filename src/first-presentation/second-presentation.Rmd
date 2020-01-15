@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Topics of this Talk
 
 * Quick introduction to K Framework
-* Discuss the formal type system based on an example
+* Discuss the formal inference rules based on an example
 * Compare the implemented type checker in K Framework with the formal type system
 * Live demonstration using the given example.
 
@@ -38,6 +38,133 @@ knitr::opts_chunk$set(echo = FALSE)
 * Maintained and developed by the research groups FSL (Illinois,USA) and FMSE (Lasi,Romania).
 * Framework for designing and formalizing programming languages.
 * Based on Rewriting systems.
+
+## K Framework - K File
+
+```
+require "unification.k"
+require "elm-syntax.k"
+
+module ELM-TYPESYSTEM
+  imports DOMAINS
+  imports ELM-SYNTAX
+
+  configuration <k> $PGM:Exp </k>
+                <tenv> .Map </tenv>
+  //..
+  
+  syntax KResult ::= Type
+endmodule
+```
+
+
+## K Framework - Syntax
+
+`syntax` denotes a syntax
+
+* `strict` - Evaluate the inner expression first
+* `right/left` - Evaluate left/right expression first
+* `bracket` - Notation for Brackets
+
+```
+syntax Type
+  ::= "bool"
+    | "int"
+    | "{}Type"
+    | "{" ListTypeFields "}Type" [strict]
+    | Type "->" Type       [strict,right]
+    | LowerVar
+    | "(" Type ")"              [bracket]
+    | ..
+```
+
+## K Framework - Rules
+
+* rules will be executed top to bottom
+* `rule . => .` denotes a rewriting rule
+* ` . ~> . ` denotes a implication
+* `requires` denotes a precondition to the rule
+* `?T` deontes an existencially quantified variable
+
+```
+syntax Exp ::= Type
+rule E1:Type E2:Type
+  => E1 =Type (E2 -> ?T:Type)
+    ~> ?T
+syntax KItem ::= Type
+```
+
+## Example for Formally Infering the Type
+
+```
+let
+  model : { counter : Int };
+  model = { counter = 0 }
+in
+{ model | counter = model.counter |> (+) 1 }
+```
+
+\begin{description}
+\item[0.] $\Gamma:=\varnothing, \Delta:=\varnothing$
+\item[{[Int] 1.}] $\Gamma,\Delta\vdash \mathtt{0}:Int$
+\item[{[Record] 2.}] $\Gamma,\Delta\vdash \mathtt{\{ counter = 0 \}}:\{ counter : Int \}$
+\item[{[LetIn] 3.}] $\Delta := \Delta\cup(model \mapsto\{counter:Int\})$
+\item[{[Call] 4.}] $\Gamma,\Delta\vdash \mathtt{(+) \ 1}:Int\to Int$
+\item[{[Getter] 5.}] $\Gamma,\Delta\vdash \mathtt{model.counter}:Int$
+\item[{[Pipe] 6.}] $\Gamma,\Delta\vdash \mathtt{model.counter \ |> \ (+) \ 1}:Int$
+\item[{[Setter] 7.}] $\Gamma,\Delta\vdash \Delta(model) "\supseteq" \{ counter = Int \}$ 
+\end{description}
+
+## Formal Inference Rules - Int, Pipe
+
+$$
+\frac
+{i:T}
+{\Gamma,\Delta\vdash i:T}
+\quad
+\frac
+{}
+{i:\mathit{Int}}
+{}
+$$
+```
+rule i:Bool => bool
+```
+$$
+\frac
+{
+\Gamma,\Delta\vdash e_1: T_1\quad
+\Gamma,\Delta\vdash e_2: T_1 \to T_2
+}
+{\Gamma,\Delta\vdash e_1 \ \mathtt{"|>"} \ e_2:T_2}
+$$
+```
+rule E1:Type |> E2:Type
+  => ( E2 =Type (E1 -> ?T:Type) )
+  ~> ?T
+
+//pattern matching
+syntax KItem ::= Type "=Type" Type
+rule T =Type T => .
+```
+
+## Formal Inference Rules - Record
+
+$$
+\frac
+{\Gamma,\Delta\vdash e:T}
+{\Gamma,\Delta\vdash a \ \mathtt{"="} \ e : \{a:T\}}
+$$
+$$
+\frac
+{\Gamma,\Delta\vdash \mathit{lef}:T\quad
+\Gamma,\Delta\vdash e:T_0\quad
+\{a_0:T_0,\dots,a_n:T_n\}=T
+}
+{\Gamma,\Delta\vdash a_0 \ \mathtt{"="} \ e \ \mathtt{","} \ lef : T}
+$$
+
+
 
 ## Background: Elm Programming Language
 
