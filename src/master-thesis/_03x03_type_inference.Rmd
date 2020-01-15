@@ -138,7 +138,7 @@ The type system that we are using is polymorphic, meaning that whenever a judgme
 
 ```{definition,name="Instantiation"}
 \begin{letIn}
-$\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context,$T\in\mathcal{T}$ and $e$ be an expression.
+$\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context, $T\in\mathcal{T}$ and $e$ be an expression.
 \end{letIn}
 
 Then we define

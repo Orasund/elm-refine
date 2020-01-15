@@ -1,13 +1,10 @@
 require "unification.k"
 require "elm-syntax.k"
 
-
 module ELM-TYPESYSTEM
   imports UNIFICATION
   imports DOMAINS
   imports ELM-SYNTAX
-
-  syntax KResult ::= Type
 
   configuration <k> $PGM:Exp </k>
                 <tenv> .Map </tenv>
@@ -15,14 +12,17 @@ module ELM-TYPESYSTEM
   //inference Rules for patterns
   //TODO
 
+  syntax ListExpField ::= ListTypeFields
+  rule A:Id = E:Type , => A : E ,
+  rule A:Id = E:Type , LEF:ListTypeFields => A : E , LEF
+  syntax KResult ::= ListTypeFields
 
   //inference Rules for Expressions
-  syntax ListExpField ::= ListTypeFields
   syntax Exp ::= Type //The following rules replace Exp with Type
   rule foldl
-    => ?A ~> ?B ~> (?A -> ?B -> ?B) -> ?B -> ( list ?A ) -> ?B
+    => (?A -> ?B -> ?B) -> ?B -> ( list ?A ) -> ?B
   rule (::)
-    => ?A ~> ( list ?A ) -> ( list ?A )
+    => ( list ?A ) -> ( list ?A )
   rule (+)
     => int -> int -> int
   rule (-)
@@ -42,28 +42,68 @@ module ELM-TYPESYSTEM
   rule (||)
     => bool -> bool -> bool
   rule E1:Type |> E2:Type
-    => ( E2 =Type (E1 -> ?T:Type) ~> ?T )
+    => ( E2 =Type (E1 -> ?T:Type) )
+    ~> ?T
   rule E1:Type >> E2:Type
-    => ( E1 =Type (?T1:Type -> ?T2:Type) ) ~> (E2 =Type (?T2 -> ?T3:Type) ) ~> (?T1 -> ?T3)
+    => (E1 =Type (?T1 -> ?T2:Type))
+      ~> (E2 =Type (?T2 -> ?T3))
+      ~> (?T1:Type -> ?T3:Type)
   rule if E1:Type then E2:Type else E3:Type
     => E1 =Type bool ~> E2 =Type E3 ~> E2
-  //rule { LEF:ListTypeFields } => toMap { LEF }
-  //rule {} => .Map
-  //rule <k> { A:Id | M:Map }
-  //  => T toMap ?M:Map ~> keys(M) <=Map keys(?M) ~> tenv(TEnv) ...</k>
-  //     <tenv>... A |-> T:Type ...</tenv>
+  rule { LEF:ListTypeFields }Exp => { LEF }Type
+  rule {}Exp => {}Type
+  rule <k> ( { A:Id | LEF:ListTypeFields } )
+    => { LTF }Type
+    ...</k>
+    <tenv>... A |-> { LTF:ListTypeFields }Type ...</tenv>
+    requires (containsFields LTF LEF)
+  rule <k> A1:Id get A2:Id
+    => getField LTF A2
+    ...</k>
+    <tenv>... A1 |-> { LTF:ListTypeFields }Type ...</tenv>
+  rule <k> let A:Id = E1:Type in E2:Exp
+    => E2
+    ...</k>
+    <tenv> TEnv:Map => TEnv [ A <- E1 ] </tenv>
+  //rule Case of
+  rule E1:Type E2:Type
+    => E1 =Type (E2 -> ?T:Type)
+      ~> ?T
+  rule []Exp => list ?A:Id
+  rule [ LE:ListExp ]Exp
+    => LE isType (list ?T:Type)
+      ~> list ?T
+  rule <k> A:Id => T ...</k>
+    <tenv>... A |-> T:Type ...</tenv>
 
-  //rule { A:Id = T:Type } toMap (A |-> T) => .
-  //rule { A:Id = T:Type , LEF:ListTypeFields } toMap M[A <- T]
-  //  => LEF toMap M
+  syntax KItem ::= ListExp "isType" Type
+  rule T:Type isType (list T) => .
+    requires T isType (list T)
+  rule T:Type LT:ListType isType (list T) => .
+    requires LT isType (list T)
 
-  //rule toMap({ A:Id = T:Type , LEF:ListTypeFields })
-  //=> toMap ( { LEF } )
+  syntax Bool ::= "containsFields" ListTypeFields ListTypeFields
+  rule containsFields LTF1:ListTypeFields (A:Id : T:Type ,)
+    => contains LTF1 A T
+  rule containsFields LTF1:ListTypeFields (A:Id : T:Type , LTF2:ListTypeFields)
+    => (contains LTF1 A T) andBool (containsFields LTF1 LTF2)
 
-  syntax Map ::= "toMap" Type 
-  rule toMap {} => .Map
-  rule toMap T1:Type
-    => T1 match ({ ?A:Id = ?T2:Type }) ~> (.Map[?A <- ?T2])
+  syntax Bool ::= "contains" ListTypeFields Id Type
+  rule contains (A1:Id : T1:Type ,) A2 T2
+    => (A1 ==K A2) andBool (T1 ==K T2)
+  rule contains (A1:Id : T1:Type , LTF:ListTypeFields) A2 T2
+    => ( (A1 ==K A2) andBool (T1 ==K T2) ) orBool (contains LTF A2 T2)
+
+  syntax Map ::= "getField" ListTypeFields Id
+  rule getField (A:Id : T:Type ,) A => T
+  rule getField (A1:Id : T:Type , LTF:ListTypeFields) A2
+    => T
+    requires A1 ==K A2
+  rule getField (A1:Id : T:Type , LTF:ListTypeFields) A2
+    => getField LTF A2
+    requires A1 =/=K A2
+
+  syntax KResult ::= Type
 
   //pattern matching
   syntax KItem ::= Type "=Type" Type

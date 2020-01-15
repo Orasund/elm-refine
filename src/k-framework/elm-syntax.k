@@ -4,56 +4,56 @@ module ELM-SYNTAX
   syntax UpperVar
     ::= Id
   syntax ListTypeFields
-    ::= LowerVar ":" Type
-      | LowerVar ":" Type "," ListTypeFields
+    ::= LowerVar ":" Type ","                         [strict]
+      | LowerVar ":" Type "," ListTypeFields          [strict]
   syntax ListType
     ::= Type
-      | Type ListType
+      | Type ListType                                 [strict]
   syntax Type
     ::= "bool"
       | "int"
-      | "list" Type
-      | "(" Type "," Type ")"
-      | "{}"
-      | "{" ListTypeFields "}"
-      | Type "->" Type                                [right]
+      | "list" Type                                   [strict]
+      | "(" Type "," Type ")"                         [strict]
+      | "{}Type"
+      | "{" ListTypeFields "}Type"                    [strict]
+      | Type "->" Type                                [strict,right]
       | UpperVar
-      | UpperVar ListType
+      | UpperVar ListType                             [strict]
       | LowerVar
       | "(" Type ")"                                  [bracket]
   syntax ListPatternList
     ::= Pattern
-      | Pattern "," ListPatternList
+      | Pattern "," ListPatternList                   [strict]
   syntax ListPatternSort
     ::= Pattern
-      | Pattern ListPatternSort
+      | Pattern ListPatternSort                       [right,strict]
   syntax ListPatternVars
     ::= LowerVar
-      | LowerVar "," ListPatternVars
+      | LowerVar "," ListPatternVars                  [strict]
   syntax Pattern
     ::= Bool
       | Int
-      | "[]"
-      | "[" ListPatternList "]"
-      | "(" Pattern "," Pattern ")"
+      | "[]Pattern"
+      | "[" ListPatternList "]Pattern"                [strict]
+      | "(" Pattern "," Pattern ")"                   [strict]
       | UpperVar
-      | UpperVar ListPatternSort
+      | UpperVar ListPatternSort                      [strict]
       | LowerVar
-      | Pattern "as" LowerVar
-      | "{}"
-      | "{" ListPatternVars "}"
+      | Pattern "as" LowerVar                         [strict]
+      | "{}Pattern"
+      | "{" ListPatternVars "}Pattern"                [strict]
       | Pattern "::" Pattern                          [right,strict]
-      | "_"
+      | "_Pattern"
       | "(" Pattern ")"                               [bracket]
   syntax ListExpField
-    ::= LowerVar "=" Exp
-      | LowerVar "=" Exp "," ListExpField
+    ::= LowerVar "=" Exp ","                          [strict]
+      | LowerVar "=" Exp "," ListExpField             [strict]
   syntax ListCase
-    ::= Pattern "->" Exp
-      | Pattern "->" Exp ";" ListCase
+    ::= Pattern "->" Exp                              [strict]
+      | Pattern "->" Exp ";" ListCase                 [strict]
   syntax ListExp
-    ::= Exp
-      | Exp "," ListExp
+    ::= Exp ","                                       [strict]
+      | Exp "," ListExp                               [strict]
   syntax Exp
     ::= "foldl"
       | "(::)"
@@ -62,21 +62,21 @@ module ELM-SYNTAX
       | "not" | "(&&)" | "(||)"
       | Exp "|>" Exp                                  [left,strict]
       | Exp ">>" Exp                                  [left,strict]
-      | "if" Exp "then" Exp "else" Exp
-      | "{" ListExpField "}"
-      | "{}"
-      | "{" LowerVar "|" ListExpField "}"
-      | LowerVar "." LowerVar                         [left,strict]
-      | "let" LowerVar "=" Exp "in" Exp
-      | "let" LowerVar ":" Type ";" LowerVar "=" Exp "in" Exp
-      | "case" Exp "of" "[" ListCase "]"
+      | "if" Exp "then" Exp "else" Exp                [strict]
+      | "{" ListExpField "}Exp"                       [strict]
+      | "{}Exp"
+      | "{" LowerVar "|" ListExpField "}"             [strict]
+      | LowerVar "get" LowerVar                       [left,strict]
+      | "let" LowerVar "=" Exp "in" Exp               [strict(2)]
+      | "let" LowerVar ":" Type ";" LowerVar "=" Exp "in" Exp  [strict]
+      | "case" Exp "of" "[" ListCase "]"              [strict]
       | Exp Exp                                       [left,strict]
       | Bool
       | Int
-      | "[]"
-      | "[" ListExp "]"
-      | "(" Exp "," Exp ")"
-      | "\\" Pattern "->" Exp
+      | "[]Exp"
+      | "[" ListExp "]Exp"                            [strict]
+      | "(" Exp "," Exp ")"                           [strict]
+      | "\\" Pattern "->" Exp                         [strict]
       | UpperVar
       | LowerVar
       | "(" Exp ")"                                   [bracket]
