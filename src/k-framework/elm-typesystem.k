@@ -17,6 +17,11 @@ module ELM-TYPESYSTEM
   rule A:Id = E:Type , LEF:ListTypeFields => A : E , LEF
   syntax KResult ::= ListTypeFields
 
+  syntax ListExp ::= Type
+  rule E:Type , => E ,
+  rule E:Type , LE:Type => E , LE
+  syntax KResult ::= Type
+
   //inference Rules for Expressions
   syntax Exp ::= Type //The following rules replace Exp with Type
   rule foldl
@@ -70,17 +75,14 @@ module ELM-TYPESYSTEM
     => E1 =Type (E2 -> ?T:Type)
       ~> ?T
   rule []Exp => list ?A:Id
-  rule [ LE:ListExp ]Exp
-    => LE isType (list ?T:Type)
-      ~> list ?T
+  rule [ T:Type ]Exp => list T
   rule <k> A:Id => T ...</k>
     <tenv>... A |-> T:Type ...</tenv>
 
   syntax KItem ::= ListExp "isType" Type
-  rule T:Type isType (list T) => .
-    requires T isType (list T)
-  rule T:Type LT:ListType isType (list T) => .
-    requires LT isType (list T)
+  rule (T:Type ,) isType (list T) => .
+  rule (T:Type , LE:ListExp) isType (list T) => .
+    requires LE isType (list T)
 
   syntax Bool ::= "containsFields" ListTypeFields ListTypeFields
   rule containsFields LTF1:ListTypeFields (A:Id : T:Type ,)

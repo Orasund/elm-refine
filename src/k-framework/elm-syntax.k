@@ -52,7 +52,7 @@ module ELM-SYNTAX
     ::= Pattern "->" Exp                              [strict]
       | Pattern "->" Exp ";" ListCase                 [strict]
   syntax ListExp
-    ::= Exp ","                                       [strict]
+    ::= Exp ","                                       [strict]                                   
       | Exp "," ListExp                               [strict]
   syntax Exp
     ::= "foldl"
