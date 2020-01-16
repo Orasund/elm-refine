@@ -2,7 +2,7 @@
 title: "Refinement Types for Elm"
 subtitle: "Second Master Thesis Report"
 author: "Lucas Payr"
-date: "31 January 2019"
+date: "31 January 2020"
 output:
   beamer_presentation:
     theme: "metropolis" #"Boadilla" # "Rochester"
@@ -82,9 +82,10 @@ syntax Type
 
 * rules will be executed top to bottom
 * `rule . => .` denotes a rewriting rule
-* ` . ~> . ` denotes a implication
+* ` . ~> . ` denotes a concatenation of two processes(KItems)
+* `.` denotes the empty process (`rule . ~> A => A`)
 * `requires` denotes a precondition to the rule
-* `?T` deontes an existencially quantified variable
+* `?T` denotes an existentially quantified variable
 
 ```
 syntax Exp ::= Type
@@ -94,11 +95,10 @@ rule E1:Type E2:Type
 syntax KItem ::= Type
 ```
 
-## Example for Formally Infering the Type
+## Example for Formally Inferring the Type
 
 ```
 let
-  model : { counter : Int };
   model = { counter = 0 }
 in
 { model | counter = model.counter |> (+) 1 }
@@ -115,7 +115,17 @@ in
 \item[{[Setter] 7.}] $\Gamma,\Delta\vdash \Delta(model) "\supseteq" \{ counter = Int \}$ 
 \end{description}
 
-## Formal Inference Rules - Int, Pipe
+## Formal Inference Rules - (+), Int
+
+$$
+\frac
+{}
+{\Gamma,\Delta\vdash\mathtt{"(+)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Int}}
+$$
+```
+rule (+)
+  => int -> int -> int
+```
 
 $$
 \frac
@@ -130,6 +140,22 @@ $$
 ```
 rule i:Bool => bool
 ```
+
+## Formal Inference Rules - Call, Pipe
+
+$$
+\frac
+{\Gamma,\Delta\vdash e_1: T_1\to T_2\quad
+\Gamma,\Delta\vdash e_2: T_1
+}
+{\Gamma,\Delta\vdash e_1 \ e_2: T_2}
+$$
+```
+rule E1:Type E2:Type
+    => E1 =Type (E2 -> ?T:Type)
+      ~> ?T
+```
+
 $$
 \frac
 {
@@ -141,14 +167,24 @@ $$
 ```
 rule E1:Type |> E2:Type
   => ( E2 =Type (E1 -> ?T:Type) )
-  ~> ?T
+    ~> ?T
 
-//pattern matching
 syntax KItem ::= Type "=Type" Type
 rule T =Type T => .
 ```
 
 ## Formal Inference Rules - Record
+
+$$
+\frac
+{\Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}
+}
+{\Gamma,\Delta\vdash\mathtt{"\{"} \ \mathit{lef} \ \mathtt{"\}"}: \{a_1:T_1,\dots,a_n:T_n\}
+}
+$$
+```
+rule { LEF:ListTypeFields }Exp => { LEF }Type
+```
 
 $$
 \frac
@@ -163,190 +199,140 @@ $$
 }
 {\Gamma,\Delta\vdash a_0 \ \mathtt{"="} \ e \ \mathtt{","} \ lef : T}
 $$
-
-
-
-## Background: Elm Programming Language
-
-* Invented by Evan Czaplicki as his master-thesis in 2012.
-* Goal: Bring Function Programming to Web-Development
-* Side-Goal: Learning-friendly design decisions
-* Website: \alert{elm-lang.org}
-
-### Characteristics
-
-* Pure Functional Language (immutable, no side effect, everything is a function)
-* Compiles to JavaScript (in the future also to WebAssembly)
-* ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
-* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
-* "No Runtimes errors" (running out of memory, function equality and non-terminating functions still give runtime errors.)
-
-## Background: The Elm Architecture
-
-```{r gameGraph, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics('model-view-update.png')
+```
+syntax ListExpField ::= ListTypeFields
+rule A:Id = E:Type , => A : E ,
+rule A:Id = E:Type , LEF:ListTypeFields => A : E , LEF
+syntax KResult ::= ListTypeFields
 ```
 
-## Background: The Elm Architecture
+## Formal Inference Rules - LetIn
 
-```{r gameGraph2, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics('model-view-update2.png')
+$$
+\frac
+{\begin{gathered}
+(a,\_)\not\in\Delta\quad
+\Gamma,\Delta\vdash e_1:T_1\quad
+mes:T_1\vdash a:T_1\\
+\Gamma,\text{insert}_\Delta(\{(a,T_1)\})\vdash e_2:T_2
+\end{gathered}
+}
+{\Gamma,\Delta\vdash\mathtt{"let"} \ mes \ a \mathtt{"="} \ e_1 \ \mathtt{"in"} \ e_2: T_2
+}
+$$
+```
+rule <k> let A:Id = E1:Type in E2:Exp
+  => E2
+  ...</k>
+  <tenv> TEnv:Map => TEnv [ A <- E1 ] </tenv>
 ```
 
-### Example
+* Assume $\text{insert}_\Delta(A) := \Delta\cup A$
 
-* Online Editor: \alert{ellie-app.com}
+## Formal Inference Rules - Getter
 
-## Background: Refinement Types
-
-Restricts the values of an existing type using a predicate.
-
-Initial paper in 1991 by Tim Freeman and Frank Pfenning
-
-* Initial concept was done in ML.
-* Allows predicates with only $\land,\lor,=$, constants and basic pattern matching.
-* Operates over algebraic types.
-* Needed to specify **explicitly** all possible Values.
-    
-### Example
 $$
-\{ a:(\mathit{Bool},\mathit{Bool})| \ a=(\mathit{True},\mathit{False}) \lor a=(\mathit{False},\mathit{True})\}
+\frac
+{(a_1,\{a_2:T,\dots\})\in\Delta
+}
+{\Gamma,\Delta\vdash a_1 \mathtt{"."} a_2:T}
 $$
+```
+rule <k> A1:Id get A2:Id => getField LTF A2 ...</k>
+  <tenv>... A1 |-> { LTF:ListTypeFields }Type ...</tenv>
+
+syntax Map ::= "getField" ListTypeFields Id
+  rule getField (A:Id : T:Type ,) A => T
+  rule getField (A1:Id : T:Type , LTF:ListTypeFields) A2
+    => T
+    requires A1 ==K A2
+  rule getField (A1:Id : T:Type , LTF:ListTypeFields) A2
+    => getField LTF A2
+    requires A1 =/=K A2
+```
+
+## Formal Inference Rules - Setter
+
 $$
-\forall t.\{a:List \ t| a = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
+\frac
+{\begin{gathered}
+\Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}\\
+\Gamma,\Delta\vdash a \sqsubseteq_\Delta T_0\quad
+T_0=\{a_1:T_1,\dots,a_n:T_n,\dots \}
+\end{gathered}
+}
+{\Gamma,\Delta\vdash\mathtt{"\{"} \ a \ \mathtt{"|"} \ \mathit{lef} \ \mathtt{"\}"}:T_0}
+$$
+```
+rule <k> ( { A:Id | LEF:ListTypeFields } )
+  => { LTF }Type
+  ...</k>
+  <tenv>... A |-> { LTF:ListTypeFields }Type ...</tenv>
+  requires (containsFields LTF LEF)
+```
+
+* Assume $a \sqsubseteq_\Delta T:= (a,T)\in\Delta$
+* We skip the definition of `containsFields`
+
+## Polymorphism & Demonstration
+
+Polymorphism is not yet implemented (as of 16.1)
+
+```
+let
+  model = {list = []}     --forall a.List a
+in
+{ model | list = [ 1 ] }  --List Int
+```
+
+### Demonstration
+
+## Instantiation
+
+### Definition (Instantiation)
+
+Let $\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context, $T\in\mathcal{T}$ and $e$ be an expression.
+
+Then we define
+
+$$
+e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
 $$
 
+Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be defined if $T_0$ exists. If $T_0$ does not exist, then this predicate will be false.
 
-## Background: Liquid Types
+* Used in the inference rule **[Setter]**
 
-Liquid Types (Logically Quantified Data Types) introduced in 2008
+## Generalization
 
-* Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
-* Initial concept done in OCaml. Later also C, Haskell and TypeScript.
-* Operates over Integers and Booleans. Later also Tuples and Functions.
-* Allows predicates with logical operators, comparisons and addition.
+### Definition (Generalization)
 
-### Example
-$$\{(a:Bool,b:Bool)|(a\lor b) \land \neg (a\land b)\}$$
-$$\{(a:Int,b:Int)|a \leq b\}$$
+Let $\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$. Let $T,T'\in\mathcal{T}$ such that $T'$ is a mono type $\forall c_1 .\dots\forall c_m T' = T$ for some $c_i\in\mathcal{V},i\in\mathbb{N}_0^m$.
 
-## Goals of Thesis
-
-1. Formal language similar to Elm
-    1. A formal syntax
-    2. A formal type system
-    3. A denotational semantic
-    4. A small step semantic (using K Framework) for rapid prototyping the language
-    5. Proof that the type system is valid with respect to the semantics.
-2. Extension of the formal language with Liquid Types
-    1. A formal syntax
-    2. A formal type system
-    3. A denotational semantic
-    4. A small step semantic (using K Framework) for rapid prototyping the type checker
-    5. Proof that the extension infers the correct types.
-3. A type checker implementation written in Elm for Elm.
-
-## Problems Addressed by the Type System
-
-* Division by zero errors
-* Off by one errors
-* Proving the correctness of very simple programs
-* Clearer interfaces
-
-## Theory: Formalization of the Elm Type System
-
-We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
-
-We say
+We define
 $$
-\begin{aligned}
-  T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow
-       \ & T \text{ is a type variable}\\
-  \lor \ & T \text{ is a type application}\\
-  \lor \ & T \text{ is a algebraic type}\\
-  \lor \ & T \text{ is a product type}\\
-  \lor \ & T \text{ is a function type}\\
-  T \text{ is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow
-       \ & T = \forall a.T'\\
-         & \text{ where } T' \text{ is a mono type or poly type}\\
-         & \text{ and } a \text{ is a symbol}\\
-  T \text{ is a }\mathit{type} :\Leftrightarrow 
-       \ & T \text{ is a mono type} \ \lor \ T \text{ is a poly type}.
-\end{aligned}
-$$  
-
-## Theory: Formalization of the Elm Type System
-
-### Example
-
-1. $\mathit{Nat} ::= \mu C.1 \ | \ \mathit{Succ} \ C$
-2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
-3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
-
-## Theory: Formalization of the Elm Type System
-The $values$ of a type is the set corresponding to the type:
-
-$$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
-$$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{values}_n(\mathit{List} \ \mathit{Nat})$$
-$$\text{values}_0(List \ Nat) = \{[\ ]\}$$
-$$\begin{aligned}
-\text{values}_n&(List \ Nat) =\\
-&\{[\ ]\}\cup\{Cons \ a \ b|a\in \text{values}(Nat),b\in \text{values}_{n-1}(\textit{List} \ \textit{Nat})\}
-\end{aligned}$$
-
-## Theory: Definition of Liquid Types
-
-\begin{definition}[Sketch]
-Let $T$ be a Type Application of $\mathit{Int}$, tuples and functions.
-Let $q$ be a logical formula consisting of
-
-\begin{itemize}
-\item Logical operations: $\neg,\land,\lor$
-\item Logical constants: $True, False$
-\item Comparisons: $<,\leq,=,\neq$
-\item Integer operations: $+, \cdot c$ where c is a constant
-\item Integer constants: $0,3,42,\dots$
-\item Bound variables: $a,b,c,\dots$
-\end{itemize}
-
-Then we call the syntactic phrase $\{ a:T | q(a) \}$ a \textit{Liquid Type}.
-\end{definition}
-
-## Theory: Definition of Liquid Types
-
-### Example
-
-Let $Nat = \{a:Int| a > 0\}$ in
-$$
-\begin{aligned}
-&\{ \ \{(a:\mathit{Nat},b:\mathit{Nat}) \ | a+b < 42\}\rightarrow \{(c:\mathit{Nat},d:\mathit{Nat})|c \leq d\} \\
-&| \  (a=c\land b = d)\lor (b=c\land a=d)\\
+\small\begin{aligned}
+\text{insert}_{\Delta_1}&(\Delta_2):=\Delta_1\cup\\
+&\{ (a,\forall b_1\dots\forall b_n.T')\\
+&| \ (a,T)\in\Delta_2  \land \ \{b_1,\dots,b_n\}=\{b\ |\ b\in\text{free}(T)\land (b,\_)\not\in\Delta_2\}\\
 &\}
 \end{aligned}
 $$
 
-## Theory: Revisiting the Problems
-
-* Division by zero errors $$(/):\mathit{Int} \rightarrow \{a:\mathit{Int}|a\neq 0\} \rightarrow \mathit{Int}$$
-* Off by one errors
-    $$\begin{aligned}
-      &\text{Let } \mathit{Pos} = \{a:\mathit{Int}|0\leq a \land a<8\} \text{ in}\\
-      &get: (\mathit{Pos},\mathit{Pos}) \rightarrow \mathit{Chessboard} \rightarrow \mathit{Maybe} \ \mathit{Figure}
-    \end{aligned}$$
-* Proving the correctness of very simple programs $$\text{swap}:\{(a:\mathit{Int},b:\mathit{Int})\rightarrow(c:\mathit{Int},d:\mathit{Int})|b=c\land a = d\}$$
-* Clearer interfaces $$\text{length}: \mathit{List} \ a \rightarrow \{a:\mathit{Int}| a \geq 0\}$$
+* Used in the inference rule **[LetIn]**
 
 ## Current State
 
 1. Formal language similar to Elm
     1. A formal syntax **(DONE)**
     2. A formal type system **(DONE)**
-    3. A denotational semantic **(WORK IN PROGRESS)**
-    4. A small step semantic (using K Framework) for rapid prototyping the language
+    3. A denotational semantic **(DONE)**
+    4. A small step semantic (using K Framework)  
+        **(WORK IN PROGRESS)**
     5. Proof that the type system is valid with respect to the semantics.
 2. Extension of the formal language with Liquid Types
 3. A type checker implementation written in Elm for Elm.
 
 **Started thesis** in July 2019
 
-**Expected finish** at the end of 2020
+**Expected finish** in Summer 2021

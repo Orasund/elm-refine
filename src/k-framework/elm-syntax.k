@@ -31,8 +31,8 @@ module ELM-SYNTAX
     ::= LowerVar
       | LowerVar "," ListPatternVars                  [strict]
   syntax Pattern
-    ::= Bool
-      | Int
+    ::= "boolPattern" Bool
+      | "intPattern" Int
       | "[]Pattern"
       | "[" ListPatternList "]Pattern"                [strict]
       | "(" Pattern "," Pattern ")"                   [strict]
@@ -71,8 +71,8 @@ module ELM-SYNTAX
       | "let" LowerVar ":" Type ";" LowerVar "=" Exp "in" Exp  [strict]
       | "case" Exp "of" "[" ListCase "]"              [strict]
       | Exp Exp                                       [left,strict]
-      | Bool
-      | Int
+      | "boolExp" Bool
+      | "intExp" Int
       | "[]Exp"
       | "[" ListExp "]Exp"                            [strict]
       | "(" Exp "," Exp ")"                           [strict]

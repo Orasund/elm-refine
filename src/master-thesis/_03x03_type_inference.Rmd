@@ -147,7 +147,7 @@ $$
 e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
 $$
 
-Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be defined if $T_0$ exists. If $T_0$ does no exist, then this predicate will be false.
+Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be defined if $T_0$ exists. If $T_0$ does not exist, then this predicate will be false.
 ```
 
 The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.

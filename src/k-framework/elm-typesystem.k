@@ -18,8 +18,10 @@ module ELM-TYPESYSTEM
   syntax KResult ::= ListTypeFields
 
   syntax ListExp ::= Type
-  rule E:Type , => E ,
-  rule E:Type , LE:Type => E , LE
+  rule E:Type , => E
+  rule E:Type , LE:Type 
+    => E =Type LE 
+      ~> E
   syntax KResult ::= Type
 
   //inference Rules for Expressions
@@ -61,7 +63,7 @@ module ELM-TYPESYSTEM
     => { LTF }Type
     ...</k>
     <tenv>... A |-> { LTF:ListTypeFields }Type ...</tenv>
-    requires (containsFields LTF LEF)
+    requires containsFields LTF LEF
   rule <k> A1:Id get A2:Id
     => getField LTF A2
     ...</k>
@@ -70,12 +72,17 @@ module ELM-TYPESYSTEM
     => E2
     ...</k>
     <tenv> TEnv:Map => TEnv [ A <- E1 ] </tenv>
-  //rule Case of
+  //rule [TCaseOf]
   rule E1:Type E2:Type
     => E1 =Type (E2 -> ?T:Type)
       ~> ?T
+  rule boolExp B:Bool => bool
+  rule intExp I:Int => int
   rule []Exp => list ?A:Id
   rule [ T:Type ]Exp => list T
+  rule ( E1:Type , E2:Type )Exp => ( E1 , E2 )Type
+  //rule [TLambda]
+  //rule [TConstructor]
   rule <k> A:Id => T ...</k>
     <tenv>... A |-> T:Type ...</tenv>
 
@@ -84,19 +91,19 @@ module ELM-TYPESYSTEM
   rule (T:Type , LE:ListExp) isType (list T) => .
     requires LE isType (list T)
 
-  syntax Bool ::= "containsFields" ListTypeFields ListTypeFields
-  rule containsFields LTF1:ListTypeFields (A:Id : T:Type ,)
+  syntax Bool ::= "containsFields" ListTypeFields ListTypeFields [function, functional]
+  rule containsFields LTF1:ListTypeFields (A:Id : T:Type, )
     => contains LTF1 A T
   rule containsFields LTF1:ListTypeFields (A:Id : T:Type , LTF2:ListTypeFields)
     => (contains LTF1 A T) andBool (containsFields LTF1 LTF2)
 
-  syntax Bool ::= "contains" ListTypeFields Id Type
+  syntax Bool ::= "contains" ListTypeFields Id Type [function, functional]
   rule contains (A1:Id : T1:Type ,) A2 T2
     => (A1 ==K A2) andBool (T1 ==K T2)
   rule contains (A1:Id : T1:Type , LTF:ListTypeFields) A2 T2
     => ( (A1 ==K A2) andBool (T1 ==K T2) ) orBool (contains LTF A2 T2)
 
-  syntax Map ::= "getField" ListTypeFields Id
+  syntax Map ::= "getField" ListTypeFields Id [function, functional]
   rule getField (A:Id : T:Type ,) A => T
   rule getField (A1:Id : T:Type , LTF:ListTypeFields) A2
     => T
