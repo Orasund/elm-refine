@@ -296,7 +296,8 @@ $$
 $$
 \begin{aligned}
 \semantic{"(//)"}_{\Gamma,\Delta} = s:\Leftrightarrow
-    & s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor\\
+    & \begin{cases}s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor& \text{if } m \neq 0\\
+        0& \text{else}\end{cases}\\
     & \text{where } n,m\in\mathbb{N}
 \end{aligned}
 $$

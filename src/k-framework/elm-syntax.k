@@ -7,13 +7,13 @@ module ELM-SYNTAX
     ::= LowerVar ":" Type ","                         [strict]
       | LowerVar ":" Type "," ListTypeFields          [strict]
   syntax ListType
-    ::= Type
-      | Type ListType                                 [strict]
+    ::= Type ","
+      | Type ListType ","                             [strict]
   syntax Type
     ::= "bool"
       | "int"
       | "list" Type                                   [strict]
-      | "(" Type "," Type ")"                         [strict]
+      | "(" Type "," Type ")Type"                     [strict]
       | "{}Type"
       | "{" ListTypeFields "}Type"                    [strict]
       | Type "->" Type                                [strict,right]
@@ -35,10 +35,10 @@ module ELM-SYNTAX
       | "intPattern" Int
       | "[]Pattern"
       | "[" ListPatternList "]Pattern"                [strict]
-      | "(" Pattern "," Pattern ")"                   [strict]
+      | "(" Pattern "," Pattern ")Pattern"            [strict]
       | UpperVar
       | UpperVar ListPatternSort                      [strict]
-      | LowerVar
+      | "varPattern" LowerVar
       | Pattern "as" LowerVar                         [strict]
       | "{}Pattern"
       | "{" ListPatternVars "}Pattern"                [strict]
@@ -66,7 +66,7 @@ module ELM-SYNTAX
       | "{" ListExpField "}Exp"                       [strict]
       | "{}Exp"
       | "{" LowerVar "|" ListExpField "}"             [strict]
-      | LowerVar "get" LowerVar                       [left,strict]
+      | LowerVar "get" LowerVar                       [left]
       | "let" LowerVar "=" Exp "in" Exp               [strict(2)]
       | "let" LowerVar ":" Type ";" LowerVar "=" Exp "in" Exp  [strict]
       | "case" Exp "of" "[" ListCase "]"              [strict]
@@ -75,7 +75,7 @@ module ELM-SYNTAX
       | "intExp" Int
       | "[]Exp"
       | "[" ListExp "]Exp"                            [strict]
-      | "(" Exp "," Exp ")"                           [strict]
+      | "(" Exp "," Exp ")Exp"                        [strict]
       | "\\" Pattern "->" Exp                         [strict]
       | UpperVar
       | LowerVar

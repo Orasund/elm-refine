@@ -307,14 +307,15 @@ Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be
 
 ### Definition (Generalization)
 
-Let $\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$. Let $T,T'\in\mathcal{T}$ such that $T'$ is a mono type $\forall c_1 .\dots\forall c_m T' = T$ for some $c_i\in\mathcal{V},i\in\mathbb{N}_0^m$.
+Let $\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$.
 
 We define
 $$
 \small\begin{aligned}
 \text{insert}_{\Delta_1}&(\Delta_2):=\Delta_1\cup\\
 &\{ (a,\forall b_1\dots\forall b_n.T')\\
-&| \ (a,T)\in\Delta_2  \land \ \{b_1,\dots,b_n\}=\{b\ |\ b\in\text{free}(T)\land (b,\_)\not\in\Delta_2\}\\
+&| \ (a,\forall a_1\dots\forall a_m.T')\in\Delta_2 \land T' \text{ is a mono type}\\
+&\land \ \{b_1,\dots,b_n\}=\{b\ |\ b\in\text{free}(T')\land (b,\_)\not\in\Delta_2\}\\
 &\}
 \end{aligned}
 $$
