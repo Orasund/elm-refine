@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.8)  16 JAN 2020 17:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.8)  29 JAN 2020 19:22
 entering extended mode
 **./second-presentation.tex
 (second-presentation.tex
@@ -1483,20 +1483,20 @@ Overfull \hbox (8.89047pt too wide) in paragraph at lines 20--20
 
 ]
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 498.
+LaTeX Font Warning: Command \small invalid in math mode on input line 496.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 498.
+(Font)              <10> on input line 496.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 498.
+(Font)              <7> on input line 496.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 498.
+(Font)              <5> on input line 496.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 498.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 496.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 498.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 496.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 498.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 496.
 [17
 
 ] [18
@@ -1511,20 +1511,20 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
 \tf@snm=\write8
 \openout8 = `second-presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 535.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 535.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 533.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 533.
 (second-presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 535.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 535.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 533.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 533.
 Package rerunfilecheck Info: File `second-presentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 22938 strings out of 492946
- 460715 string characters out of 3125823
+ 22932 strings out of 492946
+ 460641 string characters out of 3125823
  540324 words of memory out of 3000000
  26193 multiletter control sequences out of 15000+200000
- 85628 words of font info for 96 fonts, out of 3000000 for 9000
+ 85293 words of font info for 93 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  71i,13n,88p,1822b,591s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Edzgou/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-math
@@ -1542,13 +1542,12 @@ ms/MiKTeX 2.9/fonts/type1/public/lm/lmsso10.pfb><C:/Users/Edzgou/AppData/Local/
 Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsso8.pfb><C:/Users/Edzgou/AppData/L
 ocal/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Users/Edzgou/AppD
 ata/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Users/Edzgou/
-AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Users/Edz
-gou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/User
-s/Edzgou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/
-msbm10.pfb>
-Output written on second-presentation.pdf (18 pages, 203316 bytes).
+AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Users/Ed
+zgou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm
+10.pfb>
+Output written on second-presentation.pdf (18 pages, 197561 bytes).
 PDF statistics:
- 177 PDF objects out of 1000 (max. 8388607)
+ 173 PDF objects out of 1000 (max. 8388607)
  37 named destinations out of 1000 (max. 500000)
  14379 words of extra memory for PDF output out of 14400 (max. 10000000)
 

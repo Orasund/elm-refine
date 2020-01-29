@@ -103,7 +103,7 @@ module ELM-SEMANTICS
   syntax Value ::= "getField" ListValueField Id [function, functional]
   rule getField (field A1:Id E:Value , ) A2:Id
     => E
-    //requires A1 ==K A2
+    requires A1 ==K A2
   rule getField (field A1:Id E:Value , LEF:ListValueField) A2:Id
     => E
     requires A1 ==K A2

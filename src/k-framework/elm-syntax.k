@@ -7,8 +7,8 @@ module ELM-SYNTAX
     ::= LowerVar ":" Type ","                         [strict]
       | LowerVar ":" Type "," ListTypeFields          [strict]
   syntax ListType
-    ::= Type ","
-      | Type ListType ","                             [strict]
+    ::= Type ";"
+      | Type ListType ";"                             [strict]
   syntax Type
     ::= "bool"
       | "int"
