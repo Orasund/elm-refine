@@ -92,7 +92,7 @@ syntax Exp ::= Type
 rule E1:Type E2:Type
   => E1 =Type (E2 -> ?T:Type)
     ~> ?T
-syntax KItem ::= Type
+syntax KResult ::= Type
 ```
 
 ## Example for Formally Inferring the Type
@@ -138,7 +138,7 @@ $$
 {}
 $$
 ```
-rule i:Int => int
+rule intValue i:Int => int
 ```
 
 ## Formal Inference Rules - Call, Pipe
@@ -276,7 +276,7 @@ rule <k> ( { A:Id | LEF:ListTypeFields } )
 
 ## Polymorphism & Demonstration
 
-Polymorphism is not yet implemented (as of 16.1)
+Polymorphism is not yet implemented
 
 ```
 let
