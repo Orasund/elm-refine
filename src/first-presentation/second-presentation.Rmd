@@ -112,7 +112,7 @@ in
 \item[{[Call] 4.}] $\Gamma,\Delta\vdash \mathtt{(+) \ 1}:Int\to Int$
 \item[{[Getter] 5.}] $\Gamma,\Delta\vdash \mathtt{model.counter}:Int$
 \item[{[Pipe] 6.}] $\Gamma,\Delta\vdash \mathtt{model.counter} \ \mathtt{|>} \ \mathtt{(+)} \ \mathtt{1}:Int$
-\item[{[Setter] 7.}] $\Gamma,\Delta\vdash \Delta(model) "\supseteq" \{ counter = Int \}$ 
+\item[{[Setter] 7.}] $\Gamma,\Delta\vdash \Delta(model) "\supseteq" \{ counter : Int \}$ 
 \end{description}
 
 ## Formal Inference Rules - (+), Int
