@@ -93,11 +93,12 @@ module ELM-SEMANTICS
   rule []Exp => []Value
   rule [ LE:Value ]Exp => LE
   rule ( E1:Value , E2:Value )Exp => ( E1 , E2 )Value
-  //rule \\ (varPattern A:Id) -> E:Value => lambda A . E
-  rule <k> A:Id
+  rule fun A:Id -> E:Value => lambda A . E
+  rule <k> variable A:Id
     => E
     ...</k>
     <tenv>... A |-> E ...</tenv>
+  rule variable A:Id => A
   rule (lambda A:Id . E:Value) E2:Value => E[E2 / A]
 
   syntax Value ::= "getField" ListValueField Id [function, functional]
