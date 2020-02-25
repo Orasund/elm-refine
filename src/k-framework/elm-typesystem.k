@@ -3,14 +3,10 @@ require "elm-syntax.k"
 
 module ELM-TYPESYSTEM
   imports UNIFICATION
-  imports DOMAINS
   imports ELM-SYNTAX
 
   configuration <k> $PGM:Exp </k>
                 <tenv> .Map </tenv>
-
-  //inference Rules for patterns
-  //TODO
 
   syntax ListExpField ::= ListTypeFields
   rule A:Id = E:Type , => A : E ,
@@ -50,24 +46,22 @@ module ELM-TYPESYSTEM
     => bool -> bool -> bool
   rule E1:Type |> E2:Type
     => ( E2 =Type (E1 -> ?T:Type) )
-    ~> ?T
+      ~> ?T
   rule E1:Type >> E2:Type
     => (E1 =Type (?T1 -> ?T2:Type))
       ~> (E2 =Type (?T2 -> ?T3))
       ~> (?T1:Type -> ?T3:Type)
   rule if E1:Type then E2:Type else E3:Type
-    => E1 =Type bool ~> E2 =Type E3 ~> E2
+    => E1 =Type bool 
+      ~> E2 =Type E3
+      ~> E2
   rule { LEF:ListTypeFields }Exp => { LEF }Type
   rule {}Exp => {}Type
-  rule <k> ( { A:Id | LEF:ListTypeFields } )
-    => { LTF }Type
-    ...</k>
-    <tenv>... A |-> { LTF:ListTypeFields }Type ...</tenv>
-    requires containsFields LTF LEF
-  rule <k> A1:Id get A2:Id
-    => getField LTF A2
-    ...</k>
-    <tenv>... A1 |-> { LTF:ListTypeFields }Type ...</tenv>
+  //rule <k> ( { A:Id | LEF:ListTypeFields } )
+  //  => { LTF }Type
+  //  ...</k>
+  //  <tenv>... A |-> { LTF:ListTypeFields }Type ...</tenv>
+  //  requires containsFields LTF LEF
   //rule <k> let A:Id = E1:Type in E2:Exp
   //  => E2
   //  ...</k>
@@ -81,7 +75,7 @@ module ELM-TYPESYSTEM
   rule []Exp => list ?A:Id
   rule [ T:Type ]Exp => list T
   rule ( E1:Type , E2:Type )Exp => ( E1 , E2 )Type
-  rule <k> fun A:Id -> E:Type => ?T:Type -> E ...</k>
+  rule <k> fun A:Id -> E:Type => ?T:Type -> E ~> setTenv(TEnv) ...</k>
     <tenv> TEnv:Map => TEnv [ A <- ?T ] </tenv>
   //rule [TConstructor]
   //rule <k> variable A:Id => T ...</k>
@@ -113,21 +107,37 @@ module ELM-TYPESYSTEM
     => getField LTF A2
     requires A1 =/=K A2
 
-  syntax TypeSchema ::= "(" "forall" Set ")" Type
-  syntax Type ::= MetaVariable
-//  rule <k> let X = T:Type in E => E ~> setTenv(TEnv) ...</k>
-//       <tenv> TEnv
-//        => TEnv[X <- (forall #metaKVariables(T) -Set #metaKVariables(setTenv(TEnv))) #freezeKVariables(T, setTenv(TEnv))]
-//       </tenv>
-  rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
-       <tenv>... X |-> (forall Tvs) T ...</tenv>
-
   syntax KResult ::= Type
 
-  //pattern matching
+  syntax TypeSchema ::= "forall" Set "." Type
+  syntax Type ::= MetaVariable
+  rule <k> let X = T:Type in E => E ~> setTenv(TEnv) 
+    ...</k>
+    <tenv> TEnv 
+      => TEnv[ X 
+        <- forall (#metaKVariables(T) -Set #metaKVariables(setTenv(TEnv))) . 
+          ( #freezeKVariables(T, setTenv(TEnv)):>Type
+          )
+      ]
+    </tenv>
+  rule <k> A1:Id get A2:Id
+    => #renameMetaKVariables(getField LTF A2, Tvs)
+    ...</k>
+    <tenv>... A1 |-> forall Tvs . { LTF:ListTypeFields }Type ...</tenv>
+  rule <k> ( { A:Id | LEF:ListTypeFields } )
+    => #renameMetaKVariables({ LTF }Type,Tvs)
+    ...</k>
+    <tenv>... A |-> forall Tvs . { LTF:ListTypeFields }Type ...</tenv>
+    requires containsFields LTF LEF
+  rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
+    <tenv>... X |-> forall Tvs . T
+    ...</tenv>
+
   syntax KItem ::= Type "=Type" Type
   rule T =Type T => .
 
+
   syntax KItem ::= setTenv(Map)
-  rule <k> T:Type ~> (setTenv(TEnv) => .) ...</k>  <tenv> _ => TEnv </tenv>
+  rule <k> T:Type ~> (setTenv(TEnv) => .) ...</k>
+   <tenv> _ => TEnv </tenv>
 endmodule
