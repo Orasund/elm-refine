@@ -23,9 +23,9 @@ module ELM-TYPESYSTEM
   //inference Rules for Expressions
   syntax Exp ::= Type //The following rules replace Exp with Type
   rule foldl
-    => (?A -> ?B -> ?B) -> ?B -> ( list ?A ) -> ?B
+    => (?A:Type -> ?B:Type -> ?B) -> ?B:Type -> ( list ?A ) -> ?B
   rule (::)
-    => ( list ?A ) -> ( list ?A )
+    => ?A:Type -> ( list ?A ) -> ( list ?A )
   rule (+)
     => int -> int -> int
   rule (-)
@@ -72,7 +72,7 @@ module ELM-TYPESYSTEM
       ~> ?T
   rule boolExp B:Bool => bool
   rule intExp I:Int => int
-  rule []Exp => list ?A:Id
+  rule []Exp => list ?A:Type
   rule [ T:Type ]Exp => list T
   rule ( E1:Type , E2:Type )Exp => ( E1 , E2 )Type
   rule <k> fun A:Id -> E:Type => ?T:Type -> E ~> setTenv(TEnv) ...</k>
@@ -80,6 +80,11 @@ module ELM-TYPESYSTEM
   //rule [TConstructor]
   //rule <k> variable A:Id => T ...</k>
   //  <tenv>... A |-> T:Type ...</tenv>
+
+  syntax KResult ::= Type
+
+  syntax TypeSchema ::= "forall" Set "." Type
+  syntax Type ::= MetaVariable
 
   syntax KItem ::= ListExp "isType" Type
   rule (T:Type ,) isType (list T) => .
@@ -94,9 +99,15 @@ module ELM-TYPESYSTEM
 
   syntax Bool ::= "contains" ListTypeFields Id Type [function, functional]
   rule contains (A1:Id : T1:Type ,) A2 T2
-    => (A1 ==K A2) andBool (T1 ==K T2)
+    => T1 =Type T2
+      ~> (A1 ==K A2)
   rule contains (A1:Id : T1:Type , LTF:ListTypeFields) A2 T2
-    => ( (A1 ==K A2) andBool (T1 ==K T2) ) orBool (contains LTF A2 T2)
+    => T1 =Type T2
+      ~> true
+   requires A1 ==K A2
+  rule contains (A1:Id : T1:Type , LTF:ListTypeFields) A2 T2
+    => contains LTF A2 T2
+    requires A1 =/=K A2
 
   syntax Map ::= "getField" ListTypeFields Id [function, functional]
   rule getField (A:Id : T:Type ,) A => T
@@ -107,10 +118,7 @@ module ELM-TYPESYSTEM
     => getField LTF A2
     requires A1 =/=K A2
 
-  syntax KResult ::= Type
-
-  syntax TypeSchema ::= "forall" Set "." Type
-  syntax Type ::= MetaVariable
+  
   rule <k> let X = T:Type in E => E ~> setTenv(TEnv) 
     ...</k>
     <tenv> TEnv 
@@ -128,7 +136,7 @@ module ELM-TYPESYSTEM
     => #renameMetaKVariables({ LTF }Type,Tvs)
     ...</k>
     <tenv>... A |-> forall Tvs . { LTF:ListTypeFields }Type ...</tenv>
-    requires containsFields LTF LEF
+    //requires containsFields (#renameMetaKVariables(LTF,Tvs)):>ListTypeFields LEF
   rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
     <tenv>... X |-> forall Tvs . T
     ...</tenv>
