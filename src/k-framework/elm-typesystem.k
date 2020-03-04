@@ -83,7 +83,7 @@ module ELM-TYPESYSTEM
 
   syntax KResult ::= Type
 
-  syntax TypeSchema ::= "forall" Set "." Type
+  syntax PolyType ::= "forall" Set "." Type
   syntax Type ::= MetaVariable
 
   syntax KItem ::= ListExp "isType" Type
