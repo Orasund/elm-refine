@@ -1,0 +1,45 @@
+## Soundness
+
+In this section we want to prove the soundness of the inference rules with respect to the semantics. This means we want to ensure that a if we can infer the type of a program, the program has also got a semantic.
+
+This will be done in four steps:
+
+1. Proving the Soundness of the type context.
+2. Proving the Soundness of the variable context.
+3. Proving the Soundness of expressions for given type and variable contexts.
+4. Showing that every program can be rewritten into an expression with an type context and a variable context.
+
+### Soundness of the type environment
+
+The type environment is build by the `type alias` statement. To recap, a statement is an operation on on of the evironments. Thus we need to check that the operation described in the inference rule is the same as the operation described in the semantics.
+
+```{theorem}
+\begin{letIn}
+$\Gamma_1,\Gamma_2$ be type contexts. Let $\Delta_1,\Delta_2$ be variable contexts.
+\end{letIn}
+The judgment $\Gamma_1,\Delta_1, \mf{type alias} \ c \ \mathit{lsv} \  \mf{"="} \ t \vdash \Gamma_2,\Delta_2$ can be derived if,
+
+$$
+\semantic{"type alias" \ $t$ \ $c$ \ $\mathit{lsv}$ \ "=" \ $t$}(\Gamma_1,\Delta_1) = (\Gamma_2,\Delta_2)
+$$
+```
+
+
+
+
+To do so, we will first proof that given a enviroment 
+
+```{theorem}
+\begin{letIn}
+$p\in\mf{<program>}$ and $T\in\mathcal{T}$ such that $p:T$.
+\end{letIn}
+
+Then
+
+$$
+\exists s\in\text{value}_\varnothing(T) . \semantic{p} = s
+$$
+```
+```{proof}
+
+```
