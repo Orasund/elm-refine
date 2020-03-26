@@ -2,22 +2,22 @@
 
 #### list-pattern-list
 
-Judgment: $\Gamma,\Delta\vdash:\text{match}_\Theta (\mathit{List} \ T,\mathit{lpl})$
+Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta (\mathit{List} \ T,\mathit{lpl})$
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash:\text{match}_\varnothing (\forall a. List \ a,\mf{""})}
+{\Gamma,\Delta\vdash\text{match}_\varnothing (\forall a. List \ a,\mf{""})}
 {}
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T,p)\\
-\Gamma,\Delta\vdash:\text{match}_{\Theta_2} (\mathit{List} \ T,\mathit{lpl})\quad
+\Gamma,\Delta\vdash\text{match}_{\Theta_1} (T,p)\\
+\Gamma,\Delta\vdash\text{match}_{\Theta_2} (\mathit{List} \ T,\mathit{lpl})\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
 \Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
-{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ \mathit{lpl})}
+{\Gamma,\Delta\vdash\text{match}_{\Theta_3} (\mathit{List} \ T,p \ \mf{","} \ \mathit{lpl})}
 {}
 $\Theta_3$ is the set of all bindings in the list with head $p$ and tail $\mathit{lpl}$. Variables may only bound once, therefore we need to ensure that the binding $\Theta_1$ of $p$ and the binding $\Theta_2$ of $\mathit{lpl}$ are disjoint.
 
@@ -27,18 +27,18 @@ Judgment: $\Gamma,\Delta\vdash\text{match}_\Theta ((T_1,\dots,T_n),\mathit{lps})
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash:\text{match}_\Theta ((),\mf{""})}
+{\Gamma,\Delta\vdash\text{match}_\Theta ((),\mf{""})}
 {}
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta\vdash:\text{match}_{\Theta_1} (T_0,p)\\
-\Gamma,\Delta\vdash:\text{match}_{\Theta_2} ((T_1,\dots,T_n),\mathit{lps})\quad
+\Gamma,\Delta\vdash\text{match}_{\Theta_1} (T_0,p)\\
+\Gamma,\Delta\vdash\text{match}_{\Theta_2} ((T_1,\dots,T_n),\mathit{lps})\quad
 \Theta_1\cap\Theta_2 = \varnothing\quad
 \Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)
 \end{gathered}
 }
-{\Gamma,\Delta\vdash:\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ \mathit{lps})}
+{\Gamma,\Delta\vdash\text{match}_{\Theta_3} ((T_0,T_1,\dots,T_n),p \ \mathit{lps})}
 {}
 
 #### list-pattern-vars

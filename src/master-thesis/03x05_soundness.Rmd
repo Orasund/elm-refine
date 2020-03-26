@@ -9,6 +9,102 @@ This will be done in four steps:
 3. Proving the Soundness of expressions for given type and variable contexts.
 4. Showing that every program can be rewritten into an expression with an type context and a variable context.
 
+The semantics for `<type>` are equivalent to the curresponding inference rules. 
+
+### Soundness of type signitures
+
+The judgement and the semantics for the type signitures are build structually similar therefore we can easily show their equivalance.
+
+```{theorem}
+\begin{letIn}
+$\Gamma$ be a type context, $\mathit{ltf}\in\mf{<list-type-fields>}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+\end{letIn}
+The Judgment $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ can be derived if and only if \(\semantic{$\mathit{lft}$}_\Gamma = \{a_1:T_1,\dots,a_n:T_n\}\).
+```
+```{proof}
+$\Gamma$ be a type context.
+\begin{itemize}
+    \item \textbf{Case} $ltf = \mf{""}$: Then $\Gamma\vdash ltf:\{ \ \}$ and \(\semantic{$\mathit{lft}$}_\Gamma=\{ \ \}\).
+    \item \textbf{Case} $lft = a_0 \ \mf{":"} \ T_0 \ \mf{","} \ lft_1$ for given $a_0\in\mathcal{V}$, $T_0\in\mathcal{T}$ and $\mathit{ltf}_1\in\mf{<list-type-field>}$ where $\Gamma\vdash \mathit{ltf}_1:\{a_1:T_1,\dots,a_n:T_n\}$ and \(\semantic{$\mathit{ltf}_1$}_\Gamma=\{a_1:T_1,\dots,a_n:T_n\}\) for given $T_i\in\mathcal{T},a_i\in\mathcal{V}$ and $i\in\mathbb{N}_1^n, n\in\mathbb{N}_0$:\\
+    Then $\Gamma\vdash \mathit{lft} : \{a_0 : T_0,a_1 : T_1\dots a_n:T_n \}$ and \(\semantic{$\mathit{ltf}$}_\Gamma = \{a_0 : T_0,a_1 : T_1\dots a_n:T_n \}\).
+  \end{itemize}
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma$ be a type context, $T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+\end{letIn}
+The Judgment $\Gamma\vdash\mathit{lt}:(T_1,\dots,T_n)$ can be derived if and only if \(\semantic{$\mathit{lt}$}=(T_1,\dots,T_n)\).
+```
+```{proof}
+$\Gamma$ be a type context.
+\begin{itemize}
+  \item \textbf{Case} $l = \mf{""}$: then $\Gamma\vdash l:()$ and \(\semantic{$l$}_\Gamma = ()\).
+  \item \textbf{Case} $l = \ t_0 \ l_1$ for $l_1\in\mf{<list-type>}$ that $\Gamma\vdash l_1:(T_1,\dots,T_n)$ where $T_i\in\mathcal{T}$,$i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$, $t_0\in\mf{<type>}$ such that $\Gamma\vdash t_0 : T_0$ and \(\semantic{$t_0$}_\Gamma=T_0\) and $T_0\in\mathcal{T}$:\\
+  Then $\Gamma\vdash l : (T_0,T_1,\dots,T_n)$.
+\end{itemize}
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. 
+\end{letIn}
+The Judgment $\Gamma\vdash t:T$ can be derived if and only if \(\semantic{$t$}_\Gamma = T\).
+```
+```{proof}
+Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$.
+\begin{itemize}
+\item\textbf{Case} $t = \mf{"Bool"}$: Then $\Gamma\vdash t:\mathit{Bool}$ and \(\semantic{$t$}_\Gamma = \mathit{Bool}\).
+\item\textbf{Case} $t = \mf{"Int"}$: Then $\Gamma\vdash t:\mathit{Int}$ and \(\semantic{$t$}_\Gamma = \mathit{Int}\).
+\item\textbf{Case} $t = \mf{"List"} \ t_2$, for $t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_2:T_2$ and \(\semantic{$t_2$}_\Gamma = T_2\) for given $T_2\in\mathcal{T}$. Then $\Gamma\vdash t:\mathit{List} \ T_2$ and \(\semantic{$t$}_\Gamma = \mathit{List} \ T_2\).
+\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ for given $T_1,T_2\in\mathcal{T}$. Then $\Gamma\vdash t:(T_1,T_2)$ and \(\semantic{$t$}_\Gamma = (T_1,T_2)\).
+\item\textbf{Case} $t = \mf{"\{"} \ \mathit{ltf} \ \mf{"\}"}$, for $\mathit{ltf}\in\mf{<list-type-field>}$: Then $\Gamma\vdash \mathit{ltf}:T$ and \(\semantic{$\mathit{ltf}$}_\Gamma = T\) for $T=\{a_1:T_1,\dots,a_n:T_n\}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Therefore $\Gamma\vdash t : T$ and \(\semantic{$t$}_\Gamma= T\).
+\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_i:T_i$ and \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$ and given $T_1,T_2\in\mathcal{T}$. Then $\Gamma\vdash t:T_1 \rightarrow T_2$ and \(\semantic{$t$}_\Gamma = T_1 \rightarrow T_2\).
+\item\textbf{Case} $t = c \ l$ for $l\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$ with $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$: Then $\Gamma\vdash l:(T_0,\dots,T_n)$ and \(\semantic{$l$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$,$i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Then $\Gamma\vdash t:\overline{T'} \ T_1 \ \dots \ T_n$ and \(\semantic{$t$}_\Gamma =\overline{T'} \ T_1 \ \dots \ T_n\), where $\overline{T'}$ represents the application constructor of $T'$
+\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then $\Gamma\vdash t:\forall \ b . b$ and \(\semantic{$t$}_\Gamma = \forall \ b . b\).
+\end{itemize}
+```
+
+### Soundness of the patterns
+
+```{theorem}
+Let $\Theta_1',\Theta_2'$ be type contexts. 
+
+$\Theta_1'\cup\Theta_2'$ ensures $\text{value}_{\text{insert}_{\Theta_1}(\Theta_2)}$
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma$,$\Delta$ and $\Theta'$ be type contexts, $\mathit{lpl} \in\mf{<list-pattern-list>}$ and $T\in\mathcal{T}$. Let the Judgment $\Gamma,\Delta\vdash \text{match}_{\Theta'}(T,\mathit{lpl})$ hold.
+\end{letIn}
+Then there exists a variable context $\Theta$ such that $(a,\_)\in\Theta \Rightarrow \Theta(a):\Theta'(a)$ and $s\in\text{value}_\Gamma(T)$ such that $\text{match}_\Theta(s,\mathit{lpl})$.
+```
+```{proof}
+Let $\Gamma$,$\Delta$ and be type contexts.
+\begin{itemize}
+\item \textbf{Case} $\mathit{lpl} = \mf{""}$: Assume $\Gamma,\Delta\vdash \text{match}_\Theta(T,\mathit{lpl})$ then $T = \forall a.\text{List} \ a$ and $\Theta = \varnothing$. $\text{match}_\varnothing(s,\mf{""})$ is true for $s = [ \ ]$. Therefore $s\in\text{value}_\Gamma(T)$.
+\item \textbf{Case} $p \ \mf{","} \ \mathit{lpl}'$ for $p\in\mf{<pattern>}$ and $\mathit{lpl}' \in\mf{<list-pattern-list>}$: Assume $\Gamma,\Delta\vdash \text{match}_\Theta(T,\mathit{lpl})$. Then $\Gamma,\Delta\vdash\text{match}_{\Theta_1}(T,p)$ for some $T\in\mathcal{T}$ and $\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\mathit{List} \ T,\mathit{lpl})$ where $\Theta_1\cap\Theta_2=\varnothing$ and $\Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)$.
+\end{itemize}
+// Todo
+```
+
+// Todo
+
+### Soundness of Expression Semantic
+
+```{theorem}
+\begin{letIn}
+$\Gamma$,$\Delta$ be type contexts, $\mathit{lef}\in\mf{<list-exp-field>}$ and $T\in\mathcal{T}$.
+Let the judgment $\Gamma,\Delta\vdash\mathit{lef}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V},T_i\in\mathcal{T}$, given $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+\end{letIn}
+Then $\semantic{\mathit{lef}}_{\Gamma,Delta}\in\text{value}_\Gamma(\{a_1:T_1,\dots,a_n:T_n\})$.
+```
+```{proof}
+\begin{itemize}
+\item\textbf{Case} $\mathit{lef}=a \ \mf{"="} \ e$ for $a\in\mathcal{V}$ and $e\in\mf{<type>}$: Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ then $T = \{a:T_1\}$ and $\Gamma,\Delta\vdash e:T_1$ for $T_1\in\mathcal{T}$. By induction hypothesis $\semantic_\Gamma{e}\in\text{value}_\Gamma(T)$
+\end{itemize}
+```
+
 ### Soundness of the type environment
 
 The type environment is build by the `type alias` statement. To recap, a statement is an operation on on of the evironments. Thus we need to check that the operation described in the inference rule is the same as the operation described in the semantics.

@@ -82,55 +82,21 @@ $$
 $$
 ```
 
-The semantics for `<type>` are equivalent to the curresponding inference rules. While both directions are valid, we will only need to show that the judgment $\Gamma\vdash t:T$ ensures $\semantic{t}_\Gamma = T$.
-
-```{theorem}
-\begin{letIn}
-$\Gamma$ be type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. 
-\end{letIn}
-The Judgement $\Gamma\vdash t:T$ can be derived if \(\semantic{$t$}_\Gamma = T\).
-```
-```{proof}
-Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$.
-\begin{itemize}
-\item\textbf{Case} $t = \mf{"Bool"}$: Then $\Gamma\vdash t:\mathit{Bool}$ and \(\semantic{$t$}_\Gamma = \mathit{Bool}\).
-\item\textbf{Case} $t = \mf{"Int"}$: Then $\Gamma\vdash t:\mathit{Int}$ and \(\semantic{$t$}_\Gamma = \mathit{Int}\).
-\item\textbf{Case} $t = \mf{"List"} \ t_2$, for $t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_2:T_2$ and \(\semantic{$t_2$}_\Gamma = T_2\) for given $T_2\in\mathcal{T}$. Then $\Gamma\vdash t:\mathit{List} \ T_2$ and \(\semantic{$t$}_\Gamma = \mathit{List} \ T_2\).
-\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ for given $T_1,T_2\in\mathcal{T}$. Then $\Gamma\vdash t:(T_1,T_2)$ and \(\semantic{$t$}_\Gamma = (T_1,T_2)\).
-\item\textbf{Case} $t = \mf{"\{"} \ \mathit{ltf} \ \mf{"\}"}$, for $\mathit{ltf}\in\mf{<list-type-field>}$: We start with induction over $\mf{<list-type-field>}$.
-  \begin{itemize}
-    \item \textbf{Case} $ltf = \mf{""}$: Then $\Gamma\vdash ltf:\{ \ \}$ and \(\semantic{$\mathit{lft}$}_\Gamma=\{ \ \}\).
-    \item \textbf{Case} $lft = a_0 \ \mf{":"} \ T_0 \ \mf{","} \ lft_1$ for given $a_0\in\mathcal{V}$, $T_0\in\mathcal{T}$ and $\mathit{ltf}_1\in\mf{<list-type-field>}$ where $\Gamma\vdash \mathit{ltf}_1:\{a_1:T_1,\dots,a_n:T_n\}$ and \(\semantic{$\mathit{ltf}_1$}_\Gamma=\{a_1:T_1,\dots,a_n:T_n\}\) for given $T_i\in\mathcal{T},a_i\in\mathcal{V}$ and $i\in\mathbb{N}_1^n, n\in\mathbb{N}_0$:\\
-    Then $\Gamma\vdash \mathit{lft} : \{a_0 : T_0,a_1 : T_1\dots a_n:T_n \}$ and \(\semantic{$\mathit{ltf}$}_\Gamma = \{a_0 : T_0,a_1 : T_1\dots a_n:T_n \}\).
-  \end{itemize}
-We can therefore conclude that for $\Gamma\vdash \mathit{ltf}:T$ for inductively derived $T\in\mathcal{T}$ that $\Gamma\vdash t : T$ and \(\semantic{$t$}_\Gamma= T\).
-\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By induction hypothesis, assume $\Gamma\vdash t_i:T_i$ and \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$ and given $T_1,T_2\in\mathcal{T}$. Then $\Gamma\vdash t:T_1 \rightarrow T_2$ and \(\semantic{$t$}_\Gamma = T_1 \rightarrow T_2\).
-\item\textbf{Case} $t = c \ l$ for $l\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$ with $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$: we start with induction over $\mf{<list-type>}$.
-  \begin{itemize}
-    \item \textbf{Case} $l = \mf{""}$: then $\Gamma\vdash l:()$ and \(\semantic{$l$}_\Gamma = ()\).
-    \item \textbf{Case} $l = \ t_0 \ l_1$ for $l_1\in\mf{<list-type>}$ that $\Gamma\vdash l_1:(T_1,\dots,T_n)$ where $T_i\in\mathcal{T}$,$i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$, $t_0\in\mf{<type>}$ such that $\Gamma\vdash t_0 : T_0$ and \(\semantic{$t_0$}_\Gamma=T_0\) and $T_0\in\mathcal{T}$:\\
-    Then $\Gamma\vdash l : (T_0,T_1,\dots,T_n)$.
-  \end{itemize}
-We can therefore conclude that $\Gamma\vdash l:(T_0,\dots,T_n)$ and \(\semantic{$l$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$,$i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Then $\Gamma\vdash t:\overline{T'} \ T_1 \ \dots \ T_n$ and \(\semantic{$t$}_\Gamma =\overline{T'} \ T_1 \ \dots \ T_n\), where $\overline{T'}$ represents the application constructor of $T'$
-\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then $\Gamma\vdash t:\forall \ b . b$ and \(\semantic{$t$}_\Gamma = \forall \ b . b\).
-\end{itemize}
-```
-
 We have already seen the pattern matching predicate in the last section. It is now time to actually define its meaning.
 
 ```{definition, name="Pattern Semantic"}
 \begin{letIn}
-$\Gamma$ be a type context and let $\Theta,\Theta_1,\Theta_2,\Theta_3$ be variable contexts. Let $p,p_1,p_2\in\mf{<pattern>}$, $\mathit{lpl}\in\mf{<list-pattern-list>}$, $\mathit{lps}\in\mf{<list-pattern-sort>}$ and $\mathit{lpv}\in\mf{<list-pattern-vars>}$. Let $b\in\mf{<bool>}$ and $i\in\mf{<int>}$. Let $c,a\in\mathcal{V}$.
+$\Gamma$ be a type context and let $\Delta\Theta,\Theta_1,\Theta_2,\Theta_3$ be variable contexts. Let $p,p_1,p_2\in\mf{<pattern>}$, $\mathit{lpl}\in\mf{<list-pattern-list>}$, $\mathit{lps}\in\mf{<list-pattern-sort>}$ and $\mathit{lpv}\in\mf{<list-pattern-vars>}$. Let $b\in\mf{<bool>}$ and $i\in\mf{<int>}$. Let $c,a\in\mathcal{V}$.
 \end{letIn}
 
 Let $s\in\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))$ for the following predicate.
 
 $$
 \begin{aligned}
-\text{match}_\Theta:&(\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))\times\mf{<list-pattern-list>}\\
-\text{match}_\Theta(s,\mf{""}):\Leftrightarrow& [ \ ] = s\\
-\text{match}_{\Theta_3}(s,p \ \mf{","} \ \mathit{lpl}):\Leftrightarrow& [a_0,\dots,a_n] = s\\
-    &\land \text{match}_{\Theta_1}(a_0,p) \land \text{match}_{\Theta_2}(a_1,\dots,a_n,\mathit{lpl})\\
+\text{match}_{\Gamma,\Delta,\Theta}:&(\bigcup_{T\in\mathcal{T}} \text{value}_\Gamma(\mathit{List} \ T))\times\mf{<list-pattern-list>}\\
+\text{match}_{\Gamma,\Delta,\Theta}(s,\mf{""}):\Leftrightarrow& [ \ ] = s\\
+\text{match}_{\Gamma,\Delta,\Theta_3}(s,p \ \mf{","} \ \mathit{lpl}):\Leftrightarrow& [a_0,\dots,a_n] = s\\
+    &\land \text{match}_{\Gamma,\Delta,\Theta_1}(a_0,p) \land \text{match}_{\Gamma,\Delta,\Theta_2}(a_1,\dots,a_n,\mathit{lpl})\\
     &\land \varnothing = \Theta_1 \cap \Theta_2 \land \Theta_3 = \Theta_1 \cup \Theta_2\\
     &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V} \text{ for all } i \in \mathbb{N}_0^n.
 \end{aligned}
@@ -206,12 +172,12 @@ $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:& \mf{<list-exp-field>} \to (\mathcal{V}\times\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
 \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta} = s_1 :\Leftrightarrow
-    &s_2 = \semantic{$e$}_{\Gamma,\Delta} \land ((a,s_2))= s_1\\
+    &s_2 = \semantic{$e$}_{\Gamma,\Delta} \land \{a = s_2\} = s_1\\
     &\text{where } s_2\in\text{value}_\Gamma(T) \text{ for } T\in\mathcal{T}\\
 \semantic{$a_1$ \ "=" \ $e$ \ "," \ $lef$}_{\Gamma,\Delta} = s_3 :\Leftrightarrow
-    & ((a_1,s_1)) = \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta}\\
-    &\land ((a_2,s_2),\dots,(a_n,s_n)) = \semantic{$lef$}_{\Gamma,\Delta}\\
-    &\land ((a_1,s_1),\dots,(a_n,s_n)) = s_3\\
+    & \{a_1 = s_1\} = \semantic{$a$ \ "=" \ $e$}_{\Gamma,\Delta}\\
+    &\land \{a_2 = s_2,\dots,a_n = s_n\} = \semantic{$lef$}_{\Gamma,\Delta}\\
+    &\land \{a_1 = s_1,\dots,a_n = s_n\} = s_3\\
     &\text{where } \ n\in\mathbb{N} \text{ and } a_i\in\mathcal{V},s_i\in\text{value}_\Gamma(T_i)\\
     &\text{ for } T_i\in\mathcal{T} \text{ for } i\in\mathbb{N}_0^n
 \end{aligned}
@@ -403,9 +369,7 @@ $$
 $$
 \begin{aligned}
 \semantic{"\{" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow
-    & ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
-    &\land \{a_1=s_1,\dots,a_n=s_n\}= s\\
-    &\text{where } n\in\mathbb{N} \text{ and } a_i\in\mathcal{V},s_i\in\text{value}(T_i),T_i\in\mathcal{T} \text{ for }i\in\mathbb{N}_0^n
+    & \semantic{$\mathit{lef}$}_{\Gamma,\Delta} = s
  \end{aligned}
 $$
 $$
@@ -417,7 +381,7 @@ $$
 $$
 \begin{aligned}
 \semantic{"\{" \ $a$ \ "|" \ $\mathit{lef}$ \ "\}"}_{\Gamma,\Delta} = s:\Leftrightarrow
-    & ((a_1,s_1),\dots,(a_n,s_n))=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
+    & \{a_1 = s_1,\dots,a_n = s_n\}=\semantic{$\mathit{lef}$}_{\Gamma,\Delta}\\
     &\land (a,\small\begin{Bmatrix*}[l]a_1=\_,\dots,a_n=\_,\\a_{n+1}=s_{n+1},\dots,a_m=s_m\end{Bmatrix*})\in\Delta\\
     &\land \{a_1=s_1,\dots,a_m=s_m\}= s\\
     &\text{where } n,m\in\mathbb{N} \text{ such that } n \leq m \text{ and } a_i\in\mathcal{V},\\
