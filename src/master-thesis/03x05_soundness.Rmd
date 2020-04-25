@@ -97,11 +97,11 @@ Let $\Gamma$,$\Delta$ and be type contexts.
 $\Gamma$,$\Delta$ be type contexts, $\mathit{lef}\in\mf{<list-exp-field>}$ and $T\in\mathcal{T}$.
 Let the judgment $\Gamma,\Delta\vdash\mathit{lef}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V},T_i\in\mathcal{T}$, given $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
 \end{letIn}
-Then $\semantic{\mathit{lef}}_{\Gamma,Delta}\in\text{value}_\Gamma(\{a_1:T_1,\dots,a_n:T_n\})$.
+Then \(\semantic{$\mathit{lef}$}_{\Gamma,Delta}\in\text{value}_\Gamma(\{a_1:T_1,\dots,a_n:T_n\})\) .
 ```
 ```{proof}
 \begin{itemize}
-\item\textbf{Case} $\mathit{lef}=a \ \mf{"="} \ e$ for $a\in\mathcal{V}$ and $e\in\mf{<type>}$: Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ then $T = \{a:T_1\}$ and $\Gamma,\Delta\vdash e:T_1$ for $T_1\in\mathcal{T}$. By induction hypothesis $\semantic_\Gamma{e}\in\text{value}_\Gamma(T)$
+\item\textbf{Case} $\mathit{lef}=a \ \mf{"="} \ e$ for $a\in\mathcal{V}$ and $e\in\mf{<type>}$: Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ then $T = \{a:T_1\}$ and $\Gamma,\Delta\vdash e:T_1$ for $T_1\in\mathcal{T}$. By induction hypothesis \(\semantic{$e$}_\Gamma\in\text{value}_\Gamma(T)\)
 \end{itemize}
 ```
 
@@ -132,9 +132,9 @@ $p\in\mf{<program>}$ and $T\in\mathcal{T}$ such that $p:T$.
 
 Then
 
-$$
+\[
 \exists s\in\text{value}_\varnothing(T) . \semantic{p} = s
-$$
+\]
 ```
 ```{proof}
 

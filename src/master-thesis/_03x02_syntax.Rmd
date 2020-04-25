@@ -33,37 +33,6 @@ $$
 $$
 ```
 
-For matching expressions we allow various pattern.
-
-```{definition,name="Pattern Syntax"}
-Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
-$$
-\begin{aligned}
-\mf{<list-pattern-list>} \ ::=& \ \mf{""} \ | \ \mf{<pattern> "," <list-pattern-list>}
-\end{aligned}
-$$
-$$\mf{<list-pattern-sort>} \ ::= \ \mf{""} \ | \ \mf{<pattern> <list-pattern-sort>}$$
-$$
-\begin{aligned}
-\mf{<list-pattern-vars>} \ ::=& \ \mf{""} \ | \ \mf{<lower-var> "," <list-pattern-vars>}\\
-\end{aligned}
-$$
-$$
-\begin{aligned}
-\mf{<pattern>} \ ::=& \ \mf{<bool>}\\
-                   |& \ \mf{<int>}\\
-                   |& \ \mf{"[" <list-pattern-list> "]"}\\
-                   |& \ \mf{"(" <pattern> "," <pattern> ")"}\\
-                   |& \ \mf{<upper-var> <list-pattern-sort>}\\
-                   |& \ \mf{<lower-var>}\\
-                   |& \ \mf{<pattern> "as" <lower-var>}\\
-                   |& \ \mf{"\{" <list-pattern-vars> "\}"}\\
-                   |& \ \mf{<pattern> "::" <pattern>}\\
-                   |& \ \mf{"\_"}
-\end{aligned}
-$$
-```
-
 Because Elm is a pure functional programming language, a program contains just a single expression.
 
 
@@ -76,11 +45,6 @@ $$
 \end{aligned}
 $$
 $$\mf{<maybe-exp-sign>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
-$$
-\begin{aligned}
-\mf{<list-case>} \ ::=& \ \mf{<pattern> "->" <exp>}\\ 
-                     |& \ \mf{<pattern> "->" <exp> ";" <list-case>}
-\end{aligned}
 $$
 $$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
 $$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
@@ -100,13 +64,12 @@ $$
                |& \ \mf{"\{" <lower-var> "|" <list-exp-field> "\}"}\\
                |& \ \mf{<lower-var> "." <lower-var>}\\
                |& \ \mf{"let" <maybe-exp-sign> <lower-var> "=" <exp> "in" <exp>}\\
-               |& \ \mf{"case" <exp> "of" "[" <list-case> "]"}\\
                |& \ \mf{<exp> <exp>}\\
                |& \ \mf{<bool>}\\
                |& \ \mf{<int>}\\
                |& \ \mf{"[" <list-exp> "]"}\\
                |& \ \mf{"(" <exp> "," <exp> ")"}\\
-               |& \ \mf{"\textbackslash" <pattern> "->" <exp>}\\
+               |& \ \mf{"\textbackslash" <lower-var> "->" <exp>}\\
                |& \ \mf{<upper-var>}\\
                |& \ \mf{<lower-var>}
 \end{aligned}
@@ -120,8 +83,6 @@ Given two variable domains `<upper-var>` and `<lower-var>`, we define the follow
 $$
 \begin{aligned}
 \mf{<list-statement-var>} ::=& \ \mf{""} \ | \mf{<lower-var> <list-statement-var>}\\
-\mf{<list-statement-sort>} ::=\\ \mf{<upper-var>} \ &\ \mf{<list-type>} \\
-                   | \ \mf{<upper-var>} \ &\ \mf{<list-type> "|" <list-statement-sort>}
 \end{aligned}
 $$
 $$
@@ -138,9 +99,7 @@ $$
 \begin{aligned}
 \mf{<statement>} \ ::=& \ \mf{<maybe-statement-sign> <lower-var> "=" <exp>}\\
                      |& \ \mf{"type" "alias" <upper-var> <list-statement-var>}\\
-                      &\quad\mf{"=" <type>}\\
-                     |& \ \mf{"type" <upper-var> <list-statement-var>}\\
-                      &\quad\mf{"=" <list-statement-sort>}\\
+                      &\quad\mf{"=" <type>}
 \end{aligned}
 $$
 $$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$

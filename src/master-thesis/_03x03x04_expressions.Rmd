@@ -35,28 +35,6 @@ a_1 = a_2
 {}
 If we have a variable $a_1$ and a type $T$, then the variables $a_2$ need to match. The type signature $t$ defines the type of $a_2$.
 
-#### list-case
-
-Judgment: $\Gamma,\Delta,T_1\vdash lc:T_2$
-
-\logicRule
-{\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\text{insert}_\Delta(\Theta)\vdash e:T_2
-}
-{\Gamma,\Delta,T_1\vdash p \ \mf{"->"} \ e:T_2}
-{}
-Given the type $T_1$ of the expression that is being matched,
-we can now find all new binding $\Theta$ by matching $p$ with $T_1$.
-Finally, we unify $\Delta$ with $\Theta$.
-
-\logicRule
-{\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\text{insert}_\Delta(\Theta)\vdash e:T_2\quad
-\Gamma,\Delta,T_1\vdash lc:T_2
-}
-{\Gamma,\Delta,T_1\vdash p \ \mf{"->"} \ e \ \mf{";"} \ lc:T_2}
-{}
-
 #### bool
 
 Judgment: $b:T$
@@ -257,12 +235,10 @@ mes:T_1\vdash a:T_1\\
 {}
 
 \logicRule
-{\Gamma,\Delta\vdash \text{match}_\Theta(T_1,p)\quad
-\Gamma,\text{insert}_\Delta(\Theta)\vdash e: T_2
+{\Gamma,\text{insert}_\Delta(\{(a,T_1)\})\vdash e: T_2
 }
-{\Gamma,\Delta\vdash\mf{"\textbackslash"} p \mf{"->"} e: T_1\to T_2}
+{\Gamma,\Delta\vdash\mf{"\textbackslash"} a \mf{"->"} e: T_1\to T_2}
 {}
-In Elm function arguments may be pattern matched, this mostly used to "unwrap" a type, meaning to bind contained elements to variables.
 
 \logicRule
 {\Delta(c)\sqsubseteq T

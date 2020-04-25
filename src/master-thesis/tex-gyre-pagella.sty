@@ -1,0 +1,64 @@
+%% Begin of file `tgpagella.sty'. 
+% This file belongs to the TeX Gyre collection of fonts. The work is released
+% under the GUST Font License. See the MANIFEST-TeX-Gyre-Pagella.txt
+% and README-TeX-Gyre-Pagella.txt files for the details.
+% For the most recent version of this license see
+% http://www.gust.org.pl/fonts/licenses/GUST-FONT-LICENSE.txt or
+% http://tug.org/fonts/licenses/GUST-FONT-LICENSE.txt
+%% ----------------------------------------------------------------------------
+%% [EN] LaTeX2e support for Tex Gyre Pagella fonts
+%% The declaration `\usepackage{tgpagella}' in the LaTeX preamble
+%% will set TeX Gyre Pagella as the default (serif) font for the document. 
+%%
+%% [PL] Wspomaga stosowanie w LaTeXu kroju Tex Gyre Pagella
+%% Umieszczenie linijki `\usepackage{tgpagella}' w preambule spowoduje
+%% ustawienie TeX Gyre Pagella jako podstawowego szeryfowego kroju
+%% dokumenu, czyli kroju skojarzonego z poleceniem \rmfamily.
+%% W dokumenach po polsku konieczne jest uaktywnienie kodowania
+%% T1, QX lub OT4 (najlepiej przy pomocy pakietu 'polski'). Np.:
+%%
+%% \usepackage{tgpagella}
+%% \usepackage[T1]{polski}
+%% ----------------------------------------------------------------------------
+
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tgpagella}
+  [2009/09/27 v1.2 TeX Gyre Pagella as default roman family]
+
+\def\tg@scale@to@rm#1#2{%
+  \begingroup
+  \fontsize{10}{0}\usefont{\encodingdefault}{\rmdefault}{m}{n}%
+  #1%
+  \xdef\qpl@scale{%
+    \strip@pt
+    \dimexpr  1pt *
+    \@tempdima / \dimexpr#2pt\relax 
+    \relax}%
+  \PackageInfo{tgpagella}{The qpl family is scaled by \qpl@scale}
+  \endgroup
+}
+
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{prefix=qpl@}
+\DeclareStringOption{scale}[1]
+\define@key{tgpagella}{matchlowercase}[1]{%
+  \tg@scale@to@rm{\@tempdima#1\fontdimen5\font}{4.48999}}
+\define@key{tgpagella}{matchuppercase}[1]{%
+  \tg@scale@to@rm{\setbox0\hbox{XWYZH}\@tempdima#1\ht0}{6.77998}}
+\DeclareVoidOption{oldspacing}{%
+  \def\qpl@set@spacing{%
+    \fontdimen2\font=.333em
+    \fontdimen3\font=.222em
+    \fontdimen4\font=.111em
+  }%
+}
+\ProcessKeyvalOptions*
+
+\renewcommand{\rmdefault}{qpl}
+\fontfamily{\familydefault}
+\renewcommand\bfdefault{b}
+
+\endinput
+%% 
+%% End of file `tgpagella.sty'.
