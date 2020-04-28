@@ -1,19 +1,13 @@
+\setcounter{section}{3}
+\setcounter{subsection}{4}
+
 ## Soundness
 
 In this section we want to prove the soundness of the inference rules with respect to the semantics. This means we want to ensure that a if we can infer the type of a program, the program has also got a semantic.
 
-This will be done in four steps:
+### Soundness of the type signiture signiture
 
-1. Proving the Soundness of the type context.
-2. Proving the Soundness of the variable context.
-3. Proving the Soundness of expressions for given type and variable contexts.
-4. Showing that every program can be rewritten into an expression with an type context and a variable context.
-
-The semantics for `<type>` are equivalent to the curresponding inference rules. 
-
-### Soundness of type signitures
-
-The judgement and the semantics for the type signitures are build structually similar therefore we can easily show their equivalance.
+The inference rules and the semantics for the type signitures are build structually similar therefore we can easily show their equivalance.
 
 ```{theorem}
 \begin{letIn}
@@ -65,77 +59,164 @@ Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$.
 \end{itemize}
 ```
 
-### Soundness of the patterns
+### Soundness of the variable context
 
-```{theorem}
-Let $\Theta_1',\Theta_2'$ be type contexts. 
+In our previous sections we had two different meanings for $\Delta$. We now want to show, that these two definitions correlate.
 
-$\Theta_1'\cup\Theta_2'$ ensures $\text{value}_{\text{insert}_{\Theta_1}(\Theta_2)}$
+```{definition,name="Well formed variable context"}
+\begin{letIn}
+$\Gamma,\Delta$ be type contexts and $\Delta'$ a variable context.
+\end{letIn}
+
+We say $\Delta'$ is \textit{well defined with respect to} $\Delta :\Leftrightarrow$
+  
+\[ \forall T \in\mathcal{T}.\forall a \in\mathcal{V}. (a,T) \in \Delta \Rightarrow \exists e \in \text{value}_\Gamma(T). (a,e) \in \Delta'.\]
 ```
+
+We will now show that our semantic ensures that all used variable contexts are well formed.
+
+//Todo
+
+### Soundness of the Expression Semantic
+
+We can now use the definition of well formed variable contexts, to proof the soundness of the expression semantics.
 
 ```{theorem}
 \begin{letIn}
-$\Gamma$,$\Delta$ and $\Theta'$ be type contexts, $\mathit{lpl} \in\mf{<list-pattern-list>}$ and $T\in\mathcal{T}$. Let the Judgment $\Gamma,\Delta\vdash \text{match}_{\Theta'}(T,\mathit{lpl})$ hold.
+$\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a well formed variable context with respect to $\Delta$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
+Let the judgment $\Gamma,\Delta\vdash\mathit{lef}:T$ hold for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, given $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
 \end{letIn}
-Then there exists a variable context $\Theta$ such that $(a,\_)\in\Theta \Rightarrow \Theta(a):\Theta'(a)$ and $s\in\text{value}_\Gamma(T)$ such that $\text{match}_\Theta(s,\mathit{lpl})$.
+Then \(\semantic{$\mathit{lef}$}_{\Gamma,Delta'}\in\text{value}_\Gamma(T)\) .
 ```
 ```{proof}
-Let $\Gamma$,$\Delta$ and be type contexts.
+Let $\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a well formed variable context with respect to $\Delta$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
+Let the judgment $\Gamma,\Delta\vdash\mathit{lef}:T$ hold for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, given $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+
 \begin{itemize}
-\item \textbf{Case} $\mathit{lpl} = \mf{""}$: Assume $\Gamma,\Delta\vdash \text{match}_\Theta(T,\mathit{lpl})$ then $T = \forall a.\text{List} \ a$ and $\Theta = \varnothing$. $\text{match}_\varnothing(s,\mf{""})$ is true for $s = [ \ ]$. Therefore $s\in\text{value}_\Gamma(T)$.
-\item \textbf{Case} $p \ \mf{","} \ \mathit{lpl}'$ for $p\in\mf{<pattern>}$ and $\mathit{lpl}' \in\mf{<list-pattern-list>}$: Assume $\Gamma,\Delta\vdash \text{match}_\Theta(T,\mathit{lpl})$. Then $\Gamma,\Delta\vdash\text{match}_{\Theta_1}(T,p)$ for some $T\in\mathcal{T}$ and $\Gamma,\Delta\vdash\text{match}_{\Theta_2}(\mathit{List} \ T,\mathit{lpl})$ where $\Theta_1\cap\Theta_2=\varnothing$ and $\Theta_3 = \text{insert}_{\Theta_1}(\Theta_2)$.
+\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e$ for $e\in\mf{<type>}$ and $n = 1$: Then $\Gamma,\Delta\vdash e:T_1$ and therfore \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\). Thus the assumption holds.
+\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e \ \mf{","} \ \mathit{lef}_0$ for $e\in\mf{<type>}$ and $lef_0\in\mf{<list-exp-field>}$: Then $\Gamma,\Delta\vdash \mathit{lef}_0:T$,$\Gamma,\Delta\vdash e: T_1$ and therefore \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T_1)\) and by induction hypothesis \(\semantic{$lef_0$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\{a_2:T_2,\dots,a_n:T_n\})\). Thus the assumption holds.
 \end{itemize}
-// Todo
 ```
-
-// Todo
-
-### Soundness of Expression Semantic
 
 ```{theorem}
 \begin{letIn}
-$\Gamma$,$\Delta$ be type contexts, $\mathit{lef}\in\mf{<list-exp-field>}$ and $T\in\mathcal{T}$.
-Let the judgment $\Gamma,\Delta\vdash\mathit{lef}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V},T_i\in\mathcal{T}$, given $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+$\mathit{mes}\in\mf{<maybe-exp-sign>}$. 
 \end{letIn}
-Then \(\semantic{$\mathit{lef}$}_{\Gamma,Delta}\in\text{value}_\Gamma(\{a_1:T_1,\dots,a_n:T_n\})\) .
+Then \(\semantic{$\mathit{mes}$}=()\).
 ```
 ```{proof}
-\begin{itemize}
-\item\textbf{Case} $\mathit{lef}=a \ \mf{"="} \ e$ for $a\in\mathcal{V}$ and $e\in\mf{<type>}$: Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ then $T = \{a:T_1\}$ and $\Gamma,\Delta\vdash e:T_1$ for $T_1\in\mathcal{T}$. By induction hypothesis \(\semantic{$e$}_\Gamma\in\text{value}_\Gamma(T)\)
-\end{itemize}
+//Todo
 ```
-
-### Soundness of the type environment
-
-The type environment is build by the `type alias` statement. To recap, a statement is an operation on on of the evironments. Thus we need to check that the operation described in the inference rule is the same as the operation described in the semantics.
 
 ```{theorem}
 \begin{letIn}
-$\Gamma_1,\Gamma_2$ be type contexts. Let $\Delta_1,\Delta_2$ be variable contexts.
+$b\in\mf{<bool>}.$ Let $b:\mathit{Bool}$.
 \end{letIn}
-The judgment $\Gamma_1,\Delta_1, \mf{type alias} \ c \ \mathit{lsv} \  \mf{"="} \ t \vdash \Gamma_2,\Delta_2$ can be derived if,
-
-$$
-\semantic{"type alias" \ $t$ \ $c$ \ $\mathit{lsv}$ \ "=" \ $t$}(\Gamma_1,\Delta_1) = (\Gamma_2,\Delta_2)
-$$
+ Then \(\semantic{$b$}\in\text{value}_\varnothing(\mathit{Bool})\).
+```
+```{proof}
+//Todo
 ```
 
+```{theorem}
+\begin{letIn}
+$i\in\mf{<int>}$. Let $i:\mathit{Int}$. 
+\end{letIn}
+Then \(\semantic{$i$}\in\text{value}_\varnothing(\mathit{Int})\).
+```
+```{proof}
+//Todo
+```
 
+```{theorem}
+\begin{letIn}
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a well formed variable context with respect to $\Delta$ and $\mathit{le}\in\mf{<list-exp>}$. Let $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ for $T\in\mathcal{T}$.
+\end{letIn}
+Then \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\).
+```
+```{proof}
+//Todo
+```
 
+```{theorem}
+\begin{letIn}
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a well formed variale context with respect to $\Delta$. Let $e\in\mf{<exp>}$ and $T\in\mathcal{T}$. Let $\Delta,\Gamma\vdash e:T$ be valid.
+\end{letIn}
+Then \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\).
+```
+```{proof}
+//Todo
+```
 
-To do so, we will first proof that given a enviroment 
+### Soundness of the Statement Semantic
+
+Statements are modeled as operations on either the type context or the variable context. We will now show that their definitions described in the semantics are the same as the definition in the inference rules.
+
+```{theorem}
+\begin{letIn}
+$\mathit{lsv}\in\mf{<list-statement-var>}$, $a_i\in\mathbb{N}_1^n$ for $n\in\mathbb{N}_0$. Let $\mathit{lsv}:(a_1,\dots,a_n)$ hold.
+\end{letIn}
+Then \(\semantic{lsv}\in\mathcal{V}*\).
+```
+```{proof}
+//Todo
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma_1,\Delta_1,\Gamma_2,\Delta_2$ be type contexts and $\Delta_1',\Delta_2'$ be well formed variable contexts with respect to $\Delta_1$ and $\Delta_2$ respectively. Let $ls\in\mf{<list-statement>}$ such that $\Gamma_1,\Delta_1,\mathit{ls}\vdash\Gamma_2,\Delta_2$ holds.
+\end{letIn}
+Then \(\semantic{$\mathit{ls}$}(\Gamma_1,\Delta_1') = (\Gamma_2,\Delta_2')\).
+```
+```{proof}
+//Todo
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma$ be a type context, $\mathit{mss}\in\mf{<maybe-statement-sign>},a\in\mathcal{V},T\in\mathcal{T}$. Let $\Gamma,\mathit{mss}\vdash a:T$ hold.
+\end{letIn}
+Then \(\semantic{$\mathit{mss}$}=()\).
+```
+```{proof}
+//Todo
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma_1,\Gamma_2,\Delta_1,\Delta_2$ be type contexts and $\Delta_1',\Delta_2'$ be well defined variable contexts with respect to $\Delta_1,\Delta_2$. Let $s\in\mf{<statement>}$ and $\Gamma_1,\Delta_1,s\vdash\Gamma_2,\Delta_2$ hold.
+\end{letIn}
+Then \(\semantic{$s$}(\Gamma_1,\Delta_1') = (\Gamma_2,\Delta_2')\).
+```
+```{proof}
+//Todo
+```
+
+### Soundness of the Program Semantic
+
+A program is a sequence of statements. Starting with an empty type context, and an empty variable context, one statement at the time will be applied, resulting in a value $e$, a type $T$ and a type context $\Gamma$ such that $e\in\text{value}_\Gamma(T)$.
+
+```{theorem}
+\begin{letIn}
+$\Gamma$ be a type context, $\mathit{mms}\in\mf{<maybe-main-sign>}$ and $T\in\mathcal{T}$ such that $\Gamma,\mathit{mms}\vdash \mf{main} : T$ holds.
+\end{letIn}
+Then \(\semantic{$\mathit{mms}$}=()\).
+```
+```{proof}
+//Todo
+```
 
 ```{theorem}
 \begin{letIn}
 $p\in\mf{<program>}$ and $T\in\mathcal{T}$ such that $p:T$.
 \end{letIn}
 
-Then
-
-\[
-\exists s\in\text{value}_\varnothing(T) . \semantic{p} = s
-\]
+Then there exists a type context $\Gamma$ such that \(\semantic{$p$}\in\text{value}_\Gamma(T)\).
 ```
 ```{proof}
-
+//Todo
 ```
+
+
+
+
