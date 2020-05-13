@@ -3,42 +3,37 @@
 
 ## Soundness
 
-In this section we want to prove the soundness of the inference rules with respect to the semantics. This means we want to ensure that a if we can infer the type of a program, the program has also got a semantic.
+In this section we want to prove the soundness of the inference rules with respect to the semantics. This means we want to ensure that if we can infer the well-typedness of a program, the execution of the program yields those kinds of values prediced by the inference rules.
 
-### Soundness of the type signiture
+### Soundness of the type signature
 
-The inference rules and the semantics for the type signitures are build structually similar. Thus we will now show that the inference rules have the same result as the semantics.
+The inference rules and the semantics for the type signatures are built in a structually similar way. Thus we will now show that the semantics of a phrase yields the kind of result prediceted by the inference rules.
 
 ```{theorem}
 \label{thm:soundness_list-type-fields}
 \begin{letIn}
-$\Gamma$ be a type context, $\mathit{ltf}\in\mf{<list-type-fields>}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Let $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ hold.
+$\Gamma$ be a type context, $\mathit{ltf}\in\mf{<list-type-fields>}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Assume that $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ holds.
 \end{letIn}
-Then \(\semantic{$\mathit{lft}$}_\Gamma = \{a_1:T_1,\dots,a_n:T_n\}\).
+Then \(\semantic{$\mathit{ltf}$}_\Gamma = \{a_1:T_1,\dots,a_n:T_n\}\).
 ```
 ```{proof}
-Let $\Gamma$ be a type context, $\mathit{ltf}\in\mf{<list-type-fields>}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Let $\mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ hold.
+Let $\Gamma$ be a type context, $\mathit{ltf}\in\mf{<list-type-fields>}$, $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Assume $\mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ holds.
 \begin{itemize}
-    \item \textbf{Case} $ltf = \mf{""}$ for $n = 0$: Then by the definition of the semantic the hypothesis holds.
-    \item \textbf{Case} $lft = a_1 \ \mf{":"} \ T_1 \ \mf{","} \ lft_1$ for $\mathit{ltf}_1\in\mf{<list-type-field>}$:
-    Then by the premise of the inference rule $\Gamma\vdash \mathit{ltf}_1:\{a_2:T_2,\dots,a_n:T_n\}$ holds and by induction hypothesis \(\semantic{$\mathit{ltf}_1$}_\Gamma=\{a_2:T_2,\dots,a_n:T_n\}\). Therefore by the definition of the semantic the hypothesis follows.
+    \item \textbf{Case} $\mathit{ltf} = \mf{""}$ for $n = 0$: Then $\semantic{ltf} = \{ \}$ and therefore the hypothesis holds.
+    \item \textbf{Case} $\mathit{ltf} = a_1 \ \mf{":"} \ T_1 \ \mf{","} \ \mathit{ltf}_1$ for $\mathit{ltf}_1\in\mf{<list-type-field>}$:
+    Then by the premise of the inference rule for $\mathit{ltf}$ we can assume that $\Gamma\vdash \mathit{ltf}_1:\{a_2:T_2,\dots,a_n:T_n\}$ holds and by induction hypothesis \(\semantic{$\mathit{ltf}_1$}_\Gamma=\{a_2:T_2,\dots,a_n:T_n\}\). We can now use the semantics as describe in its definition \(\semantic{$ltf$}=\semantic{$a_1 \ \mf{":"} \ T_1 \ \mf{","} \ \mathit{ltf}_1$}=\{a_1:e_1,\dots,a_n:e_n\}\) for $e_i\in\text{value}_\Gamma(T_i)$ for $i\in\mathbb{N}_0^n$, thus the hypothesis \(\semantic{$\mathit{ltf}$}\in\text{value}_\Gamma(\{a_1:T_1,\dots,a_n:T_n\})\) follows.
   \end{itemize}
 ```
 
 ```{theorem}
 \label{thm:soundness_list-type}
 \begin{letIn}
-$\Gamma$ be a type context,$\mathit{lt}\in\mf{<list-type>}, T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Let $\Gamma\vdash\mathit{lt}:(T_1,\dots,T_n)$ hold. Let for all occurences $t\in\mf{<type>}$ in $\mathit{lt}$ exists $T\in\mathcal{T}$ such that if $\Gamma\vdash t:T$ holds then \(\semantic{$t$}_\Gamma=T\).
+$\Gamma$ be a type context, $\mathit{lt}\in\mf{<list-type>}, T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Assume $\Gamma\vdash\mathit{lt}:(T_1,\dots,T_n)$ holds.
 \end{letIn}
 Then \(\semantic{$\mathit{lt}$}_\Gamma=(T_1,\dots,T_n)\).
 ```
 ```{proof}
-Let $\Gamma$ be a type context, $T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Let $\Gamma\vdash\mathit{lt}:(T_1,\dots,T_n)$ hold.
-\begin{itemize}
-  \item \textbf{Case} $l = \mf{""}$ for $n = 0$: Then by the definition of the semantic the hypothesis holds.
-  \item \textbf{Case} $l = \ t_1 \ l_1$ for $l_1\in\mf{<list-type>}$:
-  Then from the premise of the inference rule $\Gamma\vdash l_1:(T_2,\dots,T_n)$ and $\Gamma\vdash t_1 : T_1$ hold and by our premise \(\semantic{$t_1$}_\Gamma=T_1\) for $T_1\in\mathcal{T}$ and therefore by the definition of the semantic the hypothesis holds.
-\end{itemize}
+See Theorem \ref{thm:soundness_type}.
 ```
 
 ```{theorem}
@@ -51,14 +46,24 @@ Then \(\semantic{$t$}_\Gamma = T\).
 ```{proof}
 Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Let $\Gamma\vdash t:T$ hold.
 \begin{itemize}
-\item\textbf{Case} $t = \mf{"Bool"}$: Then by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = \mf{"Int"}$: Then by the premise of the inference rule $\Gamma\vdash t:\mathit{Int}$ holds and therefore by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = \mf{"List"} \ t_2$, for $t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_2:T_2$ holds and by induction hypothesis \(\semantic{$t_2$}_\Gamma = T_2\) for given $T_2\in\mathcal{T}$. Then by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. Then by induction hypothesis \(\semantic{$t_1$}_\Gamma = T_1\) and \(\semantic{$t_2$}_\Gamma = T_2\). Thus by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = \mf{"\{"} \ \mathit{ltf} \ \mf{"\}"}$, for $\mathit{ltf}\in\mf{<list-type-field>}$: Then by the premise of the inference rule $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$,$i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Thus by Theorem \ref{thm:soundness_list-type-fields} \(\semantic{$\mathit{ltf}$}_\Gamma = T\) and therefore the hypothesis holds.
-\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. By induction hypothesis \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$. Thus by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = c \ \mathit{lt}$ for $\mathit{lt}\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$: By the premise of the inference rule $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$ and $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$. By applying the induction hypothesis and Theorem \ref{thm:soundness_list-type} we know \(\semantic{$\mathit{lt}$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$,$i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Thus by the definition of the semantic the hypothesis holds.
-\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then by the definition of the semantic the hypothesis holds.
+\item\textbf{Case} $t = \mf{"Bool"}$: Then \(\semantic{$t$}_\Gamma=\mathit{Bool}\) and the hypothesis holds.
+\item\textbf{Case} $t = \mf{"Int"}$: Then by the premise of the inference rule for $\mf{"Int"}$, we can assume that  $\Gamma\vdash t:\mathit{Int}$ holds and therefore \(\semantic{$t$}_\Gamma=\mathit{Int}\). We see that the hypothesis holds.
+\item\textbf{Case} $t = \mf{"List"} \ t_2$, for $t_2\in\mf{<type>}$: By the premise of the inference rule  $\Gamma\vdash t_2:T_2$ holds and by induction hypothesis \(\semantic{$t_2$}_\Gamma = T_2\) for given $T_2\in\mathcal{T}$. Then \(\semantic{$t$}_\Gamma=[e_1,\dots,e_n]\) for $e_i\in\text{value}_\Gamma(T_2), i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$. Thus the hypothesis holds.
+\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. Then by induction hypothesis \(\semantic{$t_1$}_\Gamma = T_1\) and \(\semantic{$t_2$}_\Gamma = T_2\). Thus by the definition of the semantic the hypothesis holds analogously to the cases above.
+\item\textbf{Case} $t = \mf{"\{"} \ \mathit{ltf} \ \mf{"\}"}$, for $\mathit{ltf}\in\mf{<list-type-field>}$:
+  Then by the premise of the inference rule $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$,$i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Thus by Theorem \ref{thm:soundness_list-type-fields} \(\semantic{$\mathit{ltf}$}_\Gamma = T\) and therefore the hypothesis holds  analogously to the cases above.
+\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. By induction hypothesis \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$. Thus by the definition of the semantic the hypothesis holds  analogously to the cases above.
+\item\textbf{Case} $t = c \ \mathit{lt}$ for $\mathit{lt}\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$:We will now prove Theorem \ref{thm:soundness_list-type} by using the induction hypothesis.
+
+Assume $\Gamma\vdash\mathit{lt}:(T_1,\dots,T_n)$ holds, for $T_i\in\mathcal{T}$ for $i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$.
+\begin{itemize}
+  \item \textbf{Case} $\mathit{lt} = \mf{""}$ for $n = 0$: Then \(\semantic{$\mathit{lt}$}=()\) and thus the hypothesis holds.
+  \item \textbf{Case} $\mathit{lt} = t_1 \ l_1$ for $l_1\in\mf{<list-type>}$:
+  Then from the premise of the inference rule, we assume that $\Gamma\vdash l_1:(T_2,\dots,T_n)$ and $\Gamma\vdash t_1 : T_1$ hold. By our outer induction hypothesis \(\semantic{$t_1$}_\Gamma=T_1\) for $T_1\in\mathcal{T}$ and therefore \(\semantic{$t_1 \ l_1$}=(t_1,t_2,\dots,t_n)\) for $\semantic{t_i}_\Gamma=T_i$ for $t_i\in\mf{<type>}$. Thus by the hypothesis \(\semantic{$\mathit{lt}$}=(T_1,\dots,T_n)\) holds.
+\end{itemize}
+
+We can therefore conculde that the Theorem \ref{thm:soundness_list-type} holds. By the premise of the inference rule $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$ and $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$. By Theorem \ref{thm:soundness_list-type} we know \(\semantic{$\mathit{lt}$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$,$i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Thus by the definition of the semantic the hypothesis holds.
+\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then by the definition of the semantic the hypothesis holds analogously to the cases above.
 \end{itemize}
 ```
 
