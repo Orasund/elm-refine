@@ -3,7 +3,7 @@
 
 ## Soundness
 
-In this section we want to prove the soundness of the inference rules with respect to the semantics. This means we want to ensure that if we can infer the well-typedness of a program, the execution of the program yields those kinds of values predicted by the inference rules.
+In this section we prove the soundness of the inference rules with respect to the semantics. This means we ensure that if we can infer the well-typedness of a program, the execution of the program yields those kinds of values predicted by the inference rules.
 
 ### Soundness of the type signature
 
@@ -52,7 +52,7 @@ Let $\Gamma$ be a type context, $\mathit{lt}\in\mf{<list-type>}, T_i\in\mathcal{
 \begin{itemize}
   \item \textbf{Case} $\mathit{lt} = \mf{""}$ for $n = 0$: Then \(\semantic{$\mathit{lt}$}=()\) and thus the conclusion holds.
   \item \textbf{Case} $\mathit{lt} = t_1 \ l_1$ for $t_1\in\mf{<type>}$ for $l_1\in\mf{<list-type>}$:
-  Then from the premise of the inference rule, we assume that $\Gamma\vdash l_1:(T_2,\dots,T_n)$ and $\Gamma\vdash t_1 : T_1$ hold. The assumption of Theorem \ref{thm:soundness_type}, namely that $\Gamma\vdash t_1 : T_1$ can be derived, now holds. By Its induction hypothesis we can therefore conclude that \(\semantic{$t_1$}_\Gamma=T_1\) for $T_1\in\mathcal{T}$. The assumption of Theorem $\ref{thm:soundness_list-type}$, namely $\Gamma\vdash l_1:(T_2,\dots,T_n)$, holds and therefore by the induction hypothesis of Theorem $\ref{thm:soundness_list-type}$ we obtain \(\semantic{$t_1 \ l_1$}=(t_1,t_2,\dots,t_n)\) for \(\semantic{$t_i$}_\Gamma=T_i\) for $t_i\in\mf{<type>}$. Thus by the conclusion \(\semantic{$\mathit{lt}$}=(T_1,\dots,T_n)\) holds.
+  Then from the premise of the inference rule, we assume that $\Gamma\vdash l_1:(T_2,\dots,T_n)$ and $\Gamma\vdash t_1 : T_1$ hold. The assumption of Theorem \ref{thm:soundness_type}, namely that $\Gamma\vdash t_1 : T_1$ can be derived, now holds. By its induction hypothesis we can therefore conclude that \(\semantic{$t_1$}_\Gamma=T_1\) for $T_1\in\mathcal{T}$. The assumption of Theorem $\ref{thm:soundness_list-type}$, namely $\Gamma\vdash l_1:(T_2,\dots,T_n)$, holds and therefore by the induction hypothesis of Theorem $\ref{thm:soundness_list-type}$ we obtain \(\semantic{$t_1 \ l_1$}=(t_1,t_2,\dots,t_n)\) for \(\semantic{$t_i$}_\Gamma=T_i\) for $t_i\in\mf{<type>}$. Thus the conclusion \(\semantic{$\mathit{lt}$}=(T_1,\dots,T_n)\) holds.
 \end{itemize}
 
 Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume $\Gamma\vdash t:T$ can be derived. We show \(\semantic{$t$}_\Gamma = T\).
@@ -60,18 +60,18 @@ Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume
 \item\textbf{Case} $t = \mf{"Bool"}$: Then \(\semantic{$t$}_\Gamma=\mathit{Bool}\) and the conclusion holds.
 \item\textbf{Case} $t = \mf{"Int"}$: Then by the premise of the inference rule for $\mf{"Int"}$, we can assume that  $\Gamma\vdash t:\mathit{Int}$ can be derived and therefore \(\semantic{$t$}_\Gamma=\mathit{Int}\). We see that the conclusion holds.
 \item\textbf{Case} $t = \mf{"List"} \ t_2$, for $t_2\in\mf{<type>}$: By the premise of the inference rule we assume $\Gamma\vdash t_2:T_2$ can be derived and by induction hypothesis \(\semantic{$t_2$}_\Gamma = T_2\) for given $T_2\in\mathcal{T}$. Then \(\semantic{$t$}_\Gamma=[e_1,\dots,e_n]\) for $e_i\in\text{value}_\Gamma(T_2), i\in\mathbb{N}_0^n$ and $n\in\mathbb{N}$. Thus the conclusion holds.
-\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. Then by induction hypothesis \(\semantic{$t_1$}_\Gamma = T_1\) and \(\semantic{$t_2$}_\Gamma = T_2\). Thus by the definition of the semantic the conclusion holds analogously to the cases above.
+\item\textbf{Case} $t = \mf{"("} \ t_1 \mf{","} t_2 \ \mf{")"}$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. Then by induction hypothesis \(\semantic{$t_1$}_\Gamma = T_1\) and \(\semantic{$t_2$}_\Gamma = T_2\). Thus by the definition of the semantics the conclusion holds analogously to the cases above.
 \item\textbf{Case} $t = \mf{"\{"} \ \mathit{ltf} \ \mf{"\}"}$, for $\mathit{ltf}\in\mf{<list-type-field>}$:
   Then by the premise of the inference rule $\Gamma\vdash \mathit{ltf}:\{a_1:T_1,\dots,a_n:T_n\}$ for $a_i\in\mathcal{V}$,$T_i\in\mathcal{T}$,$i\in\mathbb{N}_1^n$ and $n\in\mathbb{N}_0$. Thus by Theorem \ref{thm:soundness_list-type-fields} \(\semantic{$\mathit{ltf}$}_\Gamma = T\) and therefore the conclusion holds  analogously to the cases above.
-\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. By induction hypothesis \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$. Thus by the definition of the semantic the conclusion holds  analogously to the cases above.
-\item\textbf{Case} $t = c \ \mathit{lt}$ for $\mathit{lt}\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$: By the premise of the inference rule we know $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$ and can assume that $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$ can be derived. Therefore the assumption of Theorem \ref{thm:soundness_list-type}, namely that $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$ can be derived, holds and by applying its induction hypothesis, we know \(\semantic{$\mathit{lt}$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$, $i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Thus by the definition of the semantic the conclusion holds.
-\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then by the definition of the semantic the conclusion holds analogously to the cases above.
+\item\textbf{Case} $t = t_1 \ \mf{"->"} \ t_2$, for $t_1,t_2\in\mf{<type>}$: By the premise of the inference rule $\Gamma\vdash t_1:T_1$ and $\Gamma\vdash t_2:T_2$ hold for given $T_1,T_2\in\mathcal{T}$. By induction hypothesis \(\semantic{$t_i$}_\Gamma = T_i\) for $i\in\{1,2\}$. Thus by the definition of the semantics the conclusion holds  analogously to the cases above.
+\item\textbf{Case} $t = c \ \mathit{lt}$ for $\mathit{lt}\in\mf{<list-type>}$ and $c\in\mf{<upper-var>}$: By the premise of the inference rule we know $(c,T')\in\Gamma$ with $T'\in\mathcal{T}$ and can assume that $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$ can be derived. Therefore the assumption of Theorem \ref{thm:soundness_list-type}, namely that $\Gamma\vdash \mathit{lt}:(T_0,\dots,T_n)$ can be derived, holds and by applying its induction hypothesis, we know \(\semantic{$\mathit{lt}$}_\Gamma=(T_1,\dots,T_n)\) for $T_i\in\mathcal{T}$, $i\in\mathbb{N}^n$ and $n\in\mathbb{N}_0$. Thus by the definition of the semantics the conclusion holds.
+\item\textbf{Case} $t = a$ for $a\in\mathcal{V}$: Then by the definition of the semantics the conclusion holds analogously to the cases above.
 \end{itemize}
 ```
 
 ### Soundness of the variable context
 
-In our previous sections we had two different meanings for $\Delta$. We now want to show, that these two definitions correlate.
+In our previous sections we had two different meanings for $\Delta$. We will now define the relation between the two.
 
 ```{definition,name="Similar Variable context"}
 \begin{letIn}
@@ -86,18 +86,6 @@ We say $\Delta'$ is \textit{ similar to } $\Delta$ \textit{ with respect to } $\
 ### Soundness of the expression semantics
 
 We can now use the definition of well-formed variable contexts, to prove the soundness of the expression semantics.
-
-```{theorem}
-\label{thm:soundness_list-exp-field}
-\begin{letIn}
-$\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
-Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$, and $n\in\mathbb{N}_0$.
-\end{letIn}
-Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\).
-```
-```{proof}
-See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp-field}, \ref{thm:soundness_list-exp} and \ref{thm:soundness_exp} below.
-```
 
 ```{theorem}
 \label{thm:soundness_bool}
@@ -131,9 +119,21 @@ Let $i\in\mf{<int>}.$
 ```
 
 ```{theorem}
+\label{thm:soundness_list-exp-field}
+\begin{letIn}
+$\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
+Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$, and $n\in\mathbb{N}_0$.
+\end{letIn}
+Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\).
+```
+```{proof}
+See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp-field}, \ref{thm:soundness_list-exp} and \ref{thm:soundness_exp} below.
+```
+
+```{theorem}
 \label{thm:soundness_list-exp}
 \begin{letIn}
-$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for $T\in\mathcal{T}$.
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for $T\in\mathcal{T}$.
 \end{letIn}
 Then \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\).
 ```
@@ -163,7 +163,7 @@ Assume the judgment $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{
 Let $\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for given $T\in\mathcal{T}$. We show \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\).
 \begin{itemize}
 \item \textbf{Case} $\mathit{le} = \mf{""}$: Then \(\semantic{$\mf{""}$}=\mathit{Empty}\) and thus the conclusion holds.
-\item \textbf{Case} $\mathit{le} = e "," \ \mathit{le}_1$ for $e\in\mf{<exp>}$ and $\mathit{le}_1\in\mf{<list-exp>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e:T$ and $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived. The assumption of Theorem \ref{thm:soundness_exp}, namely that $\Gamma,\Delta\vdash e:T$ can be derived, holds and by appling that theorem \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\). The assumption of Theorem \ref{thm:soundness_list-exp}, namely that $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived, also holds and by appling said theorem we conclude \(\semantic{$\mathit{le}_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\). By using the definition of the semantic \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'} = \mathit{Cons} \ e \ \semantic{$\mathit{le}_1$}_{\Gamma,\Delta'} \) and therefore the conclusion holds.
+\item \textbf{Case} $\mathit{le} = e "," \ \mathit{le}_1$ for $e\in\mf{<exp>}$ and $\mathit{le}_1\in\mf{<list-exp>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e:T$ and $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived. The assumption of Theorem \ref{thm:soundness_exp}, namely that $\Gamma,\Delta\vdash e:T$ can be derived, holds and by appling that theorem \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\). The assumption of Theorem \ref{thm:soundness_list-exp}, namely that $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived, also holds and by appling said theorem we conclude \(\semantic{$\mathit{le}_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\). By using the definition of the semantics \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'} = \mathit{Cons} \ e \ \semantic{$\mathit{le}_1$}_{\Gamma,\Delta'} \) and therefore the conclusion holds.
 \end{itemize}
 
 //TODO: proof 3.8
@@ -198,7 +198,14 @@ Then \(\semantic{$s$}(\Gamma_1,\Delta_1') = (\Gamma_2,\Delta_2')\) for a variabl
 ```{proof}
 Let $\Gamma_1,\Gamma_2,\Delta_1,\Delta_2$ be type contexts and $\Delta_1',\Delta_2'$ be a variable context similar to $\Delta_1,\Delta_2$ respectively with respect to $\Gamma_1,\Delta_2$ respectively. Let $s\in\mf{<statement>}$ and assume $\Gamma_1,\Delta_1,s\vdash\Gamma_2,\Delta_2$ can be derived.
 \begin{itemize}
-\item \textbf{Case} $s = \mathit{mss} \ a \ \mf{"="} \ e$ for $\mathit{mss}\in\mf{<maybe-statement-sort>}$, $a \in\mathcal{V}$, $e\in\mf{<exp>}$, $\Gamma_1=\Gamma_2$ and $\Delta_2=\text{insert}_{\Delta_1}(\{(a,T)\})$ for $T\in\mathcal{T}$: Then from the premise of the inference rule, we assume that $\Gamma_1,\mathit{mss}\vdash e:T$ and $\Gamma_1,\Delta_2\vdash e:T$ can both be derived. Then by Theorem \ref{thm:soundness_exp}, we know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_\Gamma(T)$. Let $\Delta_2'=\Delta_1'\cup\{(a,e)\}$. Then \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\). We know $\Delta_1$ is similar to $\Delta_1'$ with respect to $\Gamma$ and therefore from $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_\Gamma(T)$ we can follow directly that $\Delta_2'$ is similar to $\Delta_2$. Thus the conclusion holds.
+\item \textbf{Case} $s = \mathit{mss} \ a \ \mf{"="} \ e$ for $\mathit{mss}\in\mf{<maybe-statement-sort>}$, $a \in\mathcal{V}$, $e\in\mf{<exp>}$, $\Gamma_1=\Gamma_2$ and $\Delta_2=\text{insert}_{\Delta_1}(\{(a,T)\})$ for $T\in\mathcal{T}$: Then from the premise of the inference rule, we assume that $\Gamma_1,\mathit{mss}\vdash e:T$ and $\Gamma_1,\Delta_2\vdash e:T$ can both be derived. Then by Theorem \ref{thm:soundness_exp}, we know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_\Gamma(T)$. Let \(\Delta_2'=\Delta_1'\cup\{(a,\semantic{$e$}_{\Gamma_1,\Delta_1'})\}\). Then \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\).
+
+We will now show that $\Delta_2'$ is similar to $\Delta_2$. We know $\Delta_1$ is similar to $\Delta_1'$ with respect to $\Gamma$, meaning $\forall T \in\mathcal{T}.\forall a \in\mathcal{V}. (a,T) \in \Delta_1 \Rightarrow \exists e \in \text{value}_\Gamma(T). (a,e) \in \Delta_1'$. Let $\a'\in\mathcal{V}$ and $T'\in\mathcal{T}$ such that $(a',T')\in\Delta_2$. We already know $\Delta_2=\text{insert}_{\Delta_1}\{(a,T)\}=\Delta_1 \cup \{(a,T'')\}$ for $T''\in\mathcal{T}$ such that $T''$ is the polytype one obtains by binding all free variables in $T$.
+\begin{itemize}
+\item \textbf{Case} $(a',T')\in\Delta_1$: Because $\Delta_1$ is similar to $\Delta_1'$ we can directly conclude $\exists e \in \text{value}_\Gamma(T). (a,e) \in \Delta_1'$.
+\item \textbf{Case} $(a',T')\in\{(a,T'')\}$: We clame (//TODO: proof) that the semantics only produce bound variable types. Thus $T'=T''=T$ and by $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_\Gamma(T)$ we conclude \((a,\semantic{$e$}_{\Gamma_1,\Delta_1'}) \in \Delta_2'\).
+\end{itemize}
+and therefore from  we can follow directly that . Thus the conclusion holds.
 \item \textbf{Case} $s = \mf{"type alias"} \ c \ \mathit{lsv} \ \mf{"="} \ t$ for  $\mathit{lsv}\in\mf{<list-statement-variable>}$, $c\in\mathcal{V}$ such that $\Delta_1=\Delta_2$ and $(c,\_)\not\in\Gamma_1$: Let $\Delta_1'=\Delta_2'$. From \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\) the conclusion trivially holds.
 \end{itemize}
 ```
@@ -233,7 +240,7 @@ $p\in\mf{<program>}$ and $T\in\mathcal{T}$. Assume $p:T$ can be derived.
 Then there exists a type context $\Gamma$ such that \(\semantic{$p$}\in\text{value}_\Gamma(T)\).
 ```
 ```{proof}
-Let $\mathit{ls} \ \mathit{mms} \ \mf{"main="} \ e \in\mf{<program>}$, $\mathit{ls}\in\mf{<list-statement>}$, $\mathit{mms}\in\mf{<maybe-main-sign>}$ and $e\in\mf{<exp>}$. Assume $p:T$ for $T\in\mathcal{T}$ and $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ can be derived for type contexts $\Gamma$ and $\Delta$.
+Let $\mathit{ls} \ \mathit{mms} \ \mf{"main="} \ e \in\mf{<program>}$, $\mathit{ls}\in\mf{<list-statement>}$, $\mathit{mms}\in\mf{<maybe-main-sign>}$ and $e\in\mf{<exp>}$. Assume $p:T$ for $T\in\mathcal{T}$, $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ and \(\Gamma,\Delta\vdash e:T\) can be derived for type contexts $\Gamma$ and $\Delta$.
 
-The assumption of Theorem \ref{thm:soundness_list-statement}, namely that $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ can be derived, holds. By appling said theorem we obtain \(\semantic{$\mathit{ls}$}(\varnothing,\varnothing)=(\Gamma,\Delta')\) for a variable context $\Delta'$ similar to $\Delta$ with respect to $\Gamma$. Therefore \(\semantic{$p$} = \semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\) and the conclusion holds.
+The assumption of Theorem \ref{thm:soundness_list-statement}, namely that $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ can be derived, holds. By appling said theorem we obtain \(\semantic{$\mathit{ls}$}(\varnothing,\varnothing)=(\Gamma,\Delta')\) for a variable context $\Delta'$ similar to $\Delta$ with respect to $\Gamma$. Therefore \(\semantic{$p$} = \semantic{$e$}_{\Gamma,\Delta'}\). We know $\Gamma,\Delta\vdash e:T$ and thus by Theorem \ref{thm:soundness_exp} we now that \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\) and therefore the conclusion holds.
 ```
