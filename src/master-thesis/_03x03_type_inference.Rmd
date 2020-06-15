@@ -125,11 +125,11 @@ Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be
 The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
 
 ```{definition,name="Uniquely Quantified Poly Type"}
-\begin{letIn} $\Delta$ be a type context. $T',T\in\mathcal{T}$.$a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$. Let $T'$ be the mono type of $T$.
+\begin{letIn} $\Delta$ be a type context, $T\in\mathcal{T}$, $a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$. Let $T'$ be the mono type of $T$.
 \end{letIn}
 
 We say $\forall a_1 \dots \forall a_n.T'$ is a \textit{uniquely quantified} poly type of $T$ in $\Delta$, iff the following holds:
-\[(\_,\forall a_1 \dots \forall a_n.T')\in\Delta_2 \land \{a_1,\dots,a_n\}=\{a\ |\ a\in\text{free}(T')\land (a,\_)\not\in\Delta_2\}\]
+\[(\_,\forall a_1 \dots \forall a_n.T')\in\Delta_2 \land \{a_1,\dots,a_n\}=\text{free}(T')\land \forall i\in\mathbb{N}_0^n.(a_i,\_)\not\in\Delta_2\]
 
 ```
 
