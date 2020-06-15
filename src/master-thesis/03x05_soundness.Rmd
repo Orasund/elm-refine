@@ -78,12 +78,12 @@ In our previous sections we had two different meanings for $\Delta$. We will now
 $\Gamma,\Delta$ be type contexts and $\Delta'$ a variable context.
 \end{letIn}
 
-We say $\Delta'$ is \textit{ similar to } $\Delta$ \textit{ with respect to } $\Gamma$ iff for all $T \in\mathcal{T}$ there exists $T'\in \mathcal{T}$ such that $T'$ is a uniquely quantified poly type of $T$ in $\Delta$ and for all $a \in\mathcal{V}$ the following holds:
+We say $\Delta'$ is \textit{ similar to } $\Delta$ \textit{ with respect to } $\Gamma$ iff for all $T \in\mathcal{T}$ and for all $a \in\mathcal{V}$ the following holds:
   
-\[ (a,T) \in \Delta \Rightarrow \exists e \in \text{value}_\Gamma(T'). (a,e) \in \Delta'.\]
+\[ (a,T) \in \Delta \Rightarrow \exists e \in \text{value}_\Gamma(\overline{\Gamma}(T)). (a,e) \in \Delta'.\]
 ```
 
-Types in $\Delta$ are all uniquely quantified. Instead of proving this, we show that the semantic only produces values of uniquely quantified types. This is a weaker statement but strong enough for our purposes.
+Types in $\Delta$ are all most generalized types. Instead of proving this, we show that the semantic only produces values of most generalized types. This is a weaker statement but strong enough for our purposes.
 
 ### Soundness of the Expression Semantics
 
@@ -124,9 +124,9 @@ Let $i\in\mf{<int>}.$
 \label{thm:soundness_list-exp-field}
 \begin{letIn}
 $\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
-Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$, and $n\in\mathbb{N}_0$. Let $T'\in\mathcal{T}$ be a unique quantified poly type of $T$ in $\Delta$.
+Assume $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$, and $n\in\mathbb{N}_0$. 
 \end{letIn}
-Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\).
+Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
 ```
 ```{proof}
 See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp-field}, \ref{thm:soundness_list-exp} and \ref{thm:soundness_exp} below.
@@ -135,9 +135,9 @@ See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp
 ```{theorem}
 \label{thm:soundness_list-exp}
 \begin{letIn}
-$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for $T\in\mathcal{T}$. Let $T'\in\mathcal{T}$ be a unique quantified poly type of $\mathit{List} \ T$ in $\Delta$.
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for $T\in\mathcal{T}$. 
 \end{letIn}
-Then \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\).
+Then \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(\mathit{List} \ T))\).
 ```
 ```{proof}
 See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp-field}, \ref{thm:soundness_list-exp} and \ref{thm:soundness_exp} below.
@@ -146,24 +146,24 @@ See the combined proof of the conjunction of Theorem \ref{thm:soundness_list-exp
 ```{theorem}
 \label{thm:soundness_exp}
 \begin{letIn}
-$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $e\in\mf{<exp>}$ and $T\in\mathcal{T}$. Assume $\Delta,\Gamma\vdash e:T$ can be derived. Let $T'\in\mathcal{T}$ be a unique quantified poly type of $T$ in $\Delta$.
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $e\in\mf{<exp>}$ and $T\in\mathcal{T}$. Assume $\Delta,\Gamma\vdash e:T$ can be derived. 
 \end{letIn}
-Then \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\).
+Then \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
 ```
 ```{proof}
 We prove the conjunction of Theorem $\ref{thm:soundness_list-exp-field}$, $\ref{thm:soundness_list-exp}$ and $\ref{thm:soundness_exp}$ by simultaneous induction over the structure of the mutually recursive grammar rules for $\mf{<list-exp-field>},\mf{<list-exp>}$ and $\mf{<exp>}$.
 
 Let $\Gamma$,$\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{lef}\in\mf{<list-exp-field>}$.
-Assume the judgment $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$ and given $n\in\mathbb{N}_0$. We show  \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\) for be a unique quantified poly type $T'\in\mathcal{T}$ of $T$.
+Assume the judgment $\Gamma,\Delta\vdash\mathit{lef}:T$ can be derived for $T=\{a_1:T_1,\dots,a_n:T_n\}\in\mathcal{T}$, $a_i\in\mathcal{V},T_i\in\mathcal{T}$, for all $i\in\mathbb{N}_1^n$ and given $n\in\mathbb{N}_0$. We show  \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
 \begin{itemize}
-\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e_1$ for $e_1\in\mf{<exp>}$ and $n = 1$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e_1:T_1$ can be derived and therefore the assumption of Theorem \ref{thm:soundness_exp} holds. By applying said theorem we can therefore conclude \(\semantic{$e_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T_1')\) for a unique quantified poly type $T_1'\in\mathcal{T}$ of $T_1$. Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'} = \{a_1 = e_1\}\) and therefore the conclusion holds.
-\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e_1 \ \mf{","} \ \mathit{lef}_0$ for $e_1\in\mf{<exp>}$ and $\mathit{lef}_0\in\mf{<list-exp-field>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash \mathit{lef}_0:\{a_2:T_2,\dots,a_n:T_n\}$ and $\Gamma,\Delta\vdash e_1: T_1$ can both be derived. Thus the assumption of Theorem \ref{thm:soundness_exp} holds and by the induction hypothesis of said theorem \(\semantic{$e_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T_1')\) for be a unique quantified poly type $T'\in\mathcal{T_1'}$ of $T_1$. By $\Gamma,\Delta\vdash \mathit{lef}_0:T$ the assumption for the induction hypothesis of Theorem \ref{thm:soundness_list-exp-field} holds and therefore by appling the theorem we obtain \(\semantic{$\mathit{lef}_0$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\) where $T'\in\mathcal{T}$ is a unique quantified poly type of $\{a_2:T_2,\dots,a_n:T_n\}$. Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}=\{a_1=e_1,\dots,a_n=e_n\}\) for $e_i\in\text{value}_\Gamma(T_i')$ for unique quantified poly types $T_i'\in\mathcal{T}$ of $T_i$ and thus the conclusion holds.
+\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e_1$ for $e_1\in\mf{<exp>}$ and $n = 1$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e_1:T_1$ can be derived and therefore the assumption of Theorem \ref{thm:soundness_exp} holds. By applying said theorem we can therefore conclude \(\semantic{$e_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T_1))\). Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'} = \{a_1 = e_1\}\) and therefore the conclusion holds.
+\item\textbf{Case} $\mathit{lef}=a_1 \ \mf{"="} \ e_1 \ \mf{","} \ \mathit{lef}_0$ for $e_1\in\mf{<exp>}$ and $\mathit{lef}_0\in\mf{<list-exp-field>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash \mathit{lef}_0:\{a_2:T_2,\dots,a_n:T_n\}$ and $\Gamma,\Delta\vdash e_1: T_1$ can both be derived. Thus the assumption of Theorem \ref{thm:soundness_exp} holds and by the induction hypothesis of said theorem \(\semantic{$e_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T_1))\). By $\Gamma,\Delta\vdash \mathit{lef}_0:T$ the assumption for the induction hypothesis of Theorem \ref{thm:soundness_list-exp-field} holds and therefore by appling the theorem we obtain \(\semantic{$\mathit{lef}_0$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(\{a_2:T_2,\dots,a_n:T_n\}))\). Then \(\semantic{$\mathit{lef}$}_{\Gamma,\Delta'}=\{a_1=e_1,\dots,a_n=e_n\}\) for $e_i\in\text{value}_\Gamma(\overline{\Gamma}(T_i))$ and thus the conclusion holds.
 \end{itemize}
 
 Let $\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$ and $\mathit{le}\in\mf{<list-exp>}$. Assume $\Gamma,\Delta\vdash\mathit{le}:\mathit{List} \ T$ can be derived for given $T\in\mathcal{T}$. We show \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\mathit{List} \ T)\).
 \begin{itemize}
 \item \textbf{Case} $\mathit{le} = \mf{""}$: Then \(\semantic{$\mf{""}$}_{\Gamma,\Delta'}=\mathit{Empty}\) and thus the conclusion holds.
-\item \textbf{Case} $\mathit{le} = e "," \ \mathit{le}_1$ for $e\in\mf{<exp>}$ and $\mathit{le}_1\in\mf{<list-exp>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e:T$ and $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived. The assumption of Theorem \ref{thm:soundness_exp}, namely that $\Gamma,\Delta\vdash e:T$ can be derived, holds and by appling that theorem \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T)\) for a unique quantified poly type $T'\in\mathcal{T}$ of $T$. The assumption of Theorem \ref{thm:soundness_list-exp}, namely that $\Gamma,\Delta\vdash \mathit{le}_1:T$ can be derived, also holds and by appling said theorem we conclude \(\semantic{$\mathit{le}_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T'')\)  for a unique quantified poly type $T''\in\mathcal{T}$ of $\mathit{List} \ T$. By using the definition of the semantics \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'} = \mathit{Cons} \ e \ \semantic{$\mathit{le}_1$}_{\Gamma,\Delta'} \) and therefore the conclusion holds.
+\item \textbf{Case} $\mathit{le} = e "," \ \mathit{le}_1$ for $e\in\mf{<exp>}$ and $\mathit{le}_1\in\mf{<list-exp>}$: Then by the premise of the inference rule we assume $\Gamma,\Delta\vdash e:T$ and $\Gamma,\Delta\vdash \mathit{le}_1:\mathit{List} \ T$ can be derived. The assumption of Theorem \ref{thm:soundness_exp}, namely that $\Gamma,\Delta\vdash e:T$ can be derived, holds and by appling that theorem \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\). The assumption of Theorem \ref{thm:soundness_list-exp}, namely that $\Gamma,\Delta\vdash \mathit{le}_1:T$ can be derived, also holds and by appling said theorem we conclude \(\semantic{$\mathit{le}_1$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(\mathit{List} \ T))\). By using the definition of the semantics \(\semantic{$\mathit{le}$}_{\Gamma,\Delta'} = \mathit{Cons} \ e \ \semantic{$\mathit{le}_1$}_{\Gamma,\Delta'} \) and therefore the conclusion holds.
 \end{itemize}
 
 //TODO: proof 3.8
@@ -198,14 +198,14 @@ Then \(\semantic{$s$}(\Gamma_1,\Delta_1') = (\Gamma_2,\Delta_2')\) for a variabl
 ```{proof}
 Let $\Gamma_1,\Gamma_2,\Delta_1,\Delta_2$ be type contexts and $\Delta_1',\Delta_2'$ be a variable context similar to $\Delta_1,\Delta_2$ respectively with respect to $\Gamma_1,\Delta_2$ respectively. Let $s\in\mf{<statement>}$ and assume $\Gamma_1,\Delta_1,s\vdash\Gamma_2,\Delta_2$ can be derived.
 \begin{itemize}
-\item \textbf{Case} $s = \mathit{mss} \ a \ \mf{"="} \ e$ for $\mathit{mss}\in\mf{<maybe-statement-sort>}$, $a \in\mathcal{V}$, $e\in\mf{<exp>}$, $\Gamma_1=\Gamma_2$ and $\Delta_2=\text{insert}_{\Delta_1}(\{(a,T)\})$ for $T\in\mathcal{T}$: Then from the premise of the inference rule, we assume that $\Gamma_1,\mathit{mss}\vdash e:T$ and $\Gamma_1,\Delta_2\vdash e:T$ can both be derived. Then by Theorem \ref{thm:soundness_exp}, we know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_{\Gamma_1}(T')$ for a unique quantified poly type $T'\in\mathcal{T}$ of $T$ in $\Delta_1$. Let \(\Delta_2'=\Delta_1'\cup\{(a,\semantic{$e$}_{\Gamma_1,\Delta_1'})\}\). Then \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\).
+\item \textbf{Case} $s = \mathit{mss} \ a \ \mf{"="} \ e$ for $\mathit{mss}\in\mf{<maybe-statement-sort>}$, $a \in\mathcal{V}$, $e\in\mf{<exp>}$, $\Gamma_1=\Gamma_2$ and $\Delta_2=\Delta_1\cup\{(a,\overline{\Gamma_1}(T))\}$ for $T\in\mathcal{T}$: Then from the premise of the inference rule, we assume that $\Gamma_1,\mathit{mss}\vdash e:T$ and $\Gamma_1,\Delta_2\vdash e:T$ can both be derived. By Theorem \ref{thm:soundness_exp}, we know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_{\Gamma_1}(\overline{\Gamma_1}(T))$. Let \(\Delta_2'=\Delta_1'\cup\{(a,\semantic{$e$}_{\Gamma_1,\Delta_1'})\}\). Then \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\).
 
-We will now show that $\Delta_2'$ is similar to $\Delta_2$. We know $\Delta_1$ is similar to $\Delta_1'$ with respect to $\Gamma$, meaning for all $T_1 \in\mathcal{T}$ there exists a uniquely quantified poly type $T_1'\in \mathcal{T}$ of $T_1$ in $\Delta$ and for all $a \in\mathcal{V}$ the following holds: \( (a,T_1) \in \Delta \Rightarrow \exists e \in \text{value}_\Gamma(T_1'). (a,e) \in \Delta'.\)
+We will now show that $\Delta_2'$ is similar to $\Delta_2$. We know $\Delta_1$ is similar to $\Delta_1'$ with respect to $\Gamma_1$, meaning for all $T_1 \in\mathcal{T}$ and for all $a' \in\mathcal{V}$ the following holds: \( (a',T_1) \in \Delta_2 \Rightarrow \exists d \in \text{value}_{\Gamma_1}(\overline{\Gamma_1}(T_1)). (a',d) \in \Delta_2'.\)
 
-Let $\a'\in\mathcal{V}$ and $T_1\in\mathcal{T}$ such that $(a',T_1)\in\Delta_2$. We already know $\Delta_2=\text{insert}_{\Delta_1}\{(a,T)\}=\Delta_1 \cup \{(a,T')\}$ for $T'\in\mathcal{T}$ such that $T'$ is a uniquely quantified poly type of $T$ in $\Delta_2$.
+Let $a'\in\mathcal{V}$ and $T_1\in\mathcal{T}$ such that $(a',T_1)\in\Delta_2$. We already know $\Delta_2=\Delta_1\cup\{(a,\overline{\Gamma_1}(T))\}$.
 \begin{itemize}
-\item \textbf{Case} $(a',T_1)\in\Delta_1$: Because $\Delta_1$ is similar to $\Delta_1'$ we can directly conclude $\exists e \in \text{value}_\Gamma(T_1'). (a,e) \in \Delta_2'$ for a uniquely quantified poly type $T_1'$ of $T_1$ in $\Delta_2$.
-\item \textbf{Case} $(a',T_1) = (a,T')$: We know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_\Gamma(T'')$ for a uniquely quantified poly type $T''$ of $T$ in $\Delta_2$. Let $T_0$ be the mono type of $T$. Then $T''=\forall a_1 \dots\forall a_n.T_0$ and $T'=\forall b_1 \dots\forall b_m.T_0$ for $a_i,b_i\in\mathcal{V}$ and $m,n\in\mathbb{N}$. By the definition of uniquely quanified poly types, we know that $\{a_1,\dots,a_n\}=\text{free}(T)=\{b_1,\dots,b_m\}$. Therefore $n=m$ and furthermore $T'$ and $T''$ only differ in the order the bound variables are quantified. Thus $\text{value}_\Gamma(T'')=\text{value}_\Gamma(T')$ and by that $(a',\semantic{$e$}_{\Gamma_1,\Delta_1'}) \in \Delta_2'$.
+\item \textbf{Case} $(a',T_1)\in\Delta_1$: Because $\Delta_1$ is similar to $\Delta_1'$ we can directly conclude $\exists d \in \text{value}_{\Gamma_1}(\overline{\Gamma_1}(T_1)). (a',d) \in \Delta_2'$.
+\item \textbf{Case} $(a',T_1) = (a,\overline{\Gamma_1}(T))$: We know $\semantic{$e$}_{\Gamma_1,\Delta_1'}\in\text{value}_{\Gamma_1}(\overline{\Gamma_1}(T))$ and $(a,\semantic{$e$}_{\Gamma_1,\Delta_1'}) \in \Delta_2'$. By $a' = a$ we therefore conclude $(a',\semantic{$e$}_{\Gamma_1,\Delta_1'}) \in \Delta_2'$.
 \end{itemize}
 Thus, the conclusion holds.
 \item \textbf{Case} $s = \mf{"type alias"} \ c \ \mathit{lsv} \ \mf{"="} \ t$ for  $\mathit{lsv}\in\mf{<list-statement-variable>}$, $c\in\mathcal{V}$ such that $\Delta_1=\Delta_2$ and $(c,\_)\not\in\Gamma_1$: Let $\Delta_1'=\Delta_2'$. From \(\semantic{$s$}(\Gamma_1,\Delta_1')=(\Gamma_2,\Delta_2')\) the conclusion trivially holds.
@@ -239,10 +239,10 @@ A program is a sequence of statements. Starting with an empty type context, and 
 $p\in\mf{<program>}$ and $T\in\mathcal{T}$. Assume $p:T$ can be derived.
 \end{letIn}
 
-Then there exists type contexts $\Gamma$ and $\Delta$ such that \(\semantic{$p$}\in\text{value}_\Gamma(T')\) for a uniquely quantified poly type $T'\in\mathcal{T}$ of $T$ in $\Delta$.
+Then there exists type contexts $\Gamma$ and $\Delta$ such that \(\semantic{$p$}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
 ```
 ```{proof}
 Let $\mathit{ls} \ \mathit{mms} \ \mf{"main="} \ e \in\mf{<program>}$, $\mathit{ls}\in\mf{<list-statement>}$, $\mathit{mms}\in\mf{<maybe-main-sign>}$ and $e\in\mf{<exp>}$. Assume $p:T$ for $T\in\mathcal{T}$, $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ and \(\Gamma,\Delta\vdash e:T\) can be derived for type contexts $\Gamma$ and $\Delta$.
 
-The assumption of Theorem \ref{thm:soundness_list-statement}, namely that $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ can be derived, holds. By appling said theorem we obtain \(\semantic{$\mathit{ls}$}(\varnothing,\varnothing)=(\Gamma,\Delta')\) for a variable context $\Delta'$ similar to $\Delta$ with respect to $\Gamma$. Therefore, \(\semantic{$p$} = \semantic{$e$}_{\Gamma,\Delta'}\). We know $\Gamma,\Delta\vdash e:T$ and thus by Theorem \ref{thm:soundness_exp} we now that \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(T')\) for a uniquely quantified poly type $T'\in\mathcal{T}$ of $T$ in $\Delta$ and therefore the conclusion holds.
+The assumption of Theorem \ref{thm:soundness_list-statement}, namely that $\varnothing,\varnothing,\mathit{ls}\vdash\Gamma,\Delta$ can be derived, holds. By appling said theorem we obtain \(\semantic{$\mathit{ls}$}(\varnothing,\varnothing)=(\Gamma,\Delta')\) for a variable context $\Delta'$ similar to $\Delta$ with respect to $\Gamma$. Therefore, \(\semantic{$p$} = \semantic{$e$}_{\Gamma,\Delta'}\). We know $\Gamma,\Delta\vdash e:T$ and thus by Theorem \ref{thm:soundness_exp} we know that \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\) and therefore the conclusion holds.
 ```

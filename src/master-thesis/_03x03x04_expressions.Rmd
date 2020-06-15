@@ -157,7 +157,7 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 \logicRule
 {\Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}
 }
-{\Gamma,\Delta\vdash\mf{"\{"} \mathit{lef} \mf{"\}"}: \{a_1:T_1,\dots,a_n:T_n\}
+{\Gamma,\Delta\vdash\mf{"\{"} \ \mathit{lef} \ \mf{"\}"}: \{a_1:T_1,\dots,a_n:T_n\}
 }
 {}
 
@@ -189,7 +189,7 @@ Since Elm version 0.19, released in 2018, setters are not allowed to change the 
 (a,\_)\not\in\Delta\quad
 \Gamma,\Delta\vdash e_1:T_1\quad
 mes:T_1\vdash a:T_1\\
-\Gamma,\text{insert}_\Delta(\{(a,T_1)\})\vdash e_2:T_2
+\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e_2:T_2
 \end{gathered}
 }
 {\Gamma,\Delta\vdash\mf{"let"} \ mes \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
@@ -235,19 +235,19 @@ mes:T_1\vdash a:T_1\\
 {}
 
 \logicRule
-{\Gamma,\text{insert}_\Delta(\{(a,T_1)\})\vdash e: T_2
+{\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e: T_2
 }
 {\Gamma,\Delta\vdash\mf{"\textbackslash"} a \mf{"->"} e: T_1\to T_2}
 {}
 
 \logicRule
-{\Delta(c)\sqsubseteq T
+{c\sqsubseteq_\Delta T
 }
 {\Gamma,\Delta\vdash c: T}
 {}
 
 \logicRule
-{\Delta(a)\sqsubseteq T
+{a\sqsubseteq_\Delta T
 }
 {\Gamma,\Delta\vdash a: T}
 {}

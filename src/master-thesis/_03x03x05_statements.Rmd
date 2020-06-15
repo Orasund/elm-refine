@@ -86,7 +86,7 @@ Judgment: $\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$
 (a,\_)\not\in\Delta_1\\
 \Gamma_1,\mathit{mss}\vdash e:T\quad
 \Gamma_1,\Delta_1\vdash e : T\quad
-\Delta_2 = \text{insert}_{\Delta_1}(\{(a,T)\})
+\Delta_2 = \Delta_1\cup\{(a,\overline{\Gamma}(T))\}
 \end{gathered}
 }
 {\Gamma_1,\Delta_1, \mathit{mss} \ a \ \mf{"="} e\vdash \Gamma_2,\Delta_2
@@ -119,11 +119,11 @@ T_2 \text{ is a mono type}\quad
 \mu C.c_1 \ T_{1,1} \ \dots \ T_{1,k_1} \ | \ \dots \ | \ c_n \ T_{n,1} \ \dots \ T_{n,k_n}=T_2\quad
 \forall a_1. \dots \forall a_n. T_2 = T_1\\
 \Gamma_1\cup\{(c,T_1)\} = \Gamma_2\quad
-\text{insert}_{\Delta_1}(
+\Delta_1\cup
 \begin{Bmatrix*}[l]
-(c_1,T_{1,1}\to\dots\to T_{1,k_1}\to T_1),\\
+(c_1,\overline{\Gamma}(T_{1,1}\to\dots\to T_{1,k_1}\to T_1)),\\
 \vdots\\
-(c_n,T_{n,1}\to\dots\to T_{n,k_n}\to T_1)
+(c_n,\overline{\Gamma}(T_{n,1}\to\dots\to T_{n,k_n}\to T_1))
 \end{Bmatrix*}) = \Delta_2
 \end{gathered}
 }

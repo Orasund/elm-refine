@@ -124,36 +124,23 @@ Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be
 
 The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
 
-```{definition,name="Uniquely Quantified Poly Type"}
-\begin{letIn} $\Delta$ be a type context, $T\in\mathcal{T}$, $a_i\in\mathcal{V}$ for $i\in\mathbb{N}_0^n$. Let $T'$ be the mono type of $T$.
+```{definition,name="Most General Type"}
+\begin{letIn} $\Gamma$ be a type context, $T\in\mathcal{T}$, . 
 \end{letIn}
 
-We say $\forall a_1 \dots \forall a_n.T'$ is a \textit{uniquely quantified} poly type of $T$ in $\Delta$, iff the following holds:
-\[(\_,\forall a_1 \dots \forall a_n.T')\in\Delta_2 \land \{a_1,\dots,a_n\}=\text{free}(T')\land \forall i\in\mathbb{N}_0^n.(a_i,\_)\not\in\Delta_2\]
-
-```
-
-A uniquely quantified poly type ensures that all type variables are renamed in order to not clash with free variables in $\Delta$. They also ensure that all currently free variables are being bound.
-
-```{definition,name="Generalization"}
-\begin{letIn}$\Delta_1,\Delta_2$ be type contexts, $a\in\mathcal{V}$. 
-\end{letIn}
-
-We define
+We define $\overline{\Gamma}:\Gamma \to \mathcal{T}$ as
 
 \[\begin{aligned}
-\text{insert}_{\Delta_1}&(\Delta_2):=\\
-&\Delta_1\cup\small\begin{Bmatrix*}[l]
-    \begin{array}{l|l}
-    (a,T')&
-    \begin{matrix*}[l]
-    T\in\mathcal{T} \land (a,T)\in\Delta_2 \\
-    \land \ T' \text{ is a uniquely quantified poly type of } T \text{ in } \Delta_2
-    \end{matrix*}\end{array}\end{Bmatrix*}
+\overline{\Gamma}(T) := &\forall a_1 \dots \forall a_n.T_0\\
+&\text{such that } \{a_1,\dots,a_n\}=\text{free}(T')\setminus \{a \ | \ (a,\_)\in\Gamma\}\\
+& \text{where } a_i\in\mathcal{V} \text{ for } i\in\mathbb{N}_0^n \text{ and } T_0 \text{ is the mono type of } T.
 \end{aligned}\]
+
+We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
+
 ```
 
-This definition essentially states that all quantified variables of $T$, that occur in $\Delta_2$, will be dropped and any free variables will be quantified. The act of removing a quantified variable that is already in the type context is called _Generalization_ and is also typically found as an inference rule in text books.
+The most general type ensures that all type variables are bound by either an quantifier or a type alias in the type context $\Gamma$. It also ensure that every type variable bound by a quantifier occures in the mono type $T_0$. The act of replacing types with more general onces, by binding free variables, is called _Generalization_ and is also typically found as an inference rule in text books.
 
 #### Predefined Types
 
