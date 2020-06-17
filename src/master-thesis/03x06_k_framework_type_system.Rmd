@@ -3,9 +3,9 @@
 
 ## Type System Written in K Framework
 
-K Framework\cite{K_framework} is a system for designing and formalizing programming languages. It uses rewriting systems that are written in its own K Language.
+We will now discuss an implementation of the type inference using K Framework.
 
-An K file contains modules with the base module name the same as the k file.
+K Framework\cite{K_framework} is a system for designing and formalizing programming languages. It uses rewriting systems that are written in its own K Language.
 
 ```
 require "unification.k"
@@ -23,11 +23,13 @@ module ELM-TYPESYSTEM
 endmodule
 ```
 
-You can specify the realm upon which the rewriting system can be executed by using the `configuration` keyword. Here we specify two parts: `<k></k>` containing the expression and `<tenv></tenv>` containing the environment.
+One can specify the realm upon which the rewriting system can be executed by using the `configuration` keyword. Here we specify two parts: `<k></k>` containing the expression and `<tenv></tenv>` containing the type context.
 
 We also need to specify the end result using the `KResult` keyword. Once the rewriting system reaches such an expression, it will stop. If not specified the system might not terminate.
 
-The formal grammar can be translated directly into the K language
+### Implementing the Formal Language
+
+To implement the formale Elm language in K Framework we need to translate the formal grammar into the K language.
 
 ```
 syntax Type
@@ -41,7 +43,7 @@ syntax Type
     | ..
 ```
 
-Additionally, we can include meta-information: `strict` to ensure the inner expression gets evaluated first, `right/left` in which direction the expressions should be evaluated and `bracket` for brackets.
+Additionally, we can include meta-information: `strict` to ensure the inner expression gets evaluated first, `right/left` to state in which direction the expressions should be evaluated and `bracket` for brackets that will be replaced with meta level brackets during paring.
 
 Rules are written as rewriting rules instead of inference rules.
 
@@ -53,15 +55,17 @@ rule E1:Type E2:Type
 syntax KResult ::= Type
 ```
 
-The rule itself has the syntax `rule . => .`. To ensure the rule gets only executed once, all inner expression have been rewritten. We can include an additional `syntax` line before the rule and a `KResult` to ensure that rewriting system keeps on applying rules until a specific result has been reached. Only then it may continue.
+The rule itself has the syntax `rule . => .`. The inner expressions need to be rewritten (into types) for the outer rule can be applied. We can include an additional `syntax` line before the rule and a `KResult` to ensure that rewriting system keeps on applying rules until a specific result has been reached. Only then it may continue.
 
 Additionally, we have variables starting with an uppercase letter and existentially quantified variables starting with a question mark.
 
-The system itself allows for a more untraditional imperative rewriting system using `~>`. This symbol has only one rule: `rule . ~> A => A` where `.` is the empty symbol. Thus saying, the left part needs to be rewritten to `.` before the right part can be changed.
+The system itself allows for a more untraditional imperative rewriting system using `~>`. This symbol has only one rule: `rule . ~> A => A` where `.` is the empty symbol. Thus,d the left part needs to be rewritten to `.` before the right part can be changed.
+
+With all of this applied, the type system can infer types by applying rules as long as possible. But this only holds true for mono types. For poly types we need to implement the polymorphism, in particular instantiation and the generalization. The inference rules that we have presented in the section about type inference are not monomorphic and therefore can't be implemented. So in order to implement them we need to modify the slightly.
 
 ### Implementing Algorithm J
 
-In the original paper by Milner\cite{Milner_type_polymorphism} an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules.
+In the original paper by Milner\cite{Milner_type_polymorphism} an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
 
 \logicRule
 {a:T_1\quad
@@ -93,9 +97,13 @@ T_2 = \mathit{newvar}\quad
 {\Delta\vdash_J \mf{let} x \mf{=} e_0 \mf{in} e_1 : T_2}
 {LetIn}
 
-The imperative functions are _newvar_, _unify_ and _inst_. _newvar_ creates a new variable. _inst_ instantiates a type with new variables and _inify_ checks whether two types can be unified.
+So all we need to do, is to replace the rules of _let in_, _lambda_, _call_ and _variable_ with the rules above. The imperative functions are _newvar_, _unify_ and _inst_:
 
-K Framework has these imperative functions implemented in the `Unification.k` module. In order to use them, we need to first properly define poly types. This way, we only need to compute the bound variables of a type once.
+* _newvar_ creates a new variable.
+* _inst_ instantiates a type with new variables.
+* _inify_ checks whether two types can be unified.
+
+K Framework has these imperative functions implemented in the `Unification.k` module. In order to use them, we need to first properly define poly types.
 
 ```
 syntax PolyType ::= "forall" Set "." Type
@@ -157,7 +165,7 @@ in
 (::) 1 model
 ```
 
-We first need to write the example into a form that K-Framework can parse. Using the syntax
+We first need to write the example into a form that K-Framework can parse. Using the following syntax:
 
 ```
 syntax Exp
@@ -170,7 +178,7 @@ syntax Exp
       | ..
 ```
 
-we therefore write the k-program
+Translating the program into our K-Framework syntax, this results in the following file.
 
 ```
 <k>
@@ -185,13 +193,13 @@ in
 Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. K-Framework uses this rule in parse-time, so this just syntax sugar.
 
 K-Framework will now walk through the abstract syntax tree to find the first term it can match.
-By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is matched.  K-Framework therefore applies the rule
+By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is rewritten. By appling the rule
 
 ```
 rule []Exp => list ?A:Type
 ```
 
-resulting in
+K-Framework obtains the following result.
 
 ```
 <k>
@@ -204,7 +212,7 @@ in
 ```
 
 The system remembers the type hole `?A0` and will fill it in as soon as it finds a candidate for it.
-Next the system rewrites the `let in` term using the rule
+By using the rule
 
 ```
 rule <k> let X = T:Type in E => E ~> setTenv(TEnv) 
@@ -220,7 +228,7 @@ rule <k> let X = T:Type in E => E ~> setTenv(TEnv)
     </tenv>
 ```
 
-resulting in
+the system rewrites the `let in` expression.
 
 ```
 <k>
@@ -231,17 +239,16 @@ resulting in
 </tenv>
 ```
 
-Note that we have just witnessed generalization by binding the free variable `?A` to a poly type.
-These poly types only exist inside the type inference system.
+Note that we have just witnessed generalization: The free variable `?A` of the type got bound resulting in a poly type. These poly types only exist inside the type inference system.
 
-The rule `Exp Exp` is strict, we therefore need to first rewrite `(::) (intExp 1)` and `variable model`. The left expression will be rewritten first.
+The rule `Exp Exp` is strict, we therefore need to first rewrite `(::) (intExp 1)` and `variable model`. By appling the rules
 
 ```
 rule (::) => ?A:Type -> ( list ?A ) -> ( list ?A )
 rule intExp I:Int => int
 ```
 
-Thus, we obtain
+the left expression can be rewritten.
 
 ```
 <k>
@@ -252,13 +259,13 @@ Thus, we obtain
 </tenv>
 ```
 
-Now we can apply the expression using the rule
+We can apply the expression using the rule
 
 ```
 rule E1:Type E2:Type => E1 =Type (E2 -> ?T:Type) ~> ?T
 ```
 
-By pattern matching this fills the type hole `?A1 = int`:
+and by pattern matching we fill in the type hole `?A1` with `int`.
 
 ```
 <k>
@@ -269,7 +276,7 @@ By pattern matching this fills the type hole `?A1 = int`:
 </tenv>
 ```
 
-Next we need to get `model` out of the type context. By
+Next we need to get `model` out of the type context. By the rule
 
 ```
 rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
@@ -277,7 +284,7 @@ rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
     ...</tenv>
 ```
 
-we obtain
+we obtain the following expression.
 
 ```
 <k>
@@ -288,9 +295,9 @@ we obtain
 </tenv>
 ```
 
-Note how the poly type was only used to store the variables that have been frozen within the type. As we take a copy out of the type context, we instantiate the poly type resulting in a new type hole `?A1`.
+Note how the poly type was only used to store the variables that have been frozen. As we take a copy out of the type context, we instantiate the poly type resulting in a new type hole `?A1`.
 
-Finally, we apply the expressions and again fill the type hole `?A2 = int` resulting in
+Finally, we apply the expressions and again fill the type hole `?A2 = int` resulting in in our final expression.
 
 ```
 <k>
