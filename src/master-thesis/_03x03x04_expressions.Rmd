@@ -192,15 +192,7 @@ mes:T_1\vdash a:T_1\\
 \Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e_2:T_2
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\mf{"let"} \ mes \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
-}
-{}
-
-\logicRule
-{\Gamma,\Delta\vdash e_1: T_1\quad
-\Gamma,\Delta,T_1\vdash \mathit{lc}:T_2
-}
-{\Gamma,\Delta\vdash\mf{"case"} \ e_1 \ \mf{"of" "["} \ \mathit{lc} \ \mf{"]"}: T_2
+{\Gamma,\Delta\vdash\mf{"let"} \ \mathit{mes} \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
 }
 {}
 
@@ -224,7 +216,7 @@ mes:T_1\vdash a:T_1\\
 \logicRule
 {\Gamma,\Delta\vdash \mathit{le}:T
 }
-{\Gamma,\Delta\vdash\mf{"["} \mathit{le} \mf{"]"}: T}
+{\Gamma,\Delta\vdash\mf{"["} \ \mathit{le} \ \mf{"]"}: T}
 {}
 
 \logicRule
@@ -237,7 +229,7 @@ mes:T_1\vdash a:T_1\\
 \logicRule
 {\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e: T_2
 }
-{\Gamma,\Delta\vdash\mf{"\textbackslash"} a \mf{"->"} e: T_1\to T_2}
+{\Gamma,\Delta\vdash\mf{"\textbackslash"} a \ \mf{"->"} \ e: T_1\to T_2}
 {}
 
 \logicRule

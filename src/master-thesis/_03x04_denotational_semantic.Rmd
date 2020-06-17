@@ -186,21 +186,21 @@ $$
 \begin{aligned}
 \semantic{"(+)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & s = \lambda n.\lambda m. n + m\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \semantic{"(-)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & s = \lambda n.\lambda m. n - m\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \semantic{"(*)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & s = \lambda n.\lambda m. n * m\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
@@ -208,21 +208,21 @@ $$
 \semantic{"(//)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & \begin{cases}s = \lambda n.\lambda m. \Big\lfloor \frac{n}{m} \Big\rfloor& \text{if } m \neq 0\\
         0& \text{else}\end{cases}\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \semantic{"(<)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & s = \lambda n.\lambda m. n < m\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \semantic{"(==)"}_{\Gamma,\Delta} = s:\Leftrightarrow
     & s = \lambda n.\lambda m. (n = m)\\
-    & \text{where } n,m\in\mathbb{N}
+    & \text{where } n,m\in\mathbb{Z}
 \end{aligned}
 $$
 $$
@@ -301,7 +301,7 @@ $$
 $$
 \begin{aligned}
 \semantic{$a_0$ \ "." \ $a_1$}_{\Gamma,\Delta} = s :\Leftrightarrow
-    & (a_0,\{a_1:s_1,\dots\})\Delta \land s' = s\\
+    & \Delta(a_0) = \{a_1:s',\dots\} \land s' = s\\
     & \text{where } s'\in\text{value}(T) \text{for } T\in\mathcal{T}
 \end{aligned}
 $$
