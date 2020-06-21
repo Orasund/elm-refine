@@ -3,9 +3,13 @@
 
 ## Type System Written in K Framework
 
-We will now discuss an implementation of the type inference using K Framework.
+K Framework[@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification[@Kframework_verification]. Most of the features of the system are done by rewriting systems that are specified using its programming language called "K Language". 
 
-K Framework\cite{K_framework} is a system for designing and formalizing programming languages. It uses rewriting systems that are written in its own K Language.
+The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C[@Kframework_C], Java[@Kframework_Java], JavaScript[@Kframework_Js], Php[@Kframework_Php], Python[@Kframework_Python] and Rust[@Kframework_Rust].
+
+The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The project itself is open source while the various more specialized tools are published under the Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language[@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
+
+We will be using K Framework to express small step semantics of the denotational semantics from the earlier section. We can validate the semantic by letting K Framework apply the rewriting rules upon some examples.
 
 ```
 require "unification.k"
@@ -65,7 +69,7 @@ With all of this applied, the type system can infer types by applying rules as l
 
 ### Implementing Algorithm J
 
-In the original paper by Milner\cite{Milner_type_polymorphism} an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
+In the original paper by Milner[@Milner_type_polymorphism] an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
 
 \logicRule
 {a:T_1\quad
@@ -138,7 +142,8 @@ rule <k> let X = T:Type in E => E ~> setTenv(TEnv)
     ...</k>
     <tenv> TEnv 
       => TEnv[ X 
-        <- forall (#metaKVariables(T) -Set #metaKVariables(setTenv(TEnv))) . 
+        <- forall 
+          (#metaKVariables(T) -Set #metaKVariables(setTenv(TEnv))) . 
           ( #freezeKVariables(T, setTenv(TEnv)):>Type
           )
       ]
