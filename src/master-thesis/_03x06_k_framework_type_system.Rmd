@@ -190,7 +190,7 @@ in
 <tenv> .Map </tenv>
 ```
 
-Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. K-Framework uses this rule in parse-time, so this just syntax sugar.
+Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. K-Framework uses this rule in parse-time, so this is just syntax sugar.
 
 K-Framework will now walk through the abstract syntax tree to find the first term it can match.
 By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is rewritten. By appling the rule
