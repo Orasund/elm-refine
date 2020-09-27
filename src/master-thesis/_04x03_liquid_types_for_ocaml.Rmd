@@ -1,0 +1,20 @@
+### Liquid Types for Eager Languages
+
+The idea behind liquid types can be summerized in three points:
+
+1. Let the base types be derived and replaced by template liquid types
+2. Refine the templates to make them as sharp as possible.
+3. Change templates into liquid types using a divide and conqure approach.
+
+```{definition,name="Template, Liquid type Variable"}
+\begin{letIn}
+$T\in\mathcal{T}$.
+\end{letIn}
+We call $\{v:T|\kappa_k\}$ a _template_ of $T$ for $v\in\mathcal{V}$ and a so called _Liquid Type Variable_ $\kappa_k$ defined as $\kappa_k\in\{\kappa_j|j\in\mathbb{N}\}$. Note that $\kappa$ is a symbol.
+```
+
+
+## Liquid Types for Haskell
+
+In the paper _Refinement types for Haskell_ by Vazou, Seidel and Jhala [@RT_for_Haskell] they describe their implementation in Haskell and the theory behind it. For an eager langauges, like OCamel, we may assume that any free variable will be bound to a value. Therefore one can typically restrain the free variable according to the refinement of the value. For lazy langauges like Haskell or Elm this assumption is wrong: a free variable can be bound by different values of different types. Therefore the refinement must be context dependent. 
+

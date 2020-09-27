@@ -1,0 +1,53 @@
+## Syntax of Liquid Types
+
+We will now add syntax for liquid types into the definition of Elm.
+
+```{definition,name="Type Signiture Syntax"}
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
+
+$$
+  \begin{aligned}
+    \mf{<IntExp>} =& \mathbb{Z}\\
+      | \ & \mf{<IntExp> + <IntExp>}\\
+      | \ & \mf{<IntExp> * }\mathbb{Z}\\
+      | \ & \mathcal{V}
+  \end{aligned}
+$$
+$$
+  \begin{aligned}
+    \mf{<Q>} =& \mf{True}\\
+      | \ & \mf{False}\\
+      | \ & \mf{<IntExp> <= v}\\
+      | \ & \mf{v < <IntExp>}\\
+      | \ & \mf{<Q> \&\& <Q>}\\
+      | \ & \mf{<Q> || <Q>}\\
+      | \ & \mf{not <Q>}
+  \end{aligned}
+$$
+$$
+\begin{aligned}
+\mf{<list-type-fields>} \ ::=& \ \mf{""} \\
+                       |& \mf{<lower-var> ":" <type> "," <list-type-fields>}
+\end{aligned}
+$$
+$$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type>} \ \mf{<list-type>}$$
+$$
+\begin{aligned}
+\mf{<liquid-type>} ::=&\mf{"\{v:Int|"}\mf{<Q>}\mf{"\}"} \\
+                     |& \mf{<lower-var> ":" <type> "->" <type>}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\mf{<type>} ::=& \mf{<liquid-type>}\\
+              |& \mf{"Bool"}\\
+              |& \mf{"Int"}\\
+              |& \mf{"List" <type>}\\
+              |& \mf{"(" <type> "," <type> ")"}\\
+              |& \mf{"\{" <list-type-fields> "\}"}\\
+              |& \mf{<type> "->" <type>}\\
+              |& \mf{<upper-var> <list-type>}\\
+              |& \mf{<lower-var>}
+\end{aligned}
+$$
+```

@@ -1,3 +1,3 @@
 \setcounter{section}{3}
 
-# Liquid Types for Elm
+# Liquid Types
