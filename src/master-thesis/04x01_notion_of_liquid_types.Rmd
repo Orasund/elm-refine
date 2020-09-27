@@ -1,6 +1,6 @@
 ## Notion of Liquid Types
 
-So-called refinement types exclude values from existing types by using a predicate (in this context also called a refinement). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide some inference rules to validate such refinements. This motivates to use SMT Solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _Liquid types_ (**L**og**i**cally **qu**al**i**fie**d** Data Types). We will now specify a version of liquid types.
+So-called refinement types exclude values from existing types by using a predicate (in this context also called a refinement). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide some inference rules to validate such refinements. This motivates the use SMT Solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _Liquid types_ (**L**og**i**cally **qu**al**i**fie**d** Data Types). We will now specify a version of liquid types. Note that varies definitions of liquid types vary dependent of the capability of the underlying SMT Solver. In our case we will use a very modest definition that should be provable with an arbitrary Solver.
 
 We start by defining the syntax and semantic of valid refinements.
 
