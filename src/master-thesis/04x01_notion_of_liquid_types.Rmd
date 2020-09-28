@@ -1,15 +1,15 @@
 ## Notion of Liquid Types
 
-So-called refinement types exclude values from existing types by using a predicate (in this context also called a refinement). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide some inference rules to validate such refinements. This motivates the use SMT Solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _Liquid types_ (**L**og**i**cally **qu**al**i**fie**d** Data Types). We will now specify a version of liquid types. Note that varies definitions of liquid types vary dependent of the capability of the underlying SMT Solver. In our case we will use a very modest definition that should be provable with an arbitrary Solver.
+So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide some inference rules to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be provable with an arbitrary solver.
 
 We start by defining the syntax and semantic of valid refinements.
 
 ```{definition,name="Logical Qualifier Expressions"}
-We define the set of logical qualifier expression $\mathcal{Q}$ as follows
+We define the set of logical qualifier expressions $\mathcal{Q}$ as follows
 
 $$
   \begin{aligned}
-    \mathit{IntExp} =& \mathbb{Z}\\
+    \mathit{IntExp} = \ & \mathbb{Z}\\
       | \ & \mathit{IntExp} + \mathit{IntExp}\\
       | \ & \mathit{IntExp} * \mathbb{Z}\\
       | \ & \mathcal{V}
@@ -18,7 +18,7 @@ $$
 
 $$
   \begin{aligned}
-    \mathcal{Q} =& \mathit{True}\\
+    \mathcal{Q} = \ & \mathit{True}\\
       | \ & \mathit{False}\\
       | \ & \mathit{IntExp} \leq \nu\\
       | \ & \nu < \mathit{IntExp}\\
@@ -27,23 +27,41 @@ $$
       | \ & \neg \mathcal{Q}
   \end{aligned}
 $$
+
+Note that $\nu$ is a reserved symbol.
 ```
+
+The SMT solver will later solve over $\nu$. The important part to notice is that all logical operators depend on $\nu$ whereas the arithmetic operators do not. This is such that the SMT solver can handle these expressions.
+
+```{block2, type="myexample",latex.options="_"}
+$0 \leq \nu \land \nu < a + 1$ for $a\in\mathcal{V}$ is a logical qualifier expression. In order to garanty that the SMT solver will find a solution, we require that $a$ is bound with an universal quantifier over a set.
+```
+
+```{block2, type="myexample",latex.options="_"}
+$0 \leq \nu \land b < a + 1$ is not a logical qualifier expression. $a$ and $b$ will be later bound by an universal quantifier, so this expression can be rewritten to either $0 \leq \nu$ or $\mathit{False}$. Both of these rewritten expression are again logical qualifiers.
+
+Similarly, $\nu \leq \nu$ and $\nu < \nu$ are not logical qualifier expression. They can be rewritten to $\mathit{True}$ and $\mathit{False}$.
+```
+
+As seen by the examples, we want to ensure that all occurring variables are bound (somewhere outside the expression).
 
 ```{definition, name="Well-Formed Logical Qualifier Expressions"}
 \begin{letIn}
 $e \in \mathcal{Q}$. Let $\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$.
 \end{letIn}
-We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$,$\Theta(v)$ is well formed, meaning $\exists n\in\mathbb{N}.(v,n)\in\Theta$.
+We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$,$\Theta(v)$ is well-defined, meaning $\exists S\in\mathcal{P}(\mathbb{N}).(v,S)\in\Theta$.
 ```
 
-```{definition, name="Semantic of Logical Qualifier Expressions"}
+Variables within the logical qualifier expression are bound by a universal quantifier. Each variable $a$ is bound over a set $\Theta(a)$.
+
+```{definition, name="Semantics of Logical Qualifier Expressions"}
 \begin{letIn}
 $\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$. Let $a, b\in\mathit{IntExp}$, $n\in\mathbb{N}$, $v\in\mathbb{N}$  and $p,q\in\mathcal{Q}$. Let $v$ be a symbol.
 \end{letIn}
 We define the semantic of arithmetic expressions $\mathit{IntExp}$ as follows.
 $$
 \begin{aligned}
-\semantic{$.$}:&\mathbb{N}\to\mathbb{N}\\
+\semantic{$.$}:&\mathit{IntExp}\to\mathbb{N}\\
 \semantic{$n$} =& n\\
 \semantic{$a + b$}=& \semantic{$a$} + \semantic{$b$}\\
 \semantic{$a \cdot n$}=& \semantic{$a$} \cdot n\\
@@ -66,8 +84,6 @@ $$
 \semantic{$\neg p$} =&\lambda v. \neg \semantic{$p$}(v)
 \end{aligned}
 $$
-  
-Note that $\nu$ is a reserved symbol.
 ```
 
 We will now extend the definition of types with the notion of refinement types. This extension is not very interesting, as refinement types don't behave different to their underlying type.
@@ -263,8 +279,8 @@ $$
 \mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f\in\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
   &\text{ not occur in } T.\\
-\mathrm{values}_\Gamma(\{ \nu:T \ | \ r \}) :=& \mathrm{refinedValues}_{\Gamma,\Theta}(\{ \nu:T \ | \ r \})\\
-\mathrm{values}_\Gamma(a:T_1\to T_2) :=& \mathrm{refinedValues}_{\Gamma,\Theta}(a:T_1\to T_2)
+\mathrm{values}_\Gamma(\{ \nu:T \ | \ r \}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(\{ \nu:T \ | \ r \})\\
+\mathrm{values}_\Gamma(a:T_1\to T_2) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(a:T_1\to T_2)
 \end{aligned}
 $$
 using the following helper functions.
