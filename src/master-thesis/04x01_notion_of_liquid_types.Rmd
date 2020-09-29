@@ -33,59 +33,46 @@ Note that $\nu$ is a reserved symbol.
 
 The SMT solver will later solve over $\nu$. The important part to notice is that all logical operators depend on $\nu$ whereas the arithmetic operators do not. This is such that the SMT solver can handle these expressions.
 
-```{block2, type="myexample",latex.options="_"}
-$0 \leq \nu \land \nu < a + 1$ for $a\in\mathcal{V}$ is a logical qualifier expression. In order to garanty that the SMT solver will find a solution, we require that $a$ is bound with an universal quantifier over a set.
-```
-
-```{block2, type="myexample",latex.options="_"}
-$0 \leq \nu \land b < a + 1$ is not a logical qualifier expression. $a$ and $b$ will be later bound by an universal quantifier, so this expression can be rewritten to either $0 \leq \nu$ or $\mathit{False}$. Both of these rewritten expression are again logical qualifiers.
-
-Similarly, $\nu \leq \nu$ and $\nu < \nu$ are not logical qualifier expression. They can be rewritten to $\mathit{True}$ and $\mathit{False}$.
-```
-
-As seen by the examples, we want to ensure that all occurring variables are bound (somewhere outside the expression).
-
 ```{definition, name="Well-Formed Logical Qualifier Expressions"}
 \begin{letIn}
-$e \in \mathcal{Q}$. Let $\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$.
+$e \in \mathcal{Q}$. Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$.
 \end{letIn}
-We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$,$\Theta(v)$ is well-defined, meaning $\exists S\in\mathcal{P}(\mathbb{N}).(v,S)\in\Theta$.
+We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$,$\Theta(v)$ is well-defined, meaning $\exists n\in\mathbb{N}.(v,n)\in\Theta$.
 ```
 
 Variables within the logical qualifier expression are bound by a universal quantifier. Each variable $a$ is bound over a set $\Theta(a)$.
 
 ```{definition, name="Semantics of Logical Qualifier Expressions"}
-\begin{letIn}
-$\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$. Let $a, b\in\mathit{IntExp}$, $n\in\mathbb{N}$, $v\in\mathbb{N}$  and $p,q\in\mathcal{Q}$. Let $v$ be a symbol.
-\end{letIn}
 We define the semantic of arithmetic expressions $\mathit{IntExp}$ as follows.
 $$
 \begin{aligned}
-\semantic{$.$}:&\mathit{IntExp}\to\mathbb{N}\to\mathbb{N}\\
-\semantic{$n$} =& \lambda v.n\\
-\semantic{$a + b$}=& \lambda v.\semantic{$a$}(v) + \semantic{$b$}(v)\\
-\semantic{$a \cdot n$}=& \lambda v.\semantic{$a$}(v) \cdot n\\
-\semantic{$\nu$}=& \lambda v.v\\
+\semantic{$.$}_.:&\mathit{IntExp}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\\
+\semantic{$n$}_\Theta =& n\\
+\semantic{$i + j$}_\Theta=& \semantic{$i$}_\Theta + \semantic{$j$}_\Theta\\
+\semantic{$i \cdot n$}_\Theta=& \semantic{$i$}_\Theta \cdot n\\
+\semantic{$a$}_\Theta=& \Theta(a)\\
 \end{aligned}
 $$
+  
+Note that we assume that the given expression is well-formed with respect to $\Theta$.
 
 We also define the semantic of logical qualifier expressions $\mathcal{Q}$ as follows:
 
 $$
 \begin{aligned}
-\semantic{$.$}:&\mathcal{Q}\to\mathbb{N}\to\mathit{Bool}\\
-\semantic{$\mathit{True}$} =& \lambda v. \mathit{True}\\
-\semantic{$\mathit{False}$} =& \lambda v.\mathit{False}\\
-\semantic{$a \leq \nu$} =&  \lambda v.\semantic{$a$}(v) \leq v\\
-\semantic{$\nu < a$} =& \lambda v. v < \semantic{$a$}(v)\\
-\semantic{$p \land q$} =& \lambda v. \semantic{$p$}(v) \land \semantic{$q$}(v)\\
-\semantic{$p \lor q$} =& \lambda v. \semantic{$p$}(v) \land \semantic{$q$}(v)\\
-\semantic{$\neg p$} =&\lambda v. \neg \semantic{$p$}(v)
+\semantic{$.$}_.:&\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\to\mathit{Bool}\\
+\semantic{$\mathit{True}$}_\Theta =& \lambda v. \mathit{True}\\
+\semantic{$\mathit{False}$}_\Theta =& \lambda v.\mathit{False}\\
+\semantic{$a \leq \nu$}_\Theta =&  \lambda v.\semantic{$a$}_\Theta \leq v\\
+\semantic{$\nu < a$}_\Theta =& \lambda v. v < \semantic{$a$}_\Theta\\
+\semantic{$p \land q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
+\semantic{$p \lor q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
+\semantic{$\neg p$}_\Theta =&\lambda v. \neg \semantic{$p$}_\Theta(v)
 \end{aligned}
 $$
 ```
 
-We will now extend the definition of types with the notion of refinement types. This extension is not very interesting, as refinement types don't behave different to their underlying type.
+We will now extend our previous definition of types (see Definition \label{thm:types}) with the notion of refinement types. This extension is not very interesting, as refinement types don't behave differently from their underlying type.
 
 ```{definition,name="Extended Types"}
  We define the following
@@ -244,7 +231,6 @@ We will now redefine the notion of values. As mentioned before, liquid types exc
 $r\in \mathcal{Q}$,
 $\mathcal{S}$ the class of all finite sets,
 $n\in\mathbb{N}$,
-$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$,
 $a\in\mathcal{V}$,
 $T,T_1,T_2,S\in\mathcal{T}$,
 $k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
@@ -316,10 +302,10 @@ $$
 Let $\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$. We define:
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Gamma,\Theta}(\{ \nu:T \ | \ r \}) :=& \{ b\in \mathrm{values}_\Gamma(T)\\
-  &| \ r \text{ is well formed with respect to }\Theta \\
-  &\land \ \forall (a,X)\in\Theta.\forall a\in X.\semantic{$r$}(b) \}\\
-\mathrm{refinedValues}_{\Gamma,\Theta}(a:T_1\to T_2) :=& \mathrm{refinedValues}_{\Gamma,\Theta\cup\{a,\mathrm{values}_{\Gamma}(T_1)\}}(T_2)
+\mathrm{refinedValues}_{\Gamma,\Theta}(\{ \nu:T \ | \ r \}) :=\\
+   \{ b\in \mathrm{values}_\Gamma(T) &| \ r \text{ is well formed with respect to }\Theta \land \ \semantic{$r$}_\Theta(b) \}\\
+\mathrm{refinedValues}_{\Gamma,\Theta}(a:T_1\to T_2) :=\\
+        \{b\in \mathrm{values}_\Gamma(T_1 \to T_2) | \ \forall n\in& \mathrm{values}_\Gamma(T_1).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{a,n\}}(T_2)\}
 \end{aligned}
 $$
 ```

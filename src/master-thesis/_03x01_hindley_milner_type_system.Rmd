@@ -21,6 +21,7 @@ The main idea is to have a type system that implies an order among the types. Th
 We will first introduce types, afterwards we will define how types relate to sets by explicitly defining the values of types as finite sets. Types are split in _mono types_ and _poly types_. Mono types can contain so called _type variables_ that can then be bound by a quantifier within a poly type. Note that quantifiers can only occur in the outermost position, thus poly types are more general types than mono types.
 
 ```{definition,name="Mono types, poly types, types"}
+\label{thm:types}
 We define
 $$
 \begin{aligned}
