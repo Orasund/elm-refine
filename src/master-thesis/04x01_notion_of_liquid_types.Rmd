@@ -61,24 +61,23 @@ $\Theta:\mathcal{V}\nrightarrow\mathcal{P}(\mathbb{N})$. Let $a, b\in\mathit{Int
 We define the semantic of arithmetic expressions $\mathit{IntExp}$ as follows.
 $$
 \begin{aligned}
-\semantic{$.$}:&\mathit{IntExp}\to\mathbb{N}\\
-\semantic{$n$} =& n\\
-\semantic{$a + b$}=& \semantic{$a$} + \semantic{$b$}\\
-\semantic{$a \cdot n$}=& \semantic{$a$} \cdot n\\
-\semantic{$v$}=& v\\
+\semantic{$.$}:&\mathit{IntExp}\to\mathbb{N}\to\mathbb{N}\\
+\semantic{$n$} =& \lambda v.n\\
+\semantic{$a + b$}=& \lambda v.\semantic{$a$}(v) + \semantic{$b$}(v)\\
+\semantic{$a \cdot n$}=& \lambda v.\semantic{$a$}(v) \cdot n\\
+\semantic{$\nu$}=& \lambda v.v\\
 \end{aligned}
 $$
-Note that we assume that $v$ as been bound to number.
 
 We also define the semantic of logical qualifier expressions $\mathcal{Q}$ as follows:
 
 $$
 \begin{aligned}
-\semantic{$.$}:&\mathbb{N}\to\mathit{Bool}\\
+\semantic{$.$}:&\mathcal{Q}\to\mathbb{N}\to\mathit{Bool}\\
 \semantic{$\mathit{True}$} =& \lambda v. \mathit{True}\\
 \semantic{$\mathit{False}$} =& \lambda v.\mathit{False}\\
-\semantic{$a \leq \nu$} =&  \lambda v.\semantic{$a$} \leq v\\
-\semantic{$\nu < a$} =& \lambda v. \semantic{$a$} < v\\
+\semantic{$a \leq \nu$} =&  \lambda v.\semantic{$a$}(v) \leq v\\
+\semantic{$\nu < a$} =& \lambda v. v < \semantic{$a$}(v)\\
 \semantic{$p \land q$} =& \lambda v. \semantic{$p$}(v) \land \semantic{$q$}(v)\\
 \semantic{$p \lor q$} =& \lambda v. \semantic{$p$}(v) \land \semantic{$q$}(v)\\
 \semantic{$\neg p$} =&\lambda v. \neg \semantic{$p$}(v)
