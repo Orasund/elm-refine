@@ -1,0 +1,195 @@
+\setcounter{section}{3}
+\setcounter{subsection}{1}
+
+## Liquid Types for Elm
+
+We will now extend the type system of Elm with liquid types.
+
+### Syntax
+
+We will take over the syntax described in the last section.
+
+```{definition,name="Extendes Type Signiture Syntax"}
+Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
+
+$$
+  \begin{aligned}
+    \mf{<int-exp-type>} =& \mathit{Int}\\
+      | \ & \mf{<int-exp-type> + <int-exp-type>}\\
+      | \ & \mf{<int-exp-type> * }\mathit{Int}\\
+      | \ & \mathcal{V}
+  \end{aligned}
+$$
+$$
+  \begin{aligned}
+    \mf{<qualifier-type>} =& \mf{True}\\
+      | \ & \mf{False}\\
+      | \ & \mf{<int-exp-type> <= v}\\
+      | \ & \mf{v < <int-exp-type>}\\
+      | \ & \mf{<qualifier-type> \&\& <qualifier-type>}\\
+      | \ & \mf{<qualifier-type> || <qualifier-type>}\\
+      | \ & \mf{not <qualifier-type>}
+  \end{aligned}
+$$
+$$
+\begin{aligned}
+\mf{<liquid-type>} ::=&\mf{"\{v:Int|"}\mf{<qualifier-type>}\mf{"\}"} \\
+                     |& \mf{<lower-var> ":" <liquid-type> "->" <liquid-type>}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\mf{<type>} ::=& \mf{<liquid-type>}\\
+              |& \mf{"Bool"}\\
+              |& \mf{"Int"}\\
+              |& \mf{"List" <type>}\\
+              |& \mf{"(" <type> "," <type> ")"}\\
+              |& \mf{"\{" <list-type-fields> "\}"}\\
+              |& \mf{<type> "->" <type>}\\
+              |& \mf{<upper-var> <list-type>}\\
+              |& \mf{<lower-var>}
+\end{aligned}
+$$
+```
+
+### Type Inferece
+
+We start by defining a template. This template will later be rewritten into a valid liquid type.
+
+```{definition,name="Template, Liquid type Variable"}
+\begin{letIn}
+$T\in\mathcal{T}$.
+\end{letIn}
+We call $\{v:T|\kappa_j\}$ a _template_ of $T$ for $v\in\mathcal{V}$ and $j\in\mathbb{N}$. Note that the symbol $\kappa$ is called a _Liquid Type Variable_ within that context.
+```
+
+The type inference for liquid types goes in three phases:
+
+1. Let the base types be derived and replaced by template liquid types
+2. Generate constraints by using predicate abstraction
+Refine the templates to make them as sharp as possible. (Find the strongest constraints for each liquid type variable)
+3. Change templates into liquid types using a divide and conqure approach.
+
+#### Type Signature Judgments
+
+For type singature judgments, let $\mathit{exp}\in\mathit{IntExp}$ and $q\in\mathcal{Q}$.
+
+For $\mathit{iet}\in\mf{"<int-exp-type>"}$, the judgment has the form
+
+$$
+\mathit{iet}:\mathit{exp}
+$$
+
+wich can be read as "given $\Theta$, $\mathit{iet}$ response to the well-formed expression $\mathit{exp}$".
+
+For $\mathit{qt}\in\mf{"<qualifier-type>"}$, the judgment has the form
+
+$$
+\mathit{qt}:q
+$$
+
+#### int-exp-type
+
+\logicRule
+{i:\mathit{Int}}
+{i:i}
+{}
+
+\logicRule
+{\mathit{iet}_1:\mathit{exp}_1\quad
+\mathit{iet}_2:\mathit{exp}_2\quad
+\mathit{exp}_1 + \mathit{exp}_2 = \mathit{exp}_3
+}
+{\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2:\mathit{exp}_3}
+{}
+
+\logicRule
+{i:\mathit{Int}\quad
+\mathit{iet}:\mathit{exp}_0\quad
+\mathit{exp}_0 * i = \mathit{exp}_1
+}
+{\mathit{iet} \ \mf{*} \ \mathit{i}:\mathit{exp}_1}
+{}
+
+\logicRule
+{a = \mathit{exp}
+}
+{\mathit{a}:\mathit{exp}}
+{}
+
+#### qualifier-type
+
+\logicRule
+{
+}
+{\mf{True}:\mathit{True}}
+{}
+
+\logicRule
+{
+}
+{\mf{False}:\mathit{False}}
+{}
+
+\logicRule
+{\mathit{iet}:\mathit{exp}_0\quad
+\mathit{exp}_0 \leq \nu = \mathit{exp}_1
+}
+{\mathit{iet} \ \mf{<= v}:\mathit{exp}_1}
+{}
+
+\logicRule
+{\mathit{iet}:\mathit{exp}_0\quad
+\nu < \mathit{exp}_0 = \mathit{exp}_1
+}
+{\mf{v <} \ \mathit{iet}:\mathit{exp}_1}
+{}
+
+\logicRule
+{\mathit{iet}_1:\mathit{exp}_1\quad
+\mathit{iet}_2:\mathit{exp}_2\quad
+\mathit{exp}_1 \land \mathit{exp}_2 = \mathit{exp}_3
+}
+{\mathit{iet}_1 \ \mf{\&\&} \ \mathit{iet}_2:\mathit{exp}_3}
+{}
+
+
+\logicRule
+{\mathit{iet}_1:\mathit{exp}_1\quad
+\mathit{iet}_2:\mathit{exp}_2\quad
+\mathit{exp}_1 \lor \mathit{exp}_2 = \mathit{exp}_3
+}
+{\mathit{iet}_1 \ \mf{||} \ \mathit{iet}_2:\mathit{exp}_3}
+{}
+
+\logicRule
+{\mathit{iet}:\mathit{exp}_1\quad
+\neg\mathit{exp}_1 = \mathit{exp}_2
+}
+{\mf{not} \ \mathit{iet}:\mathit{exp}_2}
+{}
+
+#### liquid-type
+
+\logicRule
+{\mathit{iet}:\mathit{exp}\quad
+\{v:Int|\mathit{exp}\}=\mathit{t}
+}
+{\mf{"\{v:Int|"}\ \mathit{iet} \ \mf{"\}"}:\mathit{t}}
+{}
+
+\logicRule
+{\mathit{iet}_1:\mathit{t}_1\quad
+\mathit{iet}_2:\mathit{t}_2\quad
+(a:\mathit{t}_1\rightarrow\mathit{t}_2) = \mathit{t}_3
+}
+{a \ \mf{":"} \ \mathit{iet}_1 \ \mf{"->"} \ \mathit{iet}_2:\mathit{t}_3}
+{}
+
+#### type
+
+\logicRule
+{\mathit{lt}:t
+}
+{\Gamma\vdash \mathit{lt}:t}
+{}

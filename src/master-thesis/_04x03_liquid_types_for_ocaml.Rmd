@@ -2,16 +2,7 @@
 
 The idea behind liquid types can be summerized in three points:
 
-1. Let the base types be derived and replaced by template liquid types
-2. Refine the templates to make them as sharp as possible.
-3. Change templates into liquid types using a divide and conqure approach.
 
-```{definition,name="Template, Liquid type Variable"}
-\begin{letIn}
-$T\in\mathcal{T}$.
-\end{letIn}
-We call $\{v:T|\kappa_k\}$ a _template_ of $T$ for $v\in\mathcal{V}$ and a so called _Liquid Type Variable_ $\kappa_k$ defined as $\kappa_k\in\{\kappa_j|j\in\mathbb{N}\}$. Note that $\kappa$ is a symbol.
-```
 
 
 ## Liquid Types for Haskell
