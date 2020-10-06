@@ -1,4 +1,4 @@
-\setcounter{section}{3}
+\setcounter{section}{4}
 \setcounter{subsection}{1}
 
 ## Liquid Types for Elm
@@ -80,7 +80,7 @@ $$
 \mathit{iet}:\mathit{exp}
 $$
 
-wich can be read as "given $\Theta$, $\mathit{iet}$ response to the well-formed expression $\mathit{exp}$".
+which can be read as "$\mathit{iet}$ correspondings $\mathit{exp}$".
 
 For $\mathit{qt}\in\mf{"<qualifier-type>"}$, the judgment has the form
 
@@ -88,7 +88,44 @@ $$
 \mathit{qt}:q
 $$
 
+which can be read as "$\mathit{qt}$ correspondings to $q$"
+
+For $\mathit{lt}\in\mf{"<liquid-type>"}$, the judgment has the form
+
+$$
+\mathit{lt}:\hat{T}
+$$
+
+which can be read as "$\mathit{lt}$ correspondings to the liquid type $\hat{T}$".
+
+As previously already stated, for $t\in\mf{<type>}$ the judgment has the form
+
+$$
+\Gamma\vdash t:T
+$$
+
+which can be read as "given $\Gamma$, $t$ has the type $T$".
+
+### Auxiliary Definitions
+
+We have already defined well-formed logical qualifers expressions. We will now extend the notion to well-formed liquid types.
+
+```{definition,name="Well-formed liquid type"}
+\begin{letIn}
+$\Gamma$ be a type context.
+\end{letIn}
+\[\begin{aligned}
+\text{wellFormed}\subset&\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})\\
+\text{wellFormed}(\{\nu:\mathit{Int}| r \},\Theta) :\Leftrightarrow& r\text{ is well defined with respect to } \Gamma\\
+\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow& \forall t\in\text{value}(\hat{T}_1).\text{wellFormed}(\hat{T}_2,\Theta\cup\{a,t\})
+\end{aligned}\]
+```
+
+### Inference Rules for Type Signatures
+
 #### int-exp-type
+
+Judgment: $\mathit{iet}:\mathit{exp}$
 
 \logicRule
 {i:\mathit{Int}}
@@ -96,19 +133,19 @@ $$
 {}
 
 \logicRule
-{\mathit{iet}_1:\mathit{exp}_1\quad
-\mathit{iet}_2:\mathit{exp}_2\quad
+{\mathit{iet}_1 = \mathit{exp}_1\quad
+\mathit{iet}_2 = \mathit{exp}_2\quad
 \mathit{exp}_1 + \mathit{exp}_2 = \mathit{exp}_3
 }
-{\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2:\mathit{exp}_3}
+{\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2 = \mathit{exp}_3}
 {}
 
 \logicRule
 {i:\mathit{Int}\quad
-\mathit{iet}:\mathit{exp}_0\quad
+\mathit{iet} = \mathit{exp}_0\quad
 \mathit{exp}_0 * i = \mathit{exp}_1
 }
-{\mathit{iet} \ \mf{*} \ \mathit{i}:\mathit{exp}_1}
+{\mathit{iet} \ \mf{*} \ \mathit{i} = \mathit{exp}_1}
 {}
 
 \logicRule
@@ -118,6 +155,8 @@ $$
 {}
 
 #### qualifier-type
+
+Judgment: $\mathit{qt}:q$
 
 \logicRule
 {
@@ -171,25 +210,45 @@ $$
 
 #### liquid-type
 
+Judgment: $\mathit{lt}:T$
+
 \logicRule
 {\mathit{iet}:\mathit{exp}\quad
-\{v:Int|\mathit{exp}\}=\mathit{t}
+\{v:Int|\mathit{exp}\}=\mathit{T}
 }
-{\mf{"\{v:Int|"}\ \mathit{iet} \ \mf{"\}"}:\mathit{t}}
+{\mf{"\{v:Int|"}\ \mathit{iet} \ \mf{"\}"}:\mathit{T}}
 {}
 
 \logicRule
-{\mathit{iet}_1:\mathit{t}_1\quad
-\mathit{iet}_2:\mathit{t}_2\quad
-(a:\mathit{t}_1\rightarrow\mathit{t}_2) = \mathit{t}_3
+{\mathit{iet}_1:\mathit{T}_1\quad
+\mathit{iet}_2:\mathit{T}_2\quad
+(a:\mathit{T}_1\rightarrow\mathit{T}_2) = \mathit{T}_3
 }
-{a \ \mf{":"} \ \mathit{iet}_1 \ \mf{"->"} \ \mathit{iet}_2:\mathit{t}_3}
+{a \ \mf{":"} \ \mathit{iet}_1 \ \mf{"->"} \ \mathit{iet}_2:\mathit{T}_3}
 {}
 
 #### type
 
+Judgment: $\Gamma\vdash t:T$
+
 \logicRule
-{\mathit{lt}:t
+{\mathit{lt}:T
 }
-{\Gamma\vdash \mathit{lt}:t}
+{\Gamma\vdash \mathit{lt}:T}
+{}
+
+All other inference rules for types have allready been described.
+
+### Inference Rules for Expressions
+
+#### Exp
+
+\logicRule
+{
+\Gamma,\Delta\vdash e_1:\textit{Bool}\quad
+\Gamma,\Delta\vdash e_2: \hat{T}\quad
+\Gamma,\Delta\vdash e_3: \hat{T}\quad
+\hat{T} \ \text{is well-formed with respect to } \Delta
+}
+{\Gamma,\Delta\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
 {}
