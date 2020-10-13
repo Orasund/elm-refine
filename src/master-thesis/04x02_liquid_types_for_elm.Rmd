@@ -33,46 +33,30 @@ $$
 $$
 $$
 \begin{aligned}
-\mf{<liquid-type>} ::=&\mf{"\{v:Int|"}\mf{<qualifier-type>}\mf{"\}"} \\
-                     |& \mf{<lower-var> ":" <liquid-type> "->" <liquid-type>}
+\mf{<liquid-type>} ::=& \mf{"\{v:Int|"} \ \mf{<qualifier-type>} \ \mf{"\}"} \\
+                  | \ & \mf{<lower-var> ":" <liquid-type> "->" <liquid-type>}
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \mf{<type>} ::=& \mf{<liquid-type>}\\
-              |& \mf{"Bool"}\\
-              |& \mf{"Int"}\\
-              |& \mf{"List" <type>}\\
-              |& \mf{"(" <type> "," <type> ")"}\\
-              |& \mf{"\{" <list-type-fields> "\}"}\\
-              |& \mf{<type> "->" <type>}\\
-              |& \mf{<upper-var> <list-type>}\\
-              |& \mf{<lower-var>}
+           | \ & \mf{"Bool"}\\
+           | \ & \mf{"List" <type>}\\
+           | \ & \mf{"(" <type> "," <type> ")"}\\
+           | \ & \mf{"\{" <list-type-fields> "\}"}\\
+           | \ & \mf{<type> "->" <type>}\\
+           | \ & \mf{<upper-var> <list-type>}\\
+           | \ & \mf{<lower-var>}
 \end{aligned}
 $$
 ```
 
+
 ### Type Inferece
-
-We start by defining a template. This template will later be rewritten into a valid liquid type.
-
-```{definition,name="Template, Liquid type Variable"}
-\begin{letIn}
-$T\in\mathcal{T}$.
-\end{letIn}
-We call $\{v:T|\kappa_j\}$ a _template_ of $T$ for $v\in\mathcal{V}$ and $j\in\mathbb{N}$. Note that the symbol $\kappa$ is called a _Liquid Type Variable_ within that context.
-```
-
-The type inference for liquid types goes in three phases:
-
-1. Let the base types be derived and replaced by template liquid types
-2. Generate constraints by using predicate abstraction
-Refine the templates to make them as sharp as possible. (Find the strongest constraints for each liquid type variable)
-3. Change templates into liquid types using a divide and conqure approach.
 
 #### Type Signature Judgments
 
-For type singature judgments, let $\mathit{exp}\in\mathit{IntExp}$ and $q\in\mathcal{Q}$.
+For type singature judgments, let $\mathit{exp}\in\mathit{IntExp}$,$q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 
 For $\mathit{iet}\in\mf{"<int-exp-type>"}$, the judgment has the form
 
@@ -106,19 +90,53 @@ $$
 
 which can be read as "given $\Gamma$, $t$ has the type $T$".
 
+For $e\in\mf{<exp>}$ the judgment has the form
+
+$$
+\Gamma,\Delta,\Theta,\Lambda\vdash e:T
+$$
+
+which can be read as "given $\Gamma$, $\Delta$, $\Theta$ and $\Lambda$, $e$ has the type $T$".
+
 ### Auxiliary Definitions
 
 We have already defined well-formed logical qualifers expressions. We will now extend the notion to well-formed liquid types.
 
 ```{definition,name="Well-formed liquid type"}
 \begin{letIn}
-$\Gamma$ be a type context.
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 \end{letIn}
-\[\begin{aligned}
-\text{wellFormed}\subset&\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})\\
-\text{wellFormed}(\{\nu:\mathit{Int}| r \},\Theta) :\Leftrightarrow& r\text{ is well defined with respect to } \Gamma\\
-\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow& \forall t\in\text{value}(\hat{T}_1).\text{wellFormed}(\hat{T}_2,\Theta\cup\{a,t\})
-\end{aligned}\]
+\[
+\text{wellFormed}\subset\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})
+\]\[
+\begin{aligned}
+\text{wellFormed}(\{b:\mathit{Int}| r \},\{(a_1,T_1),\dots,(a_n,T_n)\}) :\Leftrightarrow\\
+\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
+r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n)\}
+\end{aligned}
+\]\[
+\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow \text{wellFormed}(\hat{T}_2,\Theta\cup\{(a,\hat{T}_1)\})
+\]
+```
+
+#### Decibale Subtyping
+
+```{definition,name="Subtyping"}
+\begin{letIn}
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\Lambda$ be a $\subset\mathcal{Q}$, $r_1,r_2\in\mathcal{Q}$
+\end{letIn}
+
+$$
+\begin{aligned}
+\{a:\mathit{Int}| r_1 \} <:_\Theta \{ b : \mathit{Int}| r_2\} :\Leftrightarrow&
+  \forall n\in\mathbb{N}.\forall r\in\Lambda.\\
+&(\semantic{$r_1$}_{\Theta\cup\{(a,n)\}} \land \semantic{$r$}) \Rightarrow\semantic{$r_2$}_{\Theta\cup\{(b,n)\}}\\
+a:\hat{T}_1\to\hat{T}_2 <:_\Theta b:\hat{T}_3\to\hat{T}_4 :\Leftrightarrow&
+  \forall n\in\text{value}_{\{\}}(\hat{T}_3).\\
+&\hat{T}_1<:_\Theta\hat{T}_3 \land \hat{T}_2<:_{\Theta\cup\{(a,n)\}}\hat{T}_4
+\end{aligned}
+$$
+
 ```
 
 ### Inference Rules for Type Signatures
@@ -245,10 +263,105 @@ All other inference rules for types have allready been described.
 
 \logicRule
 {
-\Gamma,\Delta\vdash e_1:\textit{Bool}\quad
-\Gamma,\Delta\vdash e_2: \hat{T}\quad
-\Gamma,\Delta\vdash e_3: \hat{T}\quad
-\hat{T} \ \text{is well-formed with respect to } \Delta
+\begin{gathered}
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1:\textit{Bool}\quad
+\text{wellFormed}(\hat{T},\Theta)\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{e_1\}\vdash e_2: \hat{T}\quad
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1\}\vdash e_3: \hat{T}
+\end{gathered}
 }
-{\Gamma,\Delta\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
 {}
+
+//TODO: semantic for <Exp> to Q
+
+### The Inference Algorithm
+
+We start by introducing constraint. These constrains will later be used to derive liquid types.
+
+```{definition,name="Constraint, Template, Liquid type Variable"}
+
+A constraint is a judgment of the form 
+
+$$
+  \mathit{predicate} \vdash \mathcal{Q} <: \mathit{template}
+$$
+  
+where
+
+\[
+\begin{aligned}
+\mathit{template} ::=& \mathcal{T}\\
+                 | \ & \kappa_\mathcal{V}\\
+                 | \ & \mathit{template} \rightarrow \mathit{template}
+\end{aligned}
+\]\[
+\begin{aligned}
+\mathit{predicate} ::=& \mathcal{V} : \mathit{template}\\
+                  | \ & \mathcal{Q}
+\end{aligned}
+\]\[
+\begin{aligned}
+\mathit{constraint} ::=& \mathit{predicate} \vdash \mathcal{Q} <: \mathit{template}
+\end{aligned}
+\]
+  
+Note that the symbol $\kappa$ is called a _Liquid Type Variable_ within that context.
+
+We call a partial function $\Theta:\mathcal{V}\nrightarrow\mathit{template}$ a _template context_.
+```
+
+The type inference for liquid types goes in three phases:
+
+1. Let the base types be derived and replaced by template liquid types
+2. Generate constraints by using predicate abstraction
+Refine the templates to make them as sharp as possible. (Find the strongest constraints for each liquid type variable)
+3. Change templates into liquid types using a divide and conqure approach.
+
+```{block2, type="myexample",latex.options="_"}
+We will now look at the following code snippet.
+
+\begin{lstlisting}[language=elm]
+max : a:Int -> b:Int 
+  -> {v:Int| (a =< b && v = b) || (a > b && v = a)};
+max =
+  \n -> \m -> if n =< m then m else n;
+\end{lstlisting}
+
+We can easily infer the type for $\mf{\textbackslash n -> \textbackslash m -> if n =< m then m else n}$ namely $a:\kappa_a\to b:\kappa_b\to \kappa_x$.
+
+We additionally have two judments that need to be proven:
+
+$$
+\begin{aligned}
+\Gamma,\Delta,\Theta,\Lambda\cup\{n \leq m\}\vdash& m: \hat{T}\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg (n \leq m)\}\vdash& n: \hat{T}
+\end{aligned}
+$$
+
+These can be turned into constraints:
+  
+$$
+\begin{aligned}
+m:\kappa_a,n:\kappa_b,n \leq m\vdash& m<:_\Theta\kappa_x\\
+m:\kappa_a,n:\kappa_b,\neg (n \leq m)\vdash& n<:_\Theta\kappa_x
+\end{aligned}
+$$
+  
+We can infer (//TODO from where?) that $\kappa_a = \kappa_b = \{v:\mathit{Int}|\mathit{True}\}$
+  
+Thus we are left with the constraints
+
+$$
+\begin{aligned}
+m:Int,n:Int,n \leq m\vdash& m<:\kappa_x\\
+m:Int,n:Int,\neg (n \leq m)\vdash& n<:\kappa_x
+\end{aligned}
+$$
+  
+Using and special algorithm and an SMT-Solver we then infer from there that
+
+$\kappa_x = \{v:\mathit{Int}|{v:Int| (a =< b \land v = b) \lor (a > b \land v = a)}\} =: \hat{T}$.
+
+//TODO: How do we check this is a valid type?
+```
