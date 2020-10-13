@@ -13,7 +13,7 @@ We define the set of logical qualifier expressions $\mathcal{Q}$ as follows
 
 $$
   \begin{aligned}
-    \mathit{IntExp} = \ & \mathbb{Z}\\
+    \mathit{IntExp} ::= \ & \mathbb{Z}\\
       | \ & \mathit{IntExp} + \mathit{IntExp}\\
       | \ & \mathit{IntExp} * \mathbb{Z}\\
       | \ & \mathcal{V}
@@ -22,20 +22,16 @@ $$
 
 $$
   \begin{aligned}
-    \mathcal{Q} = \ & \mathit{True}\\
+    \mathcal{Q} ::= \ & \mathit{True}\\
       | \ & \mathit{False}\\
-      | \ & \mathit{IntExp} \leq \nu\\
-      | \ & \nu < \mathit{IntExp}\\
+      | \ & \mathit{IntExp} \leq \mathcal{V}\\
+      | \ & \mathcal{V} < \mathit{IntExp}\\
       | \ & \mathcal{Q} \land \mathcal{Q}\\
       | \ & \mathcal{Q} \lor \mathcal{Q}\\
       | \ & \neg \mathcal{Q}
   \end{aligned}
 $$
-
-Note that $\nu$ is a reserved symbol.
 ```
-
-The SMT solver will later solve over $\nu$. The important part to notice is that all logical operators depend on $\nu$ whereas the arithmetic operators do not. This is such that the SMT solver can handle these expressions.
 
 ```{definition, name="Well-Formed Logical Qualifier Expressions"}
 \begin{letIn}
@@ -67,8 +63,8 @@ $$
 \semantic{$.$}_.:&\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\to\mathit{Bool}\\
 \semantic{$\mathit{True}$}_\Theta =& \lambda v. \mathit{True}\\
 \semantic{$\mathit{False}$}_\Theta =& \lambda v.\mathit{False}\\
-\semantic{$a \leq \nu$}_\Theta =&  \lambda v.\semantic{$a$}_\Theta \leq v\\
-\semantic{$\nu < a$}_\Theta =& \lambda v. v < \semantic{$a$}_\Theta\\
+\semantic{$i \leq b$}_\Theta =&  \lambda v.\semantic{$i$}_\Theta \leq v\\
+\semantic{$b < i$}_\Theta =& \lambda v. v < \semantic{$i$}_\Theta\\
 \semantic{$p \land q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
 \semantic{$p \lor q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
 \semantic{$\neg p$}_\Theta =&\lambda v. \neg \semantic{$p$}_\Theta(v)
@@ -122,7 +118,7 @@ T \text{ is a } \mathit{algebraic} \ \mathit{type}:\Leftrightarrow \
          & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k(i)}.T_{i,j}\neq C\\
          & \text{where } n\in\mathbb{N},k\in\mathbb{N}_1^n\to\mathbb{N}_0, C \text{ is a symbol and }\\
          & T_{i,k(j)} \text{ is a mono type}\\
-         & \text{ or } T_{i,k(j)} = C \text{for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k(i)}.\\
+         & \text{ or } T_{i,k(j)} = C \text{ for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k(i)}.\\
 T \text{ is a } \mathit{product} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } \{l_1:T_1,\dots,l_n:T_n\}\\
          & \text{where }n\in\mathbb{N}_0\text{ and } l_i \text{ are symbols and } T_i \text{ are mono}\\
@@ -131,8 +127,8 @@ T \text{ is a } \mathit{function} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } T_1 \to T_2\\
          & \text{where } T_1 \text{ and } T_2 \text{ are mono types}.\\
 T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ &\\
-         & T \text{ is of form } \{ \nu :T_0 \ | \ r \}\\
-         & \text{where } T_0\text{ is a type and }r\in \mathcal{Q}.\\
+         & T \text{ is of form } \{ a :T_0 \ | \ r \}\\
+         & \text{where } T_0\text{ is a type},a \text{ is a symbol and }r\in \mathcal{Q}.\\
   \lor \ & T \text{ is of form } a:T_1\to \hat{T}_2\\
          & \text{where } T_1\in\mathcal{T} \text{, } a \text{ is a symbol}, \hat{T}_2 \text{ is a liquid type}\\
 \end{aligned}
@@ -178,7 +174,7 @@ $$
     \mathrm{free}(\{\_:T_1,\dots,\_:T_n\}) :=&\bigcup_{i\in\mathbb{N}_1^n}\mathrm{free}(T_i)\\
     \mathrm{free}(T_1 \to T_2) :=& \mathrm{free}(T_1)\cup\mathrm{free}(T_2)\\
     \mathrm{free}(\forall a.T) :=& \mathrm{free}(T)\backslash\{a\}\\
-    \mathrm{free}(\{\nu :T \ | \ r \}) :=& \mathrm{free}(T)\\
+    \mathrm{free}(\{a :T \ | \ r \}) :=& \mathrm{free}(T)\\
     \mathrm{free}(a:T\to \hat{T}) :=& \mathrm{free}(T)\cup\mathrm{free}(\hat{T})
 \end{aligned}
 $$
@@ -220,7 +216,7 @@ $$
             \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
             \forall b. [T]_\Theta & \text{else.}
         \end{cases}\\
-    [\{\nu:T \ | \ r \}]_\Theta :=& [T]_\Theta\\
+    [\{a:T \ | \ r \}]_\Theta :=& [T]_\Theta\\
     [a:T\to \hat{T}]_\Theta :=& [T]_\Theta\to [\hat{T}]_\Theta
   \end{aligned}
 $$
@@ -267,7 +263,7 @@ $$
 \mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f\in\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
   &\text{ not occur in } T.\\
-\mathrm{values}_\Gamma(\{ \nu:T \ | \ r \}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(\{ \nu:T \ | \ r \})\\
+\mathrm{values}_\Gamma(\{ a:T \ | \ r \}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(\{ a:T \ | \ r \})\\
 \mathrm{values}_\Gamma(a:T\to \hat{T}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(a:T\to \hat{T})
 \end{aligned}
 $$
@@ -305,10 +301,15 @@ $$
 Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$. We define:
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Gamma,\Theta}(\{ \nu:T \ | \ r \}) :=\\
-   \{ t\in \mathrm{values}_\Gamma(T) &| \ r \text{ is well formed with respect to }\Theta \land \ \semantic{$r$}_\Theta(t) \}\\
+\mathrm{refinedValues}_{\Gamma,\Theta}&(\{ a:T \ | \ r \}) :=\\
+   & \{ t\in \mathrm{values}_\Gamma(T) | \ \forall n\in \mathrm{values}_\Gamma(T).\\
+   & r \text{ is well formed with respect to }\Theta\cup\{a,n\}\land \ \semantic{$r$}_\Theta(t) \}\\
+\end{aligned}
+$$
+$$
+\begin{aligned}
 \mathrm{refinedValues}_{\Gamma,\Theta}(a:T\to \hat{T}) :=\\
-        \{b\in \mathrm{values}_\Gamma(T \to \hat{T}) | \ \forall n\in& \mathrm{values}_\Gamma(T).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{a,n\}}(\hat{T})\}
+        \{b\in \mathrm{values}_\Gamma(T \to \hat{T}) | \ \forall n&\in \mathrm{values}_\Gamma(T).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{a,n\}}(\hat{T})\}
 \end{aligned}
 $$
 ```
