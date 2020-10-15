@@ -4,7 +4,7 @@
 
 ## Notion of Liquid Types
 
-So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide some inference rules to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be provable with an arbitrary solver.
+So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be provable with an arbitrary solver.
 
 We start by defining the syntax and semantic of valid refinements.
 
@@ -24,8 +24,9 @@ $$
   \begin{aligned}
     \mathcal{Q} ::= \ & \mathit{True}\\
       | \ & \mathit{False}\\
-      | \ & \mathit{IntExp} \leq \mathcal{V}\\
+      | \ & \mathit{IntExp} < \mathcal{V}\\
       | \ & \mathcal{V} < \mathit{IntExp}\\
+      | \ & \mathcal{V} = \mathit{IntExp}\\
       | \ & \mathcal{Q} \land \mathcal{Q}\\
       | \ & \mathcal{Q} \lor \mathcal{Q}\\
       | \ & \neg \mathcal{Q}
@@ -60,14 +61,15 @@ We also define the semantic of logical qualifier expressions $\mathcal{Q}$ as fo
 
 $$
 \begin{aligned}
-\semantic{$.$}_.:&\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\to\mathit{Bool}\\
-\semantic{$\mathit{True}$}_\Theta =& \lambda v. \mathit{True}\\
-\semantic{$\mathit{False}$}_\Theta =& \lambda v.\mathit{False}\\
-\semantic{$i \leq b$}_\Theta =&  \lambda v.\semantic{$i$}_\Theta \leq v\\
-\semantic{$b < i$}_\Theta =& \lambda v. v < \semantic{$i$}_\Theta\\
-\semantic{$p \land q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
-\semantic{$p \lor q$}_\Theta =& \lambda v. \semantic{$p$}_\Theta(v) \land \semantic{$q$}_\Theta(v)\\
-\semantic{$\neg p$}_\Theta =&\lambda v. \neg \semantic{$p$}_\Theta(v)
+\semantic{$.$}_.:&\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathit{Bool}\\
+\semantic{$\mathit{True}$}_\Theta =&\mathit{True}\\
+\semantic{$\mathit{False}$}_\Theta =& \mathit{False}\\
+\semantic{$i < a$}_\Theta =& (\semantic{$i$}_\Theta < \semantic{$a$}_\Theta)\\
+\semantic{$a < i$}_\Theta =& (\semantic{$a$}_\Theta < \semantic{$i$}_\Theta)\\
+\semantic{$a = i$}_\Theta =& (\semantic{$a$}_\Theta = \semantic{$i$}_\Theta)\\
+\semantic{$p \land q$}_\Theta =& (\semantic{$p$}_\Theta \land \semantic{$q$}_\Theta)\\
+\semantic{$p \lor q$}_\Theta =& (\semantic{$p$}_\Theta \lor \semantic{$q$}_\Theta)\\
+\semantic{$\neg p$}_\Theta =& (\neg \semantic{$p$}_\Theta)
 \end{aligned}
 $$
 ```
@@ -303,7 +305,7 @@ $$
 \begin{aligned}
 \mathrm{refinedValues}_{\Gamma,\Theta}&(\{ a:T \ | \ r \}) :=\\
    & \{ t\in \mathrm{values}_\Gamma(T) | \ \forall n\in \mathrm{values}_\Gamma(T).\\
-   & r \text{ is well formed with respect to }\Theta\cup\{a,n\}\land \ \semantic{$r$}_\Theta(t) \}\\
+   & r \text{ is well formed with respect to }\Theta\cup\{a,n\}\land \ \semantic{$r$}_{\Theta\cup\{a,n\}} \}\\
 \end{aligned}
 $$
 $$
