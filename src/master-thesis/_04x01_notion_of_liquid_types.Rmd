@@ -4,12 +4,12 @@
 
 ## Notion of Liquid Types
 
-So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it's important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be provable with an arbitrary solver.
+So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it is important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be usable with an arbitrary solver.
 
 We start by defining the syntax and semantic of valid refinements.
 
 ```{definition,name="Logical Qualifier Expressions"}
-We define the set of logical qualifier expressions $\mathcal{Q}$ as follows
+We define the set of logical qualifier expressions $\mathcal{Q}$ as follows:
 
 $$
   \begin{aligned}
@@ -38,16 +38,14 @@ $$
 \begin{letIn}
 $e \in \mathcal{Q}$. Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$.
 \end{letIn}
-We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$,$\Theta(v)$ is well-defined, meaning $\exists n\in\mathbb{N}.(v,n)\in\Theta$.
+We say $e$ is _well formed_ with respect to $\Theta$ iff for all variables $v$ in $e$, $\Theta(v)$ is well-defined, meaning $\exists n\in\mathbb{N}.(v,n)\in\Theta$.
 ```
-
-Variables within the logical qualifier expression are bound by a universal quantifier. Each variable $a$ is bound over a set $\Theta(a)$.
 
 ```{definition, name="Semantics of Logical Qualifier Expressions"}
 We define the semantic of arithmetic expressions $\mathit{IntExp}$ as follows.
 $$
 \begin{aligned}
-\semantic{$.$}_.:&\mathit{IntExp}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\\
+\semantic{$.$}_.: \ &\mathit{IntExp}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathbb{N}\\
 \semantic{$n$}_\Theta =& n\\
 \semantic{$i + j$}_\Theta=& \semantic{$i$}_\Theta + \semantic{$j$}_\Theta\\
 \semantic{$i \cdot n$}_\Theta=& \semantic{$i$}_\Theta \cdot n\\
@@ -61,7 +59,7 @@ We also define the semantic of logical qualifier expressions $\mathcal{Q}$ as fo
 
 $$
 \begin{aligned}
-\semantic{$.$}_.:&\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathit{Bool}\\
+\semantic{$.$}_.:\ &\mathcal{Q}\to(\mathcal{V}\nrightarrow\mathbb{N})\to\mathit{Bool}\\
 \semantic{$\mathit{True}$}_\Theta =&\mathit{True}\\
 \semantic{$\mathit{False}$}_\Theta =& \mathit{False}\\
 \semantic{$i < a$}_\Theta =& (\semantic{$i$}_\Theta < \semantic{$a$}_\Theta)\\
@@ -130,11 +128,14 @@ T \text{ is a } \mathit{function} \ \mathit{type}:\Leftrightarrow \
          & \text{where } T_1 \text{ and } T_2 \text{ are mono types}.\\
 T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ &\\
          & T \text{ is of form } \{ a :T_0 \ | \ r \}\\
-         & \text{where } T_0\text{ is a type},a \text{ is a symbol and }r\in \mathcal{Q}.\\
+         & \text{where } T_0\text{ is a type},a \text{ is a symbol, and }r\in \mathcal{Q}.\\
   \lor \ & T \text{ is of form } a:T_1\to \hat{T}_2\\
          & \text{where } T_1\in\mathcal{T} \text{, } a \text{ is a symbol}, \hat{T}_2 \text{ is a liquid type}\\
 \end{aligned}
 $$
+
+Note that we mark a liquid type with a hat: $\hat{T}$ to distinguish it from a regular type $T$.  
+  
 ```
 
 We will also need to redefine the definition of free variables and type substitution. The only change is the trival addition of refinement types.
@@ -218,8 +219,8 @@ $$
             \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
             \forall b. [T]_\Theta & \text{else.}
         \end{cases}\\
-    [\{a:T \ | \ r \}]_\Theta :=& [T]_\Theta\\
-    [a:T\to \hat{T}]_\Theta :=& [T]_\Theta\to [\hat{T}]_\Theta
+    [\{a:T \ | \ r \}]_\Theta :=& \{a:[T]_\Theta\ | \ r \}\\
+    [a:T\to \hat{T}]_\Theta :=& a:[T]_\Theta\to [\hat{T}]_\Theta
   \end{aligned}
 $$
 $\Theta$ is called the set of substitutions.
@@ -304,14 +305,14 @@ Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$. We define:
 $$
 \begin{aligned}
 \mathrm{refinedValues}_{\Gamma,\Theta}&(\{ a:T \ | \ r \}) :=\\
-   & \{ t\in \mathrm{values}_\Gamma(T) | \ \forall n\in \mathrm{values}_\Gamma(T).\\
-   & r \text{ is well formed with respect to }\Theta\cup\{a,n\}\land \ \semantic{$r$}_{\Theta\cup\{a,n\}} \}\\
+   & \{ n\in \mathrm{values}_\Gamma(T) | \\
+   & r \text{ is well formed with respect to }\Theta\cup\{(a,n)\}\land \ \semantic{$r$}_{\Theta\cup\{(a,n)\}} \}\\
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \mathrm{refinedValues}_{\Gamma,\Theta}(a:T\to \hat{T}) :=\\
-        \{b\in \mathrm{values}_\Gamma(T \to \hat{T}) | \ \forall n&\in \mathrm{values}_\Gamma(T).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{a,n\}}(\hat{T})\}
+        \{b\in \mathrm{values}_\Gamma(T \to \hat{T}) | \ \forall n&\in \mathrm{values}_\Gamma(T).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{(a,n)\}}(\hat{T})\}
 \end{aligned}
 $$
 ```

@@ -24,9 +24,9 @@ $$
   \begin{aligned}
     \mf{<qualifier-type>} ::=& \mf{True}\\
       | \ & \mf{False}\\
-      | \ & \mf{(==) <int-exp-type> v}\\
       | \ & \mf{(<) <int-exp-type> v}\\
       | \ & \mf{(<) v <int-exp-type>}\\
+      | \ & \mf{(==) <int-exp-type> v}\\
       | \ & \mf{(\&\&) <qualifier-type> <qualifier-type>}\\
       | \ & \mf{(||) <qualifier-type> <qualifier-type>}\\
       | \ & \mf{not <qualifier-type>}
@@ -55,12 +55,12 @@ $$
 
 ### Type Inference
 
-We will also extend the inference rules. The interesting part is the new judgment for \mf{<exp>}: We introduce two new set: $\Theta$ and $\Lambda$.
-As before, $\Theta$ will contain the type of a variable (similarly to the previous section where we $\Theta$ stored the value of a variable).  $\Lambda$ contains boolean expressions that get collected while traversing if-then-else branches. We will use these expressions to allow path sensitive subtyping.
+We will also extend the inference rules. The interesting part is the new judgment for \mf{<exp>}: We introduce two new sets: $\Theta$ and $\Lambda$.
+As before, $\Theta$ will contain the type of a variable (similarly to the previous section where  in $\Theta$ we stored the value of a variable). The set $\Lambda$ contains boolean expressions that get collected while traversing if-then-else branches. We will use these expressions to allow path sensitive subtyping.
 
 #### Type Signature Judgments
 
-For type signature judgments, let $\mathit{exp}\in\mathit{IntExp}$,$q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
+For type signature judgments, let $\mathit{exp}\in\mathit{IntExp}$, $q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 
 For $\mathit{iet}\in\mf{"<int-exp-type>"}$, the judgment has the form
 
@@ -68,7 +68,7 @@ $$
 \mathit{iet}:\mathit{exp}
 $$
 
-which can be read as "$\mathit{iet}$ corresponds $\mathit{exp}$".
+which can be read as "$\mathit{iet}$ corresponds to $\mathit{exp}$".
 
 For $\mathit{qt}\in\mf{"<qualifier-type>"}$, the judgment has the form
 
@@ -76,7 +76,7 @@ $$
 \mathit{qt}:q
 $$
 
-which can be read as "$\mathit{qt}$ correspondings to $q$"
+which can be read as "$\mathit{qt}$ corresponds to $q$"
 
 For $\mathit{lt}\in\mf{"<liquid-type>"}$, the judgment has the form
 
@@ -104,17 +104,35 @@ which can be read as "given $\Gamma$, $\Delta$, $\Theta$ and $\Lambda$, $e$ has 
 
 ### Auxiliary Definitions
 
+#### Substitution
+
+```{definition,name="Refinement Substitution"}
+\begin{letIn}
+$a$ be a variable, $e\in\mathit{IntExp}$
+\end{letIn}
+For a given liquid type we define the Refinement substitution as follows:
+
+$$
+\begin{aligned}
+[\{b:\mathit{Int}| r \}]_{a\leftarrow e} :=& \{b:\mathit{Int}| [r]_{a\leftarrow e} \}\\
+[b:\hat{T}_1\to\hat{T}_2]_{a\leftarrow e} :=& b:[\hat{T}_1]_{a\leftarrow e}\to[\hat{T}_2]_{a\leftarrow e}
+\end{aligned}
+$$
+```
+
+Note that $[r]_{a\leftarrow e}$ is substitution on expressions for $r\in\mathcal{Q}$. This requires that $[r]_{a\leftarrow e}$ must again life in $\mathcal{Q}$. We can enforce this requirement by the inference rules for \mf{<qualifier-type>}.
+
 #### Well-formed Liquid Type
 
 We have already defined well-formed logical qualifiers expressions. We will now extend the notion to well-formed liquid types.
 
-```{definition,name="Well-formed liquid type"}
+```{definition,name="Well-formed Liquid Type"}
 \begin{letIn}
 $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 \end{letIn}
 We define following.
 \[
-\text{wellFormed}\subset\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})
+\text{wellFormed}\subseteq\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})
 \]\[
 \begin{aligned}
 \text{wellFormed}(\{b:\mathit{Int}| r \},\{(a_1,T_1),\dots,(a_n,T_n)\}) :\Leftrightarrow\\
@@ -137,19 +155,18 @@ $$
 \begin{aligned}
 \{a_1:\mathit{Int}| r_1 \} <:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| r_2\} \ :\Leftrightarrow \ & \text{Let} \ \{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta \ \text{in}\\
 &\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
-&(\ \forall n\in\mathbb{N}.\forall e \in\Lambda.\\
+&\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
                                                                                   &\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-   &\quad\land \semantic{$r_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}} \land \semantic{$r$}\\
-                                                                                  &)\Rightarrow\forall n\in\mathbb{N}.\semantic{$r_2$}_{\Theta\cup\{(a_2,n)\}}\\
-a_1:\hat{T}_1\to\hat{T}_2 <:_{\Theta,\Lambda} a_2:\hat{T}_3\to\hat{T}_4 \ :\Leftrightarrow \ &
-  \forall n\in\text{value}_{\{\}}(\hat{T}_3).\\
-&\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_3 \land \hat{T}_2<:_{\Theta\cup\{(a_1,n)\},\Lambda}\hat{T}_4
+   &\quad\land \semantic{$r_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+                                                                                  &\Rightarrow\semantic{$r_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+a_1:\hat{T}_1\to\hat{T}_2 <:_{\Theta,\Lambda} a_2:\hat{T}_3\to\hat{T}_4 \ :\Leftrightarrow \ 
+&\hat{T}_3<:_{\Theta,\Lambda}\hat{T}_1 \land \hat{T}_2<:_{\Theta\cup\{(a_1,\hat{T}_3)\},\Lambda}\hat{T}_4
 \end{aligned}
 $$
 For two liquid types $\hat{T}_1,\hat{T}_2$, we say $\hat{T}_1$ is a subtype of $\hat{T}_2$ with respect to $\Theta$ and $\Lambda$ if and only if $\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ is valid. 
 ```
 
-Subtyping comes with an optional inference rule for $\mf{<exp>}$. The sharpness of the inferred subtype depends on the capabilities of the SMT-Solver. Using this optional inference rule, the SMT-Solver will need to find the sharpest subtype, or at least sharp enough: In the case of type checking, it might be that the subtype is too sharp and therefore the SMT-Solver can't check the type successfully.
+Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpness of the inferred subtype depends on the capabilities of the SMT-Solver. Using this optional inference rule, the SMT-Solver will need to find the sharpest subtype, or at least sharp enough: In the case of type checking, it might be that the subtype is too sharp and therefore the SMT-Solver can't check the type successfully.
 
 \logicRule
 {\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_1\quad
@@ -173,19 +190,19 @@ Judgment: $\mathit{iet}:\mathit{exp}$
 {}
 
 \logicRule
-{\mathit{iet}_1 = \mathit{exp}_1\quad
-\mathit{iet}_2 = \mathit{exp}_2\quad
+{\mathit{iet}_1 : \mathit{exp}_1\quad
+\mathit{iet}_2 : \mathit{exp}_2\quad
 \mathit{exp}_1 + \mathit{exp}_2 = \mathit{exp}_3
 }
-{\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2 = \mathit{exp}_3}
+{\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2 : \mathit{exp}_3}
 {}
 
 \logicRule
 {i:\mathit{Int}\quad
-\mathit{iet} = \mathit{exp}_0\quad
+\mathit{iet} : \mathit{exp}_0\quad
 \mathit{exp}_0 * i = \mathit{exp}_1
 }
-{\mathit{iet} \ \mf{*} \ \mathit{i} = \mathit{exp}_1}
+{\mathit{iet} \ \mf{*} \ \mathit{i} : \mathit{exp}_1}
 {}
 
 \logicRule
@@ -288,9 +305,12 @@ All other inference rules for types have already been described.
 
 ### Inference Rules for Expressions
 
-
-
 #### Exp
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{v:\mathit{Int}| \neg (v = 0)\}\to\mathit{Int}}
+{}
 
 \logicRule
 {
@@ -305,6 +325,46 @@ e_1:e_1'\\
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
 {}
 
-Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the judgment can't be derived.
+Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the judgment can not be derived.
 
-//TODO: Add remaining inference rules.
+\logicRule
+{\begin{gathered}
+(a,\_)\not\in\Delta\quad
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1:\hat{T}\quad
+mes:\hat{T}\vdash a:\hat{T}\\
+\Gamma,\Delta\cup\{(a,\overline{\Gamma}(\hat{T}))\},\Theta\cup\{(a,\overline{\Gamma}(\hat{T}))\}\vdash e_2:\hat{T}\quad
+\text{wellFormed}(\hat{T},\Theta)
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"let"} \ \mathit{mes} \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: \hat{T}
+}
+{}
+
+\logicRule
+{\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:T\to \hat{T}_1)\quad
+\Gamma,\Delta,\Theta,\Lambda\vdash e_2: T\quad
+e_2:e_2'\quad
+[\hat{T}_1]_{a\leftarrow e_2'} =\hat{T}_2
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_2}
+{}
+
+Note that we assume that $e_2\in\mf{<qualifier-type>}$. If this is not the case, then the judgment can not be derived.
+
+\logicRule
+{\begin{gathered}
+\text{wellFormed}(b:\hat{T}_1\to \hat{T}_2,\Theta)\quad
+b:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
+\Gamma,\Delta\cup\{(b,\overline{\Gamma}(\hat{T}_1))\},\Theta\cup\{(b,\overline{\Gamma}(\hat{T}_1))\},\Lambda\vdash e: \hat{T}_2
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_3}
+{}
+
+\logicRule
+{a\sqsubseteq_\Delta \{\nu:\hat{T}| \ r\}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
+{}
+
+All other inference rules for expressions have not changed.

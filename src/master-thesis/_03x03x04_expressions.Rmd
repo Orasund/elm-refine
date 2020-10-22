@@ -229,7 +229,7 @@ mes:T_1\vdash a:T_1\\
 \logicRule
 {\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e: T_2
 }
-{\Gamma,\Delta\vdash\mf{"\textbackslash"} a \ \mf{"->"} \ e: T_1\to T_2}
+{\Gamma,\Delta\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: T_1\to T_2}
 {}
 
 \logicRule
