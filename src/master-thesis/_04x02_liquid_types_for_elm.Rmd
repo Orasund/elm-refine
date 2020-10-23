@@ -140,7 +140,10 @@ We define following.
 r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n)\}
 \end{aligned}
 \]\[
-\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow \text{wellFormed}(\hat{T}_1,\Theta)\ \land\ \text{wellFormed}(\hat{T}_2,\Theta\cup\{(a,\hat{T}_1)\})
+  \begin{aligned}
+\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow\\
+(a,\_)\not\in \Theta\ \land \ \text{wellFormed}(\hat{T}_1,\Theta)&\ \land\ \text{wellFormed}(\hat{T}_2,\Theta\cup\{(a,\hat{T}_1)\})
+\end{aligned}
 \]
 ```
 
@@ -307,10 +310,29 @@ All other inference rules for types have already been described.
 
 #### Exp
 
+The following are special inference rules for liquid types. For non-liquid types the old rules still apply.
+
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{v:\mathit{Int}| \neg (v = 0)\}\to\mathit{Int}}
+{\Gamma,\Delta\vdash\mf{"(+)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + b\})}
 {}
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash\mf{"(-)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + (-b)\})}
+{}
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash\mf{"(*)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a * b\})}
+{}
+
+\logicRule
+{}
+{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{v:\mathit{Int} \ | \ \neg (v = 0)\}\to\mathit{Int}}
+{}
+
+By using a liquid type we can avoid dividin by zero.
 
 \logicRule
 {
@@ -325,46 +347,42 @@ e_1:e_1'\\
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
 {}
 
-Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the judgment can not be derived.
+We add the condition $e_1$ to $\Lambda$ and ensure that the resulting liquid type is well-formed.
+Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the inference rule can not be applied and therefore the judgment can not be derived. In some cases we can recover by falling back to the old rule for non-liquid types, but recovery is not guaranteed.
 
 \logicRule
 {\begin{gathered}
-(a,\_)\not\in\Delta\quad
-\Gamma,\Delta,\Theta,\Lambda\vdash e_1:\hat{T}\quad
-mes:\hat{T}\vdash a:\hat{T}\\
-\Gamma,\Delta\cup\{(a,\overline{\Gamma}(\hat{T}))\},\Theta\cup\{(a,\overline{\Gamma}(\hat{T}))\}\vdash e_2:\hat{T}\quad
-\text{wellFormed}(\hat{T},\Theta)
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:\hat{T}_1\to \hat{T}_2)\\
+\Gamma,\Delta,\Theta,\Lambda\vdash e_2: T_1\quad
+e_2:e_2'\quad
+[\hat{T}_2]_{a\leftarrow e_2'} =\hat{T}_3
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"let"} \ \mathit{mes} \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: \hat{T}
-}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_3}
 {}
 
-\logicRule
-{\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:T\to \hat{T}_1)\quad
-\Gamma,\Delta,\Theta,\Lambda\vdash e_2: T\quad
-e_2:e_2'\quad
-[\hat{T}_1]_{a\leftarrow e_2'} =\hat{T}_2
-}
-{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_2}
-{}
-
-Note that we assume that $e_2\in\mf{<qualifier-type>}$. If this is not the case, then the judgment can not be derived.
+We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ can't escape the scope, we substitute it with $e_2'$. Note that we assume that $e_2\in\mf{<qualifier-type>}$, else we can try to recover by using the inference rules for non-liquid types.
 
 \logicRule
 {\begin{gathered}
-\text{wellFormed}(b:\hat{T}_1\to \hat{T}_2,\Theta)\quad
-b:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
-\Gamma,\Delta\cup\{(b,\overline{\Gamma}(\hat{T}_1))\},\Theta\cup\{(b,\overline{\Gamma}(\hat{T}_1))\},\Lambda\vdash e: \hat{T}_2
+\text{wellFormed}(a:\hat{T}_1\to \hat{T}_2,\Theta)\quad
+a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
+\Gamma,\Delta\cup\{(a,\hat{T}_1)\},\Theta\cup\{(a,\hat{T}_1)\},\Lambda\vdash e: \hat{T}_2
 \end{gathered}
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_3}
 {}
+
+We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
 {a\sqsubseteq_\Delta \{\nu:\hat{T}| \ r\}
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
 {}
+
+We can give a variable a sharp liquid type.
+
+\text{\textemdash}
 
 All other inference rules for expressions have not changed.
