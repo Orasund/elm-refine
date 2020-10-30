@@ -108,9 +108,10 @@ which can be read as "given $\Gamma$, $\Delta$, $\Theta$ and $\Lambda$, $e$ has 
 
 ```{definition,name="Refinement Substitution"}
 \begin{letIn}
-$a$ be a variable, $e\in\mathit{IntExp}$
+$a$ be a variable, $e\in\mathit{IntExp}$. For $r\in\mathcal{Q}$ let $[r]_{a\leftarrow e}$ denote the substitution on expressions.
 \end{letIn}
-For a given liquid type we define the Refinement substitution as follows:
+
+For a given liquid type we define the _refinement substitution_ as follows:
 
 $$
 \begin{aligned}
@@ -120,7 +121,7 @@ $$
 $$
 ```
 
-Note that $[r]_{a\leftarrow e}$ is substitution on expressions for $r\in\mathcal{Q}$. This requires that $[r]_{a\leftarrow e}$ must again life in $\mathcal{Q}$. We can enforce this requirement by the inference rules for \mf{<qualifier-type>}.
+Note that we assume for $r\in\mathcal{Q}$ that $[r]_{a\leftarrow e}$ is well formed. In particular, that $[r]_{a\leftarrow e}$ must again life in $\mathcal{Q}$. We can enforce this requirement by the inference rules for \mf{<qualifier-type>}.
 
 #### Well-formed Liquid Type
 
@@ -137,7 +138,7 @@ We define following.
 \begin{aligned}
 \text{wellFormed}(\{b:\mathit{Int}| r \},\{(a_1,T_1),\dots,(a_n,T_n)\}) :\Leftrightarrow\\
 \forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
-r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n)\}
+r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathit{Int})\}
 \end{aligned}
 \]\[
   \begin{aligned}
@@ -218,6 +219,8 @@ Judgment: $\mathit{iet}:\mathit{exp}$
 
 Judgment: $\mathit{qt}:q$
 
+This judgment is used to convert from $\mf{qualifier-type}$ to $\mathcal{Q}$. 
+
 \logicRule
 {
 }
@@ -236,6 +239,7 @@ Judgment: $\mathit{qt}:q$
 }
 {\mf{(<)} \ \mathit{iet} \ \mf{v}:\mathit{exp}_1}
 {}
+Note that where we replace the letter $\mf{v}$ with a special character $\nu$.
 
 \logicRule
 {\mathit{iet}:\mathit{exp}_0\quad
@@ -281,7 +285,7 @@ Judgment: $\mathit{lt}:T$
 
 \logicRule
 {\mathit{qt}:q\quad
-\{v:Int| \ q \ \}=\mathit{T}
+\{\nu:Int| \ q \ \}=\mathit{T}
 }
 {\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:\mathit{T}}
 {}
@@ -329,7 +333,7 @@ The following are special inference rules for liquid types. For non-liquid types
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{v:\mathit{Int} \ | \ \neg (v = 0)\}\to\mathit{Int}}
+{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \neg (\nu = 0)\}\to\mathit{Int}}
 {}
 
 By using a liquid type we can avoid dividin by zero.
@@ -338,7 +342,6 @@ By using a liquid type we can avoid dividin by zero.
 {
 \begin{gathered}
 \Gamma,\Delta,\Theta,\Lambda\vdash e_1:\textit{Bool}\quad
-\text{wellFormed}(\hat{T},\Theta)\quad
 e_1:e_1'\\
 \Gamma,\Delta,\Theta,\Lambda\cup\{e_1'\}\vdash e_2: \hat{T}\quad
 \Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1'\}\vdash e_3: \hat{T}
@@ -353,7 +356,7 @@ Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case,
 \logicRule
 {\begin{gathered}
 \Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:\hat{T}_1\to \hat{T}_2)\\
-\Gamma,\Delta,\Theta,\Lambda\vdash e_2: T_1\quad
+\Gamma,\Delta,\Theta,\Lambda\vdash e_2: \hat{T}_1\quad
 e_2:e_2'\quad
 [\hat{T}_2]_{a\leftarrow e_2'} =\hat{T}_3
 \end{gathered}
@@ -365,7 +368,6 @@ We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ ca
 
 \logicRule
 {\begin{gathered}
-\text{wellFormed}(a:\hat{T}_1\to \hat{T}_2,\Theta)\quad
 a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
 \Gamma,\Delta\cup\{(a,\hat{T}_1)\},\Theta\cup\{(a,\hat{T}_1)\},\Lambda\vdash e: \hat{T}_2
 \end{gathered}
@@ -376,7 +378,7 @@ a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
 We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
-{a\sqsubseteq_\Delta \{\nu:\hat{T}| \ r\}
+{(a,\{\nu:\hat{T}| \ r\}) \in \Delta
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
 {}

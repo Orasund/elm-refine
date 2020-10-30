@@ -126,11 +126,13 @@ T \text{ is a } \mathit{product} \ \mathit{type}:\Leftrightarrow \
 T \text{ is a } \mathit{function} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } T_1 \to T_2\\
          & \text{where } T_1 \text{ and } T_2 \text{ are mono types}.\\
-T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ &\\
-         & T \text{ is of form } \{ a :T_0 \ | \ r \}\\
-         & \text{where } T_0\text{ is a type},a \text{ is a symbol, and }r\in \mathcal{Q}.\\
-  \lor \ & T \text{ is of form } a:T_1\to \hat{T}_2\\
-         & \text{where } T_1\in\mathcal{T} \text{, } a \text{ is a symbol}, \hat{T}_2 \text{ is a liquid type}\\
+T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ 
+         & T \text{ is of form } \{ a :\mathit{Int} \ | \ r \}\\
+         & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
+         & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
+&\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
+  \lor \ & T \text{ is of form } a:\hat{T}_1\to \hat{T}_2\\
+         & \text{where } a \text{ is a symbol}, \hat{T}_2 \text{ and } \hat{T}_1 \text{ are liquid types}\\
 \end{aligned}
 $$
 
@@ -149,8 +151,8 @@ $T$ be a type,
 $C$ be a symbol,
 $k\in\mathbb{N}_1^n\to\mathbb{N}_0$,
 $T_i$ be a type,
-$\hat{T}$ be a liquid type,
-$T_{i,k(j)}$ be a type or a symbol and $C_i$ be a symbol for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+$T_{i,k(j)}$ be a type or a symbol and $C_i$ be a symbol for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$. Let $\mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C$ and
+$\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}$.
 \end{letIn}
 
 We say
@@ -177,8 +179,8 @@ $$
     \mathrm{free}(\{\_:T_1,\dots,\_:T_n\}) :=&\bigcup_{i\in\mathbb{N}_1^n}\mathrm{free}(T_i)\\
     \mathrm{free}(T_1 \to T_2) :=& \mathrm{free}(T_1)\cup\mathrm{free}(T_2)\\
     \mathrm{free}(\forall a.T) :=& \mathrm{free}(T)\backslash\{a\}\\
-    \mathrm{free}(\{a :T \ | \ r \}) :=& \mathrm{free}(T)\\
-    \mathrm{free}(a:T\to \hat{T}) :=& \mathrm{free}(T)\cup\mathrm{free}(\hat{T})
+    \mathrm{free}(\{a :\mathit{Int} \ | \ r \}) :=& \{\}\\
+    \mathrm{free}(a:\hat{T}_1\to \hat{T}_2) :=& \mathrm{free}(\hat{T}_1)\cup\mathrm{free}(\hat{T}_2)
 \end{aligned}
 $$
   
@@ -219,8 +221,8 @@ $$
             \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
             \forall b. [T]_\Theta & \text{else.}
         \end{cases}\\
-    [\{a:T \ | \ r \}]_\Theta :=& \{a:[T]_\Theta\ | \ r \}\\
-    [a:T\to \hat{T}]_\Theta :=& a:[T]_\Theta\to [\hat{T}]_\Theta
+    [\{a:\mathit{Int} \ | \ r \}]_\Theta :=& \{a:\mathit{Int}\ | \ r \}\\
+    [a:\hat{T}_1\to \hat{T}_2]_\Theta :=& a:[\hat{T}_1]_\Theta\to [\hat{T}_2]_\Theta
   \end{aligned}
 $$
 $\Theta$ is called the set of substitutions.
@@ -266,8 +268,8 @@ $$
 \mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f\in\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
   &\text{ not occur in } T.\\
-\mathrm{values}_\Gamma(\{ a:T \ | \ r \}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(\{ a:T \ | \ r \})\\
-\mathrm{values}_\Gamma(a:T\to \hat{T}) :=& \mathrm{refinedValues}_{\Gamma,\{\}}(a:T\to \hat{T})
+\mathrm{values}_\Gamma(\{ a:\mathit{Int} \ | \ r \}) :=& \mathrm{refinedValues}_{\{\}}(\{ a:\mathit{Int} \ | \ r \})\\
+\mathrm{values}_\Gamma(a:\hat{T}_1\to \hat{T}_2) :=& \mathrm{refinedValues}_{\{\}}(a:\hat{T}_1\to \hat{T}_2)
 \end{aligned}
 $$
 using the following helper functions.
@@ -304,15 +306,16 @@ $$
 Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$. We define:
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Gamma,\Theta}&(\{ a:T \ | \ r \}) :=\\
-   & \{ n\in \mathrm{values}_\Gamma(T) | \\
+\mathrm{refinedValues}_{\Theta}&(\{ a:\mathit{Int} \ | \ r \}) :=\\
+   & \{ n\in \mathrm{values}_{\{\}}(\mathit{Int}) | \\
    & r \text{ is well formed with respect to }\Theta\cup\{(a,n)\}\land \ \semantic{$r$}_{\Theta\cup\{(a,n)\}} \}\\
 \end{aligned}
 $$
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Gamma,\Theta}(a:T\to \hat{T}) :=\\
-        \{b\in \mathrm{values}_\Gamma(T \to \hat{T}) | \ \forall n&\in \mathrm{values}_\Gamma(T).b(n) \in \mathrm{refinedValues}_{\Gamma,\Theta\cup\{(a,n)\}}(\hat{T})\}
+\mathrm{refinedValues}_{\Theta}&(a:\hat{T}_1\to \hat{T}_2) :=\\
+   &\{b\in \mathrm{values}_{\{\}}(\hat{T}_1 \to \hat{T}_2) |\\
+   &\forall n\in \mathrm{values}_{\{\}}(\hat{T}_1).b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T}_2)\}
 \end{aligned}
 $$
 ```
