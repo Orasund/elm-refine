@@ -281,21 +281,22 @@ Note that where we replace the letter $\mf{v}$ with a special character $\nu$.
 
 #### liquid-type
 
-Judgment: $\mathit{lt}:\hat{T}$
+Judgment: $\mathit{lt}:_\Theta\hat{T}$
 
 \logicRule
 {\mathit{qt}:q\quad
-\{\nu:Int| \ q \ \}=\hat{T}
+\{\nu:\mathit{Int}| \ q \ \}=\hat{T}\quad
+\text{wellFormed}(\hat{T}_2,\Theta\cup\{(\nu,\mathit{Int})\})
 }
-{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:\hat{T}}
+{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}}
 {}
 
 \logicRule
-{\mathit{lt}_1:\hat{T}_1\quad
-\mathit{lt}_2:\hat{T}_2\quad
+{\mathit{lt}_1:_\Theta\hat{T}_1\quad
+\mathit{lt}_2:_{\Theta\cup\{(a,\hat{T}_1)\}}\hat{T}_2\quad
 (a:\hat{T}_1\rightarrow\hat{T}_2) = \hat{T}_3
 }
-{a \ \mf{":"} \ \mathit{lt}_1 \ \mf{"->"} \ \mathit{lt}_2:\hat{T}_3}
+{a \ \mf{":"} \ \mathit{lt}_1 \ \mf{"->"} \ \mathit{lt}_2:_\Theta\hat{T}_3}
 {}
 
 #### type
@@ -305,7 +306,7 @@ Judgment: $\Gamma\vdash t:T$
 \logicRule
 {\mathit{lt}:\hat{T}
 }
-{\Gamma\vdash \mathit{lt}:\hat{T}}
+{\Gamma\vdash \mathit{lt}:_{\{\}}\hat{T}}
 {}
 
 All other inference rules for types have already been described.
