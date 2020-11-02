@@ -125,7 +125,7 @@ Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be
 The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
 
 ```{definition,name="Most General Type"}
-\begin{letIn} $\Gamma$ be a type context, $T\in\mathcal{T}$, . 
+\begin{letIn} $\Gamma$ be a type context, $T\in\mathcal{T}$. 
 \end{letIn}
 
 We define $\overline{\Gamma}:\Gamma \to \mathcal{T}$ as

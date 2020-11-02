@@ -1,0 +1,536 @@
+---
+title: "Refinement Types for Elm"
+subtitle: "Master Thesis Report"
+author: "Lucas Payr"
+date: "30 Oktober 2019"
+output:
+  beamer_presentation:
+    theme: "metropolis" #"Boadilla" # "Rochester"
+    colortheme: "default" #"dolphin" #"dove" #"beaver" #"default" #"seagull"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Topics of this Talk
+
+* Introduction To Elm
+* Infering the type of an Elm Code
+* Introduction to Liquid Types
+* Infering Liquid Types
+
+# Introduction To Elm
+
+## Background: Elm Programming Language
+
+* Invented by Evan Czaplicki as his master-thesis in 2012.
+* Goal: Bring Function Programming to Web-Development
+* Side-Goal: Learning-friendly design decisions
+* Website: \alert{elm-lang.org}
+
+### Characteristics
+
+* Pure Functional Language (immutable, no side effect, everything is a function)
+* Compiles to JavaScript (in the future also to WebAssembly)
+* ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
+* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
+* "No Runtimes errors" (Out Of Memory, Stack Overflow, Function Equality)
+
+## Theory: Formalization of the Elm Type System
+
+We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
+
+We say
+$$
+\begin{aligned}
+  T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow
+       \ & T \text{ is a type variable}\\
+  \lor \ & T \text{ is a type application}\\
+  \lor \ & T \text{ is a algebraic type}\\
+  \lor \ & T \text{ is a product type}\\
+  \lor \ & T \text{ is a function type}\\
+  T \text{ is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow
+       \ & T = \forall a.T'\\
+         & \text{ where } T' \text{ is a mono type or poly type}\\
+         & \text{ and } a \text{ is a symbol}\\
+  T \text{ is a }\mathit{type} :\Leftrightarrow 
+       \ & T \text{ is a mono type} \ \lor \ T \text{ is a poly type}.
+\end{aligned}
+$$  
+
+## Theory: Formalization of the Elm Type System
+
+### Example
+
+1. $\mathit{Nat} ::= \mu C.1 \ | \ \mathit{Succ} \ C$
+2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
+3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
+
+## Theory: Formalization of the Elm Type System
+The $values$ of a type is the set corresponding to the type:
+
+$$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
+$$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{values}_n(\mathit{List} \ \mathit{Nat})$$
+$$\text{values}_0(List \ Nat) = \{[\ ]\}$$
+$$\begin{aligned}
+\text{values}_n&(List \ Nat) =\\
+&\{[\ ]\}\cup\{Cons \ a \ b|a\in \text{values}(Nat),b\in \text{values}_{n-1}(\textit{List} \ \textit{Nat})\}
+\end{aligned}$$
+
+## Order of Types
+
+Let $n,m\in\mathbb{N}$,
+$T_1,T_2\in\mathcal{T}$,
+$a_i$
+for all $i\in\mathbb{N}_0^n$ and $b_i\in\mathcal{V}$ for all $i\in\mathbb{N}_0^m$.
+
+We define the partial order $\sqsubseteq$ on poly types as
+$$
+\begin{aligned}
+\forall a_1 \dots \forall a_n.T_1 &\sqsubseteq \forall b_1 \dots \forall b_m.T_2:\Leftrightarrow \\
+  \exists \Theta &= \{(a_i,S_i) \ | \ i\in\mathbb{N}_1^n\land a_i\in\mathcal{V}\land
+S_i\in\mathcal{T}\}.\\
+  T_2&=[T_1]_\Theta \land \forall i\in\mathbb{N}_0^m.b_i\not\in\mathrm{free}(\forall a_1 \dots \forall a_n.T_1)
+\end{aligned}
+$$
+
+Given that $T_1\sqsubseteq T_2$, we say
+
+* $T_1$ is more general then $T_2$.
+* $T_2$ is more specific then $T_1$.
+
+Example: $\forall a. a \sqsubseteq \forall a. \mathit{List} \ a \sqsubseteq \mathit{List} \ \mathit{Int}$
+
+# Infering the type of an Elm Code
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b
+    then
+      b
+    else
+      a
+```
+
+
+## Infering the Type of the Max Function
+
+$$
+\frac
+{a\sqsubseteq_\Delta T
+}
+{\Gamma,\Delta\vdash a: T}
+$$
+
+**Instatiation**
+
+$$
+e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
+$$
+
+New rules:
+
+$$\frac
+{T_0 \sqsubseteq T}
+{\Gamma,\Delta\cup\{(a,T_0)\}\vdash a:T}\quad
+\frac
+{T_1 \sqsubseteq T}{\Gamma,\Delta\cup\{(b,T_1)\}\vdash b:T}$$
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b 
+    then
+      b                   --> \forall a.a
+    else
+      a                   --> \forall a.a
+```
+
+## Infering the Type of the Max Function
+
+
+$$
+\frac
+{}
+{\Gamma,\Delta\vdash\mathtt{"(<)"}:\mathit{Int}\to \mathit{Int}\to\mathit{Bool}}
+$$
+
+$$
+\frac
+{\Gamma,\Delta\vdash e_1: T_1\to T_2\quad
+\Gamma,\Delta\vdash e_2: T_1
+}
+{\Gamma,\Delta\vdash e_1 \ e_2: T_2}
+$$
+
+New rule:
+
+$$
+\frac
+{\Gamma,\Delta\vdash e_1: \mathit{Int}\quad
+\Gamma,\Delta\vdash e_2: \mathit{Int}
+}
+{\Gamma,\Delta\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+$$
+
+## Infering the Type of the Max Function
+
+$$\frac
+{T_0 \sqsubseteq T}
+{\Gamma,\Delta\cup\{(\mathtt{a},T_0)\}\vdash \mathtt{a}:T}\quad
+\frac
+{T_1 \sqsubseteq T}{\Gamma,\Delta\cup\{(\mathtt{b},T_1)\}\vdash \mathtt{b}:T}
+$$
+
+$$
+\frac
+{\Gamma,\Delta\vdash e_1: \mathit{Int}\quad
+\Gamma,\Delta\vdash e_2: \mathit{Int}
+}
+{\Gamma,\Delta\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+$$
+
+New rule:
+
+$$
+\frac
+{T_0 \sqsubseteq \mathit{Int}\quad
+T_1 \sqsubseteq \mathit{Int}
+}
+{\Gamma,\Delta\cup\{(\mathtt{a},T_0),(\mathtt{b},T_1)\}\vdash \mathtt{"(<)} \ \mathtt{a} \ \mathtt{b"}: \mathit{Bool}}
+$$
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b             --> Bool
+    then
+      b                   --> Int
+    else
+      a                   --> Int
+```
+
+## Infering the Type of the Max Function
+
+$$
+\frac
+{T_0 \sqsubseteq \mathit{Int}\quad
+T_1 \sqsubseteq \mathit{Int}
+}
+{\Gamma,\Delta\cup\{(a,T_0),(b,T_1)\}\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+$$
+
+$$
+\frac
+{
+\Gamma,\Delta\vdash e_1:\textit{Bool}\quad
+\Gamma,\Delta\vdash e_2: T\quad
+\Gamma,\Delta\vdash e_3: T
+}
+{\Gamma,\Delta\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:T_0}
+$$
+
+New rule:
+
+$$
+\frac
+{
+T_0 \sqsubseteq \mathit{Int}
+}
+{\Gamma,\Delta\cup\{(a,T_0),(b,T_0)\}\vdash\mathtt{"if (<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:T_0}
+$$
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if                    --> Int
+      (<) a b
+    then
+      b                   --> Int
+    else
+      a                   --> Int
+```
+
+## Infering the Type of the Max Function
+
+$$
+\frac
+{\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e: T_2
+}
+{\Gamma,\Delta\vdash\mathtt{"\textbackslash"} \ a \ \mathtt{"->"} \ e: T_1\to T_2}
+$$
+
+**Most General Type**
+
+\[\begin{aligned}
+\overline{\Gamma}:&\Gamma \to \mathcal{T}\\
+\overline{\Gamma}(T) := &\forall a_1 \dots \forall a_n.T_0\\
+&\text{such that } \{a_1,\dots,a_n\}=\text{free}(T')\setminus \{a \ | \ (a,\_)\in\Gamma\}\\
+& \text{where } a_i\in\mathcal{V} \text{ for } i\in\mathbb{N}_0^n \text{ and } T_0 \text{ is the mono type of } T.
+\end{aligned}\]
+
+We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
+
+The most general type of $\mathit{Int}$ is $\mathit{Int}$
+
+## Infering the Type of the Max Function
+
+Therefore we conclude
+
+$$
+\frac
+{}
+{\Gamma,\Delta\cup\{(a,\mathit{Int})\}\vdash\mathtt{"}\mathtt{\textbackslash b->}\mathtt{if}\ \mathtt{(<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:\mathit{Int}\to \mathit{Int}}
+$$
+
+$$
+\frac
+{}
+{\Gamma,\Delta\vdash\mathtt{"}\mathtt{\textbackslash a->}\mathtt{\textbackslash b->}\mathtt{if}\ \mathtt{(<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:\mathit{Int}\to\mathit{Int}\to \mathit{Int}}
+$$
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =                     --> Int -> Int -> Int
+  \a -> \b ->
+    if                    --> Int
+      (<) a b
+    then
+      b                   --> Int
+    else
+      a                   --> Int
+```
+
+# Introduction to Liquid Types
+
+## Background: Refinement Types
+
+Restricts the values of an existing type using a predicate.
+
+Initial paper in 1991 by Tim Freeman and Frank Pfenning
+
+* Initial concept was done in ML.
+* Allows predicates with only $\land,\lor,=$, constants and basic pattern matching.
+* Operates over algebraic types.
+* Needed to specify **explicitly** all possible Values.
+    
+### Example
+$$
+\{ a:(\mathit{Bool},\mathit{Bool})| \ a=(\mathit{True},\mathit{False}) \lor a=(\mathit{False},\mathit{True})\}
+$$
+
+
+## Background: Liquid Types
+
+Liquid Types (Logically Quantified Data Types) introduced in 2008
+
+* Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
+* Initial concept done in OCaml. Later also C, Haskell and TypeScript.
+* Operates over Integers and Booleans. Later also Tuples and Functions.
+* Allows predicates with logical operators, comparisons and addition.
+
+## Example
+
+$$a:\mathit{Bool}\to b:\mathit{Bool}\to\{\nu:\mathit{Bool}|\nu = (a\lor b) \land \neg (a\land b)\}$$
+$$
+\begin{aligned}
+a:\mathit{Int}\to b:\mathit{Int}\to\{&\nu:\mathit{Bool}\\
+|\ &(\nu = a \land \nu > b)\\
+\lor &(\nu = b \land \nu > a)\\
+\lor &(\nu = a \land \nu = b)\}
+\end{aligned}
+$$
+
+$$(/):\mathit{Int} \rightarrow \{\nu:\mathit{Int}|\neg (\nu = 0)\} \rightarrow \mathit{Int}$$
+
+## Logical Qualifier Expressions
+
+$$
+  \small\begin{aligned}
+    \mathit{IntExp} ::= \ & \mathbb{Z}\\
+      | \ & \mathit{IntExp} + \mathit{IntExp}\\
+      | \ & \mathit{IntExp} * \mathbb{Z}\\
+      | \ & \mathcal{V}
+  \end{aligned}
+$$
+
+$$
+  \small\begin{aligned}
+    \mathcal{Q} ::= \ & \mathit{True}\\
+      | \ & \mathit{False}\\
+      | \ & \mathit{IntExp} < \mathcal{V}\\
+      | \ & \mathcal{V} < \mathit{IntExp}\\
+      | \ & \mathcal{V} = \mathit{IntExp}\\
+      | \ & \mathcal{Q} \land \mathcal{Q}\\
+      | \ & \mathcal{Q} \lor \mathcal{Q}\\
+      | \ & \neg \mathcal{Q}
+  \end{aligned}
+$$
+
+## Defining Liquid Types
+
+$$
+\begin{aligned}
+T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ 
+         & T \text{ is of form } \{ a :\mathit{Int} \ | \ r \}\\
+         & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
+         & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
+&\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
+  \lor \ & T \text{ is of form } a:\hat{T}_1\to \hat{T}_2\\
+         & \text{where } a \text{ is a symbol}, \hat{T}_2 \text{ and } \hat{T}_1 \text{ are liquid types}
+         \end{aligned}
+$$
+
+# Infering Liquid Types
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b
+    then
+      b
+    else
+      a
+```
+
+## Infering the Type of the Max Function
+
+$$
+\frac
+{(a,\{\nu:\hat{T}| \ r\}) \in \Delta
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
+{}
+$$
+
+New rule:
+
+$$
+\frac
+{}
+{\Gamma,\Delta\cup\{(\mathtt{a},\{\nu:\mathit{Int}| \ r_0\})\},\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
+{}
+$$
+$$
+\frac
+{}
+{\Gamma,\Delta\cup\{(\mathtt{b},\{\nu:\mathit{Int}| \ r_1\})\},\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
+{}
+$$
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b
+    then
+      b                   --> {v:Int| True }
+    else
+      a                   --> {v:Int| True }
+```
+
+## Infering the Type of the Max Function
+
+```
+max : Int -> Int -> Int;
+max =
+  \a -> \b ->
+    if 
+      (<) a b             --> Bool
+    then
+      b                   --> {v:Int| True }
+    else
+      a                   --> {v:Int| True }
+```
+
+## Infering the Type of the Max Function
+
+$$
+\frac
+{}
+{\Gamma,\Delta\cup\{(a,\{\nu:\mathit{Int}| \ r_0\}),(b,\{\nu:\mathit{Int}| \ r_1\})\},\Theta,\Lambda\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+$$
+
+$$
+\frac
+{
+\begin{gathered}
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1:\textit{Bool}\quad
+e_1:e_1'\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{e_1'\}\vdash e_2: \hat{T}\quad
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1'\}\vdash e_3: \hat{T}
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:\hat{T}}
+$$
+
+New rule:
+
+$$
+\frac
+{
+\begin{gathered}
+\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash e_2: \{\nu:\mathit{Int}|r_0\}\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash e_3: \{\nu:\mathit{Int}|r_0\}
+\end{gathered}
+}
+{\Gamma,\Delta\cup\begin{Bmatrix}(a,\{\nu:\mathit{Int}|r_0\}),\\(b,\{\nu:\mathit{Int}|r_0\})\end{Bmatrix},\Theta,\Lambda\vdash\begin{aligned}\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\\\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}\end{aligned}:\{\nu:\mathit{Int}|r_0\}}
+$$
+
+## Subtyping
+
+$$
+\begin{aligned}
+&\{a_1:\mathit{Int}| r_1 \} <:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| r_2\} \ :\Leftrightarrow \\ &\text{Let} \ \{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta \ \text{in}\\
+&\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
+&\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
+                                                                                  &\quad [[e]]_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+   &\quad\land [[r_1]]_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+                                                                                  &\Rightarrow[[r_2]]_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}
+                                                                                  \end{aligned}
+                                                                                  $$
+                                                                                  $$
+                                                                                  \begin{aligned}
+a_1:\hat{T}_1\to\hat{T}_2 <:_{\Theta,\Lambda} a_2:\hat{T}_3\to\hat{T}_4 \ :\Leftrightarrow \ 
+&\hat{T}_3<:_{\Theta,\Lambda}\hat{T}_1 \land \hat{T}_2<:_{\Theta\cup\{(a_1,\hat{T}_3)\},\Lambda}\hat{T}_4
+\end{aligned}
+$$
+
+## Current State
+
+1. Formal language similar to Elm **(DONE)**
+2. Extension of the formal language with Liquid Types
+    1. A formal syntax **(DONE)**
+    2. A formal type system **(WORK IN PROGRESS)**
+    3. Proof that the extension infers the correct types.
+3. A type checker implementation written in Elm for Elm.
+
+**Started thesis** in July 2019
+
+**Expected finish** in Summer 2021
