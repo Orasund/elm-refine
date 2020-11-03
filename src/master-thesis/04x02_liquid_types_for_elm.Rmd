@@ -379,7 +379,8 @@ a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
 We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
-{(a,\{\nu:\hat{T}| \ r\}) \in \Delta
+{(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(a,\{\nu:\hat{T}| \ r\}) \in \Theta
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
 {}

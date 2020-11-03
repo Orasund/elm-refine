@@ -2,7 +2,7 @@
 title: "Refinement Types for Elm"
 subtitle: "Master Thesis Report"
 author: "Lucas Payr"
-date: "30 Oktober 2019"
+date: "10 November 2019"
 output:
   beamer_presentation:
     theme: "metropolis" #"Boadilla" # "Rochester"
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction To Elm
 
-## Background: Elm Programming Language
+## Elm Programming Language
 
 * Invented by Evan Czaplicki as his master-thesis in 2012.
 * Goal: Bring Function Programming to Web-Development
@@ -37,7 +37,7 @@ knitr::opts_chunk$set(echo = FALSE)
 * Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
 * "No Runtimes errors" (Out Of Memory, Stack Overflow, Function Equality)
 
-## Theory: Formalization of the Elm Type System
+## Formalization of the Elm Type System
 
 We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
 
@@ -59,7 +59,7 @@ $$
 \end{aligned}
 $$  
 
-## Theory: Formalization of the Elm Type System
+## Formalization of the Elm Type System
 
 ### Example
 
@@ -67,7 +67,7 @@ $$
 2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
 3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
 
-## Theory: Formalization of the Elm Type System
+## Formalization of the Elm Type System
 The $values$ of a type is the set corresponding to the type:
 
 $$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
@@ -241,7 +241,7 @@ $$
 \Gamma,\Delta\vdash e_2: T\quad
 \Gamma,\Delta\vdash e_3: T
 }
-{\Gamma,\Delta\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:T_0}
+{\Gamma,\Delta\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:T}
 $$
 
 New rule:
@@ -322,7 +322,7 @@ max =                     --> Int -> Int -> Int
 
 # Introduction to Liquid Types
 
-## Background: Refinement Types
+## Refinement Types
 
 Restricts the values of an existing type using a predicate.
 
@@ -339,7 +339,7 @@ $$
 $$
 
 
-## Background: Liquid Types
+## Liquid Types
 
 Liquid Types (Logically Quantified Data Types) introduced in 2008
 
@@ -405,7 +405,11 @@ $$
 ## Infering the Type of the Max Function
 
 ```
-max : Int -> Int -> Int;
+max : a:{ v:Int|True } -> b:{ v:Int|True }
+  -> { v:Int | (||) ((&&) ((=) v a) ((>) v b))
+             ( (||) ((&&) ((=) v b) ((>) v a))
+                    ((&&) ((=) v a) ((=) v b))
+             ) };
 max =
   \a -> \b ->
     if 
@@ -420,7 +424,8 @@ max =
 
 $$
 \frac
-{(a,\{\nu:\hat{T}| \ r\}) \in \Delta
+{(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(a,\{\nu:\hat{T}| \ r\}) \in \Theta
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
 {}
@@ -430,43 +435,53 @@ New rule:
 
 $$
 \frac
-{}
-{\Gamma,\Delta\cup\{(\mathtt{a},\{\nu:\mathit{Int}| \ r_0\})\},\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
+{(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
 {}
 $$
 $$
 \frac
-{}
-{\Gamma,\Delta\cup\{(\mathtt{b},\{\nu:\mathit{Int}| \ r_1\})\},\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
+{(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
 {}
 $$
 
 ## Infering the Type of the Max Function
 
 ```
-max : Int -> Int -> Int;
+max : a:{ v:Int|True } -> b:{ v:Int|True }
+  -> { v:Int | (||) ((&&) ((=) v a) ((>) v b))
+             ( (||) ((&&) ((=) v b) ((>) v a))
+                    ((&&) ((=) v a) ((=) v b))
+             ) };
 max =
   \a -> \b ->
     if 
       (<) a b
     then
-      b                   --> {v:Int| True }
+      b       --> {v:Int| True }
     else
-      a                   --> {v:Int| True }
+      a       --> {v:Int| True }
 ```
 
 ## Infering the Type of the Max Function
 
 ```
-max : Int -> Int -> Int;
+max : a:{ v:Int|True } -> b:{ v:Int|True }
+  -> { v:Int | (||) ((&&) ((=) v a) ((>) v b))
+             ( (||) ((&&) ((=) v b) ((>) v a))
+                    ((&&) ((=) v a) ((=) v b))
+             ) };
 max =
   \a -> \b ->
     if 
-      (<) a b             --> Bool
+      (<) a b --> Bool
     then
-      b                   --> {v:Int| True }
+      b       --> {v:Int| True }
     else
-      a                   --> {v:Int| True }
+      a       --> {v:Int| True }
 ```
 
 ## Infering the Type of the Max Function
@@ -496,31 +511,136 @@ $$
 \frac
 {
 \begin{gathered}
-\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash e_2: \{\nu:\mathit{Int}|r_0\}\\
-\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash e_3: \{\nu:\mathit{Int}|r_0\}
+\{(a,\{\nu:\mathit{Int}|r_0\}),(b,\{\nu:\mathit{Int}|r_1\})\}\in\Delta\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash \mathtt{b}: \{\nu:\mathit{Int}|r_2\}\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash \mathtt{a}: \{\nu:\mathit{Int}|r_2\}
 \end{gathered}
 }
-{\Gamma,\Delta\cup\begin{Bmatrix}(a,\{\nu:\mathit{Int}|r_0\}),\\(b,\{\nu:\mathit{Int}|r_0\})\end{Bmatrix},\Theta,\Lambda\vdash\begin{aligned}\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\\\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}\end{aligned}:\{\nu:\mathit{Int}|r_0\}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}|r_2\}}
 $$
 
-## Subtyping
+## Infering the Type of the Max Function
+
+$$
+\frac
+{(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
+{}
+$$
+$$
+\frac
+{(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
+{}
+$$
+
+$$
+\frac
+{
+\begin{gathered}
+\{(a,\{\nu:\mathit{Int}|r_0\}),(b,\{\nu:\mathit{Int}|r_1\})\}\in\Delta\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash \mathtt{b}: \{\nu:\mathit{Int}|r_2\}\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash \mathtt{a}: \{\nu:\mathit{Int}|r_2\}
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}|r_2\}}
+$$
+
+## Infering the Type of the Max Function
+
+**Subtyping Rule**
+
+$$
+\frac
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_1\quad
+\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\quad
+\text{wellFormed}(\hat{T}_2,\Theta)
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_2}
+$$
 
 $$
 \begin{aligned}
-&\{a_1:\mathit{Int}| r_1 \} <:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| r_2\} \ :\Leftrightarrow \\ &\text{Let} \ \{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta \ \text{in}\\
+\{a_1:\mathit{Int}| r_1 \} <:_{\Theta,\Lambda}& \{ a_2 : \mathit{Int}| r_2\} \ :\Leftrightarrow \\ &\text{Let} \ \{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta \ \text{in}\\
 &\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
 &\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
                                                                                   &\quad [[e]]_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
    &\quad\land [[r_1]]_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
                                                                                   &\Rightarrow[[r_2]]_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}
                                                                                   \end{aligned}
-                                                                                  $$
-                                                                                  $$
-                                                                                  \begin{aligned}
-a_1:\hat{T}_1\to\hat{T}_2 <:_{\Theta,\Lambda} a_2:\hat{T}_3\to\hat{T}_4 \ :\Leftrightarrow \ 
-&\hat{T}_3<:_{\Theta,\Lambda}\hat{T}_1 \land \hat{T}_2<:_{\Theta\cup\{(a_1,\hat{T}_3)\},\Lambda}\hat{T}_4
+$$
+
+## Infering the Type of the Max Function
+
+Find $r_2\in\mathcal{Q}$ such that
+
+$$[[((a < b) \land \nu = b )\Rightarrow r_2]]_{\{(a,\{\nu:\mathit{Int}| r_0 \}),(b,\{\nu:\mathit{Int}| r_1 \})\}}$$
+
+and
+
+$$[[(\neg(a < b) \land \nu = a) \Rightarrow r_2]]_{\{(a,\{\nu:\mathit{Int}| r_0 \}),(b,\{\nu:\mathit{Int}| r_1 \})\}}$$
+
+are valid.
+
+Use SMT-Solver to find a solution.
+
+Sharpest solution: $r_2 := ((a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \nu = a))$
+
+## Infering the Type of the Max Function
+
+```
+max : a:{ v:Int|True } -> b:{ v:Int|True }
+  -> { v:Int | (||) ((&&) ((=) v a) ((>) v b))
+             ( (||) ((&&) ((=) v b) ((>) v a))
+                    ((&&) ((=) v a) ((=) v b))
+             ) };
+max =
+  \a -> \b ->
+    if        --> {v:Int
+      (<) a b --  | (||) ((&&) ((<) a v) ((=) v b))
+    then      --      ((&&) (not ((<) a v)) ((=) v a))
+              --  }
+      b       --> {v:Int| r_0 }
+    else
+      a       --> {v:Int| r_1 }
+```
+
+## Infering the Type of the Max Function
+
+We infer the type
+
+$$
+\begin{aligned}
+a:\{\nu:Int| r_0\} \to& b:\{\nu:Int| r_1\}\\
+\to& \{\nu:Int|(a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \nu = a)\}
 \end{aligned}
 $$
+
+The type annotation says the type should be
+
+$$
+\begin{aligned}
+a:\{\nu:Int| \mathit{True} \} \to &b:\{\nu:Int| \mathit{True} \}\\
+\to &\{\nu:Int\\
+ |\ &(a < \nu \land \nu = b) \\
+ \lor\ &(b < \nu \land \nu = a)\\
+ \lor\ &(\nu = a \land \nu = b)\}
+\end{aligned}
+$$
+
+## Infering the Type of the Max Function
+
+We set $r_0 = \mathit{True}$, $r_1 = \mathit{True}$ and prove
+
+$$(a < \nu \land \nu = b) \lor (b < \nu \land \nu = a) \lor (\nu = a \land \nu = b)$$
+
+is equivalent to
+
+$$(a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \nu = a)$$
+
+using the Subtype-rule and an SMT-Solver.
 
 ## Current State
 
