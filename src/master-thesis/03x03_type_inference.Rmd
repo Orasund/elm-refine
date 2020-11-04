@@ -108,24 +108,8 @@ We will write ${a_1,\dots,a_n}=\text{free}(T)$ to denote all free variables $a_1
 
 The type system that we are using is polymorphic, meaning that whenever a judgment holds for a type, it will also hold for a more specific type. To counter this polymorphism we will force the types in a judgment to be unique by explicitly stating whenever we want to use a more specific or general type.
 
-```{definition,name="Instantiation"}
-\begin{letIn}
-$\Delta:\mathcal{V}\nrightarrow \mathcal{T}$ be a type context, $T\in\mathcal{T}$ and $e$ be an expression.
-\end{letIn}
-
-Then we define
-
-$$
-e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
-$$
-
-Note that $\Delta$ is a partial function and therefore $\Delta(e)$ would only be defined if $T_0$ exists. If $T_0$ does not exist, then this predicate will be false.
-```
-
-The act of replacing $T_0$ with the more specific type $T$ is called _Instantiation_ and is typically in the text books introduced as an additional inference rule.
-
 ```{definition,name="Most General Type"}
-\begin{letIn} $\Gamma$ be a type context, $T\in\mathcal{T}$. 
+\begin{letIn} $\Gamma$ be a type context, $T\in\mathcal{T}$, . 
 \end{letIn}
 
 We define $\overline{\Gamma}:\Gamma \to \mathcal{T}$ as
@@ -140,7 +124,9 @@ We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
 
 ```
 
-The most general type ensures that all type variables are bound by either an quantifier or a type alias in the type context $\Gamma$. It also ensure that every type variable bound by a quantifier occures in the mono type $T_0$. The act of replacing types with more general onces, by binding free variables, is called _Generalization_ and is also typically found as an inference rule in text books.
+The most general type ensures that all type variables are bound by either an quantifier or a type alias in the type context $\Gamma$. It also ensure that every type variable bound by a quantifier occures in the mono type $T_0$.
+
+The act of replacing types with more general onces, by binding free variables, is called _Generalization_ and the act of replacing are more general type with a more specific type is called _Instantiation_. Both rules are typically in the text books introduced as an additional inference rule.
 
 #### Predefined Types
 

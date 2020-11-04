@@ -170,7 +170,7 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 \logicRule
 {\begin{gathered}
 \Gamma,\Delta\vdash \mathit{lef}:\{a_1:T_1,\dots, a_n:T_n\}\\
-\Gamma,\Delta\vdash a \sqsubseteq_\Delta T_0\quad
+\Gamma,\Delta\vdash (a,\overline{\Gamma}(T_0))\in\Delta\quad
 T_0=\{a_1:T_1,\dots,a_n:T_n,\dots \}
 \end{gathered}
 }
@@ -233,13 +233,13 @@ mes:T_1\vdash a:T_1\\
 {}
 
 \logicRule
-{c\sqsubseteq_\Delta T
+{(c,\overline{\Gamma}(T))\in\Delta
 }
 {\Gamma,\Delta\vdash c: T}
 {}
 
 \logicRule
-{a\sqsubseteq_\Delta T
+{(a,\overline{\Gamma}(T))\in\Delta
 }
 {\Gamma,\Delta\vdash a: T}
 {}
