@@ -304,9 +304,9 @@ Judgment: $\mathit{lt}:_\Theta\hat{T}$
 Judgment: $\Gamma\vdash t:T$
 
 \logicRule
-{\mathit{lt}:\hat{T}
+{\mathit{lt}:_{\{\}}\hat{T}
 }
-{\Gamma\vdash \mathit{lt}:_{\{\}}\hat{T}}
+{\Gamma\vdash \mathit{lt}:\hat{T}}
 {}
 
 All other inference rules for types have already been described.
@@ -379,8 +379,11 @@ a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
 We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
-{(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = a\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
 (a,\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
 {}

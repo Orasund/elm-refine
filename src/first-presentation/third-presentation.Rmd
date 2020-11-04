@@ -2,7 +2,7 @@
 title: "Refinement Types for Elm"
 subtitle: "Master Thesis Report"
 author: "Lucas Payr"
-date: "10 November 2019"
+date: "10 November 2020"
 output:
   beamer_presentation:
     theme: "metropolis" #"Boadilla" # "Rochester"
@@ -16,13 +16,13 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Topics of this Talk
 
 * Introduction To Elm
-* Infering the type of an Elm Code
+* Type Inference
 * Introduction to Liquid Types
-* Infering Liquid Types
+* Liquid Type Inference
 
 # Introduction To Elm
 
-## Elm Programming Language
+## Introduction To Elm: Elm Programming Language
 
 * Invented by Evan Czaplicki as his master-thesis in 2012.
 * Goal: Bring Function Programming to Web-Development
@@ -34,10 +34,10 @@ knitr::opts_chunk$set(echo = FALSE)
 * Pure Functional Language (immutable, no side effect, everything is a function)
 * Compiles to JavaScript (in the future also to WebAssembly)
 * ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
-* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
+* Simpler than Haskell (no Type classes, no Monads)
 * "No Runtimes errors" (Out Of Memory, Stack Overflow, Function Equality)
 
-## Formalization of the Elm Type System
+## Introduction To Elm: Hindley-Milner Type System
 
 We will use the Hindley-Milner type system (used in ML, Haskell and Elm)
 
@@ -59,7 +59,7 @@ $$
 \end{aligned}
 $$  
 
-## Formalization of the Elm Type System
+## Introduction To Elm: Hindley-Milner Type System
 
 ### Example
 
@@ -67,7 +67,7 @@ $$
 2. $\mathit{List} = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$
 3. $\text{splitAt}:\forall a.\mathit{Nat} \rightarrow List \ a \rightarrow (List \ a,List \ a)$
 
-## Formalization of the Elm Type System
+## Introduction To Elm: Hindley-Milner Type System
 The $values$ of a type is the set corresponding to the type:
 
 $$\text{values}(\mathit{Nat}) = \{1,\mathit{Succ} \ 1, \mathit{Succ} \ \mathit{Succ} \ 1,\dots\}$$
@@ -75,10 +75,10 @@ $$\text{values}(\mathit{List} \ \mathit{Nat}) = \bigcup_{n\in\mathbb{N}} \text{v
 $$\text{values}_0(List \ Nat) = \{[\ ]\}$$
 $$\begin{aligned}
 \text{values}_n&(List \ Nat) =\\
-&\{[\ ]\}\cup\{Cons \ a \ b|a\in \text{values}(Nat),b\in \text{values}_{n-1}(\textit{List} \ \textit{Nat})\}
+&\{Cons \ a \ b|a\in \text{values}(Nat),b\in \text{values}_{n-1}(\textit{List} \ \textit{Nat})\}
 \end{aligned}$$
 
-## Order of Types
+## Introduction To Elm: Order of Types
 
 Let $n,m\in\mathbb{N}$,
 $T_1,T_2\in\mathcal{T}$,
@@ -95,16 +95,22 @@ S_i\in\mathcal{T}\}.\\
 \end{aligned}
 $$
 
-Given that $T_1\sqsubseteq T_2$, we say
+Example: $\forall a. a \sqsubseteq \forall a. \mathit{List} \ a \sqsubseteq \mathit{List} \ \mathit{Nat}$
 
-* $T_1$ is more general then $T_2$.
-* $T_2$ is more specific then $T_1$.
+## Most General Type
 
-Example: $\forall a. a \sqsubseteq \forall a. \mathit{List} \ a \sqsubseteq \mathit{List} \ \mathit{Int}$
+\[\begin{aligned}
+\overline{\Gamma}:&\Gamma \to \mathcal{T}\\
+\overline{\Gamma}(T) := &\forall a_1 \dots \forall a_n.T_0\\
+&\text{such that } \{a_1,\dots,a_n\}=\text{free}(T')\setminus \{a \ | \ (a,\_)\in\Gamma\}\\
+& \text{where } a_i\in\mathcal{V} \text{ for } i\in\mathbb{N}_0^n \text{ and } T_0 \text{ is the mono type of } T.
+\end{aligned}\]
 
-# Infering the type of an Elm Code
+We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
 
-## Infering the Type of the Max Function
+# Type Inference
+
+## Type Inference: Infering the Type of the Max Function
 
 ```
 max : Int -> Int -> Int;
@@ -119,30 +125,24 @@ max =
 ```
 
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
-{a\sqsubseteq_\Delta T
+{(a,\overline{\Gamma}(T))\in\Delta
 }
 {\Gamma,\Delta\vdash a: T}
-$$
-
-**Instatiation**
-
-$$
-e \sqsubseteq_\Delta T :\Leftrightarrow \exists T_0\in\mathcal{T}. (e,T_0)\in\Delta \land T_0 \sqsubseteq T
 $$
 
 New rules:
 
 $$\frac
-{T_0 \sqsubseteq T}
-{\Gamma,\Delta\cup\{(a,T_0)\}\vdash a:T}\quad
+{}
+{\Gamma,\Delta\cup\{(a,\overline{\Gamma}(T))\}\vdash a:T}\quad
 \frac
-{T_1 \sqsubseteq T}{\Gamma,\Delta\cup\{(b,T_1)\}\vdash b:T}$$
+{}{\Gamma,\Delta\cup\{(b,\overline{\Gamma}(T))\}\vdash b:T}$$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 ```
 max : Int -> Int -> Int;
@@ -151,12 +151,12 @@ max =
     if 
       (<) a b 
     then
-      b                   --> \forall a.a
+      b                   --> a1
     else
-      a                   --> \forall a.a
+      a                   --> a2
 ```
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 
 $$
@@ -183,13 +183,13 @@ $$
 {\Gamma,\Delta\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
 $$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 $$\frac
-{T_0 \sqsubseteq T}
-{\Gamma,\Delta\cup\{(\mathtt{a},T_0)\}\vdash \mathtt{a}:T}\quad
+{}
+{\Gamma,\Delta\cup\{(\mathtt{a},\overline{\Gamma}(T))\}\vdash \mathtt{a}:T}\quad
 \frac
-{T_1 \sqsubseteq T}{\Gamma,\Delta\cup\{(\mathtt{b},T_1)\}\vdash \mathtt{b}:T}
+{}{\Gamma,\Delta\cup\{(\mathtt{b},\overline{\Gamma}(T))\}\vdash \mathtt{b}:T}
 $$
 
 $$
@@ -200,17 +200,17 @@ $$
 {\Gamma,\Delta\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
 $$
 
+The most general type of $\mathit{Int}$ is $\mathit{Int}$
+
 New rule:
 
 $$
 \frac
-{T_0 \sqsubseteq \mathit{Int}\quad
-T_1 \sqsubseteq \mathit{Int}
-}
-{\Gamma,\Delta\cup\{(\mathtt{a},T_0),(\mathtt{b},T_1)\}\vdash \mathtt{"(<)} \ \mathtt{a} \ \mathtt{b"}: \mathit{Bool}}
+{}
+{\Gamma,\Delta\cup\{(\mathtt{a},\mathit{Int}),(\mathtt{b},\mathit{Int})\}\vdash \mathtt{"(<)} \ \mathtt{a} \ \mathtt{b"}: \mathit{Bool}}
 $$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 ```
 max : Int -> Int -> Int;
@@ -224,14 +224,12 @@ max =
       a                   --> Int
 ```
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
-{T_0 \sqsubseteq \mathit{Int}\quad
-T_1 \sqsubseteq \mathit{Int}
-}
-{\Gamma,\Delta\cup\{(a,T_0),(b,T_1)\}\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+{}
+{\Gamma,\Delta\cup\{(a,\mathit{Int}),(b,\mathit{Int})\}\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
 $$
 
 $$
@@ -248,13 +246,11 @@ New rule:
 
 $$
 \frac
-{
-T_0 \sqsubseteq \mathit{Int}
-}
-{\Gamma,\Delta\cup\{(a,T_0),(b,T_0)\}\vdash\mathtt{"if (<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:T_0}
+{}
+{\Gamma,\Delta\cup\{(a,\mathit{Int}),(b,\mathit{Int})\}\vdash\mathtt{"if (<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:\mathit{Int}}
 $$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 ```
 max : Int -> Int -> Int;
@@ -268,7 +264,7 @@ max =
       a                   --> Int
 ```
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
@@ -277,20 +273,9 @@ $$
 {\Gamma,\Delta\vdash\mathtt{"\textbackslash"} \ a \ \mathtt{"->"} \ e: T_1\to T_2}
 $$
 
-**Most General Type**
-
-\[\begin{aligned}
-\overline{\Gamma}:&\Gamma \to \mathcal{T}\\
-\overline{\Gamma}(T) := &\forall a_1 \dots \forall a_n.T_0\\
-&\text{such that } \{a_1,\dots,a_n\}=\text{free}(T')\setminus \{a \ | \ (a,\_)\in\Gamma\}\\
-& \text{where } a_i\in\mathcal{V} \text{ for } i\in\mathbb{N}_0^n \text{ and } T_0 \text{ is the mono type of } T.
-\end{aligned}\]
-
-We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
-
 The most general type of $\mathit{Int}$ is $\mathit{Int}$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 Therefore we conclude
 
@@ -306,7 +291,7 @@ $$
 {\Gamma,\Delta\vdash\mathtt{"}\mathtt{\textbackslash a->}\mathtt{\textbackslash b->}\mathtt{if}\ \mathtt{(<)} \ \mathtt{a}\ \mathtt{b}\ \mathtt{then} \ \mathtt{b} \ \mathtt{else} \ \mathtt{a"}:\mathit{Int}\to\mathit{Int}\to \mathit{Int}}
 $$
 
-## Infering the Type of the Max Function
+## Type Inference: Infering the Type of the Max Function
 
 ```
 max : Int -> Int -> Int;
@@ -322,7 +307,7 @@ max =                     --> Int -> Int -> Int
 
 # Introduction to Liquid Types
 
-## Refinement Types
+## Introduction to Liquid Types: Refinement Types
 
 Restricts the values of an existing type using a predicate.
 
@@ -339,7 +324,7 @@ $$
 $$
 
 
-## Liquid Types
+## Introduction to Liquid Types: Liquid Types
 
 Liquid Types (Logically Quantified Data Types) introduced in 2008
 
@@ -353,7 +338,7 @@ Liquid Types (Logically Quantified Data Types) introduced in 2008
 $$a:\mathit{Bool}\to b:\mathit{Bool}\to\{\nu:\mathit{Bool}|\nu = (a\lor b) \land \neg (a\land b)\}$$
 $$
 \begin{aligned}
-a:\mathit{Int}\to b:\mathit{Int}\to\{&\nu:\mathit{Bool}\\
+a:\mathit{Int}\to b:\mathit{Int}\to\{&\nu:\mathit{Int}\\
 |\ &(\nu = a \land \nu > b)\\
 \lor &(\nu = b \land \nu > a)\\
 \lor &(\nu = a \land \nu = b)\}
@@ -362,13 +347,13 @@ $$
 
 $$(/):\mathit{Int} \rightarrow \{\nu:\mathit{Int}|\neg (\nu = 0)\} \rightarrow \mathit{Int}$$
 
-## Logical Qualifier Expressions
+## Introduction to Liquid Types: Logical Qualifier Expressions
 
 $$
   \small\begin{aligned}
     \mathit{IntExp} ::= \ & \mathbb{Z}\\
       | \ & \mathit{IntExp} + \mathit{IntExp}\\
-      | \ & \mathit{IntExp} * \mathbb{Z}\\
+      | \ & \mathit{IntExp} \cdot \mathbb{Z}\\
       | \ & \mathcal{V}
   \end{aligned}
 $$
@@ -386,7 +371,7 @@ $$
   \end{aligned}
 $$
 
-## Defining Liquid Types
+## Introduction to Liquid Types: Defining Liquid Types
 
 $$
 \begin{aligned}
@@ -400,9 +385,9 @@ T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \
          \end{aligned}
 $$
 
-# Infering Liquid Types
+# Liquid Type Inference
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 ```
 max : a:{ v:Int|True } -> b:{ v:Int|True }
@@ -420,35 +405,43 @@ max =
       a
 ```
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
-{(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = a\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
 (a,\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
-{}
+{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}{}
 $$
 
 New rule:
 
 $$
 \frac
-{(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
-(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta}
-{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
-{}
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = \mathtt{a}\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\hat{T}| \ \nu = \mathtt{a}\}}{}
 $$
 $$
 \frac
-{(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
-(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta}
-{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
-{}
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = \mathtt{b}\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\hat{T}| \ \nu = b\}}{}
 $$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 ```
 max : a:{ v:Int|True } -> b:{ v:Int|True }
@@ -466,7 +459,7 @@ max =
       a       --> {v:Int| True }
 ```
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 ```
 max : a:{ v:Int|True } -> b:{ v:Int|True }
@@ -484,12 +477,12 @@ max =
       a       --> {v:Int| True }
 ```
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
 {}
-{\Gamma,\Delta\cup\{(a,\{\nu:\mathit{Int}| \ r_0\}),(b,\{\nu:\mathit{Int}| \ r_1\})\},\Theta,\Lambda\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
+{\Gamma,\Delta\cup\{(\mathtt{a},\{\nu:\mathit{Int}| \ r_0\}),(\mathtt{b},\{\nu:\mathit{Int}| \ r_1\})\},\Theta,\Lambda\vdash \mathtt{"(<)"} \ e_1 \ e_2: \mathit{Bool}}
 $$
 
 $$
@@ -519,21 +512,27 @@ $$
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}|r_2\}}
 $$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 $$
 \frac
-{(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
-(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta}
-{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\mathit{Int}| \ \nu = a\}}
-{}
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = \mathtt{a}\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{a},\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{a}: \{\nu:\hat{T}| \ \nu = \mathtt{a}\}}{}
 $$
 $$
 \frac
-{(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
-(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta}
-{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}
-{}
+{\begin{gathered}
+\{\nu:\hat{T}| \ \nu = \mathtt{b}\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Delta\quad
+(\mathtt{b},\{\nu:\hat{T}| \ r\}) \in \Theta
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\hat{T}| \ \nu = b\}}{}
 $$
 
 $$
@@ -548,7 +547,7 @@ $$
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}|r_2\}}
 $$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 **Subtyping Rule**
 
@@ -572,7 +571,7 @@ $$
                                                                                   \end{aligned}
 $$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 Find $r_2\in\mathcal{Q}$ such that
 
@@ -588,7 +587,7 @@ Use SMT-Solver to find a solution.
 
 Sharpest solution: $r_2 := ((a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \nu = a))$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 ```
 max : a:{ v:Int|True } -> b:{ v:Int|True }
@@ -607,7 +606,7 @@ max =
       a       --> {v:Int| r_1 }
 ```
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 We infer the type
 
@@ -630,7 +629,7 @@ a:\{\nu:Int| \mathit{True} \} \to &b:\{\nu:Int| \mathit{True} \}\\
 \end{aligned}
 $$
 
-## Infering the Type of the Max Function
+## Liquid Type Inference: Infering the Type of the Max Function
 
 We set $r_0 = \mathit{True}$, $r_1 = \mathit{True}$ and prove
 

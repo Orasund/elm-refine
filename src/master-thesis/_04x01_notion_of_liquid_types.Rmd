@@ -15,7 +15,7 @@ $$
   \begin{aligned}
     \mathit{IntExp} ::= \ & \mathbb{Z}\\
       | \ & \mathit{IntExp} + \mathit{IntExp}\\
-      | \ & \mathit{IntExp} * \mathbb{Z}\\
+      | \ & \mathit{IntExp} \cdot \mathbb{Z}\\
       | \ & \mathcal{V}
   \end{aligned}
 $$

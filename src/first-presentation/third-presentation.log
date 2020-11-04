@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.8)  3 NOV 2020 20:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.8)  4 NOV 2020 15:38
 entering extended mode
 **./third-presentation.tex
 (third-presentation.tex
@@ -1384,29 +1384,20 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 LaTeX Font Info:    Try loading font information for T1+lmtt on input line 25.
 ("C:\Users\Edzgou\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-))
-Overfull \vbox (5.88599pt too high) detected at line 128
- []
-
-[4
+)) [4
 
 ]
-Overfull \vbox (17.06215pt too high) detected at line 151
+Overfull \vbox (17.06215pt too high) detected at line 150
  []
 
 [5
 
 ] [6
 
-]
-Overfull \hbox (1.25783pt too wide) detected at line 183
-[][]
- []
-
-[7
+] [7
 
 ]
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 213.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 202.
 ("C:\Users\Edzgou\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lm\t1lmr.fd"
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1418,68 +1409,68 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 
 ] [9
 
-]
-\openout4 = `third-presentation.vrb'.
-
-(third-presentation.vrb) [10
-
-] [11
+] [10
 
 ]
 \openout4 = `third-presentation.vrb'.
 
-(third-presentation.vrb) [12
+(third-presentation.vrb) [11
 
-] [13
+] [12
+
+]
+\openout4 = `third-presentation.vrb'.
+
+(third-presentation.vrb) [13
 
 ] [14
 
-]
-\openout4 = `third-presentation.vrb'.
-
-(third-presentation.vrb) [15
-
-] [16
+] [15
 
 ]
 \openout4 = `third-presentation.vrb'.
 
-(third-presentation.vrb) [17
+(third-presentation.vrb) [16
+
+] [17
+
+]
+\openout4 = `third-presentation.vrb'.
+
+(third-presentation.vrb) [18
 
 ]
 
-LaTeX Warning: Command \textbackslash invalid in math mode on input line 419.
-
-[18
-
-]
-
-LaTeX Warning: Command \textbackslash invalid in math mode on input line 437.
-
-
-Overfull \hbox (1.17317pt too wide) detected at line 437
-[]
- []
-
-
-LaTeX Warning: Command \textbackslash invalid in math mode on input line 437.
-
-
-LaTeX Warning: Command \textbackslash invalid in math mode on input line 437.
-
-
-Overfull \hbox (7.50076pt too wide) detected at line 437
-[]
- []
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 403.
 
 [19
 
 ]
+
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 421.
+
+
+Overfull \hbox (1.17317pt too wide) detected at line 421
+[]
+ []
+
+
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 421.
+
+
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 421.
+
+
+Overfull \hbox (7.50076pt too wide) detected at line 421
+[]
+ []
+
+[20
+
+]
 \openout4 = `third-presentation.vrb'.
 
-(third-presentation.vrb) [20
-
-] [21
+(third-presentation.vrb) [21
 
 ] [22
 
@@ -1487,51 +1478,52 @@ Overfull \hbox (7.50076pt too wide) detected at line 437
 
 ] [24
 
+] [25
+
 ]
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 545.
+LaTeX Font Warning: Command \small invalid in math mode on input line 531.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 545.
+(Font)              <10> on input line 531.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 545.
+(Font)              <7> on input line 531.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 545.
+(Font)              <5> on input line 531.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 545.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 531.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 545.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 531.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 545.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 531.
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 545.
+LaTeX Font Warning: Command \small invalid in math mode on input line 531.
 
 
-Overfull \vbox (12.49297pt too high) detected at line 545
- []
-
-[25
-
-]
-Overfull \hbox (15.63347pt too wide) detected at line 561
-[][]
+Overfull \vbox (12.49297pt too high) detected at line 531
  []
 
 [26
 
-] [27
+]
+Overfull \hbox (15.63347pt too wide) detected at line 547
+[][]
+ []
+
+[27
+
+] [28
 
 ]
 \openout4 = `third-presentation.vrb'.
 
-(third-presentation.vrb) [28
-
-] [29
+(third-presentation.vrb) [29
 
 ]
-\openout4 = `third-presentation.vrb'.
+Overfull \vbox (1.11469pt too high) detected at line 608
+ []
 
-(third-presentation.vrb) [30
+[30
 
 ]
 \openout4 = `third-presentation.vrb'.
@@ -1539,25 +1531,30 @@ Overfull \hbox (15.63347pt too wide) detected at line 561
 (third-presentation.vrb) [31
 
 ]
-Overfull \hbox (14.10352pt too wide) detected at line 689
+\openout4 = `third-presentation.vrb'.
+
+(third-presentation.vrb) [32
+
+]
+Overfull \hbox (13.94237pt too wide) detected at line 688
 []
  []
 
 
-Overfull \vbox (9.27425pt too high) detected at line 689
+Overfull \vbox (9.27425pt too high) detected at line 688
  []
 
-[32
+[33
 
-] [33
+] [34
 
 ]
-Overfull \vbox (4.9717pt too high) detected at line 745
+Overfull \vbox (4.9717pt too high) detected at line 750
  []
 
-[34
+[35
 
-] [35
+] [36
 
 ]
 \openout4 = `third-presentation.vrb'.
@@ -1568,16 +1565,16 @@ Overfull \hbox (3.14174pt too wide) in paragraph at lines 18--18
  []
 
 )
-Overfull \vbox (16.04152pt too high) detected at line 785
+Overfull \vbox (16.04152pt too high) detected at line 792
  []
 
-[36
-
-] [37
+[37
 
 ] [38
 
 ] [39
+
+] [40
 
 ]
 \tf@nav=\write6
@@ -1589,19 +1586,19 @@ Overfull \vbox (16.04152pt too high) detected at line 785
 \tf@snm=\write8
 \openout8 = `third-presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 856.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 856.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 865.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 865.
 (third-presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 856.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 856.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 865.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 865.
 Package rerunfilecheck Info: File `third-presentation.out' has not changed.
-(rerunfilecheck)             Checksum: 951F6191924894176876451E70CA124E;244.
+(rerunfilecheck)             Checksum: A169490F3F28C657F3389C82C2039591;226.
  ) 
 Here is how much of TeX's memory you used:
- 23177 strings out of 492946
- 464947 string characters out of 3125823
- 542293 words of memory out of 3000000
- 26382 multiletter control sequences out of 15000+200000
+ 23181 strings out of 492946
+ 464982 string characters out of 3125823
+ 543293 words of memory out of 3000000
+ 26384 multiletter control sequences out of 15000+200000
  103087 words of font info for 99 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  71i,13n,88p,1821b,739s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1627,9 +1624,9 @@ s/Edzgou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:
 ><C:/Users/Edzgou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt1
 0.pfb><C:/Users/Edzgou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/ams
 fonts/symbols/msbm10.pfb>
-Output written on third-presentation.pdf (39 pages, 265107 bytes).
+Output written on third-presentation.pdf (40 pages, 266871 bytes).
 PDF statistics:
- 326 PDF objects out of 1000 (max. 8388607)
- 83 named destinations out of 1000 (max. 500000)
+ 332 PDF objects out of 1000 (max. 8388607)
+ 85 named destinations out of 1000 (max. 500000)
  18507 words of extra memory for PDF output out of 20736 (max. 10000000)
 
