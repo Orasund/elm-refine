@@ -131,8 +131,10 @@ T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \
          & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
          & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
-  \lor \ & T \text{ is of form } a:\hat{T}_1\to \hat{T}_2\\
-         & \text{where } a \text{ is a symbol}, \hat{T}_2 \text{ and } \hat{T}_1 \text{ are liquid types}\\
+  \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to \hat{T}\\
+         & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\\
+\text{ are}\\
+         & \text{liquid types}\\
 \end{aligned}
 $$
 
@@ -180,7 +182,7 @@ $$
     \mathrm{free}(T_1 \to T_2) :=& \mathrm{free}(T_1)\cup\mathrm{free}(T_2)\\
     \mathrm{free}(\forall a.T) :=& \mathrm{free}(T)\backslash\{a\}\\
     \mathrm{free}(\{a :\mathit{Int} \ | \ r \}) :=& \{\}\\
-    \mathrm{free}(a:\hat{T}_1\to \hat{T}_2) :=& \mathrm{free}(\hat{T}_1)\cup\mathrm{free}(\hat{T}_2)
+    \mathrm{free}(a:\{b :\mathit{Int} \ | \ r \}\to \hat{T}) :=& \{\}
 \end{aligned}
 $$
   
@@ -222,7 +224,7 @@ $$
             \forall b. [T]_\Theta & \text{else.}
         \end{cases}\\
     [\{a:\mathit{Int} \ | \ r \}]_\Theta :=& \{a:\mathit{Int}\ | \ r \}\\
-    [a:\hat{T}_1\to \hat{T}_2]_\Theta :=& a:[\hat{T}_1]_\Theta\to [\hat{T}_2]_\Theta
+    [a:\{b:\mathit{Int} \ | \ r \}\to \hat{T}]_\Theta :=& a:\{b:\mathit{Int} \ | \ r \}\to \hat{T}
   \end{aligned}
 $$
 $\Theta$ is called the set of substitutions.
@@ -269,7 +271,7 @@ $$
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
   &\text{ not occur in } T.\\
 \mathrm{values}_\Gamma(\{ a:\mathit{Int} \ | \ r \}) :=& \mathrm{refinedValues}_{\{\}}(\{ a:\mathit{Int} \ | \ r \})\\
-\mathrm{values}_\Gamma(a:\hat{T}_1\to \hat{T}_2) :=& \mathrm{refinedValues}_{\{\}}(a:\hat{T}_1\to \hat{T}_2)
+\mathrm{values}_\Gamma(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T}) :=& \mathrm{refinedValues}_{\{\}}(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T})
 \end{aligned}
 $$
 using the following helper functions.
@@ -313,9 +315,9 @@ $$
 $$
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Theta}&(a:\hat{T}_1\to \hat{T}_2) :=\\
-   &\{b\in \mathrm{values}_{\{\}}(\hat{T}_1 \to \hat{T}_2) |\\
-   &\forall n\in \mathrm{values}_{\{\}}(\hat{T}_1).b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T}_2)\}
+\mathrm{refinedValues}_{\Theta}&(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T}) :=\\
+   &\{b\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \} \to \hat{T}) |\\
+   &\forall n\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \}).b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T})\}
 \end{aligned}
 $$
 ```

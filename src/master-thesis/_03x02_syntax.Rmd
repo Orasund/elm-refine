@@ -56,8 +56,6 @@ $$
                |& \ \mf{"(+)"} \ | \ \mf{"(-)"} \ | \ \mf{"(*)"} \ | \ \mf{"(//)"}\\
                |& \ \mf{"(<)"} \ | \ \mf{"(==)"}\\
                |& \ \mf{"not"} \ | \ \mf{"(\&\&)"} \ | \ \mf{"(||)"}\\
-               |& \ \mf{<exp> "|>" <exp>}\\
-               |& \ \mf{<exp> ">>" <exp>}\\
                |& \ \mf{"if" <exp> "then" <exp> "else" <exp>}\\
                |& \ \mf{"\{" <list-exp-field> "\}"}\\
                |& \ \mf{"\{\}"}\\
@@ -117,7 +115,7 @@ reverse =
 
 main : Int;
 main =
-  case [1,2,3] |> reverse of
+  case reverse [1,2,3]  of
   [
     a :: _ ->
       a;

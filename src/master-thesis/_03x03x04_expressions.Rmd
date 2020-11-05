@@ -131,22 +131,6 @@ Judgment: $\Gamma,\Delta\vdash e:T$
 
 \logicRule
 {
-\Gamma,\Delta\vdash e_1: T_1\quad
-\Gamma,\Delta\vdash e_2: T_1 \to T_2
-}
-{\Gamma,\Delta\vdash e_1 \ \mf{"|>"} \ e_2:T_2}
-{}
-
-\logicRule
-{
-\Gamma,\Delta\vdash e_1: T_1 \to T_2\quad
-\Gamma,\Delta\vdash e_2: T_2 \to T_3
-}
-{\Gamma,\Delta\vdash e_1 \ \mf{">>"} \ e_2:T_1 \to T_3}
-{}
-
-\logicRule
-{
 \Gamma,\Delta\vdash e_1:\textit{Bool}\quad
 \Gamma,\Delta\vdash e_2: T\quad
 \Gamma,\Delta\vdash e_3: T
