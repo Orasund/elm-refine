@@ -132,9 +132,8 @@ T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \
          & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
   \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to \hat{T}\\
-         & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\\
-\text{ are}\\
-         & \text{liquid types}\\
+         & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\ \text{ are}\\
+         & \text{liquid types.}\\
 \end{aligned}
 $$
 

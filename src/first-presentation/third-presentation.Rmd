@@ -380,8 +380,10 @@ T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \
          & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
          & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
-  \lor \ & T \text{ is of form } a:\hat{T}_1\to \hat{T}_2\\
-         & \text{where } a \text{ is a symbol}, \hat{T}_2 \text{ and } \hat{T}_1 \text{ are liquid types}
+  \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to \hat{T}\\
+         & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\
+\text{ are}\\
+          &\text{liquid types.}\\
          \end{aligned}
 $$
 
