@@ -23,19 +23,20 @@ $$
 $$
   \begin{aligned}
     \mf{<qualifier-type>} ::=& \mf{True}\\
-      | \ & \mf{False}\\
-      | \ & \mf{(<) <int-exp-type> v}\\
-      | \ & \mf{(<) v <int-exp-type>}\\
-      | \ & \mf{(==) <int-exp-type> v}\\
-      | \ & \mf{(\&\&) <qualifier-type> <qualifier-type>}\\
-      | \ & \mf{(||) <qualifier-type> <qualifier-type>}\\
-      | \ & \mf{not <qualifier-type>}
+      | \ & \mf{"False"}\\
+      | \ & \mf{"(<)" <int-exp-type> v}\\
+      | \ & \mf{"(<)" v <int-exp-type>}\\
+      | \ & \mf{"(==)" <int-exp-type> v}\\
+      | \ & \mf{"(\&\&)" <qualifier-type> <qualifier-type>}\\
+      | \ & \mf{"(||)" <qualifier-type> <qualifier-type>}\\
+      | \ & \mf{"not" <qualifier-type>}
   \end{aligned}
 $$
 $$
 \begin{aligned}
-\mf{<liquid-type>} ::=& \mf{"\{v:Int|"} \ \mf{<qualifier-type>} \ \mf{"\}"} \\
-                  | \ & \mf{<lower-var> ":" <liquid-type> "->" <liquid-type>}
+\mf{<liquid}&\mf{-type>} ::=\\
+  & \mf{"\{v:Int|"} \ \mf{<qualifier-type>} \ \mf{"\}"} \\
+  &| \ \mf{<lower-var> ":\{v:Int|" <qualifier-type> "->" <liquid-type>}
 \end{aligned}
 $$
 $$
@@ -51,7 +52,6 @@ $$
 \end{aligned}
 $$
 ```
-
 
 ### Type Inference
 
@@ -116,7 +116,7 @@ For a given liquid type we define the _refinement substitution_ as follows:
 $$
 \begin{aligned}
 [\{b:\mathit{Int}| r \}]_{a\leftarrow e} :=& \{b:\mathit{Int}| [r]_{a\leftarrow e} \}\\
-[b:\hat{T}_1\to\hat{T}_2]_{a\leftarrow e} :=& b:[\hat{T}_1]_{a\leftarrow e}\to[\hat{T}_2]_{a\leftarrow e}
+[b:\{c:\mathit{Int}| r \}\to\hat{T}]_{a\leftarrow e} :=& b:\{c:\mathit{Int}| [r]_{a\leftarrow e} \}\to[\hat{T}]_{a\leftarrow e}
 \end{aligned}
 $$
 ```
@@ -142,8 +142,8 @@ r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathi
 \end{aligned}
 \]\[
   \begin{aligned}
-\text{wellFormed}(a:\hat{T}_1\to\hat{T}_2,\Theta) :\Leftrightarrow\\
-(a,\_)\not\in \Theta\ \land \ \text{wellFormed}(\hat{T}_1,\Theta)&\ \land\ \text{wellFormed}(\hat{T}_2,\Theta\cup\{(a,\hat{T}_1)\})
+\text{wellFormed}(a:\{b:\mathit{Int}| r \}\to\hat{T},\Theta) :\Leftrightarrow\\
+(a,\_)\not\in \Theta\ \land \ \text{wellFormed}(\{b:\mathit{Int}| r \},\Theta)&\ \land\ \text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}| r \})\})
 \end{aligned}
 \]
 ```
@@ -162,9 +162,14 @@ $$
 &\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
                                                                                   &\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
    &\quad\land \semantic{$r_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-                                                                                  &\Rightarrow\semantic{$r_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-a_1:\hat{T}_1\to\hat{T}_2 <:_{\Theta,\Lambda} a_2:\hat{T}_3\to\hat{T}_4 \ :\Leftrightarrow \ 
-&\hat{T}_3<:_{\Theta,\Lambda}\hat{T}_1 \land \hat{T}_2<:_{\Theta\cup\{(a_1,\hat{T}_3)\},\Lambda}\hat{T}_4
+                                                                                  &\Rightarrow\semantic{$r_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+a_1:\{b_1:\mathit{Int}| r_1 \}\to\hat{T}_2 <:_{\Theta,\Lambda}& a_1:\{ b_2 : \mathit{Int}| r_2\}\to\hat{T}_4 \ :\Leftrightarrow\\ 
+&\{ b_2 : \mathit{Int}| r_2\}<:_{\Theta,\Lambda}\{b_1:\mathit{Int}| r_1 \}\\
+&\land\hat{T}_2<:_{\Theta\cup\{(a_1,\{ b_2 : \mathit{Int}| r_2\})\},\Lambda}\hat{T}_4
 \end{aligned}
 $$
 For two liquid types $\hat{T}_1,\hat{T}_2$, we say $\hat{T}_1$ is a subtype of $\hat{T}_2$ with respect to $\Theta$ and $\Lambda$ if and only if $\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ is valid. 
@@ -292,11 +297,11 @@ Judgment: $\mathit{lt}:_\Theta\hat{T}$
 {}
 
 \logicRule
-{\mathit{lt}_1:_\Theta\hat{T}_1\quad
-\mathit{lt}_2:_{\Theta\cup\{(a,\hat{T}_1)\}}\hat{T}_2\quad
+{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}_1\quad
+\mathit{lt}:_{\Theta\cup\{(a,\hat{T}_1)\}}\hat{T}_2\quad
 (a:\hat{T}_1\rightarrow\hat{T}_2) = \hat{T}_3
 }
-{a \ \mf{":"} \ \mathit{lt}_1 \ \mf{"->"} \ \mathit{lt}_2:_\Theta\hat{T}_3}
+{a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}:_\Theta\hat{T}_3}
 {}
 
 #### type
