@@ -22,11 +22,11 @@ $$
 $$
 $$
   \begin{aligned}
-    \mf{<qualifier-type>} ::=& \mf{True}\\
+    \mf{<qualifier-type>} ::=& \mf{"True""}\\
       | \ & \mf{"False"}\\
       | \ & \mf{"(<)" <int-exp-type> v}\\
       | \ & \mf{"(<)" v <int-exp-type>}\\
-      | \ & \mf{"(==)" <int-exp-type> v}\\
+      | \ & \mf{"(==)" v <int-exp-type>}\\
       | \ & \mf{"(\&\&)" <qualifier-type> <qualifier-type>}\\
       | \ & \mf{"(||)" <qualifier-type> <qualifier-type>}\\
       | \ & \mf{"not" <qualifier-type>}
@@ -398,3 +398,57 @@ We can give a variable a sharp liquid type.
 \text{\textemdash}
 
 All other inference rules for expressions have not changed.
+
+### Denotational Semantic
+
+For the denotational semantic we only need to extend the semantic for type signatures.
+
+```{definition, name="Type Signature Semantic"}
+\begin{letIn}
+Let $\Gamma$ be a type context. Let $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
+\end{letIn}
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<int-exp-type>}\to\mathit{IntExp}\\
+\semantic{$n$} = & n\\
+\semantic{$\mathit{iet}_1 \mf{+} \mathit{iet}_2$} = & i_1 + i_2\\
+    &\text{such that } i_1 = \semantic{$\mathit{iet}_1$} \text{ and } i_2 = \semantic{$\mathit{iet}_2$} \text{ where } i_1,i_2\in\mathit{IntExp}\\
+\semantic{$\mathit{iet} \mf{*} n$} = & i \cdot n\\
+    &\text{such that } i = \semantic{$\mathit{iet}$}\text{ where } i\in\mathit{IntExp}\\
+\semantic{$a$} = & a
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<qualifier-type>}\to\mathcal{Q}\\
+\semantic{"True"} = & \mathit{True}\\
+\semantic{"False"} = & \mathit{False}\\
+\semantic{"(<)" $\mathit{iet} \ v$} = & i < \nu\\
+    &\text{such that } i = \semantic{$\mathit{iet}$}\text{ where } i\in\mathit{IntExp}\\
+\semantic{$\mf{"(<)"} \ v \ \mathit{iet}$} = &\nu < i\\
+    &\text{such that } i = \semantic{$\mathit{iet}$}\text{ where } i\in\mathit{IntExp}\\
+\semantic{$\mf{"(==)"} \ v\ \mathit{iet}$} = &\nu = i\\
+    &\text{such that } i = \semantic{$\mathit{iet}$}\text{ where } i\in\mathit{IntExp}\\
+\semantic{$\mf{"(\&\&)"} \ qt_1 \ qt_2$} = &q_1 \land q_2\\
+    &\text{such that } q_1 =  \semantic{$qt_1$}\text{ and } q_2 =\semantic{$qt_2$}\\
+    &\text{where } q_1\in\mathcal{Q}\text{ and } q_2\in\mathcal{Q}\\
+\semantic{$\mf{"(||)"}\ qt_1\ qt_2$} = &q_1 \lor q_2\\
+    &\text{such that } q_1 = \semantic{$qt_1$}\text{ and } q_2 = \semantic{$qt_2$}\\
+    &\text{where } q_1\in\mathcal{Q}\text{ and } q_2\in\mathcal{Q}\\
+\semantic{$\mf{"not"} \ qt$} = &\neg q\\
+    &\text{such that } q = \semantic{$qt$}\text{ where } q\in\mathcal{Q}
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\semantic{.}:&\mf{<liquid-type>}\to\mathcal{T}\\
+\semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$}=&\{\nu:\mathit{Int}|\ r \ \}\\
+    &\text{such that } r = \semantic{$\mathit{qt}$}\text{ where } r\in\mathcal{Q}\\
+\semantic{$a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}$}=& a: \hat{T}_1 \to \hat{T}_2\\
+    &\text{such that } \hat{T}_1 = \semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$},\\
+    &\text{and } \hat{T}_2 \semantic{$\mathit{lt}$}\text{ where } \hat{T}_1,\hat{T}_2 \text{ are liquid types}
+\end{aligned}
+$$
+
+We extend $\semantic{.}_\Gamma:\mf{<type>}\to\mathcal{T}$ by \(\semantic{$lt$}_\Gamma =\semantic{$lt$}\) to now allow liquid types as type signatures.
+```

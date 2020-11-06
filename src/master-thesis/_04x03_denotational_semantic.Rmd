@@ -1,5 +1,0 @@
-\setcounter{section}{2}
-
-# Denotational Semantic
-
-Changes that need to be applied for the semantic to be sound. (is \mathcal{T} valid to be used?)
