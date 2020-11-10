@@ -1,3 +1,0 @@
-\setcounter{section}{3}
-
-# Soundness

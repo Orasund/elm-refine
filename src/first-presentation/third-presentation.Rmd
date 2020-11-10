@@ -32,9 +32,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ### Characteristics
 
 * Pure Functional Language (immutable, no side effect, everything is a function)
-* Compiles to JavaScript (in the future also to WebAssembly)
 * ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
-* Simpler than Haskell (no Type classes, no Monads)
 * "No Runtimes errors" (Out Of Memory, Stack Overflow, Function Equality)
 
 ## Introduction To Elm: Hindley-Milner Type System
@@ -648,9 +646,10 @@ using the Subtype-rule and an SMT-Solver.
 1. Formal language similar to Elm **(DONE)**
 2. Extension of the formal language with Liquid Types
     1. A formal syntax **(DONE)**
-    2. A formal type system **(WORK IN PROGRESS)**
+    2. A formal type system **(DONE)**
     3. Proof that the extension infers the correct types.
-3. A type checker implementation written in Elm for Elm.
+         **(WORK IN PROGRESS)**
+3. A type checker implementation for Elm.
 
 **Started thesis** in July 2019
 

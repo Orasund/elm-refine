@@ -1,0 +1,37 @@
+\setcounter{section}{3}
+
+# Soundness
+
+We now prove the soundness of liquid types. 
+
+```{theorem}
+\label{thm:soundness_int_exp_type}
+\begin{letIn}
+$\mathit{iet} \in\mf{<int-exp-type>}$ and $\mathit{exp}\in\mathit{IntExp}$. Assume $\mathit{iet}:\mathit{exp}$ can be derived.
+\end{letIn}
+Then \(\semantic{$\mathit{iet}$} = \mathit{exp}\).
+```
+
+```{theorem}
+\label{thm:qualifier_type}
+\begin{letIn}
+$\mathit{qt} \in\mf{<qualifier-type>}$ and $q\in\mathcal{Q}$. Assume $\mathit{qt}:q$ can be derived.
+\end{letIn}
+Then \(\semantic{$\mathit{qt}$} = q\).
+```
+
+```{theorem}
+\label{thm:liquid_type}
+\begin{letIn}
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\mathit{lt} \in\mf{<liquid-type>}$ and $\hat{T}\in\mathcal{T}$. Assume $\mathit{lt}:_\Theta\hat{T}$ can be derived.
+\end{letIn}
+Then \(\semantic{$\mathit{lt}$}_\Theta = \hat{T}\).
+```
+
+```{theorem}
+\label{thm:soundness_type}
+\begin{letIn}
+$\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume $\Gamma\vdash t:T$ can be derived.
+\end{letIn}
+Then \(\semantic{$t$}_\Gamma = T\).
+```

@@ -81,10 +81,10 @@ which can be read as "$\mathit{qt}$ corresponds to $q$"
 For $\mathit{lt}\in\mf{"<liquid-type>"}$, the judgment has the form
 
 $$
-\mathit{lt}:\hat{T}
+\mathit{lt}:_\Theta\hat{T}
 $$
 
-which can be read as "$\mathit{lt}$ corresponds to the liquid type $\hat{T}$".
+which can be read as "$\mathit{lt}$ corresponds to the liquid type $\hat{T}$ with respect to $\Theta$".
 
 As previously already stated, for $t\in\mf{<type>}$ the judgment has the form
 
