@@ -2,7 +2,7 @@
 
 # Soundness
 
-We now prove the soundness of liquid types. 
+We will now show that the extension is sound. To do so we first will show the soundness of the new semantic with respect to the inference rules. 
 
 ```{theorem}
 \label{thm:soundness_int_exp_type}
@@ -11,27 +11,85 @@ $\mathit{iet} \in\mf{<int-exp-type>}$ and $\mathit{exp}\in\mathit{IntExp}$. Assu
 \end{letIn}
 Then \(\semantic{$\mathit{iet}$} = \mathit{exp}\).
 ```
+```{proof}
+Let $\mathit{iet} \in\mf{<int-exp-type>}$ and $\mathit{exp}\in\mathit{IntExp}$. Assume $\mathit{iet}:\mathit{exp}$ can be derived.
+\begin{itemize}
+    \item \textbf{Case} $\mathit{iet} = i$ for $i\in\mathit{Int}$: Then $\semantic{$\mathit{iet}$} = i$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{iet} = \mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2$ for $\mathit{iet}_1,\mathit{iet}_2 \in\mf{<int-exp-type>}$: From the premise of the inference rule, we assume that $\mathit{iet}_1:\mathit{exp}_1$ and $\mathit{iet}_2:\mathit{exp}_2$ hold. By induction hypothesis $\semantic{$\mathit{iet}_1$} = \mathit{exp}_1$ and $\semantic{$\mathit{iet}_2$} = \mathit{exp}_2$. Thus $\semantic{$\mathit{iet}$} = \mathit{exp}_1 + \mathit{exp}_2$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{iet} = \mathit{iet}_1 \ \mf{*} \ i$ for $\mathit{iet}_1\in\mf{<int-exp-type>}$ and $i\in\mathit{Int}$: From the premise of the inference rule, we assume that $\mathit{iet}_1:\mathit{exp}_1$ holds. By induction hypothesis $\semantic{$\mathit{iet}_1$} = \mathit{exp}_1$. Thus $\semantic{$\mathit{iet}$} = \mathit{exp}_1 \cdot i$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{iet} = a$ for $a\in\mathcal{A}$: Then $\semantic{$a$} = a$ and therefore the conclusion holds.
+\end{itemize}
+```
 
 ```{theorem}
-\label{thm:qualifier_type}
+\label{thm:soundness_qualifier_type}
 \begin{letIn}
 $\mathit{qt} \in\mf{<qualifier-type>}$ and $q\in\mathcal{Q}$. Assume $\mathit{qt}:q$ can be derived.
 \end{letIn}
 Then \(\semantic{$\mathit{qt}$} = q\).
 ```
-
-```{theorem}
-\label{thm:liquid_type}
-\begin{letIn}
-$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\mathit{lt} \in\mf{<liquid-type>}$ and $\hat{T}\in\mathcal{T}$. Assume $\mathit{lt}:_\Theta\hat{T}$ can be derived.
-\end{letIn}
-Then \(\semantic{$\mathit{lt}$}_\Theta = \hat{T}\).
+```{proof}
+Let $\mathit{qt} \in\mf{<qualifier-type>}$ and $q\in\mathcal{Q}$. Assume $\mathit{qt}:q$ can be derived.
+\begin{itemize}
+    \item \textbf{Case} $\mathit{qt} = \mf{True}$: Then $\semantic{$\mathit{qt}$} = \mathit{True}$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{False}$: Then $\semantic{$\mathit{qt}$} = \mathit{False}$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{(<)} \ \mathit{iet} \ \mf{v}$: From the premise of the inference rule, we assume that $\mathit{iet}:\mathit{exp}$. By Theorem \ref{thm:soundness_int_exp_type} $\semantic{$\mathit{iet}$} = \mathit{exp}$ for $\mathit{exp}\in\mathit{IntExp}$. Then $\semantic{$\mathit{qt}$} = \mathit{exp} < \nu$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{(<)} \ \mf{v} \ \mathit{iet} $: From the premise of the inference rule, we assume that $\mathit{iet}:\mathit{exp}$. By Theorem \ref{thm:soundness_int_exp_type} $\semantic{$\mathit{iet}$} = \mathit{exp}$ for $\mathit{exp}\in\mathit{IntExp}$. Then $\semantic{$\mathit{qt}$} = \nu < \mathit{exp}$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{(=)} \ \mf{v} \ \mathit{iet} $: From the premise of the inference rule, we assume that $\mathit{iet}:\mathit{exp}$. By Theorem \ref{thm:soundness_int_exp_type} $\semantic{$\mathit{iet}$} = \mathit{exp}$ for $\mathit{exp}\in\mathit{IntExp}$. Then $\semantic{$\mathit{qt}$} = (\nu = \mathit{exp})$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{(\&\&)}\ \mathit{qt}_1 \ \mathit{qt}_2$ for $\mathit{qt}_1,\mathit{qt}_2 \in \mf{<qualifier-type>}$: From the premise of the inference rule, we assume that $\mathit{qt}_1:q_1$ and $\mathit{qt}_2:q_2$ hold for $q_1,q_2\in\mathcal{Q}$. By induction hypothesis $\semantic{$\mathit{qt}_1$} = q_1$ and $\semantic{$\mathit{qt}_2$} = q_2$. Thus $\semantic{$\mathit{qt}$} = q_1 \land q_2$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{(||)}\ \mathit{qt}_1 \ \mathit{qt}_2$ for $\mathit{qt}_1,\mathit{qt}_2 \in \mf{<qualifier-type>}$: From the premise of the inference rule, we assume that $\mathit{qt}_1:q_1$ and $\mathit{qt}_2:q_2$ hold for $q_1,q_2\in\mathcal{Q}$. By induction hypothesis $\semantic{$\mathit{qt}_1$} = q_1$ and $\semantic{$\mathit{qt}_2$} = q_2$. Thus $\semantic{$\mathit{qt}$} = q_1 \lor q_2$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{qt} = \mf{not} \ \mathit{qt}_1$ for $\mathit{qt}_1\in\mf{<qualifier-type>}$: From the premise of the inference rule, we assume that $\mathit{qt}_1:q_1$ holds for $q_1\in\mathcal{Q}$. By induction hypothesis $\semantic{$\mathit{qt}_1$} = q_1$. Thus $\semantic{$\mathit{qt}$} = \neg \ q_1$ and therefore the conclusion holds.
+\end{itemize}
 ```
 
 ```{theorem}
-\label{thm:soundness_type}
+\label{thm:soundness_liquid_type}
+\begin{letIn}
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\mathit{lt} \in\mf{<liquid-type>}$ and $\hat{T}\in\mathcal{T}$. Assume $\mathit{lt}:_\Theta\hat{T}$ can be derived.
+\end{letIn}
+Then \(\semantic{$\mathit{lt}$} = \hat{T}\).
+```
+```{proof}
+Let $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\mathit{lt} \in\mf{<liquid-type>}$ and $\hat{T}\in\mathcal{T}$. Assume $\mathit{lt}:_\Theta\hat{T}$ can be derived.
+\begin{itemize}
+    \item \textbf{Case} $\mathit{lt} = \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$ for $\mathit{qt}\in\mf{<qualifier-type>}$: From the premise of the inference rule, we assume that $\mathit{qt}:q$ for $q\in\mathcal{Q}$ holds. By Theorem \ref{thm:soundness_qualifier_type} $\semantic{$\mathit{qt}$}=q$. Then $\semantic{$\mathit{lt}$} = \{\nu:\mathit{Int}| \ q\}$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{lt} = a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}_2$ for $a\in\mathcal{V}, \mathit{qt}\in\mf{<qualifier-type>}$ and $\mathit{lt}\in\mf{<liquid-type>}$: From the premise of the inference rule, we assume that $\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}_1$ and $\mathit{lt}_2:_{\Theta\cup\{(a,\hat{T}_1)\}}\hat{T}_2$ for liquid types $\hat{T}_1,\hat{T}_2$. By induction hypothesis $\semantic{$\mathit{lt}_2$} = \hat{T}_2$. Then $\semantic{$\mathit{lt}$} = a:\hat{T}_1\to\hat{T}_2$ and therefore the conclusion holds.
+\end{itemize}
+```
+
+We can now again prove the soundness of the semantic of type annotations.
+
+```{theorem}
 \begin{letIn}
 $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume $\Gamma\vdash t:T$ can be derived.
 \end{letIn}
 Then \(\semantic{$t$}_\Gamma = T\).
+```
+```{proof}
+Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume $\Gamma\vdash t:T$ can be derived.
+\begin{itemize}
+    \item \textbf{Case} $t = \mathit{lt}$ for $\mathit{lt}\in\mf{<liquid-type>}$: From the premise of the inference rule, we assume that $\mathit{lt}:_\Theta\hat{T}$ for liquid type $\hat{T}$ holds. By Theorem \ref{thm:soundness_liquid_type} $\semantic{$\mathit{lt}$} = \hat{T}$. Then $\semantic{$\mathit{t}$} = \hat{T}$ and therefore the conclusion holds.
+\end{itemize}
+
+All other cases have been proven in Theorem \ref{thm:soundness_type}.
+```
+
+```{theorem}
+\begin{letIn}
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $e\in\mf{<exp>}$ and $T\in\mathcal{T}$. Assume $\Gamma,\Delta,\Theta,\Lambda\vdash e:T$ can be derived. 
+\end{letIn}
+Then \(\semantic{$e$}_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
+```
+```{proof}
+Let $\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $e\in\mf{<exp>}$ and $T\in\mathcal{T}$. Assume $\Gamma,\Delta,\Theta,\Lambda\vdash e:T$ can be derived.
+\begin{itemize}
+    \item \textbf{Case} $e = \mf{"(+)"}$
+    \item \textbf{Case} $e = \mf{"(-)"}$
+    \item \textbf{Case} $e = \mf{"(*)"}$
+    \item \textbf{Case} $e = \mf{"(//)"}$
+    \item \textbf{Case} $e = \mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3$
+    \item \textbf{Case} $e = e_1 \ e_2$
+    \item \textbf{Case} $e = \mf{"\textbackslash"} \ a \ \mf{"->"} \ e$
+    \item \textbf{Case} $e = a$
+\end{itemize}
 ```

@@ -240,48 +240,48 @@ This judgment is used to convert from $\mf{qualifier-type}$ to $\mathcal{Q}$.
 
 \logicRule
 {\mathit{iet}:\mathit{exp}_0\quad
-\mathit{exp}_0 < \nu = \mathit{exp}_1
+\mathit{exp}_0 < \nu = q
 }
-{\mf{(<)} \ \mathit{iet} \ \mf{v}:\mathit{exp}_1}
+{\mf{(<)} \ \mathit{iet} \ \mf{v}:q}
 {}
 Note that where we replace the letter $\mf{v}$ with a special character $\nu$.
 
 \logicRule
 {\mathit{iet}:\mathit{exp}_0\quad
-\nu < \mathit{exp}_0 = \mathit{exp}_1
+\nu < \mathit{exp}_0 = q
 }
-{\mf{(<) v} \ \mathit{iet}:\mathit{exp}_1}
+{\mf{(<) v} \ \mathit{iet}:q}
 {}
 
 \logicRule
 {\mathit{iet}:\mathit{exp}_0\quad
-(\nu = \mathit{exp}_0) = \mathit{exp}_1
+(\nu = \mathit{exp}_0) = \mathit{q}
 }
-{\mf{(=) v} \ \mathit{iet}:\mathit{exp}_1}
+{\mf{(=) v} \ \mathit{iet}:\mathit{q}}
 {}
 
 \logicRule
-{\mathit{iet}_1:\mathit{exp}_1\quad
-\mathit{iet}_2:\mathit{exp}_2\quad
-\mathit{exp}_1 \land \mathit{exp}_2 = \mathit{exp}_3
+{\mathit{qt}_1:\mathit{q}_1\quad
+\mathit{qt}_2:\mathit{q}_2\quad
+\mathit{q}_1 \land \mathit{q}_2 = \mathit{q}_3
 }
-{\mathit{iet}_1 \ \mf{\&\&} \ \mathit{iet}_2:\mathit{exp}_3}
+{\mf{(\&\&)} \ \mathit{qt}_1 \ \mathit{qt}_2:\mathit{q}_3}
 {}
 
 
 \logicRule
-{\mathit{iet}_1:\mathit{exp}_1\quad
-\mathit{iet}_2:\mathit{exp}_2\quad
-\mathit{exp}_1 \lor \mathit{exp}_2 = \mathit{exp}_3
+{\mathit{qt}_1:\mathit{q}_1\quad
+\mathit{qt}_2:\mathit{q}_2\quad
+\mathit{q}_1 \lor \mathit{q}_2 = \mathit{q}_3
 }
-{\mathit{iet}_1 \ \mf{||} \ \mathit{iet}_2:\mathit{exp}_3}
+{\mf{(||)} \ \mathit{qt}_1 \ \mathit{qt}_2:\mathit{q}_3}
 {}
 
 \logicRule
-{\mathit{iet}:\mathit{exp}_1\quad
-\neg\mathit{exp}_1 = \mathit{exp}_2
+{\mathit{qt}:\mathit{q}_1\quad
+\neg\mathit{q}_1 = \mathit{q}_2
 }
-{\mf{not} \ \mathit{iet}:\mathit{exp}_2}
+{\mf{not} \ \mathit{qt}:\mathit{q}_2}
 {}
 
 #### liquid-type
@@ -324,22 +324,22 @@ The following are special inference rules for liquid types. For non-liquid types
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(+)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + b\})}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(+)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + b\})}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(-)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + (-b)\})}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(-)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a + (-b)\})}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(*)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a * b\})}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(*)"}:(a:\mathit{Int}\to b:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \nu = a * b\})}
 {}
 
 \logicRule
 {}
-{\Gamma,\Delta\vdash\mf{"(//)"}:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \neg (\nu = 0)\}\to\mathit{Int}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(//)"}:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \neg (\nu = 0)\}\to\mathit{Int}}
 {}
 
 By using a liquid type we can avoid dividin by zero.
