@@ -1,0 +1,124 @@
+\setcounter{section}{4}
+
+## Formulating SMT Statements
+
+So far we have described the inferece rules and the subtyping rule. We have yet to show how to use an SMT-Solver to apply the subtyping rules.
+
+```{definition,name="Template"}
+We say $\hat{T}$ is a _template_ $:\Leftrightarrow$
+$$
+\begin{aligned}
+       \ & T \text{ is of form } \{\nu\in\mathit{Int}|\kappa_i\}\\
+         &\text{where } i \in\mathbb{N}\\
+  \lor \ & T \text{ is of form } a:\{\nu\in\mathit{Int}|\kappa_i\}\to\hat{T}\\
+         &\text{where } i \in\mathbb{N} \text{ and } \hat{T} \text{ is a template}.\\
+\end{aligned}
+$$
+we call $\kappa_i$ for $i\in\mathcal{Q}$ a _liquid type variable_.
+  
+```
+Template will be used for liquid types with unknown refinement.
+
+We will also need a function to obtain a set of all liquid type variables of a template.
+
+```{definition,name="Vars"}
+$$
+\begin{aligned}
+  \text{Vars}(\{\nu\in\mathit{Int}|\kappa_i\}) =& \{\kappa_i\}\\
+  \text{Vars}(a:\{\nu\in\mathit{Int}|\kappa_i\}\to\hat{T}) =& \{\kappa_i\}\cup\text{Vars}(\hat{T})
+\end{aligned}
+$$
+```
+
+To tranform a template into a liquid type, we need to substitute all liquid type variables. For this the term-wise substitution can be used.
+
+As input for our algorithm we have a set of unresolved judgments (in this context called _conditions_). We will only allow two kinds of conditions:
+```{definition,name="Condition"}
+\begin{letIn}
+$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$ and $\Lambda\subset\mathcal{Q}$.
+\end{letIn}
+We say $c$ is a _Condition_ $:\Leftrightarrow$
+$$
+\begin{aligned}
+       \ & c \text{ is of form }\Theta\vdash \hat{T}\\
+         &\text{where } \hat{T} \text{ is a template}\\
+  \lor \ & c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
+         &\text{where } \hat{T}_1,\hat{T}_2 \text{ are templates}\\
+\end{aligned}
+$$
+```
+
+//TODO: Why is $\Theta\vdash \hat{T}$ needed?
+
+The main idea of the algorithm is, that we generate the set of predicates and then excluse one after another until all conditions are valid. By conjunction over all remaining predicates we result in a valid refinement.
+
+We now define a function that will generate a set of prediates.
+
+$$
+\begin{aligned}
+\mathit{Init}:\mathcal{P}(\mathcal{V})\to&\mathcal{P}(\mathcal{Q})\\
+\mathit{Init}(Q)::=& 0 < \nu\\
+      | \ & Q < \nu\\
+      | \ & \nu < 0\\
+      | \ & \nu < Q\\
+      | \ & \nu = Q\\
+      | \ & \nu = 0\\
+      | \ & \neg (\nu = Q)\\
+      | \ & \neg (\nu = 0)\\
+\end{aligned}
+$$
+
+### The Inference Algorithm
+
+As an input we require a set of conditions $C$, a template $\hat{T}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. The result will be a valid liquid type.
+
+$$
+\begin{aligned}
+\text{Infer}(\Theta,C,\hat{T})=\text{let }& A := \text{Solve}(\Theta,\bigcup_{c\in C} \text{Split}(c),\{(\kappa,\mathit{Init}(\{a| \ (a,\_)\in\Theta\}))| \kappa\in\text{Var}(\hat{T})),\\
+&S:=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
+\text{in }& [\hat{T}]_S
+\end{aligned}
+$$
+We start by spliting the conditions for function into conditions for simpler liquid types.
+$$
+\begin{aligned}
+\text{Split}(\Theta\vdash \{\nu:\mathit{Int}| \kappa\})=&\{\Theta\vdash \{\nu:\mathit{Int}|\kappa\}\}\\
+\text{Split}(\Theta\vdash a:\{\nu:\mathit{Int}| \kappa\}\to \hat{T})=&\{\Theta\vdash \{\nu:\mathit{Int}|\kappa\}\}\\
+&\cup \text{Split}(\Theta\cup\{(a,\{\nu:\mathit{Int}| \kappa\})\}\vdash  \hat{T})\\
+\text{Split}(a:\hat{T}_1\to \hat{T}_2<:_{\Theta,\Lambda}a:\hat{T}_3\to\hat{T}_4 )=&\{ \hat{T}_3 <:_{\Theta,\Lambda}\hat{T}_1,\hat{T}_2 <:_{\Theta\cup\{(a,\hat{T}_3)\},\Lambda}\hat{T}_4\}\\
+\text{Split}(\{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|r_2\} )=&\{ \{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|r_2\} \}
+\end{aligned}
+$$
+
+We resolve the obtained conditions by repeatably checking if all conditions are valid and if not removing all predicates can condradict the condition.
+
+$$
+\begin{aligned}
+\text{Solve}&(\Theta,C,A)=\\
+&\text{let } S:=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
+&\text{in }\begin{cases}
+  \text{Solve}(C,\text{Weaken}(c,A))&\text{if } c\in C \text{ exists, such that } \semantic{$[c]_S$}_\Theta\text{ is not valid}\\
+  A&\text{otherwise}
+\end{cases}
+\end{aligned}
+$$
+
+
+
+$$
+\begin{aligned}
+\text{Weaken}&(\Theta\vdash\{\nu:\mathit{Int}| [\kappa_0]_{S_0}\},A)=&\\
+&\text{let } Q_0 = \{q \ | \ q\in A(\kappa_0)\land  \text{wellFormed}(\{\nu:\mathit{Int}|[q]_{S_0}\},\Theta)\} \text{in}\\
+&\{(\kappa,Q)\ |\ (\kappa,Q)\in A \land \kappa \neq \kappa_0\}\cup\{(\kappa_0|Q_0)\}\\
+\text{Weaken}&(\Lambda,\{\nu:\mathit{Int}| r \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [\kappa_0]_{S_0}\},A) =\\
+\text{let }&S:=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\},\\
+& p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
+& Q_0 := \{q \ | \ q\in A(\kappa_0)\land  (\semantic{$p\land r$}_\Theta\Rightarrow \semantic{$[r_2]_{S_0}$}_\Theta)\} \\
+\text{in }&\{(\kappa,Q)\ |\ (\kappa,Q)\in A \land \kappa \neq \kappa_0\}\cup\{(\kappa_0|Q_0)\}
+\end{aligned}
+$$
+//TODO: Introduce delayed substitution 
+
+Note that we can use a SMT solver to prove $A(\Lambda)\land r\Rightarrow [r_2]_S$.
+
+

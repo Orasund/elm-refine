@@ -308,15 +308,16 @@ Let $\Theta:\mathcal{V}\nrightarrow\mathbb{N}$. We define:
 $$
 \begin{aligned}
 \mathrm{refinedValues}_{\Theta}&(\{ a:\mathit{Int} \ | \ r \}) :=\\
-   & \{ n\in \mathrm{values}_{\{\}}(\mathit{Int}) | \\
-   & r \text{ is well formed with respect to }\Theta\cup\{(a,n)\}\land \ \semantic{$r$}_{\Theta\cup\{(a,n)\}} \}\\
+   & \{ n\in \mathrm{values}_{\{\}}(\mathit{Int}) \\
+  &| \ r \text{ is well formed with respect to }\Theta\cup\{(a,n)\}\land \ \semantic{$r$}_{\Theta\cup\{(a,n)\}} \}\\
 \end{aligned}
 $$
 $$
 \begin{aligned}
 \mathrm{refinedValues}_{\Theta}&(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T}) :=\\
-   &\{b\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \} \to \hat{T}) |\\
-   &\forall n\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \}).b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T})\}
+   &\{b\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \} \to \hat{T})\\
+ &| \ \forall n\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \}).\\
+     &\quad b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T})\}
 \end{aligned}
 $$
 ```

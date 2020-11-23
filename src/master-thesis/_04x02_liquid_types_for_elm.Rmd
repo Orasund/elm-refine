@@ -385,12 +385,12 @@ We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the vari
 
 \logicRule
 {\begin{gathered}
-\{\nu:\hat{T}| \ \nu = a\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
-(a,\{\nu:\hat{T}| \ r\}) \in \Delta\quad
-(a,\{\nu:\hat{T}| \ r\}) \in \Theta
+\{\nu:\mathit{Int}| \ \nu = a\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
+(a,\{\nu:\mathit{Int}| \ r\}) \in \Delta\quad
+(a,\{\nu:\mathit{Int}| \ r\}) \in \Theta
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\hat{T}| \ \nu = a\}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\mathit{Int}| \ \nu = a\}}
 {}
 
 We can give a variable a sharp liquid type.

@@ -18,7 +18,7 @@ Let $\mathit{iet} \in\mf{<int-exp-type>}$ and $\mathit{exp}\in\mathit{IntExp}$. 
     \item \textbf{Case} $\mathit{iet} = i$ for $i\in\mathit{Int}$: Then $\semantic{$\mathit{iet}$} = i$ and therefore the conclusion holds.
     \item \textbf{Case} $\mathit{iet} = \mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2$ for $\mathit{iet}_1,\mathit{iet}_2 \in\mf{<int-exp-type>}$: From the premise of the inference rule, we assume that $\mathit{iet}_1:\mathit{exp}_1$ and $\mathit{iet}_2:\mathit{exp}_2$ hold. By induction hypothesis $\semantic{$\mathit{iet}_1$} = \mathit{exp}_1$ and $\semantic{$\mathit{iet}_2$} = \mathit{exp}_2$. Thus $\semantic{$\mathit{iet}$} = \mathit{exp}_1 + \mathit{exp}_2$ and therefore the conclusion holds.
     \item \textbf{Case} $\mathit{iet} = \mathit{iet}_1 \ \mf{*} \ i$ for $\mathit{iet}_1\in\mf{<int-exp-type>}$ and $i\in\mathit{Int}$: From the premise of the inference rule, we assume that $\mathit{iet}_1:\mathit{exp}_1$ holds. By induction hypothesis $\semantic{$\mathit{iet}_1$} = \mathit{exp}_1$. Thus $\semantic{$\mathit{iet}$} = \mathit{exp}_1 \cdot i$ and therefore the conclusion holds.
-    \item \textbf{Case} $\mathit{iet} = a$ for $a\in\mathcal{A}$: Then $\semantic{$a$} = a$ and therefore the conclusion holds.
+    \item \textbf{Case} $\mathit{iet} = a$ for $a\in\mathcal{V}$: Then $\semantic{$a$} = a$ and therefore the conclusion holds.
 \end{itemize}
 ```
 
