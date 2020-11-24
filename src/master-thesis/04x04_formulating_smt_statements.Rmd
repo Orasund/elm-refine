@@ -1,4 +1,5 @@
 \setcounter{section}{4}
+\setcounter{subsection}{3}
 
 ## Formulating SMT Statements
 
