@@ -385,7 +385,6 @@ We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the vari
 
 \logicRule
 {\begin{gathered}
-\{\nu:\mathit{Int}| \ \nu = a\}<:_{\Theta,\Lambda}\{\nu:\hat{T}| \ r\}\\
 (a,\{\nu:\mathit{Int}| \ r\}) \in \Delta\quad
 (a,\{\nu:\mathit{Int}| \ r\}) \in \Theta
 \end{gathered}

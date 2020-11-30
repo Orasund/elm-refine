@@ -3,67 +3,82 @@
 
 ## Formulating SMT Statements
 
-So far we have described the inference rules and the subtyping rule. We have yet to algorithm that can tying a valid type for a set of given subtyping rules.
+So far we have described the inference rules and the subtyping rule. We have yet to describe an algorithm that can derive a valid type for a set of given subtyping rules.
+
+```{definition,name="Liquid Type Variable"}
+We say $\mathcal{K}:=\{\kappa_i \ | \ i\in\mathbb{N}\}$ is the set of all _liquid type variables_.
+
+Note that $\kappa$ is a special character.
+```
 
 ```{definition,name="Template"}
 We say $\hat{T}$ is a _template_ $:\Leftrightarrow$
 $$
 \begin{aligned}
-       \ & T \text{ is of form } \{\nu\in\mathit{Int}|[\kappa_i]_S\}\\
-         &\text{where } i \in\mathbb{N} \text{and} S:\mathcal{V}\nrightarrow\mathcal{Q}\\
-  \lor \ & T \text{ is of form } a:\{\nu\in\mathit{Int}| [\kappa_i]_S\}\to\hat{T}\\
-         &\text{where } i \in\mathbb{N}, \hat{T} \text{ is a template and} S:\mathcal{V}\nrightarrow\mathcal{Q}.\\
+       \ & \hat{T} \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
+         &\text{where } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\\
+  \lor \ & \hat{T} \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to\hat{T}\\
+         &\text{where } k\in\mathcal{K}, \hat{T} \text{ is a template and } S:\mathcal{V}\nrightarrow\mathcal{Q}.\\
 \end{aligned}
 $$
-we call $\kappa_i$ for $i\in\mathcal{Q}$ a _liquid type variable_.
-  
+
+We define $\mathcal{T}^?:=\{\hat{T} \ | \ \hat{T} \text{ is a template}\}$
 ```
-A Template will be used for a liquid type with unknown refinement. Note that the inference rule for function application introduces a refinement substitution $S$. For template this substitution is not defined and needs to be delaying until after the corresponding liquid type has been derived. 
+A template will be used for a liquid type with unknown refinement. Note that the inference rule for function applications introduces a refinement substitution $S$. For templates this substitution is not defined and needs to be delayed until the corresponding liquid type has been derived. We will point out whenever the substitution $[k]_S$ will be applied.
 
-To transform a template into a liquid type, we need to substitute all liquid type variables with refinements. For this the term-wise substitution will be used.
-
-Our algorithm will resolve a set of suptying condition for templates:
-```{definition,name="Condition"}
-\begin{letIn}
-$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$ and $\Lambda\subset\mathcal{Q}$.
-\end{letIn}
-We say $c$ is a _Condition_ $:\Leftrightarrow c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ where $\hat{T}_1,\hat{T}_2$ are templates.
-```
-
-We will also need a function to obtain the set of all liquid type variables of a template or condition.
-
-```{definition,name="Vars"}
-Given a template $\hat{T}$, we define $\text{Vars}(\hat{T})$ as follows.
+Our algorithm will resolve a set of suptyping conditions:
+```{definition,name="Subtyping Condition"}
+We say $c$ is a _Subtyping Condition_ $:\Leftrightarrow$
 $$
 \begin{aligned}
+&c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
+&\text{where }\hat{T}_1,\hat{T}_2\in\mathcal{T}\cup\mathcal{T}^?,\Theta:\mathcal{V}\nrightarrow(\mathcal{T}\cup\mathcal{T}^?)\text{ and }\Lambda\subset\mathcal{Q}.
+\end{aligned}
+$$
+
+We define $\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
+```
+
+We will also need a function to obtain the set of all liquid type variables of a template or subtyping condition. 
+
+```{definition,name="Vars"}
+$$
+\begin{aligned}
+  \text{Vars}:(\mathcal{T}\cup\mathcal{T}^?)\to&\mathcal{P}(\mathcal{K})\\
+  \text{Vars}(\{\nu\in\mathit{Int}|r\}) =& \{\}\\
   \text{Vars}(\{\nu\in\mathit{Int}|\kappa_i\}) =& \{\kappa_i\}\\
   \text{Vars}(a:\{\nu\in\mathit{Int}|\kappa_i\}\to\hat{T}) =& \{\kappa_i\}\cup\text{Vars}(\hat{T})
 \end{aligned}
 $$
   
-Given a condition $c$, we define $\text{Vars}(c)$ as follows.
 $$
 \begin{aligned}
-  \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =& \text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\cup\{\text{Vars}(\hat{T}_3)|(\_,\hat{T}_3)\in\Theta\}
+  \text{Vars}:\mathcal{C}\to&\mathcal{P}(\mathcal{K})\\
+  \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =&
+  \text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\cup\{\text{Vars}(\hat{T}_3)|(\_,\hat{T}_3)\in\Theta\}
 \end{aligned}
 $$
 ```
 
-The main idea of the algorithm is to first generate a set of predicates and then exclude elements of it until all conditions are valid for the remaining predicates. By conjunction over all remaining predicates we result in a valid refinement.
+The main idea of the algorithm is to first generate a set of predicates and then exclude elements until all subtyping conditions are valid for the remaining predicates. By conjunction over all remaining predicates we result in a valid refinement.
 
-We therefore need a function, depending on a set of variable $\mathcal{Q}$, that will generate a set of predicates. Note that the resulting set should be finite and a subset of. If the generated set is to small, then our resulting conditions might be to weak.
+We therefore need a function, depending on a set of variable Q, that will generate a set of predicates. Note that the resulting set should be finite and a subset of $\mathcal{Q}$. If the generated set is too small, then our resulting subtyping conditions might be too weak.
   
 $$
 \begin{aligned}
 \mathit{Init}:\mathcal{P}(\mathcal{V})\to&\mathcal{P}(\mathcal{Q})\\
-\mathit{Init}(Q)::=& 0 < \nu\\
-      | \ & Q < \nu\\
-      | \ & \nu < 0\\
-      | \ & \nu < Q\\
-      | \ & \nu = Q\\
-      | \ & \nu = 0\\
-      | \ & \neg (\nu = Q)\\
-      | \ & \neg (\nu = 0)\\
+\mathit{Init}(V)::=& \{0 < \nu\}\\
+      &\cup \{a < \nu \ | \ a\in V\}\\
+      &\cup \{\nu < 0\}\\
+      &\cup \{\nu < a \ | \ a\in V\}\\
+      &\cup \{\nu = a \ | \ a\in V\}\\
+      &\cup \{\nu = 0\}\\
+      &\cup \{a < \nu \lor \nu = a \ | \ a\in V\}\\
+      &\cup \{\nu < a \lor \nu = a \ | \ a\in V\}\\
+      &\cup \{0 < \nu \lor \nu = 0 \}\\
+      &\cup \{\nu < 0 \lor \nu = 0 \}\\
+      &\cup \{\neg (\nu = a) \ | \ a\in V \}\\
+      &\cup \{\neg (\nu = 0)\}\\
 \end{aligned}
 $$
 
@@ -71,48 +86,347 @@ We can always extend the realm of predicates if the resulting refinements are to
 
 ### The Inference Algorithm
 
-As an input we require a set of conditions $C$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. The result will be a valid liquid type.
+$$
+\begin{aligned}
+&\text{Infer}:\mathcal{P}(\mathcal{C})\to\ (\mathcal{K}\nrightarrow \mathcal{Q})\\
+&\text{Infer}(C)=\\
+&\quad\begin{aligned}\text{Let}\
+V:=&\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}\\
+Q_0:=&\mathit{Init}(V),\\
+A_0:=&\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\},\\
+A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
+&\quad\text{in } \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
+&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q} \text{ and }A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}.
+\end{aligned}
+$$
+We first split the subtyping conditions for functions into subtyping conditions for simpler templates:
 
 $$
 \begin{aligned}
-\text{Infer}(\Theta,C)=\text{let }
-&I:=\{(\kappa,\mathit{Init}(\{a| \ (a,\_)\in\Theta\}))| \kappa\in\bigcup_{c\in C}\text{Var}(c)\}\\
-&A:=\text{Solve}(\Theta,\bigcup_{c\in C} \text{Split}(c),I),\\
-\text{in }& \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}
-\end{aligned}
-$$
-We start by spliting the conditions for functions into conditions for simpler liquid types.
-$$
-\begin{aligned}
-\text{Split}(a:\hat{T}_1\to \hat{T}_2<:_{\Theta,\Lambda}a:\hat{T}_3\to\hat{T}_4 )=&\{ \hat{T}_3 <:_{\Theta,\Lambda}\hat{T}_1,\hat{T}_2 <:_{\Theta\cup\{(a,\hat{T}_3)\},\Lambda}\hat{T}_4\}\\
-\text{Split}(\{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|r_2\} )=&\{ \{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|r_2\} \}
-\end{aligned}
-$$
+\mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\}\\
+| \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathcal{Q})\\
+\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathcal{Q})\}.
+\end{aligned}$$
 
-We resolve the obtained conditions by repeatably checking if a condition is not valid and removing all predicates that contradict it. By removing the predicate we weaken the resulting refinement.
+With this we can now define the Split function.
 
 $$
 \begin{aligned}
-\text{Solve}&(\Theta,C,A)=\\
-&\text{let } S:=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
-&\text{in }\begin{cases}
-  \text{Solve}(C,\text{Weaken}(c,A))&\text{if } c\in C \text{ exists, such that } \semantic{\([c]_S\)}_\Theta\text{ is not valid}\\
-  A&\text{otherwise}
-\end{cases}
+\text{Split}:\mathcal{C}\nrightarrow&\mathcal{P}(\mathcal{C^-})\\
+\text{Split}(a:\hat{T}_1\to \hat{T}_2<:_{\Theta,\Lambda}a:\hat{T}_3\to\hat{T}_4 )=&\text{Split}(\hat{T}_3 <:_{\Theta,\Lambda}\hat{T}_1)\\
+  &\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,\hat{T}_3)\},\Lambda}\hat{T}_4\})\\
+\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=&\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
 \end{aligned}
 $$
-Note that we can use a SMT solver to validate \(\semantic{$[c]_S$}_\Theta\)
+Note that Split will result in an error, if the subtyping condition is not one of the two cases above.
 
+We resolve the obtained subtyping conditions by repeatably checking if a subtyping condition is not valid and removing all predicates that contradict it. By removing the predicate we weaken the resulting refinement.
 
 $$
 \begin{aligned}
-\text{Weaken}&(\Lambda,\{\nu:\mathit{Int}| r \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [\kappa_0]_{S_0}\},A) =\\
-\text{let }&S:=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\},\\
-& p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
-& Q_0 := \{q \ | \ q\in A(\kappa_0)\land  (\semantic{$p\land r$}_\Theta\Rightarrow \semantic{$[r_2]_{S_0}$}_\Theta)\} \\
-\text{in }&\{(\kappa,Q)\ |\ (\kappa,Q)\in A \land \kappa \neq \kappa_0\}\cup\{(\kappa_0|Q_0)\}
+\text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{Q})\to(\mathcal{K}\nrightarrow\mathcal{Q})\\
+\text{Solve}&(C,A)=\\
+&\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
+&\text{If there exists } (\{v:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{v:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
+&\quad \forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
+&\quad \vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}} \text{ is not valid}\\
+&\quad\begin{aligned}\text{for }\ &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
+&r_1 := \begin{cases}\bigwedge [S(q_1)]_{S_1}&\text{if } q_1\in\mathcal{K}\\
+q_1& \text{if }q_1\in\mathcal{Q}
+\end{cases},\\
+&\begin{aligned} \Theta':= \{\ (&a,T')\\
+   | \ &T' = T \land (a,T)\in\Theta \land T\in\mathcal{T}\\
+\lor \ & T' = [\hat{T}]_S\land (a,\hat{T})\in\Theta\land \hat{T}\in\mathcal{T}^?\}
+\end{aligned}\end{aligned}\\
+&\{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta'\\
+&\text{then } \text{Solve}(C,\text{Weaken}(c,A)) \text{ else } A\\
+&\text{where } k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subseteq\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},q_1\in\mathcal{K}\cup\mathcal{Q},\\
+&\Theta:\mathcal{V}\nrightarrow(\mathcal{T}\cup\mathcal{T}^?),r_1,p,r_2\in\mathcal{Q}, a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{T},T'\in\mathcal{T}\cup\mathcal{T}^?,n\in\mathbb{N}, b_i\in\mathcal{V},\\
+&T_i\in\mathcal{T}\text{ for } i\in\mathbb{N}_0^n \text{ and } [t]_A \text{ denotes the substitution for the term } t \text{ with a}\\
+&\text{substitution } A.\\
 \end{aligned}
 $$
-Note that we can use a SMT solver to validate \(\semantic{$p\land r$}_\Theta\Rightarrow \semantic{$[r_2]_{S_0}$}_\Theta\).
 
+Note that we can use a SMT solver to validate
+$$
+\begin{aligned}
+&\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
+&\quad \vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}.
+\end{aligned}
+$$
+$$
+\begin{aligned}
+&\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{Q})\to(\mathcal{K}\nrightarrow\mathcal{Q})\\
+&\text{Weaken}(\{\nu:\mathit{Int}| [k_1]_{S_1} \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [k_2]_{S_2}\},A) =\\
+&\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
+ &r_1 := \bigwedge [S(k_1)]_{S_1},\ p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
+&   
+\begin{aligned} \Theta':=\{\ &(a,T')\\
+   | \ &T' = T \land (a,T)\in\Theta \land T\in\mathcal{T}\\
+\lor \ & T' = [\hat{T}]_S\land (a,\hat{T})\in\Theta\land \hat{T}\in\mathcal{T}^?\},
+\end{aligned}\\
+&\{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta'\\
+&\begin{aligned}Q_2 := \{\ &q \\
+| \ &q\in A(k_2)\land \text{wellFormed}(q,\Theta')\\
+\land & \forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
+&\vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\}
+\end{aligned}\end{aligned}\\
+&\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
+&\quad\text{where } k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},\Theta':\mathcal{V}\nrightarrow\mathcal{T},\\
+&\quad a\in\mathcal{V},T'\in\mathcal{T}\cup\mathcal{T}^?n\in\mathbb{N}, b_i\in\mathcal{V},T_i\in\mathcal{T}\text{ for } i\in\mathbb{N}_0^n\text{ and } [t]_A \text{ denotes the}\\
+&\text{substitution for the term } t \text{ with a substitution } A.
+\end{aligned}
+$$
 
+Note that we can use a SMT solver to validate
+$$
+\begin{aligned}
+&\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
+&\vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\}.
+\end{aligned}
+$$
+
+```{block2, type="myexample",latex.options="_"}
+Assume that we have given the following suptyping conditions:
+$$
+\begin{aligned}
+\Theta := \{&(a,\{\mathit{Int}|\kappa_1\}),(b,\{\mathit{Int}|\kappa_2\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+Then $V:=\{a,b\}$ and $A_0:=\{(\kappa_1,\mathit{Init}(V)),(\kappa_2,\mathit{Init}(V)),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}$.
+
+**Splitting the conditions**
+
+We will only consider the last subtyping condition of $C_0$, all other conditions do not need to be split.
+$$
+\begin{aligned}
+  &\text{Split}(a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\})\\
+  & = \text{Split}(a:\{\nu:\mathit{Int}|\kappa_1\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\})\\
+  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad\quad<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\})\\
+  & = \{a:\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\kappa_1\}\}\\
+  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}|\kappa_2\})\\
+  &\quad\cup\text{Split}(\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\})\\
+  & = \{\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\},\\
+  &\quad \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\},\\
+  &\quad\{\nu:\mathit{Int}|\kappa_3\}<:_{\{\Theta\},\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}
+\end{aligned}
+$$
+So in conclusion we have the following set of subtypings conditions:
+$$
+\begin{aligned}
+C:=\{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\},\\
+  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\},\\
+  &\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}
+\end{aligned}
+$$
+
+We therefore now will go through each condition $c\in C$ and check its validity. 
+
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+  
+We define
+$S :=\{(\kappa_1,\bigwedge \mathit{Init}(V)),(\kappa_2,\bigwedge \mathit{Init}(V)),(\kappa_3,\bigwedge \mathit{Init}(V)),(\kappa_4,\bigwedge \mathit{Init}(V))\}$.
+
+$\mathit{Init}(V)$ contains $\nu = 0$ and $\neg \nu = 0$, so we know that $\bigwedge \mathit{Init}(V)$ can be simplified to $\mathit{False}$.
+
+We now check if
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\nu = b \land a < b\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\mathit{False}
+\end{aligned}
+$$
+is not valid.
+
+We know that $\text{values}_{\{\}}(\{\nu:\mathit{False}\})=\{\}$, and therefore this can be simplified to $\mathit{True}\vDash\mathit{True}$, which is valid.
+
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+  
+The argument is analogously to the previous case.
+
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\}$:
+
+We now check if
+$$
+\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\mathit{True}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\mathit{False}
+$$
+is valid. This time we can ignore the quantifiers and thus it simplifies to $\mathit{True}\vDash\mathit{False}$, which is not valid.
+
+We therefore will now weaken $A_0$. To do so we compute all $q\in A_0(\kappa_1)$ such that $\text{wellFormed}(q)$ and 
+$$
+\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\semantic{$\mathit{True}$}_{\{\}}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\semantic{$q$}_{\{\}}.
+$$
+There are only two values for $q$ that are well formed: $\mathit{True}$ and $\mathit{False}$.
+
+The resulting set is $Q_2 := \{\mathit{True}\}$ and thus we replace $A_0$ with
+
+$$
+A := \{(\kappa_1,\{\mathit{True}\}),(\kappa_2,\mathit{Init}(V)),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}
+$$
+
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\}$:
+  
+The argument is analogously to the previous case, resulting in the updated value for $A$:
+  
+$$
+A = \{(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}
+$$
+  
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}$:
+  
+The suptyping condition is valid, analogously to the first case of this iteration.
+
+**Iteration 2, Case ** $c = \{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+
+We check the validity of 
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\nu = b \land a < b\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\mathit{False}.
+\end{aligned}
+$$
+It is easy to see, that it is not valid.
+
+Thus we now compute all $q\in A(\kappa_3)$ such that $\text{wellFormed}(q)$ and
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\nu = b \land a < b\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad q.
+\end{aligned}
+$$
+is valid.
+The resulting set $Q_2$ is the following.
+$$
+\begin{aligned}
+Q_2 := \{ &a < \nu, \nu = b, \neg (\nu = a),\nu < b \lor \nu = b, b < \nu \lor \nu = b,\nu < a \lor \nu = a,\\
+&a < \nu \lor \nu = a\}
+\end{aligned}
+$$
+Therefore we update $A$:
+$$
+\begin{aligned}
+A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),\\
+  &(\kappa_3,\{a < \nu, \nu = b, \neg (\nu = a),\nu < b \lor \nu = b, b < \nu \lor \nu = b,\nu < a \lor \nu = a,\\
+  &\quad a < \nu \lor \nu = a\}),\\
+  &(\kappa_4,\mathit{Init}(V))\}
+\end{aligned}
+$$
+
+**Iteration 2, Case ** $c = \{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+
+We check the validity of
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\nu = a \land \neg (a < b)\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad a < \nu\land \nu = b\land \neg (\nu = a)\land\nu < b \lor \nu = b\\
+&\quad\quad\land b < \nu \lor \nu = b\land\nu < a \lor \nu = a\land a < \nu \lor \nu = a.
+\end{aligned}
+$$
+It is not valid, because $\nu = a \land \neg (a < b) \vDash\nu = b$ is not valid.
+
+Thus we compute all $q\in A(\kappa_3)$ such that $\text{wellFromed}(q)$ and
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\nu = a \land \neg (a < b)\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad q.
+\end{aligned}
+$$
+is valid.
+The resulting set $Q_2$ is the following.
+$$
+Q_2 := \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}
+$$
+Thus we update $A$:
+$$
+\begin{aligned}
+A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),
+  &(\kappa_3, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}),
+  &(\kappa_4,\mathit{Init}(V))\}
+\end{aligned}
+$$
+
+**Iteration 2, Case ** $\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\}$:
+
+Nothing has changed since the last iteration, therefore this case can be skipped.
+
+**Iteration 2, Case ** $\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\}$:
+
+The argument is analogously to the previous case, therefore this case  can be skipped.
+
+**Iteration 2, Case **: $\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}$:
+
+We check the validity of
+$$
+\begin{aligned}
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\{\nu < b \lor \nu = b\land \nu < a \lor \nu = a\}\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\quad \mathit{False}.
+\end{aligned}
+$$
+We see that this is not valid, therefore we derive the new set $Q_2$. Note that $A(\kappa_3)\subseteq \mathit{Init}(V)$ and therefore $Q_2=A(\kappa_3)$.
+
+We update the corresponding entry in $A$:
+$$
+\begin{aligned}
+A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),\\
+  &(\kappa_3, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}),\\
+  &(\kappa_4, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\})\}
+\end{aligned}
+$$
+  
+**Iteration 3**:
+
+In this iteration all subtyping conditions are valid, thus the algorithm stops.
+The resulting set of substitutions is therefore the following
+$$
+\begin{aligned}
+\{ &(\kappa_1,\mathit{True}),(\kappa_2,\mathit{True}),\\
+  &(\kappa_3, (\nu < b \lor \nu = b) \land (\nu < a \lor \nu = a)),\\
+  &(\kappa_4, (\nu < b \lor \nu = b)\land (\nu < a \lor \nu = a))\}
+\end{aligned}
+$$
+```
