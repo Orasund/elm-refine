@@ -26,13 +26,20 @@ We define $\mathcal{T}^?:=\{\hat{T} \ | \ \hat{T} \text{ is a template}\}$
 ```
 A template will be used for a liquid type with unknown refinement. Note that the inference rule for function applications introduces a refinement substitution $S$. For templates this substitution is not defined and needs to be delayed until the corresponding liquid type has been derived. We will point out whenever the substitution $[k]_S$ will be applied.
 
+```{definition,name="Type variable Context"}
+\begin{letIn} $K := \{[k]_S|k\in\mathcal{K}\land S:\mathcal{V}\nrightarrow\mathcal{Q}\}$.
+\end{letIn}
+We say $\Theta:\mathcal{V}\nrightarrow(\mathcal{Q}\cup K)$ is a type variable context.
+```
+
 Our algorithm will resolve a set of suptyping conditions:
 ```{definition,name="Subtyping Condition"}
 We say $c$ is a _Subtyping Condition_ $:\Leftrightarrow$
 $$
 \begin{aligned}
 &c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
-&\text{where }\hat{T}_1,\hat{T}_2\in\mathcal{T}\cup\mathcal{T}^?,\Theta:\mathcal{V}\nrightarrow(\mathcal{T}\cup\mathcal{T}^?)\text{ and }\Lambda\subset\mathcal{Q}.
+&\text{where }\hat{T}_1,\hat{T}_2\text{ are a liquid types or templates},\Theta\text{ is a type variable context and }\\
+&\Lambda\subset\mathcal{Q}.
 \end{aligned}
 $$
 
@@ -54,8 +61,9 @@ $$
 $$
 \begin{aligned}
   \text{Vars}:\mathcal{C}\to&\mathcal{P}(\mathcal{K})\\
-  \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =&
-  \text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\cup\{\text{Vars}(\hat{T}_3)|(\_,\hat{T}_3)\in\Theta\}
+  \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =
+  &\text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\\
+  &\cup\{k|(\_,q)\in\Theta\land q = [k]_S \text{ for } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\}
 \end{aligned}
 $$
 ```
@@ -96,7 +104,7 @@ Q_0:=&\mathit{Init}(V),\\
 A_0:=&\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\},\\
 A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
 &\quad\text{in } \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
-&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q} \text{ and }A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}.
+&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q}, A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}, \Theta\text{ be a type variable context and } \Lambda\subseteq\mathcal{Q}.
 \end{aligned}
 $$
 We first split the subtyping conditions for functions into subtyping conditions for simpler templates:
@@ -112,10 +120,11 @@ With this we can now define the Split function.
 
 $$
 \begin{aligned}
-\text{Split}:\mathcal{C}\nrightarrow&\mathcal{P}(\mathcal{C^-})\\
-\text{Split}(a:\hat{T}_1\to \hat{T}_2<:_{\Theta,\Lambda}a:\hat{T}_3\to\hat{T}_4 )=&\text{Split}(\hat{T}_3 <:_{\Theta,\Lambda}\hat{T}_1)\\
-  &\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,\hat{T}_3)\},\Lambda}\hat{T}_4\})\\
-\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=&\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
+&\text{Split}:\mathcal{C}\nrightarrow\mathcal{P}(\mathcal{C^-})\\
+&\text{Split}(a:\{\nu:\mathit{Int}|q_1\}\to \hat{T}_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}|q_3\}\to\hat{T}_4 )=\\
+&\quad\quad\text{Split}(\hat{T}_3 <:_{\Theta,\Lambda}\hat{T}_1)\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}\hat{T}_4\})\\
+&\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=\\
+&\quad\quad\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
 \end{aligned}
 $$
 Note that Split will result in an error, if the subtyping condition is not one of the two cases above.
@@ -128,21 +137,21 @@ $$
 \text{Solve}&(C,A)=\\
 &\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
 &\text{If there exists } (\{v:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{v:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
-&\quad \forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
-&\quad \vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}} \text{ is not valid}\\
+&\quad \neg (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\\
 &\quad\begin{aligned}\text{for }\ &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
 &r_1 := \begin{cases}\bigwedge [S(q_1)]_{S_1}&\text{if } q_1\in\mathcal{K}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases},\\
-&\begin{aligned} \Theta':= \{\ (&a,T')\\
-   | \ &T' = T \land (a,T)\in\Theta \land T\in\mathcal{T}\\
-\lor \ & T' = [\hat{T}]_S\land (a,\hat{T})\in\Theta\land \hat{T}\in\mathcal{T}^?\}
+&\begin{aligned} \Theta':= \{\ (&a,r)\\
+   | \ &r = q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
+\lor \ &r = [[k]_S]_{S_0}\land (a,q)\in\Theta\land q=[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
 \end{aligned}\end{aligned}\\
-&\{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta'\\
+&\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\text{then } \text{Solve}(C,\text{Weaken}(c,A)) \text{ else } A\\
 &\text{where } k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subseteq\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},q_1\in\mathcal{K}\cup\mathcal{Q},\\
-&\Theta:\mathcal{V}\nrightarrow(\mathcal{T}\cup\mathcal{T}^?),r_1,p,r_2\in\mathcal{Q}, a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{T},T'\in\mathcal{T}\cup\mathcal{T}^?,n\in\mathbb{N}, b_i\in\mathcal{V},\\
-&T_i\in\mathcal{T}\text{ for } i\in\mathbb{N}_0^n \text{ and } [t]_A \text{ denotes the substitution for the term } t \text{ with a}\\
+&\Theta\text{ be a type variable context},r_1,p,r_2\in\mathcal{Q}, a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{Q},r\in\mathcal{Q},n\in\mathbb{N}, b_i\in\mathcal{V},\\
+&r_i\in\mathcal{Q}\text{ for } i\in\mathbb{N}_0^n \text{ and } [t]_A \text{ denotes the substitution for the term } t \text{ with a}\\
 &\text{substitution } A.\\
 \end{aligned}
 $$
@@ -150,26 +159,31 @@ $$
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
-&\quad \vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}.
+&\neg (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\\
 \end{aligned}
 $$
+by solving the following SMT statement:
+$$
+\exists i_1\in\mathbb{N}.\dots\exists i_n\in\mathbb{N}.\semantic{$(\bigwedge_{j=0}^n r_j')\land r_1\land p\land \neg r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}
+$$
+Note that \(\semantic{$q$}\) translates the refinement $q\in\mathcal{Q}$ into a SMT-readable statement.
+
 $$
 \begin{aligned}
 &\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{Q})\to(\mathcal{K}\nrightarrow\mathcal{Q})\\
 &\text{Weaken}(\{\nu:\mathit{Int}| [k_1]_{S_1} \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [k_2]_{S_2}\},A) =\\
 &\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
  &r_1 := \bigwedge [S(k_1)]_{S_1},\ p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
-&   
-\begin{aligned} \Theta':=\{\ &(a,T')\\
-   | \ &T' = T \land (a,T)\in\Theta \land T\in\mathcal{T}\\
-\lor \ & T' = [\hat{T}]_S\land (a,\hat{T})\in\Theta\land \hat{T}\in\mathcal{T}^?\},
+&\begin{aligned} \Theta':= \{\ (&a,r)\\
+   | \ &r = q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
+\lor \ &r = [[k]_S]_{S_0}\land (a,q)\in\Theta\land q=[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
 \end{aligned}\\
-&\{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta'\\
+&\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
-| \ &q\in A(k_2)\land \text{wellFormed}(q,\Theta')\\
-\land & \forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
-&\vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\}
+| \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
+\land & (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}\\
 &\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
 &\quad\text{where } k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},\Theta':\mathcal{V}\nrightarrow\mathcal{T},\\
@@ -181,9 +195,13 @@ $$
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\\
-&\vDash\forall i_1\in\text{value}_\Gamma(T_1).\dots \forall i_n\in\text{value}_\Gamma(T_n).\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\}.
+&\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}
 \end{aligned}
+$$
+To do so, we first need to compute $r_2 := [q]_{S_2}$, with that we can now formulate our SMT statement:
+$$
+\forall i_1 \in\mathbb{N}.\dots \forall i_n \in\mathbb{N}.\semantic{$\neg((\bigwedge_{j=0}^n r_j')\land r_1\land p)\lor r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}
 $$
 
 ```{block2, type="myexample",latex.options="_"}

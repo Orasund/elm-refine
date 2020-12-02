@@ -60,7 +60,7 @@ As before, $\Theta$ will contain the type of a variable (similarly to the previo
 
 #### Type Signature Judgments
 
-For type signature judgments, let $\mathit{exp}\in\mathit{IntExp}$, $q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
+For type signature judgments, let $\mathit{exp}\in\mathit{IntExp}$, $q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{Q}$.
 
 For $\mathit{iet}\in\mf{"<int-exp-type>"}$, the judgment has the form
 
@@ -132,18 +132,15 @@ We have already defined well-formed logical qualifiers expressions. We will now 
 $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 \end{letIn}
 We define following.
-\[
-\text{wellFormed}\subseteq\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})
-\]\[
-\begin{aligned}
-\text{wellFormed}(\{b:\mathit{Int}| r \},\{(a_1,T_1),\dots,(a_n,T_n)\}) :\Leftrightarrow\\
-\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
-r\text{ is well defined with respect to }& \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathit{Int})\}
-\end{aligned}
-\]\[
-  \begin{aligned}
-\text{wellFormed}(a:\{b:\mathit{Int}| r \}\to\hat{T},\Theta) :\Leftrightarrow\\
-(a,\_)\not\in \Theta\ \land \ \text{wellFormed}(\{b:\mathit{Int}| r \},\Theta)&\ \land\ \text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}| r \})\})
+\[\begin{aligned}
+ \text{wellFormed}&\subseteq\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})\\
+\text{wellFormed}&(\{b:\mathit{Int}| r \},\{(a_1,r_1),\dots,(a_n,r_n)\}) :\Leftrightarrow\\
+&\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{nu:\mathit{Int}|r_n\}).\\
+&r\text{ is well defined with respect to } \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathit{Int})\}\\
+\text{wellFormed}&(a:\{b:\mathit{Int}| r \}\to\hat{T},\Theta) :\Leftrightarrow\\
+&(a,\_)\not\in \Theta\\
+\land \ &\text{wellFormed}(\{b:\mathit{Int}| r \},\Theta)\\
+\land \ &\text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}| r \})\})
 \end{aligned}
 \]
 ```
@@ -157,18 +154,14 @@ $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$. Let $\Lambda\subset\mathcal{Q}$, $r
 We define the following.
 $$
 \begin{aligned}
-\{a_1:\mathit{Int}| r_1 \} <:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| r_2\} \ :\Leftrightarrow \ & \text{Let} \ \{(b_1,T_1),\dots,(b_n,T_n)\}=\Theta \ \text{in}\\
-&\forall k_1\in\text{value}_\Gamma(T_1).\dots \forall k_n\in\text{value}_\Gamma(T_n).\\
+\{a_1:\mathit{Int}| q_1 \} &<:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| q_2\} \ :\Leftrightarrow \\  &\text{Let} \ \{(b_1,r_1),\dots,(b_n,r_n)\}=\Theta \ \text{in}\\
+&\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n\}).\\
 &\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
-                                                                                  &\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-   &\quad\land \semantic{$r_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-                                                                                  &\Rightarrow\semantic{$r_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}
-\end{aligned}
-$$
-$$
-\begin{aligned}
-a_1:\{b_1:\mathit{Int}| r_1 \}\to\hat{T}_2 <:_{\Theta,\Lambda}& a_1:\{ b_2 : \mathit{Int}| r_2\}\to\hat{T}_4 \ :\Leftrightarrow\\ 
-&\{ b_2 : \mathit{Int}| r_2\}<:_{\Theta,\Lambda}\{b_1:\mathit{Int}| r_1 \}\\
+&\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+&\quad\land \semantic{$q_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+&\Rightarrow\semantic{$q_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
+a_1:\{b_1:\mathit{Int}| q_1 \}\to\hat{T}_2 &<:_{\Theta,\Lambda} a_1:\{ b_2 : \mathit{Int}| q_2\}\to\hat{T}_4 \ :\Leftrightarrow\\ 
+&\{ b_2 : \mathit{Int}| q_2\}<:_{\Theta,\Lambda}\{b_1:\mathit{Int}| q_1 \}\\
 &\land\hat{T}_2<:_{\Theta\cup\{(a_1,\{ b_2 : \mathit{Int}| r_2\})\},\Lambda}\hat{T}_4
 \end{aligned}
 $$
@@ -291,15 +284,15 @@ Judgment: $\mathit{lt}:_\Theta\hat{T}$
 \logicRule
 {\mathit{qt}:q\quad
 \{\nu:\mathit{Int}| \ q \ \}=\hat{T}\quad
-\text{wellFormed}(\hat{T}_2,\Theta\cup\{(\nu,\mathit{Int})\})
+\text{wellFormed}(\hat{T}_2,\Theta\cup\{(\nu,\mathit{True})\})
 }
 {\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}}
 {}
 
 \logicRule
-{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}_1\quad
-\mathit{lt}:_{\Theta\cup\{(a,\hat{T}_1)\}}\hat{T}_2\quad
-(a:\hat{T}_1\rightarrow\hat{T}_2) = \hat{T}_3
+{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\{\nu:\mathit{Int}| \ q \ \}\quad
+\mathit{lt}:_{\Theta\cup\{(a,q)\}}\hat{T}_2\quad
+(a:\{\nu:\mathit{Int}| \ q \ \}\rightarrow\hat{T}_2) = \hat{T}_3
 }
 {a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}:_\Theta\hat{T}_3}
 {}
@@ -374,19 +367,19 @@ We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ ca
 
 \logicRule
 {\begin{gathered}
-a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3\\
-\Gamma,\Delta\cup\{(a,\hat{T}_1)\},\Theta\cup\{(a,\hat{T}_1)\},\Lambda\vdash e: \hat{T}_2
+a:\{\nu:\mathit{Int}|q\}\to \hat{T}_1 = \hat{T}_2\\
+\Gamma,\Delta\cup\{(a,\{\nu:\mathit{Int}|q\})\},\Theta\cup\{(a,q)\},\Lambda\vdash e: \hat{T}_1
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_3}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_2}
 {}
 
 We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
 {\begin{gathered}
-(a,\{\nu:\mathit{Int}| \ r\}) \in \Delta\quad
-(a,\{\nu:\mathit{Int}| \ r\}) \in \Theta
+(a,\{\nu:\mathit{Int}| \ q\}) \in \Delta\quad
+(a,q) \in \Theta
 \end{gathered}
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\mathit{Int}| \ \nu = a\}}
@@ -404,15 +397,15 @@ For the denotational semantic we only need to extend the semantic for type signa
 
 ```{definition, name="Type Signature Semantic"}
 \begin{letIn}
-Let $\Gamma$ be a type context. Let $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
+Let $\Gamma$ be a type context. Let $\Theta:\mathcal{V}\nrightarrow\mathcal{Q}$.
 \end{letIn}
 $$
 \begin{aligned}
 \semantic{.}:&\mf{<int-exp-type>}\to\mathit{IntExp}\\
 \semantic{$n$} = & n\\
-\semantic{$\mathit{iet}_1 \mf{+} \mathit{iet}_2$} = & i_1 + i_2\\
+\semantic{$\mathit{iet}_1 \ \mf{+} \ \mathit{iet}_2$} = & i_1 + i_2\\
     &\text{such that } i_1 = \semantic{$\mathit{iet}_1$} \text{ and } i_2 = \semantic{$\mathit{iet}_2$} \text{ where } i_1,i_2\in\mathit{IntExp}\\
-\semantic{$\mathit{iet} \mf{*} n$} = & i \cdot n\\
+\semantic{$\mathit{iet} \ \mf{*} \ n$} = & i \cdot n\\
     &\text{such that } i = \semantic{$\mathit{iet}$}\text{ where } i\in\mathit{IntExp}\\
 \semantic{$a$} = & a
 \end{aligned}
