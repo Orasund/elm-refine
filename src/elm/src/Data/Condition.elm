@@ -1,185 +1,53 @@
-module Data.Condition exposing (Condition, ConditionForm, Input(..), IntExp(..), LiquidType, Refinement(..), SimpleLiquidType, decode)
+module Data.Condition exposing (Condition, ConditionForm, decode, emptyForm)
 
-import Dict
-import Parser exposing (Parser)
+import Data.LiquidType as LiquidType exposing (Input(..), IntExp(..), LiquidType, Refinement(..), SimpleLiquidType(..))
+import Dict exposing (Dict)
+import List.Extra as List
+import Parser exposing ((|.), (|=), Parser)
 import Result.Extra as Result
-
-
-type IntExp
-    = Integer Int
-    | Plus IntExp IntExp
-    | Times IntExp Int
-    | Var String
-
-
-intExpDecoder : Parser IntExp
-intExpDecoder =
-    Parser.oneOf
-        [ Parser.map Integer int
-        , Parser.succeed Plus
-            |. Parser.keyword "(+)"
-            |. Parser.spaces
-            |= intExpDecoder
-            |. Parser.spaces
-            |= intExpDecoder
-        , Parser.succeed Times
-            |. Parser.keyword "(*)"
-            |. Parser.spaces
-            |= intExpDecoder
-            |. Parser.spaces
-            |= Parser.int
-        , Parser.map Var
-            (Parser.variable
-                { start = Char.isLower
-                , inner = Char.isAlphaNum
-                , reserved = Set.fromList [ "or", "and", "not" ]
-                }
-            )
-        ]
-
-
-type Refinement
-    = IsTrue
-    | IsFalse
-    | IsSmaller String IntExp
-    | IsBigger String IntExp
-    | IsEqual String IntExp
-    | EitherOr Refinement Refinement
-    | AndAlso Refinement Refinement
-    | IsNot Refinement
-
-
-refinementDecoder : Parser Refinement
-refinementDecoder =
-    Parser.oneOf
-        [ Parser.map (\_ -> IsTrue) (keyword "True")
-        , Parser.map (\_ -> IsFalse) (keyword "False")
-        , Parser.succeed IsSmaller
-            |. Parser.keyword "(<)"
-            |. Parser.spaces
-            |= Parser.map Var
-                (Parser.variable
-                    { start = Char.isLower
-                    , inner = Char.isAlphaNum
-                    , reserved = Set.fromList [ "or", "and", "not" ]
-                    }
-                )
-            |. Parser.spaces
-            |= intExpDecoder
-        , Parser.succeed IsBigger
-            |. Parser.keyword "(>)"
-            |. Parser.spaces
-            |= Parser.map Var
-                (Parser.variable
-                    { start = Char.isLower
-                    , inner = Char.isAlphaNum
-                    , reserved = Set.fromList [ "or", "and", "not" ]
-                    }
-                )
-            |. Parser.spaces
-            |= intExpDecoder
-        , Parser.succeed IsEqual
-            |. Parser.keyword "(==)"
-            |. Parser.spaces
-            |= Parser.map Var
-                (Parser.variable
-                    { start = Char.isLower
-                    , inner = Char.isAlphaNum
-                    , reserved = Set.fromList [ "or", "and", "not" ]
-                    }
-                )
-            |. Parser.spaces
-            |= intExpDecoder
-        , Parser.succeed EitherOr
-            |. Parser.keyword "or"
-            |. Parser.spaces
-            |= refinementDecoder
-            |. Parser.spaces
-            |= refinementDecoder
-        , Parser.succeed AndAlso
-            |. Parser.keyword "and"
-            |. Parser.spaces
-            |= refinementDecoder
-            |. Parser.spaces
-            |= refinementDecoder
-        , Parser.succeed IsNot
-            |. Parser.keyword "not"
-            |. Parser.spaces
-            |= refinementDecoder
-        ]
-
-
-decodeRefinement : String -> Result String Refinement
-decodeRefinement =
-    refinementDecoder
-        |> Parser.run
-
-
-type SimpleLiquidType
-    = Integer Refinement
-    | Variable Int
-
-
-type alias LiquidType =
-    ( SimpleLiquidType, List SimpleLiquidType )
+import Set
 
 
 type alias Condition =
     { smaller : LiquidType
     , bigger : LiquidType
     , guards : List Refinement
-    , typVariales : Dict String LiquidType
+    , typeVariales : Dict String LiquidType
     }
-
-
-type Input
-    = IntegerInput Int
-    | StringInput String
-
-
-decodeSimpleLiquidType : Input -> Result String SimpleLiquidType
-decodeSimpleLiquidType input =
-    case input of
-        IntegerInput n ->
-            Ok <| Variable n
-
-        StringInput string ->
-            string
-                |> decodeRefinement
-                |> Result.map Integer
 
 
 type alias ConditionForm =
     { smaller : ( Input, List Input )
     , bigger : ( Input, List Input )
     , guards : List String
-    , typVariales : Dict String ( Input, List Input )
+    , typeVariables : List ( String, ( Input, List Input ) )
     }
 
 
-decodeLiquidType : ( Input, List Input ) -> Result String LiquidType
-decodeLiquidType ( head, list ) =
-    Result.map2
-        (\a b -> ( a, b ))
-        (head |> decodeSimpleLiquidType)
-        (list
-            |> List.map decodeSimpleLiquidType
-            |> Result.combine
-        )
+emptyForm : ConditionForm
+emptyForm =
+    { smaller = ( StringInput "", [] )
+    , bigger = ( StringInput "", [] )
+    , guards = []
+    , typeVariables = []
+    }
 
 
 decode : ConditionForm -> Result String Condition
-decode { smaller, bigger, guards, typVariables } =
+decode { smaller, bigger, guards, typeVariables } =
     Result.map4 Condition
-        (smaller |> decodeLiquidType)
-        (bigger |> decodeLiquidType)
+        (smaller |> LiquidType.decode)
+        (bigger |> LiquidType.decode)
         (guards
-            |> List.map decodeRefinement
+            |> List.map LiquidType.decodeRefinement
             |> Result.combine
         )
-        (typVariables
-            |> Dict.map (always decodeLiquidType)
-            |> Dict.toList
-            |> Result.combine
-            |> Result.map Dict.fromList
+        (typeVariables
+            |> List.map (Tuple.mapSecond LiquidType.decode)
+            |> List.unzip
+            |> (\( keys, values ) ->
+                    values
+                        |> Result.combine
+                        |> Result.map (List.zip keys >> Dict.fromList)
+               )
         )
