@@ -460,13 +460,13 @@ The algorithm that we described can fail if the subtyping conditions are not wel
 We say a subtyping condition $c$ is wellformed if the following holds
 $$
 \begin{aligned}
-&c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_S\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_S\}\\
-\lor &c \text{ has the form } \{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_S\}\\
-\lor &c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_S\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2\\
+&c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
+\lor\ &c \text{ has the form } \{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
+\lor\ &c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2\\
 &\quad\text{ such that } \hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2 \text{ is wellformed.}
 \end{aligned}
 $$
-where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S:\mathcal{V}\nrightarrow\mathcal{Q}$,$\Theta$ is a type variable context, $\Lambda\subset\mathcal{Q}$ and $T_1,T_2\in(\mathcal{T}\cup\mathcal{T}^?)$
+where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q}$,$\Theta$ is a type variable context, $\Lambda\subset\mathcal{Q}$ and $T_1,T_2\in(\mathcal{T}\cup\mathcal{T}^?)$
 ```
 
 ```{theorem}
@@ -478,12 +478,12 @@ For all subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$,
 $$
 \begin{aligned}
 &[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
-\land&[\hat{T}_1]_S <:_{\Theta,\Lambda} [\hat{T}_2]_S\\
-\land&\forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a.\exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
+\land \ &[\hat{T}_1]_S <:_{\Theta,\Lambda} [\hat{T}_2]_S\\
+\land\ &\forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a.\exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
 &\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}  \land ([\hat{T}_1]_{S'} <:_{\Theta,\Lambda} [\hat{T}_2]_{S'} \Rightarrow (\forall a. S(a) \Rightarrow S'(a)))\end{aligned}
 $$
 ```
-The first condition states that $[\hat{T}_1]_S$ and $[\hat{T}_2]_S$ are not templates.
+The first post-condition states that $[\hat{T}_1]_S$ and $[\hat{T}_2]_S$ are not templates.
 The second condition states that $[\hat{T}_1]_S$ is a subtype of $[\hat{T}_2]_S$.
 The third condition states that $S$ is the sharpest solution.
 
@@ -496,9 +496,23 @@ Then $C\subseteq \mathcal{C^-} \land \forall c\in C. c$ is a wellformed conditio
 ```
 
 ```{theorem}
+\begin{letIn}
+$c\in\mathcal{C}^-$ be a well-formed condition.
+\end{letIn}
+Then
+$$
+\begin{aligned}
+&c\text{ has the form }\{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
+\lor\ & c\text{ has the form }\{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}
+\end{aligned}
+$$
+where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S:\mathcal{V}\nrightarrow\mathcal{Q}$,$\Theta$ is a type variable context and $\Lambda\subseteq\mathcal{Q}$.
+```
+
+```{theorem}
 \label{thm:correctness_solve}
 \begin{letIn}
-$C\subseteq\mathcal{C^-}$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let $A_2 = \text{Solve}(C,A_1)$ and
+$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let $A_2 = \text{Solve}(C,A_1)$ and
 $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$
 \end{letIn}
 For all subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$,
@@ -512,3 +526,40 @@ $$
 $$
 ```
 The post-condition is the same as for Infer.
+
+```{theorem}
+\label{thm:correctness_weaken}
+\begin{letIn}
+$c\in\mathcal{C}^-$ be a well-formed condition and $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let $A_2 = \text{weaken}(c,A_1)$
+\end{letIn}
+
+if $c$ has the form $\{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$ then 
+$$
+\begin{aligned}
+&(\forall k\neq k_2. A_1(k) = A_2(k))\\
+\land\ &A_2(k_2)\subseteq A_1(k_2)\\
+\land\ &\text{Let } S := \{(k,\bigwedge Q)| (k,Q)\in A_2\}\text{ in}\\
+&[k_1]_S\in\mathcal{Q}\land[k_2]_S\in\mathcal{Q}\land \{\nu:\mathit{Int}|[[k_1]_S]_{S_1}\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_S]_{S_2}\}\\
+\land\ &\forall A_2':\mathcal{V}\nrightarrow\mathcal{P}(\mathcal{Q}).(\forall k\neq k_2. A_1(k) = A_2'(k))\\
+  &\land\ A_2'(k_2)\subseteq A_1(k_2)\\
+  &\land \text{Let } S' := \{(k,\bigwedge Q)| (k,Q)\in A_2'\}\text{ in}\\
+  &\quad [k_1]_{S'}\in\mathcal{Q}\land  [k_2]_{S'}\in\mathcal{Q}\land\{\nu:\mathit{Int}|[[k_1]_{S'}]_{S_1}\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}\\
+  &\quad \Rightarrow A_2\subseteq A_2'
+\end{aligned}
+$$
+else $c$ has the form $\{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$ and the following holds:
+$$
+\begin{aligned}
+&(\forall k\neq k_2. A_1(k) = A_2(k))\\
+\land\ &A_2(k_2)\subseteq A_1(k_2)\\
+\land\ &\text{Let } S := \{(k,\bigwedge Q)| (k,Q)\in A_2\}\text{ in}\\
+&[k_2]_S\in\mathcal{Q}\land \{\nu:\mathit{Int}|r\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_S]_{S_2}\}\\
+\land\ &\forall A_2':\mathcal{V}\nrightarrow\mathcal{P}(\mathcal{Q}).(\forall k\neq k_2. A_1(k) = A_2'(k))\\
+  &\land\ A_2'(k_2)\subseteq A_1(k_2)\\
+  &\land \text{Let } S' := \{(k,\bigwedge Q)| (k,Q)\in A_2'\}\text{ in}\\
+  &\quad [k_2]_{S'}\in\mathcal{Q}\land \{\nu:\mathit{Int}|r\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}\\
+  &\quad \Rightarrow A_2\subseteq A_2'
+\end{aligned}
+$$
+```
+The first post-condition state that by updating $A_1$ to $A_2$ only the value for $k_2$ changes. The second condition states that the updated value $A_2(k_2)$ needs to be a subset of the old value $A_1(k_2)$. The third condition states that the resulting substitution $S$ generates a refinement $[k_1]_S$ that makes the subtyping condition valid. The fourth condition states that the value $A_2(k_2)$ is the smallest subset of $A_1(k_2)$ such that the previous conditions hold.
