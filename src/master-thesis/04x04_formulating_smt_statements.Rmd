@@ -473,21 +473,21 @@ where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S_1,S_2:\mathcal{V}\nrightarro
 ```{theorem}
 \label{thm:correctness_infer}
 \begin{letIn}
-$C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$
+$C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
 \end{letIn}
-For all subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
+For every subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
 $$
-\begin{aligned}
-& \begin{aligned} \Theta':= \{\ (&a,r)\\
+\begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
 &\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
-\end{aligned}\\
-&\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\end{aligned}
+\end{aligned}
 $$
+and $\{(b_1,r_1'),\dots,(b_n,r_n')\}:=\Theta'$.
+Then we have the following correctness property:
 $$
 \begin{aligned}
-&\text{in }[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
+&[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
 &\land \ [\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S\\
 &\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in\mathcal{V}.S'(a) \text{ is well defined}\Rightarrow \exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
 &\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
@@ -502,39 +502,7 @@ The third condition states that $S$ is the sharpest solution.
 ```{proof}
 Let $C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
 Let $Q_0:=\mathit{Init}(V)$,
-$A_0:=\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\}$ and $C_1:= \bigcup_{c\in C}\text{Split}(c)$. Then by Theorem \ref{thm:correctness_split} $C_1\subset\mathcal{C}^-$ is a set of well-formed condition. Let $A:=\text{Solve}(C_1,A_0)$ and therefore $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$. Then by Theorem \ref{thm:correctness_solve} the conclusion holds.
-```
-
-```{theorem}
-\label{thm:correctness_lemma}
-\begin{letIn}
-$c\in\mathcal{C}^-$ be a well-formed condition.
-\end{letIn}
-if and only if
-$$
-\begin{aligned}
-&c\text{ has the form }\{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
-\lor\ & c\text{ has the form }\{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}
-\end{aligned}
-$$
-where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S:\mathcal{V}\nrightarrow\mathcal{Q}$,$\Theta$ is a type variable context and $\Lambda\subseteq\mathcal{Q}$.
-```
-This theorem will be used to break down the statement "$c\in\mathcal{C}^-$ is a well-formed condition" into two cases. Both directions will be used.
-```{proof}
-"$\Rightarrow$": Let $c\in\mathcal{C}^-$ be a well-formed condition.
-We make a case distinction for well-formed conditions:
-  
-\textbf{Case} $c = \{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$: Then the conclusion holds.
-
-\textbf{Case} $c = \{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$: Then the conclusion holds.
-
-\textbf{Case} $c = \{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2$ such that $\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2$ is well-formed.: Then $c\not\in\mathcal{C}^-$ and therefore this is an empty case and the conclusion trivially holds.
-
-"$\Leftarrow$": 
-
-\textbf{Case} Let $c := \{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$: Then the conclusion holds.
-
-\textbf{Case} Let $c := \{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$: Then the conclusion holds.
+$A_0:=\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\}$ and $C_1:= \bigcup_{c\in C}\text{Split}(c)$. Then by Theorem \ref{thm:correctness_split} $C_1\subset\mathcal{C}^-$ is a set of well-formed conditions. Let $A:=\text{Solve}(C_1,A_0)$ and therefore $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$. Then by Theorem \ref{thm:correctness_solve} the conclusion holds.
 ```
 
 ```{theorem}
@@ -542,15 +510,15 @@ We make a case distinction for well-formed conditions:
 \begin{letIn}
 $c$ is a well-formed condition and $C := \text{Split}(c)$.
 \end{letIn}
-Then $C\subseteq \mathcal{C^-} \land \forall c\in C. c$ is a well-formed condition.
+Then $C\subseteq \mathcal{C^-}$ and, for every $c\in C$, $c$ is a well-formed condition.
 ```
 ```{proof}
-Let $c$ is a well-formed condition. \text{Split}(c) is therefore defined and $C := \text{Split}(c)$. 
+Let $c$ is a well-formed condition. Then $C := \text{Split}(c)$ is well-defined. We prove the theorem by induction on well-formed conditions.
 
 \textbf{Case} c = $\{\nu:\mathit{Int}|q\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$:
-  Then $C = {c}$ and by appling Theorem \ref{thm:correctness_lemma} to $c$ the conclusion holds.
+  $c$ is well-formed and $c\in C^-$. Then $C = {c}$ and therefore the conclusion holds.
 
-\textbf{Case} c = $\{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2$ such that $\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2$ is well-formed: Let $C_0:=\text{Split}(\hat{T}_1<:_{\Theta,\Lambda} \hat{T}_2)$. By the induction hypothesis $C_0\subseteq \mathcal{C^-} \land \forall c\in C_0. c$ is a well-formed condition and therefore by appling Theorem \ref{thm:correctness_lemma} to each element in $C :=\{\{\nu:\mathit{Int}|r\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|[k_1]_{S_1}\}\}\cup C_0$ the conlusion holds.
+\textbf{Case} c = $\{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2$ such that $\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2$ is well-formed: Let $C_0:=\text{Split}(\hat{T}_1<:_{\Theta,\Lambda} \hat{T}_2)$. By the induction hypothesis $C_0\subseteq \mathcal{C^-}$ and for every $c\in C_0$, $c$ is a well-formed condition. Therefore, by appling Theorem \ref{thm:correctness_lemma} to each element in $C :=\{\{\nu:\mathit{Int}|r\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|[k_1]_{S_1}\}\}\cup C_0$, the conlusion holds.
 ```
 
 
@@ -558,28 +526,29 @@ Let $c$ is a well-formed condition. \text{Split}(c) is therefore defined and $C 
 \label{thm:correctness_solve}
 \begin{letIn}
 $C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
-$S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$
+$S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 \end{letIn}
-For all subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
+Then for every $a\in V$, $A_2(a)\subseteq A_1(a)$
+
+For every subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
 $$
-\begin{aligned}
-& \begin{aligned} \Theta':= \{\ (&a,r)\\
+\begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
 &\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
-\end{aligned}\\
-&\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\end{aligned}
+\end{aligned}
 $$
+and $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'$.
+We then have the following correctness property.
 $$
 \begin{aligned}
-&\text{in }[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
+&[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
 &\land\ [\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S\\
-&\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in\mathcal{V}.S'(a) \text{ well defined} \Rightarrow \exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
+&\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in V.\exists Q\in \mathcal{P}(A_1(a)). S'(a) = \bigwedge Q)\\
 &\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
 &\quad\land ([\hat{T}_1]_{S'} <:_{\Theta',\Lambda} [\hat{T}_2]_{S'}\\
-&\quad\quad\Rightarrow (\forall a\in\mathcal{V}.S(a)\text{ and } S'(a) \text{ are well defined}\\
-&\quad\quad\quad\Rightarrow (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\quad\quad\semantic{$S(a)$}_{(b_1,i_1),\dots,(b_n,i_n)} \Rightarrow \semantic{$S'(a)$}_{(b_1,i_1),\dots,(b_n,i_n)})))
+&\quad\quad\Rightarrow \forall a\in V.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\quad\semantic{$S(a)$}_{(b_1,i_1),\dots,(b_n,i_n)} \Rightarrow \semantic{$S'(a)$}_{(b_1,i_1),\dots,(b_n,i_n)})
 \end{aligned}
 $$
 ```
@@ -588,13 +557,22 @@ The post-condition is the same as for Infer.
 Let $C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
 $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 
-\textbf{Show that the precondition of} $\text{Solve}(C,\text{Weaken}(c,A))$ \textbf{holds.} 
+\textbf{Show that the precondition of} $\text{Solve}(C,\text{Weaken}(c,A_1))$ \textbf{holds.} 
 
 By Theorem \ref{thm:correctness_weaken} $A_2(a)$ is defined for all $a$ for which $A_1$ is defined, namely for all $a\in V$, thus the precondition holds.
 
-\textbf{Show the else-branch ensures the postcondition}
+\textbf{Show that the then-branch ensures the postcondition}
 
-Once the recursion is done, we can assume that for all $c\in C$, By Theorem \ref{thm:correctness_lemma} $c$ has the form $(\{\nu:\mathit{Int}|q_1\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\})$ and the following holds.
+We know that $A_2 = \text{Solve}(C,\text{Weaken}(c,A_1))$.  By the postcondition of $\text{Solve}(C,\text{Weaken}(c,A_1))$, we know that for every $a\in V$, $A_2(a) \subseteq \text{Weaken}(c,A_1)$. By Theorem \ref{thm:correctness_weaken} we also know that  for every $a\in V$,
+$\text{Weaken}(c,A_1)(a)\subseteq A_1(a)$. Thus for every $a\in V$,$A_2(a)\subseteq A_1(a)$.
+
+We have left to show that for every $a\in V$, if the sharpest solution is generated by subsets of $A_2(a)$, than it is also the sharpest solution over all subsets of $A_1(a)$.
+
+By theorem \ref{thm:correctness_weaken} we know that for every $a\in V$, $A_2(a)$ contains the smallest subset of $A_1(a)$ such that the properies hold. Thus $A_2(a)$ is its definition the sharpest solution over all subsets of $A_1(a)$.
+
+\textbf{Show that the else-branch ensures the postcondition}
+
+Once the recursion is done, we can assume that for all $c\in C$, $c$ has the form $(\{\nu:\mathit{Int}|q_1\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\})$ and the following holds:
 
 $$
 \begin{aligned}
@@ -622,13 +600,13 @@ where $k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subset
 This is the same as saying $[\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S$ if $[\hat{T}_1]_S \in\mathcal{T}$ and $[\hat{T}_2]_S \in\mathcal{T}$. We know by Theorem \ref{thm:correctness_weaken} that $A_2(a)$ is defined for all $a\in V$ and thus
 $[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}$.
 
-We still need to show that it is the sharpest solution. To do so, we will use prove by contradiction. Assume there exists S' and $a\in V$ such that $S'(a)$ is sharper then $S(a)$. If $S(a) = \mathit{False}$ then there can not exist a sharper refinement $S'(a)$ and therefore this is a contradiction. If $S(a) \neq \mathit{False}$ then it must have been produced by calling Weaken. This is a contradiction, as by Theorem \ref{thm:correctness_weaken} we know that Weaken produces the sharpest solution therefore $S'(a) = S(a)$. 
+We still need to show that it is the sharpest solution. To do so, we will sketch a proof by contradiction. Assume there exists S' and $a\in V$ such that $S'(a)$ is sharper then $S(a)$. If $S(a) = \mathit{False}$ then there can not exist a sharper refinement $S'(a)$ and therefore this is a contradiction. If $S(a) \neq \mathit{False}$ then it must have been produced by calling Weaken. This is a contradiction, as by Theorem \ref{thm:correctness_weaken} we know that Weaken produces the sharpest solution therefore $S'(a) = S(a)$. 
 ```
 
 ```{theorem}
 \label{thm:correctness_weaken}
 \begin{letIn}
-$c\in\mathcal{C}^-$ be a well-formed condition and therefore by Theorem \ref{thm:correctness_lemma} has the form $$\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
+$c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $$\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
 $$
 \begin{aligned}
   S &:= \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
@@ -652,13 +630,13 @@ $$
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}\\
   &\quad \text{in }[k_2]_{S'}\in\mathcal{Q}\\
-  &\quad \quad \land \{\nu:\mathit{Int}|r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}\Rightarrow A_2\subseteq A_2'
+  &\quad \quad \land \{\nu:\mathit{Int}|r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}\Rightarrow A_2'\subseteq A_2
 \end{aligned}
 $$
 ```
 The first post-condition states that by updating $A_1$ to $A_2$ only the value for $k_2$ changes. The second condition states that the updated value $A_2(k_2)$ needs to be a subset of the old value $A_1(k_2)$. The third condition states that the resulting substitution $S$ generates a refinement $[k_1]_S$ that makes the subtyping condition valid. The fourth condition states that the value $A_2(k_2)$ is the smallest subset of $A_1(k_2)$ such that the previous conditions hold.
 ```{proof}
-Let $c\in\mathcal{C}^-$ be a well-formed condition and therefore by Theorem \ref{thm:correctness_lemma} $c$ has the form $\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
+Let $c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
 $$
 \begin{aligned}
   &S := \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
@@ -684,17 +662,18 @@ Then
 $$A_2 = \{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}$$
 and therefore $\forall k\neq k_2. A_1(k) = A_2(k)$.
 
-We know $A_2(k_2) = Q_2$ and $Q_2\subseteq A_1(k_2)$ therefore $A_2(k_2)\subseteq A_1(k_2)$.
+We know $A_2(k_2) = Q_2$ and $Q_2\subseteq A_1(k_2)$ and therefore $A_2(k_2)\subseteq A_1(k_2)$.
 
 We know by the definition of $S$ that $S(k_2) = \bigwedge Q_2$. Therefore it is easy to see that $\{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_S]_{S_2}\}$ is true because by definiton of $Q_2$ it is true for all $q\in Q_2$, thus it is true for $\bigwedge Q_2$ as well.
 
-We finish off by proving that the result is the sharpest, meaning that $A_2$ is the smallest subset such hat the premise holds. So let there exists a $A_2'$ such that $A_2'(k_2)\subseteq A_2(k_2)$. This means there exists a $q\in A_2'$ such that 
+We finish off by proving that the result is the sharpest, meaning that $A_2$ is the smallest subset such hat the premise holds. So let there exists a $A_2'$ such that $\forall k\neq k_2. A_1(k) = A_2'(k)$, $A_2'(k_2)\subseteq A_1(k_2)$,$[k_2]_{S'}\in\mathcal{Q}$,$\{\nu:\mathit{Int}|r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}$ and $A_2'\subseteq A_2$ for given $S'$ and $r_1$.
+
+This means for every $q\in A_2'(k_2)$ that $q\in A_1(k_2)$ and by the definition of subtyping, $\text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})$ and
 $$
 \begin{aligned}
-&q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
-&\quad\land (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}).
+&\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}.
 \end{aligned}
 $$
-By the definition of $A_2$, this means that $q\in A_2$. Thus $A_2$ is the smallest subset.
+By the definition of $A_2$, this means that $q\in A_2(k_2)$. Thus $A_2$ is the smallest subset.
 ```
