@@ -6,6 +6,7 @@
     "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
+            "Orasund/elm-action": "2.1.2",
             "Orasund/elm-ui-framework": "1.6.1",
             "Orasund/elm-ui-widgets": "2.2.0",
             "arowM/elm-form-decoder": "1.4.0",

@@ -1,13 +1,12 @@
-module Data.Condition exposing (Condition, ConditionForm, addAtTypeVariable, addBigger, addGuard, addSmaller, addTypeVariable, decode, emptyForm, removeAtTypeVariable, removeBigger, removeGuard, removeSmaller, removeTypeVariable, setBigger, setGuard, setSmaller)
+module Data.Condition exposing (Condition, ConditionForm, addAtTypeVariable, addBigger, addGuard, addSmaller, addTypeVariable, decode, emptyForm, removeAtTypeVariable, removeBigger, removeGuard, removeSmaller, removeTypeVariable, setBigger, setGuard, setSmaller, setTypeVariables)
 
 import Array exposing (Array)
 import Array.Extra as Array
-import Data.LiquidType as LiquidType exposing (Input(..), IntExp(..), LiquidType, LiquidTypeForm, Refinement(..), SimpleLiquidType(..))
+import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..))
+import Data.Refinement exposing (IntExp(..), Refinement(..))
 import Dict exposing (Dict)
 import List.Extra as List
-import Parser exposing ((|.), (|=), Parser)
 import Result.Extra as Result
-import Set
 
 
 type alias Condition =
@@ -216,6 +215,29 @@ setBigger index value form =
                                        )
                         }
                    )
+    }
+
+
+setTypeVariables : ( Int, Int ) -> String -> ConditionForm -> ConditionForm
+setTypeVariables ( i1, i2 ) value form =
+    { form
+        | typeVariables =
+            form.typeVariables
+                |> Array.update i1
+                    (\( var, { name, baseType } ) ->
+                        ( var
+                        , { name = name
+                          , baseType =
+                                baseType
+                                    |> (if i2 == -1 then
+                                            Tuple.mapSecond (always value)
+
+                                        else
+                                            Tuple.mapFirst (Array.set i2 value)
+                                       )
+                          }
+                        )
+                    )
     }
 
 
