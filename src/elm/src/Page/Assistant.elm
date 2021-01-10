@@ -1,7 +1,8 @@
 module Page.Assistant exposing (Model, Msg, Transition, init, update, view)
 
 import Color
-import Data.Condition as Condition exposing (Condition, ConditionForm)
+import Data.Algorithm as Algorithm
+import Data.Condition as Condition exposing (Condition, ConditionForm, SimpleCondition)
 import Data.LiquidType as LiquidType exposing (Input(..))
 import Data.Refinement as Refinement exposing (Refinement)
 import Dict
@@ -10,6 +11,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Framework.Grid as Grid
 import Html exposing (Html)
+import Result.Extra as Result
 import Set exposing (Set)
 import View.Condition as Condition
 import View.ConditionForm as ConditionForm
@@ -19,7 +21,7 @@ import Widget.Style.Material.Typography as Typography
 
 
 type alias Model =
-    { conditions : List Condition
+    { conditions : List SimpleCondition
     , predicates : List Refinement
     }
 
@@ -29,7 +31,7 @@ type Msg
 
 
 type alias Transition =
-    List Condition
+    List SimpleCondition
 
 
 init : Transition -> ( Model, Cmd Msg )
@@ -40,7 +42,9 @@ init conditions =
                 |> List.map
                     (\{ typeVariables } ->
                         typeVariables
-                            |> Dict.keys
+                            |> List.length
+                            |> List.range 1
+                            |> List.map (String.fromInt >> (++) "a")
                     )
                 |> List.concat
             )
@@ -68,7 +72,7 @@ view model =
             |> Element.el Typography.h6
         ]
             ++ (model.conditions
-                    |> List.map Condition.view
+                    |> List.map Condition.viewSimple
                )
       , [ "Partial Solution"
             |> Element.text

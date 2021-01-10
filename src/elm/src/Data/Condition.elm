@@ -1,10 +1,28 @@
-module Data.Condition exposing (Condition, ConditionForm, addAtTypeVariable, addBigger, addGuard, addSmaller, addTypeVariable, decode, emptyForm, removeAtTypeVariable, removeBigger, removeGuard, removeSmaller, removeTypeVariable, setBigger, setGuard, setSmaller, setTypeVariables)
+module Data.Condition exposing
+    ( Condition
+    , ConditionForm
+    , SimpleCondition
+    , addBigger
+    , addGuard
+    , addSmaller
+    , addTypeVariable
+    , decode
+    , emptyForm
+    , removeBigger
+    , removeGuard
+    , removeSmaller
+    , removeTypeVariable
+    , setBigger
+    , setGuard
+    , setSmaller
+    , setTypeVariables
+    )
 
 import Array exposing (Array)
 import Array.Extra as Array
 import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..))
 import Data.Refinement exposing (IntExp(..), Refinement(..))
-import Dict exposing (Dict)
+import Dict
 import List.Extra as List
 import Result.Extra as Result
 
@@ -13,7 +31,15 @@ type alias Condition =
     { smaller : LiquidType
     , bigger : LiquidType
     , guards : List Refinement
-    , typeVariables : Dict String LiquidType
+    , typeVariables : List ( String, SimpleLiquidType )
+    }
+
+
+type alias SimpleCondition =
+    { smaller : SimpleLiquidType
+    , bigger : SimpleLiquidType
+    , guards : List Refinement
+    , typeVariables : List ( String, SimpleLiquidType )
     }
 
 
@@ -107,21 +133,8 @@ addTypeVariable form =
     { form
         | typeVariables =
             Array.append form.typeVariables
-                ([ ( "a"
-                        ++ (form.typeVariables
-                                |> Array.length
-                                |> (+) 1
-                                |> String.fromInt
-                           )
-                   , { name =
-                        "c"
-                            ++ (form.typeVariables
-                                    |> Array.length
-                                    |> (+) 1
-                                    |> String.fromInt
-                               )
-                     , baseType = ( Array.empty, "True" )
-                     }
+                ([ ( "a" ++ (form.typeVariables |> Array.length |> String.fromInt)
+                   , "True"
                    )
                  ]
                     |> Array.fromList
@@ -135,46 +148,6 @@ removeTypeVariable form =
         | typeVariables =
             form.typeVariables
                 |> Array.removeAt (form.typeVariables |> Array.length |> (+) -1)
-    }
-
-
-addAtTypeVariable : Int -> ConditionForm -> ConditionForm
-addAtTypeVariable i form =
-    { form
-        | typeVariables =
-            form.typeVariables
-                |> Array.update i
-                    (\( var, { name, baseType } ) ->
-                        ( var
-                        , { name = name
-                          , baseType =
-                                baseType
-                                    |> Tuple.mapFirst (\l -> Array.append l ([ "True" ] |> Array.fromList))
-                          }
-                        )
-                    )
-    }
-
-
-removeAtTypeVariable : Int -> ConditionForm -> ConditionForm
-removeAtTypeVariable i form =
-    { form
-        | typeVariables =
-            form.typeVariables
-                |> Array.update i
-                    (\( var, { name, baseType } ) ->
-                        ( var
-                        , { name = name
-                          , baseType =
-                                baseType
-                                    |> Tuple.mapFirst
-                                        (\l ->
-                                            l
-                                                |> Array.removeAt (l |> Array.length |> (+) -1)
-                                        )
-                          }
-                        )
-                    )
     }
 
 
@@ -218,26 +191,13 @@ setBigger index value form =
     }
 
 
-setTypeVariables : ( Int, Int ) -> String -> ConditionForm -> ConditionForm
-setTypeVariables ( i1, i2 ) value form =
+setTypeVariables : Int -> String -> ConditionForm -> ConditionForm
+setTypeVariables index value form =
     { form
         | typeVariables =
             form.typeVariables
-                |> Array.update i1
-                    (\( var, { name, baseType } ) ->
-                        ( var
-                        , { name = name
-                          , baseType =
-                                baseType
-                                    |> (if i2 == -1 then
-                                            Tuple.mapSecond (always value)
-
-                                        else
-                                            Tuple.mapFirst (Array.set i2 value)
-                                       )
-                          }
-                        )
-                    )
+                |> Array.update index
+                    (\( k, _ ) -> ( k, value ))
     }
 
 
@@ -254,14 +214,14 @@ type alias ConditionForm =
     { smaller : LiquidTypeForm
     , bigger : LiquidTypeForm
     , guards : Array String
-    , typeVariables : Array ( String, LiquidTypeForm )
+    , typeVariables : Array ( String, String )
     }
 
 
-emptyForm : ConditionForm
-emptyForm =
-    { smaller = { name = "b", baseType = ( Array.empty, "True" ) }
-    , bigger = { name = "c", baseType = ( Array.empty, "True" ) }
+emptyForm : Int -> ConditionForm
+emptyForm i =
+    { smaller = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "True" ) }
+    , bigger = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "True" ) }
     , guards = Array.empty
     , typeVariables = Array.empty
     }
@@ -278,12 +238,12 @@ decode { smaller, bigger, guards, typeVariables } =
             |> Result.combine
         )
         (typeVariables
-            |> Array.map (Tuple.mapSecond LiquidType.decode)
+            |> Array.map (Tuple.mapSecond LiquidType.decodeSimpleLiquidType)
             |> Array.toList
             |> List.unzip
             |> (\( keys, values ) ->
                     values
                         |> Result.combine
-                        |> Result.map (List.zip keys >> Dict.fromList)
+                        |> Result.map (List.zip keys)
                )
         )

@@ -2,11 +2,13 @@ module Page.Setup exposing (Model, Msg(..), init, update, view)
 
 import Action exposing (Action)
 import Color
+import Data.Algorithm as Algorithm
 import Data.Condition as Condition exposing (Condition, ConditionForm)
 import Data.LiquidType exposing (Input(..))
 import Element exposing (Element)
 import Element.Font as Font
 import Page.Assistant as Assistant
+import Result.Extra as Result
 import View.Condition as Condition
 import View.ConditionForm as ConditionForm
 import Widget
@@ -26,17 +28,13 @@ type Msg
     | ChangedBigger Int String
     | ChangedSmaller Int String
     | ChangedGuard Int String
-    | ChangedTypeVariables Int Int String
-    | AddSmaller
-    | RemoveSmaller
-    | AddBigger
-    | RemoveBigger
+    | ChangedTypeVariables Int String
+    | AddType
+    | RemoveType
     | AddGuard
     | RemoveGuard
     | AddTypeVariable
     | RemoveTypeVariable
-    | AddAtTypeVariable Int
-    | RemoveAtTypeVariable Int
     | StartProving
 
 
@@ -55,7 +53,7 @@ type alias Update =
 init : Model
 init =
     { conditions = []
-    , form = Condition.emptyForm
+    , form = Condition.emptyForm 0
     , error = Nothing
     }
 
@@ -71,6 +69,12 @@ update msg model =
                             | conditions =
                                 model.conditions
                                     |> List.append [ condition ]
+                            , form =
+                                Condition.emptyForm
+                                    (model.conditions
+                                        |> List.length
+                                        |> (+) 1
+                                    )
                           }
                         , Cmd.none
                         )
@@ -113,51 +117,33 @@ update msg model =
                 , Cmd.none
                 )
 
-        ChangedTypeVariables i1 i2 string ->
+        ChangedTypeVariables index string ->
             Action.updating
                 ( { model
                     | form =
                         model.form
-                            |> Condition.setTypeVariables ( i1, i2 ) string
+                            |> Condition.setTypeVariables index string
                   }
                 , Cmd.none
                 )
 
-        AddSmaller ->
+        AddType ->
             Action.updating
                 ( { model
                     | form =
                         model.form
                             |> Condition.addSmaller
-                  }
-                , Cmd.none
-                )
-
-        RemoveSmaller ->
-            Action.updating
-                ( { model
-                    | form =
-                        model.form
-                            |> Condition.removeSmaller
-                  }
-                , Cmd.none
-                )
-
-        AddBigger ->
-            Action.updating
-                ( { model
-                    | form =
-                        model.form
                             |> Condition.addBigger
                   }
                 , Cmd.none
                 )
 
-        RemoveBigger ->
+        RemoveType ->
             Action.updating
                 ( { model
                     | form =
                         model.form
+                            |> Condition.removeSmaller
                             |> Condition.removeBigger
                   }
                 , Cmd.none
@@ -203,28 +189,18 @@ update msg model =
                 , Cmd.none
                 )
 
-        AddAtTypeVariable i ->
-            Action.updating
-                ( { model
-                    | form =
-                        model.form
-                            |> Condition.addAtTypeVariable i
-                  }
-                , Cmd.none
-                )
-
-        RemoveAtTypeVariable i ->
-            Action.updating
-                ( { model
-                    | form =
-                        model.form
-                            |> Condition.removeAtTypeVariable i
-                  }
-                , Cmd.none
-                )
-
         StartProving ->
-            Action.transitioning model.conditions
+            case model.conditions |> List.map Algorithm.split |> Result.combine of
+                Ok conds ->
+                    conds |> List.concat |> Action.transitioning
+
+                Err () ->
+                    Action.updating
+                        ( { model
+                            | error = Just "variables names are not the same"
+                          }
+                        , Cmd.none
+                        )
 
 
 view : Model -> List (Element Msg)
@@ -270,16 +246,12 @@ view model =
                     , onChangedSmaller = ChangedSmaller
                     , onChangedTypeVariables = ChangedTypeVariables
                     , onChangedGuard = ChangedGuard
-                    , addSmaller = AddSmaller
-                    , removeSmaller = RemoveSmaller
-                    , addBigger = AddBigger
-                    , removeBigger = RemoveBigger
+                    , addType = AddType
+                    , removeType = RemoveType
                     , addGuard = AddGuard
                     , removeGuard = RemoveGuard
                     , addTypeVariable = AddTypeVariable
                     , removeTypeVariable = RemoveTypeVariable
-                    , addAtTypeVariable = AddAtTypeVariable
-                    , removeAtTypeVariable = RemoveAtTypeVariable
                     }
              , Widget.button (Material.containedButton Material.defaultPalette)
                 { text = "Add Condition"

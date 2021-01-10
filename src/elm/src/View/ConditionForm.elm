@@ -11,19 +11,28 @@ import Widget.Style.Material as Material
 import Widget.Style.Material.Typography as Typography
 
 
+viewInput : { label : String, onChange : String -> msg } -> String -> Element msg
+viewInput { label, onChange } text =
+    [ label ++ " = " |> Element.text
+    , Input.text []
+        { onChange = onChange
+        , text = text
+        , placeholder = Nothing
+        , label = Input.labelHidden label
+        }
+    ]
+        |> Element.row Grid.spacedEvenly
+
+
 viewInputArray : String -> (Int -> String -> msg) -> ( Array String, String ) -> Element msg
 viewInputArray label onChange ( tail, head ) =
     let
         fun index input =
-            [ (label ++ String.fromInt (index + 1)) ++ " = " |> Element.text
-            , Input.text []
-                { onChange = onChange index
-                , text = input
-                , placeholder = Nothing
-                , label = Input.labelHidden (label ++ String.fromInt (index + 1))
-                }
-            ]
-                |> Element.row Grid.spacedEvenly
+            input
+                |> viewInput
+                    { label = label ++ String.fromInt (index + 1)
+                    , onChange = onChange index
+                    }
     in
     (head |> fun -1)
         :: (tail |> Array.indexedMap fun |> Array.toList)
@@ -33,18 +42,14 @@ viewInputArray label onChange ( tail, head ) =
 view :
     { onChangedSmaller : Int -> String -> msg
     , onChangedBigger : Int -> String -> msg
-    , onChangedTypeVariables : Int -> Int -> String -> msg
+    , onChangedTypeVariables : Int -> String -> msg
     , onChangedGuard : Int -> String -> msg
-    , addSmaller : msg
-    , removeSmaller : msg
-    , addBigger : msg
-    , removeBigger : msg
+    , addType : msg
+    , removeType : msg
     , addGuard : msg
     , removeGuard : msg
     , addTypeVariable : msg
     , removeTypeVariable : msg
-    , addAtTypeVariable : Int -> msg
-    , removeAtTypeVariable : Int -> msg
     }
     -> ConditionForm
     -> List (Element msg)
@@ -54,24 +59,6 @@ view msg { smaller, bigger, guards, typeVariables } =
             |> Element.text
             |> Element.el Typography.subtitle2
       , smaller.baseType |> viewInputArray "x" msg.onChangedSmaller
-      , (if smaller.baseType |> Tuple.first |> Array.isEmpty then
-            []
-
-         else
-            Widget.button (Material.textButton Material.defaultPalette)
-                { text = "Remove"
-                , icon = Element.none
-                , onPress = Just msg.removeSmaller
-                }
-                |> List.singleton
-        )
-            ++ [ Widget.button (Material.outlinedButton Material.defaultPalette)
-                    { text = "Add"
-                    , icon = Element.none
-                    , onPress = Just msg.addSmaller
-                    }
-               ]
-            |> Element.row [ Element.alignRight ]
       , ("T2 := " ++ (bigger |> LiquidType.formToString "y"))
             |> Element.text
             |> Element.el Typography.subtitle2
@@ -83,14 +70,14 @@ view msg { smaller, bigger, guards, typeVariables } =
             Widget.button (Material.textButton Material.defaultPalette)
                 { text = "Remove"
                 , icon = Element.none
-                , onPress = Just msg.removeBigger
+                , onPress = Just msg.removeType
                 }
                 |> List.singleton
         )
             ++ [ Widget.button (Material.outlinedButton Material.defaultPalette)
                     { text = "Add"
                     , icon = Element.none
-                    , onPress = Just msg.addBigger
+                    , onPress = Just msg.addType
                     }
                ]
             |> Element.row [ Element.alignRight ]
@@ -131,55 +118,32 @@ view msg { smaller, bigger, guards, typeVariables } =
       , typeVariables
             |> Array.indexedMap
                 (\index ( name, t ) ->
-                    [ name
-                        ++ " := "
-                        ++ (t |> LiquidType.formToString ("z" ++ (String.fromInt <| index + 1)))
-                        |> Element.text
-                        |> Element.el Typography.subtitle2
-                    , t.baseType
-                        |> viewInputArray ("z" ++ (index + 1 |> String.fromInt))
-                            (msg.onChangedTypeVariables index)
-                    , (if t.baseType |> Tuple.first |> Array.isEmpty then
-                        []
-
-                       else
-                        Widget.button (Material.textButton Material.defaultPalette)
-                            { text = "Remove"
-                            , icon = Element.none
-                            , onPress = Just <| msg.removeAtTypeVariable index
+                    t
+                        |> viewInput
+                            { label = name
+                            , onChange = msg.onChangedTypeVariables index
                             }
-                            |> List.singleton
-                      )
-                        ++ [ Widget.button (Material.outlinedButton Material.defaultPalette)
-                                { text = "Add"
-                                , icon = Element.none
-                                , onPress = Just <| msg.addAtTypeVariable index
-                                }
-                           ]
-                        |> Element.row [ Element.alignRight ]
-                    ]
-                        |> Element.column Grid.simple
                 )
             |> Array.toList
             |> Element.column Grid.simple
-      , [ Widget.button (Material.outlinedButton Material.defaultPalette)
-            { text = "Add Type Variable"
-            , icon = Element.none
-            , onPress = Just msg.addTypeVariable
-            }
-        ]
-            ++ (if typeVariables |> Array.isEmpty then
-                    []
+      , (if typeVariables |> Array.isEmpty then
+            []
 
-                else
-                    Widget.button (Material.textButton Material.defaultPalette)
-                        { text = "Remove"
-                        , icon = Element.none
-                        , onPress = Just msg.removeTypeVariable
-                        }
-                        |> List.singleton
-               )
-            |> Element.row []
+         else
+            Widget.button (Material.textButton Material.defaultPalette)
+                { text = "Remove"
+                , icon = Element.none
+                , onPress = Just msg.removeTypeVariable
+                }
+                |> List.singleton
+        )
+            ++ [ Widget.button (Material.outlinedButton Material.defaultPalette)
+                    { text = "Add"
+                    , icon = Element.none
+                    , onPress = Just msg.addTypeVariable
+                    }
+               ]
+            |> Element.row [ Element.alignRight ]
       ]
     ]
         |> List.map

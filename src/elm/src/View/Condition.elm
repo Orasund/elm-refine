@@ -1,11 +1,27 @@
-module View.Condition exposing (view)
+module View.Condition exposing (view, viewSimple)
 
-import Data.Condition exposing (Condition)
+import Data.Condition exposing (Condition, SimpleCondition)
 import Data.LiquidType as LiquidType exposing (LiquidType)
 import Data.Refinement as Refinement
 import Dict
 import Element exposing (Element)
 import Framework.Grid as Grid
+
+
+viewSimple : SimpleCondition -> Element msg
+viewSimple { smaller, bigger, guards, typeVariables } =
+    { smaller =
+        { name = ""
+        , baseType = ( [], smaller )
+        }
+    , bigger =
+        { name = ""
+        , baseType = ( [], bigger )
+        }
+    , guards = guards
+    , typeVariables = typeVariables
+    }
+        |> view
 
 
 view : Condition -> Element msg
@@ -20,18 +36,17 @@ view { smaller, bigger, guards, typeVariables } =
         " with "
             ++ (guards |> List.map Refinement.toString |> String.join ",")
             |> Element.text
-    , if typeVariables |> Dict.isEmpty then
+    , if typeVariables |> List.isEmpty then
         Element.none
 
       else
         " where "
             ++ (typeVariables
-                    |> Dict.toList
                     |> List.map
-                        (\( v, t ) ->
-                            v
+                        (\( name, t ) ->
+                            name
                                 ++ " in "
-                                ++ (t |> LiquidType.toString)
+                                ++ (t |> LiquidType.simpleLiquidTypeToString)
                         )
                     |> String.join ","
                )

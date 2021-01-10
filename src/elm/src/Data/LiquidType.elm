@@ -1,4 +1,4 @@
-module Data.LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), decode, decodeRefinement, decodeSimpleLiquidType, formToString, toString)
+module Data.LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), decode, decodeRefinement, decodeSimpleLiquidType, formToString, simpleLiquidTypeToString, simpleformToString, toString)
 
 import Array exposing (Array)
 import Data.Refinement as Refinement exposing (Refinement)
@@ -130,6 +130,13 @@ simpleLiquidTypeToString simpleLiquidType =
             "{v:Int | kappa_" ++ String.fromInt int ++ "}"
 
 
+simpleformToString : String -> String
+simpleformToString var =
+    "{v:Int|"
+        ++ var
+        ++ "}"
+
+
 formToString : String -> LiquidTypeForm -> String
 formToString typeVar { name, baseType } =
     (baseType
@@ -138,18 +145,14 @@ formToString typeVar { name, baseType } =
             (\i _ ->
                 name
                     ++ String.fromInt (i + 1)
-                    ++ " : {v:Int|"
-                    ++ typeVar
-                    ++ String.fromInt (i + 1)
-                    ++ "} -> "
+                    ++ " : "
+                    ++ simpleformToString (typeVar ++ String.fromInt (i + 1))
+                    ++ " -> "
             )
         |> Array.toList
         |> String.concat
     )
-        ++ "{v:Int|"
-        ++ typeVar
-        ++ String.fromInt 0
-        ++ "}"
+        ++ simpleformToString (typeVar ++ String.fromInt 0)
 
 
 toString : LiquidType -> String
