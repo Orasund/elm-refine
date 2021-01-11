@@ -20,26 +20,36 @@ module Data.Condition exposing
 
 import Array exposing (Array)
 import Array.Extra as Array
-import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..))
-import Data.Refinement exposing (IntExp(..), Refinement(..))
+import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), WellFormedLiquidType)
+import Data.Refinement as Refinement exposing (IntExp(..), Refinement(..))
+import Data.Template as Template exposing (Template)
 import Dict
 import List.Extra as List
+import Parser
 import Result.Extra as Result
 
 
 type alias Condition =
-    { smaller : LiquidType
-    , bigger : LiquidType
+    { smaller : LiquidType Template SimpleLiquidType
+    , bigger : LiquidType Refinement Template
     , guards : List Refinement
-    , typeVariables : List ( String, SimpleLiquidType )
+    , typeVariables : List ( String, Refinement )
     }
 
 
 type alias SimpleCondition =
     { smaller : SimpleLiquidType
-    , bigger : SimpleLiquidType
+    , bigger : Template
     , guards : List Refinement
-    , typeVariables : List ( String, SimpleLiquidType )
+    , typeVariables : List ( String, Refinement )
+    }
+
+
+type alias ConditionForm =
+    { smaller : LiquidTypeForm
+    , bigger : LiquidTypeForm
+    , guards : Array String
+    , typeVariables : Array ( String, String )
     }
 
 
@@ -210,18 +220,10 @@ setGuard index value form =
     }
 
 
-type alias ConditionForm =
-    { smaller : LiquidTypeForm
-    , bigger : LiquidTypeForm
-    , guards : Array String
-    , typeVariables : Array ( String, String )
-    }
-
-
 emptyForm : Int -> ConditionForm
 emptyForm i =
     { smaller = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "True" ) }
-    , bigger = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "True" ) }
+    , bigger = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "[k1]_{}" ) }
     , guards = Array.empty
     , typeVariables = Array.empty
     }
@@ -230,15 +232,48 @@ emptyForm i =
 decode : ConditionForm -> Result String Condition
 decode { smaller, bigger, guards, typeVariables } =
     Result.map4 Condition
-        (smaller |> LiquidType.decode)
-        (bigger |> LiquidType.decode)
+        (smaller
+            |> (\{ name, baseType } ->
+                    let
+                        ( list, head ) =
+                            baseType
+                    in
+                    Result.map2
+                        (\a b -> { name = name, baseType = ( a, b ) })
+                        (list
+                            |> Array.toList
+                            |> List.map Template.decode
+                            |> Result.combine
+                        )
+                        (head |> LiquidType.decodeSimpleLiquidType)
+               )
+        )
+        (bigger
+            |> (\{ name, baseType } ->
+                    let
+                        ( list, head ) =
+                            baseType
+                    in
+                    Result.map2
+                        (\a b -> { name = name, baseType = ( a, b ) })
+                        (list
+                            |> Array.toList
+                            |> List.map Refinement.decode
+                            |> Result.combine
+                        )
+                        (head
+                            |> Parser.run Template.decoder
+                            |> Result.mapError Refinement.deadEndsToString
+                        )
+               )
+        )
         (guards
-            |> Array.map LiquidType.decodeRefinement
+            |> Array.map Refinement.decode
             |> Array.toList
             |> Result.combine
         )
         (typeVariables
-            |> Array.map (Tuple.mapSecond LiquidType.decodeSimpleLiquidType)
+            |> Array.map (Tuple.mapSecond Refinement.decode)
             |> Array.toList
             |> List.unzip
             |> (\( keys, values ) ->
@@ -247,3 +282,29 @@ decode { smaller, bigger, guards, typeVariables } =
                         |> Result.map (List.zip keys)
                )
         )
+
+
+toSMTStatement : SimpleCondition -> String
+toSMTStatement { smaller, bigger, guards, typeVariables } =
+    let
+        dict =
+            typeVariables |> Dict.fromList
+
+        baseTypeRefinements : List Refinement
+        baseTypeRefinements =
+            typeVariables
+                |> List.map
+                    (\( b, r ) ->
+                        r |> Refinement.rename { find = "v", replaceWith = b }
+                    )
+
+        r1 : Refinement
+        r1 =
+            Debug.todo "case of"
+    in
+    (dict
+        |> Dict.keys
+        |> List.map (\k -> "(declare-const " ++ k ++ " Int)\n")
+        |> String.concat
+    )
+        ++ ("(assert " ++ Debug.todo "insert refinements" ++ ")\n(check-sat)")

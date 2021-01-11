@@ -75,6 +75,7 @@ update msg model =
                                         |> List.length
                                         |> (+) 1
                                     )
+                            , error = Nothing
                           }
                         , Cmd.none
                         )
@@ -205,61 +206,61 @@ update msg model =
 
 view : Model -> List (Element Msg)
 view model =
-    (model.error
-        |> Maybe.map
-            (\string ->
-                "Error : "
-                    ++ string
-                    |> Element.text
-                    |> List.singleton
-                    |> Element.paragraph
-                        [ Font.color <|
-                            Element.fromRgb <|
-                                Color.toRgba <|
-                                    Material.defaultPalette.error
-                        ]
-                    |> List.singleton
-            )
-        |> Maybe.withDefault []
-    )
-        ++ [ [ "Conditions"
-                |> Element.text
-                |> Element.el Typography.h5
-             ]
-                ++ (model.conditions
-                        |> List.map Condition.view
-                   )
-                ++ [ Widget.button (Material.containedButton Material.defaultPalette)
-                        { text = "Start Proving"
-                        , icon = Element.none
-                        , onPress = Just StartProving
-                        }
-                   ]
-                |> Widget.column (Material.cardColumn Material.defaultPalette)
-           , [ "Adding Condition"
-                |> Element.text
-                |> Element.el Typography.h5
-                |> List.singleton
-             , model.form
-                |> ConditionForm.view
-                    { onChangedBigger = ChangedBigger
-                    , onChangedSmaller = ChangedSmaller
-                    , onChangedTypeVariables = ChangedTypeVariables
-                    , onChangedGuard = ChangedGuard
-                    , addType = AddType
-                    , removeType = RemoveType
-                    , addGuard = AddGuard
-                    , removeGuard = RemoveGuard
-                    , addTypeVariable = AddTypeVariable
-                    , removeTypeVariable = RemoveTypeVariable
-                    }
-             , Widget.button (Material.containedButton Material.defaultPalette)
-                { text = "Add Condition"
+    [ [ "Conditions"
+            |> Element.text
+            |> Element.el Typography.h5
+      ]
+        ++ (model.conditions
+                |> List.map Condition.view
+           )
+        ++ (model.error
+                |> Maybe.map
+                    (\string ->
+                        "Error : "
+                            ++ string
+                            |> Element.text
+                            |> List.singleton
+                            |> Element.paragraph
+                                [ Font.color <|
+                                    Element.fromRgb <|
+                                        Color.toRgba <|
+                                            Material.defaultPalette.error
+                                ]
+                            |> List.singleton
+                    )
+                |> Maybe.withDefault []
+           )
+        ++ [ Widget.button (Material.containedButton Material.defaultPalette)
+                { text = "Start Proving"
                 , icon = Element.none
-                , onPress = Just PressedAddCondition
+                , onPress = Just StartProving
                 }
-                |> List.singleton
-             ]
-                |> List.concat
-                |> Widget.column (Material.cardColumn Material.defaultPalette)
            ]
+        |> Widget.column (Material.cardColumn Material.defaultPalette)
+    , [ "Adding Condition"
+            |> Element.text
+            |> Element.el Typography.h5
+            |> List.singleton
+      , model.form
+            |> ConditionForm.view
+                { onChangedBigger = ChangedBigger
+                , onChangedSmaller = ChangedSmaller
+                , onChangedTypeVariables = ChangedTypeVariables
+                , onChangedGuard = ChangedGuard
+                , addType = AddType
+                , removeType = RemoveType
+                , addGuard = AddGuard
+                , removeGuard = RemoveGuard
+                , addTypeVariable = AddTypeVariable
+                , removeTypeVariable = RemoveTypeVariable
+                }
+      , Widget.button (Material.containedButton Material.defaultPalette)
+            { text = "Add Condition"
+            , icon = Element.none
+            , onPress = Just PressedAddCondition
+            }
+            |> List.singleton
+      ]
+        |> List.concat
+        |> Widget.column (Material.cardColumn Material.defaultPalette)
+    ]

@@ -1,84 +1,27 @@
-module Data.LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), decode, decodeRefinement, decodeSimpleLiquidType, formToString, simpleLiquidTypeToString, simpleformToString, toString)
+module Data.LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), WellFormedLiquidType, decodeSimpleLiquidType, formToString, simpleLiquidTypeToString, simpleformToString, toString)
 
 import Array exposing (Array)
-import Data.Refinement as Refinement exposing (Refinement)
+import Data.Refinement as Refinement exposing (IntExp, Refinement(..))
+import Data.Template as Template exposing (Template)
+import Dict exposing (Dict)
 import List.Extra as List
-import Parser exposing (DeadEnd, Problem(..))
+import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..), Trailing(..))
 import Result.Extra as Result
-
-
-deadEndsToString : List DeadEnd -> String
-deadEndsToString deadEnds =
-    String.concat
-        (List.intersperse "; " (List.map deadEndToString deadEnds))
-
-
-deadEndToString : DeadEnd -> String
-deadEndToString deadend =
-    problemToString deadend.problem ++ " at row " ++ String.fromInt deadend.row ++ ", col " ++ String.fromInt deadend.col
-
-
-problemToString : Problem -> String
-problemToString p =
-    case p of
-        Expecting s ->
-            "expecting '" ++ s ++ "'"
-
-        ExpectingInt ->
-            "expecting int"
-
-        ExpectingHex ->
-            "expecting hex"
-
-        ExpectingOctal ->
-            "expecting octal"
-
-        ExpectingBinary ->
-            "expecting binary"
-
-        ExpectingFloat ->
-            "expecting float"
-
-        ExpectingNumber ->
-            "expecting number"
-
-        ExpectingVariable ->
-            "expecting variable"
-
-        ExpectingSymbol s ->
-            "expecting symbol '" ++ s ++ "'"
-
-        ExpectingKeyword s ->
-            "expecting keyword '" ++ s ++ "'"
-
-        ExpectingEnd ->
-            "expecting end"
-
-        UnexpectedChar ->
-            "unexpected char"
-
-        Problem s ->
-            "problem " ++ s
-
-        BadRepeat ->
-            "bad repeat"
-
-
-decodeRefinement : String -> Result String Refinement
-decodeRefinement =
-    Parser.run Refinement.decode
-        >> Result.mapError deadEndsToString
 
 
 type SimpleLiquidType
     = IntType Refinement
-    | Template Int
+    | LiquidTypeVariable Template
 
 
-type alias LiquidType =
+type alias LiquidType a b =
     { name : String
-    , baseType : ( List SimpleLiquidType, SimpleLiquidType )
+    , baseType : ( List a, b )
     }
+
+
+type alias WellFormedLiquidType =
+    LiquidType Refinement Template
 
 
 type alias LiquidTypeForm =
@@ -92,42 +35,33 @@ type Input
     | StringInput String
 
 
-decodeSimpleLiquidType : String -> Result String SimpleLiquidType
-decodeSimpleLiquidType input =
-    case input |> String.toInt of
-        Just n ->
-            Ok <| Template n
-
-        Nothing ->
-            input
-                |> decodeRefinement
-                |> Result.map IntType
-
-
-decode : LiquidTypeForm -> Result String LiquidType
-decode { name, baseType } =
-    let
-        ( list, head ) =
-            baseType
-    in
-    Result.map2
-        (\a b -> { name = name, baseType = ( a, b ) })
-        (list
-            |> Array.toList
-            |> List.map decodeSimpleLiquidType
-            |> Result.combine
-        )
-        (head |> decodeSimpleLiquidType)
-
-
-simpleLiquidTypeToString : SimpleLiquidType -> String
-simpleLiquidTypeToString simpleLiquidType =
-    case simpleLiquidType of
+substituteTemplate : Dict Int Refinement -> SimpleLiquidType -> Refinement
+substituteTemplate dict liquidType =
+    case liquidType of
         IntType refinement ->
-            "{v:Int |" ++ (refinement |> Refinement.toString) ++ "}"
+            refinement
 
-        Template int ->
-            "{v:Int | kappa_" ++ String.fromInt int ++ "}"
+        LiquidTypeVariable ( int, list ) ->
+            list
+                |> List.foldl
+                    (\( find, replaceWith ) ->
+                        Refinement.substitute { find = find, replaceWith = replaceWith }
+                    )
+                    (dict
+                        |> Dict.get int
+                        |> Maybe.withDefault IsFalse
+                    )
+
+
+decodeSimpleLiquidType : String -> Result String SimpleLiquidType
+decodeSimpleLiquidType =
+    Parser.run
+        (Parser.oneOf
+            [ Refinement.decoder |> Parser.map IntType
+            , Template.decoder |> Parser.map LiquidTypeVariable
+            ]
+        )
+        >> Result.mapError Refinement.deadEndsToString
 
 
 simpleformToString : String -> String
@@ -155,8 +89,18 @@ formToString typeVar { name, baseType } =
         ++ simpleformToString (typeVar ++ String.fromInt 0)
 
 
-toString : LiquidType -> String
-toString { name, baseType } =
+simpleLiquidTypeToString : SimpleLiquidType -> String
+simpleLiquidTypeToString simpleLiquidType =
+    case simpleLiquidType of
+        IntType refinement ->
+            refinement |> Refinement.toString
+
+        LiquidTypeVariable template ->
+            template |> Template.toString
+
+
+toString : (a -> String) -> (b -> String) -> LiquidType a b -> String
+toString aToString bToString { name, baseType } =
     let
         ( list, last ) =
             baseType
@@ -167,9 +111,9 @@ toString { name, baseType } =
                 name
                     ++ String.fromInt (i + 1)
                     ++ " : "
-                    ++ (simpleLiquidType |> simpleLiquidTypeToString)
+                    ++ simpleformToString (simpleLiquidType |> aToString)
             )
      )
-        ++ [ last |> simpleLiquidTypeToString ]
+        ++ [ simpleformToString (last |> bToString) ]
     )
         |> String.join " -> "

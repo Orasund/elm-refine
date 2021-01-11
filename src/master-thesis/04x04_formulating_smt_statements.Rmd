@@ -18,7 +18,7 @@ $$
        \ & \hat{T} \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
          &\text{where } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\\
   \lor \ & \hat{T} \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to\hat{T}\\
-         &\text{where } k\in\mathcal{K}, \hat{T} \text{ is a template and } S:\mathcal{V}\nrightarrow\mathcal{Q}.\\
+         &\text{where } k\in\mathcal{K}, \hat{T} \text{ is a template and } S:\mathcal{V}\nrightarrow\mathit{IntExp}.\\
 \end{aligned}
 $$
 
@@ -27,7 +27,7 @@ We define $\mathcal{T}^?:=\{\hat{T} \ | \ \hat{T} \text{ is a template}\}$
 A template will be used for a liquid type with unknown refinement. Note that the inference rule for function applications introduces a refinement substitution $S$. For templates this substitution is not defined and needs to be delayed until the corresponding liquid type has been derived. We will point out whenever the substitution $[k]_S$ will be applied.
 
 ```{definition,name="Type Variable Context"}
-\begin{letIn} $K := \{[k]_S|k\in\mathcal{K}\land S:\mathcal{V}\nrightarrow\mathcal{Q}\}$.
+\begin{letIn} $K := \{[k]_S|k\in\mathcal{K}\land S:\mathcal{V}\nrightarrow\mathit{IntExp}\}$.
 \end{letIn}
 We say $\Theta:\mathcal{V}\nrightarrow(\mathcal{Q}\cup K)$ is a type variable context.
 ```
@@ -63,14 +63,14 @@ $$
   \text{Vars}:\mathcal{C}\to&\mathcal{P}(\mathcal{K})\\
   \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =
   &\text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\\
-  &\cup\{k|(\_,q)\in\Theta\land q = [k]_S \text{ for } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\}
+  &\cup\{k|(\_,q)\in\Theta\land q = [k]_S \text{ for } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}
 $$
 ```
 
 The main idea of the algorithm is to first generate a set of predicates and then exclude elements until all subtyping conditions are valid for the remaining predicates. By conjunction over all remaining predicates we result in a valid refinement.
 
-We therefore need a function, depending on a set of variable Q, that will generate a set of predicates. Note that the resulting set should be finite and a subset of $\mathcal{Q}$. If the generated set is too small, then our resulting subtyping conditions might be too weak.
+We therefore need a function, depending on a set of variable $Q$, that will generate a set of predicates. Note that the resulting set should be finite and a subset of $\mathcal{Q}$. If the generated set is too small, then our resulting subtyping conditions might be too weak.
   
 $$
 \begin{aligned}
@@ -112,8 +112,8 @@ We first split the subtyping conditions for functions into subtyping conditions 
 $$
 \begin{aligned}
 \mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\}\\
-| \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathcal{Q})\\
-\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathcal{Q})\}.
+| \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathit{IntExp})\\
+\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
 \end{aligned}$$
 
 With this we can now define the Split function.
@@ -133,25 +133,25 @@ We resolve the obtained subtyping conditions by repeatably checking if a subtypi
 
 $$
 \begin{aligned}
-\text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{Q})\to(\mathcal{K}\nrightarrow\mathcal{Q})\\
+\text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\to(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
 \text{Solve}&(C,A)=\\
 &\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
 &\text{If there exists } (\{v:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{v:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
 &\quad\neg (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
 &\quad\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\\
 &\quad\begin{aligned}\text{for }\ &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
-&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases},\\
 &\begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'
 \end{aligned}\\
 &\text{then } \text{Solve}(C,\text{Weaken}(c,A)) \text{ else } A\\
-&\text{where } k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subseteq\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},q_1\in\mathcal{K}\cup\mathcal{Q},\\
+&\text{where } k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subseteq\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},q_1\in\mathcal{K}\cup\mathcal{Q},\\
 &\Theta\text{ be a type variable context},r_1,p,r_2\in\mathcal{Q}, a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{Q},r\in\mathcal{Q},n\in\mathbb{N}, b_i\in\mathcal{V},\\
 &r_i\in\mathcal{Q}\text{ for } i\in\mathbb{N}_0^n \text{ and } [t]_A \text{ denotes the substitution for the term } t \text{ with a}\\
 &\text{substitution } A.\\
@@ -166,22 +166,22 @@ $$
 \end{aligned}
 $$
 by deciding the satisfiablity of
-$$(\bigwedge_{j=0}^n r_j')\land r_1\land p\land \neg r_2$$
+$$(\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p\land \neg r_2$$
 with free variables $b_i\in\mathbb{N}$ for $i\in\mathbb{N}_1^n$.
 
 $$
 \begin{aligned}
-&\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{Q})\nrightarrow(\mathcal{K}\nrightarrow\mathcal{Q})\\
+&\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\nrightarrow(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
 &\text{Weaken}(\{\nu:\mathit{Int}| x \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [k_2]_{S_2}\},A) =\\
 &\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
-&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases},\\
 &p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
 &\begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-&\quad\land q \text{ has the form }[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+&\quad\land q \text{ has the form }[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
@@ -190,7 +190,7 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}\\
 &\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
-&\quad\text{where } k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},\Theta':\mathcal{V}\nrightarrow\mathcal{T},\\
+&\quad\text{where } k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},\Theta':\mathcal{V}\nrightarrow\mathcal{T},\\
 &\quad a\in\mathcal{V},T'\in\mathcal{T}\cup\mathcal{T}^?n\in\mathbb{N}, b_i\in\mathcal{V},T_i\in\mathcal{T}\text{ for } i\in\mathbb{N}_0^n\text{ and } [t]_A \text{ denotes the}\\
 &\quad \text{substitution for the term } t \text{ with a substitution } A.
 \end{aligned}
@@ -204,7 +204,7 @@ $$
 \end{aligned}
 $$
 To do so, we first need to compute $r_2 := [q]_{S_2}$, with that we can now use a SMT solver to decide the satisfiablity of
-$$\neg((\bigwedge_{j=0}^n r_j')\land r_1\land p)\lor r_2
+$$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor r_2
 $$
 with free variables $b_i\in\mathbb{N}$ for $i\in\mathbb{N}_1^n$.
 
@@ -467,7 +467,7 @@ $$
 &\quad\text{ such that } \hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2 \text{ is well-formed.}
 \end{aligned}
 $$
-where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q}$,$\Theta$ is a type variable context, $\Lambda\subset\mathcal{Q}$ and $T_1,T_2\in(\mathcal{T}\cup\mathcal{T}^?)$
+where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S_1,S_2:\mathcal{V}\nrightarrow\mathit{IntExp}$,$\Theta$ is a type variable context, $\Lambda\subset\mathcal{Q}$ and $T_1,T_2\in(\mathcal{T}\cup\mathcal{T}^?)$
 ```
 
 ```{theorem}
@@ -480,7 +480,7 @@ $$
 \begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}
 $$
 and $\{(b_1,r_1'),\dots,(b_n,r_n')\}:=\Theta'$.
@@ -535,7 +535,7 @@ $$
 \begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}
 $$
 and $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'$.
@@ -581,19 +581,19 @@ for
 $$
 \begin{aligned}
 &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
-&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases},\\
 &\begin{aligned}
   \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
   \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-  &\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+  &\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
   \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'.
 \end{aligned}
 $$
-where $k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{Q},Q,\Lambda\subseteq\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},q_1\in\mathcal{K}\cup\mathcal{Q}, \Theta$ be a type variable context $,r_1,p,r_2\in\mathcal{Q},a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{Q},r\in\mathcal{Q},n\in\mathbb{N}, b_i\in\mathcal{V},r_i\in\mathcal{Q}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
+where $k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}),Q,\Lambda\subseteq\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},q_1\in\mathcal{K}\cup\mathcal{Q}, \Theta$ be a type variable context $,r_1,p,r_2\in\mathcal{Q},a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{Q},r\in\mathcal{Q},n\in\mathbb{N}, b_i\in\mathcal{V},r_i\in\mathcal{Q}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
 This is the same as saying $[\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S$ if $[\hat{T}_1]_S \in\mathcal{T}$ and $[\hat{T}_2]_S \in\mathcal{T}$. We know by Theorem \ref{thm:correctness_weaken} that $A_2(a)$ is defined for all $a\in V$ and thus
 $[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}$.
 
@@ -607,7 +607,7 @@ $c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $$
 $$
 \begin{aligned}
   S &:= \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
-r_1 &:= \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+r_1 &:= \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}.
 \end{aligned}
@@ -623,7 +623,7 @@ $$
 \land\ &\forall A_2':\mathcal{V}\nrightarrow\mathcal{P}(\mathcal{Q}).(\forall k\neq k_2. A_1(k) = A_2'(k))\\
   &\land\ A_2'(k_2)\subseteq A_1(k_2)\\
   &\land \text{Let } S' := \{(k,\bigwedge Q)| (k,Q)\in A_2'\},\\
-  &\quad\quad r_1' := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+  &\quad\quad r_1' := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}\\
   &\quad \text{in }[k_2]_{S'}\in\mathcal{Q}\\
@@ -637,14 +637,14 @@ Let $c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the for
 $$
 \begin{aligned}
   &S := \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
-&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathcal{Q}\\
+&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}\\
 &p:=\bigwedge\{[q]_S\ |\ q\in\Lambda \},\\
 &\begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
 \lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
-&\quad\land q \text{ has the form }[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathcal{Q}\}
+&\quad\land q \text{ has the form }[k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
@@ -653,7 +653,7 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}
 $$
-where  $k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_1,S_2:\mathcal{V}\nrightarrow\mathcal{Q},\Theta':\mathcal{V}\nrightarrow\mathcal{T}, a\in\mathcal{V},T'\in\mathcal{T}\cup\mathcal{T}^?n\in\mathbb{N}, b_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
+where  $k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}),r_1\in\mathcal{Q},p\in\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},\Theta':\mathcal{V}\nrightarrow\mathcal{T}, a\in\mathcal{V},T'\in\mathcal{T}\cup\mathcal{T}^?n\in\mathbb{N}, b_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
 
 Then 
 $$A_2 = \{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}$$

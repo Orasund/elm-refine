@@ -1,13 +1,10 @@
-module Data.Algorithm exposing (infer, split)
+module Data.Algorithm exposing (split)
 
 import Data.Condition exposing (Condition, SimpleCondition)
+import Data.LiquidType exposing (SimpleLiquidType(..))
 import Data.Refinement exposing (Refinement)
+import Data.Template exposing (Template)
 import Dict exposing (Dict)
-
-
-infer : List Condition -> Dict Int Refinement
-infer conditions =
-    Debug.todo "finish infer algorithm"
 
 
 split : Condition -> Result () (List SimpleCondition)
@@ -33,7 +30,7 @@ split =
                         }
                         |> Result.map
                             ((::)
-                                { smaller = q3
+                                { smaller = IntType q3
                                 , bigger = q1
                                 , guards = condition.guards
                                 , typeVariables = condition.typeVariables
