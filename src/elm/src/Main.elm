@@ -1,22 +1,34 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Action
 import Browser
+import Data.IncomingMsg as IncomingMsg
 import Element
 import Element.Font as Font
 import Html exposing (Html)
-import Page.Assistant as Assistant
-import Page.Setup as Setup
+import Json.Decode as D
+import Json.Encode as E exposing (Value)
+import Page.Assistant as Assistant exposing (Msg(..))
+import Page.Done as Done
+import Page.Setup as Setup exposing (Msg(..))
+
+
+port incomingMsg : (( String, String ) -> msg) -> Sub msg
+
+
+port outgoingMsg : String -> Cmd msg
 
 
 type Model
     = Setup Setup.Model
     | Assistant Assistant.Model
+    | Done Done.Model
 
 
 type Msg
     = WhileSetup Setup.Msg
     | WhileAssistant Assistant.Msg
+    | DecodingError D.Error
 
 
 init : () -> ( Model, Cmd Msg )
@@ -37,8 +49,18 @@ update mg ml =
                 |> Action.apply
 
         ( WhileAssistant msg, Assistant model ) ->
-            Assistant.update msg model
-                |> Tuple.mapBoth Assistant (Cmd.map WhileAssistant)
+            Assistant.update outgoingMsg msg model
+                |> Action.config
+                |> Action.withTransition Done.init Done identity
+                |> Action.withUpdate Assistant WhileAssistant
+                |> Action.apply
+
+        ( DecodingError err, _ ) ->
+            let
+                _ =
+                    Debug.log "Decoding Error" err
+            in
+            ( ml, Cmd.none )
 
         ( _, _ ) ->
             ( ml, Cmd.none )
@@ -46,7 +68,27 @@ update mg ml =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    case model of
+        Setup _ ->
+            incomingMsg
+                (\v ->
+                    v
+                        |> IncomingMsg.fromTuple
+                        |> Setup.IncomingMsg
+                        |> WhileSetup
+                )
+
+        Assistant _ ->
+            incomingMsg
+                (\v ->
+                    v
+                        |> IncomingMsg.fromTuple
+                        |> Assistant.IncomingMsg
+                        |> WhileAssistant
+                )
+
+        _ ->
+            Sub.none
 
 
 view : Model -> Html Msg
@@ -57,6 +99,9 @@ view m =
 
         Assistant model ->
             Assistant.view model |> List.map (Element.map WhileAssistant)
+
+        Done model ->
+            Done.view model
     )
         |> Element.column
             [ Element.centerX

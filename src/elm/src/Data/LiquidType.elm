@@ -15,9 +15,7 @@ type SimpleLiquidType
 
 
 type alias LiquidType a b =
-    { name : String
-    , baseType : ( List a, b )
-    }
+    ( List { name : String, baseType : a }, b )
 
 
 type alias WellFormedLiquidType =
@@ -25,9 +23,7 @@ type alias WellFormedLiquidType =
 
 
 type alias LiquidTypeForm =
-    { name : String
-    , baseType : ( Array String, String )
-    }
+    ( Array { name : String, baseType : String }, String )
 
 
 type Input
@@ -71,16 +67,25 @@ simpleformToString var =
         ++ "}"
 
 
-formToString : String -> LiquidTypeForm -> String
-formToString typeVar { name, baseType } =
-    (baseType
+formToString : String -> String -> LiquidTypeForm -> String
+formToString name typeVar form =
+    (form
         |> Tuple.first
         |> Array.indexedMap
             (\i _ ->
                 name
                     ++ String.fromInt (i + 1)
                     ++ " : "
-                    ++ simpleformToString (typeVar ++ String.fromInt (i + 1))
+                    ++ simpleformToString
+                        (typeVar
+                            ++ String.fromInt
+                                ((form
+                                    |> Tuple.first
+                                    |> Array.length
+                                 )
+                                    - i
+                                )
+                        )
                     ++ " -> "
             )
         |> Array.toList
@@ -100,18 +105,13 @@ simpleLiquidTypeToString simpleLiquidType =
 
 
 toString : (a -> String) -> (b -> String) -> LiquidType a b -> String
-toString aToString bToString { name, baseType } =
-    let
-        ( list, last ) =
-            baseType
-    in
+toString aToString bToString ( list, last ) =
     ((list
         |> List.indexedMap
-            (\i simpleLiquidType ->
+            (\i { name, baseType } ->
                 name
-                    ++ String.fromInt (i + 1)
                     ++ " : "
-                    ++ simpleformToString (simpleLiquidType |> aToString)
+                    ++ simpleformToString (baseType |> aToString)
             )
      )
         ++ [ simpleformToString (last |> bToString) ]

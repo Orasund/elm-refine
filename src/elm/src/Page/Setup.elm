@@ -4,6 +4,7 @@ import Action exposing (Action)
 import Color
 import Data.Algorithm as Algorithm
 import Data.Condition as Condition exposing (Condition, ConditionForm)
+import Data.IncomingMsg exposing (IncomingMsg)
 import Data.LiquidType exposing (Input(..))
 import Element exposing (Element)
 import Element.Font as Font
@@ -20,15 +21,19 @@ type alias Model =
     { conditions : List Condition
     , form : ConditionForm
     , error : Maybe String
+    , loaded : Bool
     }
 
 
 type Msg
-    = PressedAddCondition
+    = AddCondition
+    | RemoveCondition
     | ChangedBigger Int String
     | ChangedSmaller Int String
+    | ChangedVariable Int String
     | ChangedGuard Int String
     | ChangedTypeVariables Int String
+    | ChangedTypeVariableName Int String
     | AddType
     | RemoveType
     | AddGuard
@@ -36,6 +41,7 @@ type Msg
     | AddTypeVariable
     | RemoveTypeVariable
     | StartProving
+    | IncomingMsg IncomingMsg
 
 
 type alias Update =
@@ -53,15 +59,16 @@ type alias Update =
 init : Model
 init =
     { conditions = []
-    , form = Condition.emptyForm 0
+    , form = Condition.emptyForm
     , error = Nothing
+    , loaded = False
     }
 
 
 update : Msg -> Model -> Update
 update msg model =
     case msg of
-        PressedAddCondition ->
+        AddCondition ->
             case model.form |> Condition.decode of
                 Ok condition ->
                     Action.updating
@@ -69,12 +76,7 @@ update msg model =
                             | conditions =
                                 model.conditions
                                     |> List.append [ condition ]
-                            , form =
-                                Condition.emptyForm
-                                    (model.conditions
-                                        |> List.length
-                                        |> (+) 1
-                                    )
+                            , form = Condition.emptyForm
                             , error = Nothing
                           }
                         , Cmd.none
@@ -87,6 +89,16 @@ update msg model =
                           }
                         , Cmd.none
                         )
+
+        RemoveCondition ->
+            Action.updating
+                ( { model
+                    | conditions =
+                        model.conditions
+                            |> List.drop 1
+                  }
+                , Cmd.none
+                )
 
         ChangedBigger index string ->
             Action.updating
@@ -108,6 +120,16 @@ update msg model =
                 , Cmd.none
                 )
 
+        ChangedVariable index string ->
+            Action.updating
+                ( { model
+                    | form =
+                        model.form
+                            |> Condition.setVariable index string
+                  }
+                , Cmd.none
+                )
+
         ChangedGuard index string ->
             Action.updating
                 ( { model
@@ -124,6 +146,16 @@ update msg model =
                     | form =
                         model.form
                             |> Condition.setTypeVariables index string
+                  }
+                , Cmd.none
+                )
+
+        ChangedTypeVariableName index string ->
+            Action.updating
+                ( { model
+                    | form =
+                        model.form
+                            |> Condition.setTypeVariableName index string
                   }
                 , Cmd.none
                 )
@@ -203,14 +235,32 @@ update msg model =
                         , Cmd.none
                         )
 
+        IncomingMsg ({ kind, payload } as m) ->
+            if kind == "READY" then
+                Action.updating
+                    ( { model
+                        | loaded = True
+                      }
+                    , Cmd.none
+                    )
+
+            else
+                let
+                    _ =
+                        m
+                            |> Debug.log "response"
+                in
+                Action.updating
+                    ( model, Cmd.none )
+
 
 view : Model -> List (Element Msg)
 view model =
-    [ [ "Conditions"
-            |> Element.text
-            |> Element.el Typography.h5
-      ]
-        ++ (model.conditions
+    [ ("Conditions"
+        |> Element.text
+        |> Element.el Typography.h5
+      )
+        :: (model.conditions
                 |> List.map Condition.view
            )
         ++ (model.error
@@ -231,9 +281,19 @@ view model =
                 |> Maybe.withDefault []
            )
         ++ [ Widget.button (Material.containedButton Material.defaultPalette)
-                { text = "Start Proving"
+                { text =
+                    if model.loaded then
+                        "Start Proving"
+
+                    else
+                        "Loading..."
                 , icon = Element.none
-                , onPress = Just StartProving
+                , onPress =
+                    if model.loaded then
+                        Just StartProving
+
+                    else
+                        Nothing
                 }
            ]
         |> Widget.column (Material.cardColumn Material.defaultPalette)
@@ -245,7 +305,9 @@ view model =
             |> ConditionForm.view
                 { onChangedBigger = ChangedBigger
                 , onChangedSmaller = ChangedSmaller
+                , onChangedVariable = ChangedVariable
                 , onChangedTypeVariables = ChangedTypeVariables
+                , onChangedTypeVariableName = ChangedTypeVariableName
                 , onChangedGuard = ChangedGuard
                 , addType = AddType
                 , removeType = RemoveType
@@ -257,8 +319,20 @@ view model =
       , Widget.button (Material.containedButton Material.defaultPalette)
             { text = "Add Condition"
             , icon = Element.none
-            , onPress = Just PressedAddCondition
+            , onPress = Just AddCondition
             }
+            :: (if model.conditions |> List.isEmpty then
+                    []
+
+                else
+                    Widget.button (Material.textButton Material.defaultPalette)
+                        { text = "Remove"
+                        , icon = Element.none
+                        , onPress = Just RemoveCondition
+                        }
+                        |> List.singleton
+               )
+            |> Element.row []
             |> List.singleton
       ]
         |> List.concat

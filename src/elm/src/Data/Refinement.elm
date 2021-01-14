@@ -1,4 +1,4 @@
-module Data.Refinement exposing (IntExp(..), Refinement(..), deadEndsToString, decode, decoder, init, intExpDecoder, intExpToString, rename, substitute, toSMTStatement, toString, variableDecoder)
+module Data.Refinement exposing (IntExp(..), Refinement(..), conjunction, deadEndsToString, decode, decoder, init, intExpDecoder, intExpToString, rename, substitute, toSMTStatement, toString, variableDecoder)
 
 import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..))
 import Set
@@ -292,6 +292,22 @@ toString refinement =
             "Not (" ++ toString r ++ ")"
 
 
+intExpToSMTStatement : IntExp -> String
+intExpToSMTStatement input =
+    case input of
+        Integer int ->
+            String.fromInt int
+
+        Plus intExp1 intExp2 ->
+            "(+ " ++ intExpToString intExp1 ++ " " ++ intExpToString intExp2 ++ ")"
+
+        Times intExp i ->
+            "(* " ++ intExpToString intExp ++ " " ++ String.fromInt i ++ ")"
+
+        Var string ->
+            string
+
+
 toSMTStatement : Refinement -> String
 toSMTStatement refinement =
     case refinement of
@@ -302,22 +318,34 @@ toSMTStatement refinement =
             "false"
 
         IsSmaller string intExp ->
-            "(< " ++ string ++ " " ++ intExpToString intExp ++ ")"
+            "(< " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
 
         IsBigger string intExp ->
-            "(> " ++ string ++ " " ++ intExpToString intExp ++ ")"
+            "(> " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
 
         IsEqual string intExp ->
-            "(== " ++ string ++ " " ++ intExpToString intExp ++ ")"
+            "(= " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
 
         EitherOr r1 r2 ->
-            "(or " ++ toString r1 ++ " " ++ toString r2 ++ ")"
+            "(or " ++ toSMTStatement r1 ++ " " ++ toSMTStatement r2 ++ ")"
 
         AndAlso r1 r2 ->
-            "(and " ++ toString r1 ++ " " ++ toString r2 ++ ")"
+            "(and " ++ toSMTStatement r1 ++ " " ++ toSMTStatement r2 ++ ")"
 
         IsNot r ->
-            "(not " ++ toString r ++ ")"
+            "(not " ++ toSMTStatement r ++ ")"
+
+
+conjunction : List Refinement -> Refinement
+conjunction l =
+    case l of
+        [] ->
+            IsTrue
+
+        head :: tail ->
+            tail
+                |> List.foldl AndAlso
+                    head
 
 
 

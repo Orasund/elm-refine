@@ -14,35 +14,82 @@ import Widget.Style.Material.Typography as Typography
 viewInput : { label : String, onChange : String -> msg } -> String -> Element msg
 viewInput { label, onChange } text =
     [ label ++ " = " |> Element.text
-    , Input.text []
-        { onChange = onChange
+    , Widget.textInput
+        (Material.textInput Material.defaultPalette
+            |> (\w -> { w | containerRow = w.containerRow ++ [ Element.width <| Element.fill ] })
+        )
+        { chips = []
         , text = text
         , placeholder = Nothing
-        , label = Input.labelHidden label
+        , label = label
+        , onChange = onChange
         }
     ]
         |> Element.row Grid.spacedEvenly
 
 
-viewInputArray : String -> (Int -> String -> msg) -> ( Array String, String ) -> Element msg
+viewVarInput : { onNameChange : String -> msg, onValueChange : String -> msg, name : String, value : String } -> Element msg
+viewVarInput { onNameChange, onValueChange, name, value } =
+    [ Widget.textInput
+        (Material.textInput Material.defaultPalette
+            |> (\w -> { w | containerRow = w.containerRow ++ [ Element.width <| Element.fill ] })
+        )
+        { chips = []
+        , text = name
+        , placeholder = Nothing
+        , label = "Name"
+        , onChange = onNameChange
+        }
+    , " = " |> Element.text |> Element.el [ Element.width <| Element.shrink ]
+    , Widget.textInput
+        (Material.textInput Material.defaultPalette
+            |> (\w -> { w | containerRow = w.containerRow ++ [ Element.width <| Element.fill ] })
+        )
+        { chips = []
+        , text = value
+        , placeholder = Nothing
+        , label = "Value"
+        , onChange = onValueChange
+        }
+    ]
+        |> Element.row Grid.spacedEvenly
+
+
+viewInputArray : String -> (Int -> String -> msg) -> ( Array { name : String, baseType : String }, String ) -> Element msg
 viewInputArray label onChange ( tail, head ) =
     let
         fun index input =
             input
                 |> viewInput
-                    { label = label ++ String.fromInt (index + 1)
+                    { label = label ++ String.fromInt ((tail |> Array.length) - index)
                     , onChange = onChange index
                     }
     in
-    (head |> fun -1)
-        :: (tail |> Array.indexedMap fun |> Array.toList)
+    (tail |> Array.indexedMap (\index { baseType } -> fun index baseType) |> Array.toList)
+        ++ [ head |> fun (tail |> Array.length) ]
+        |> Element.column Grid.simple
+
+
+viewVarArray : String -> (Int -> String -> msg) -> Array { name : String, baseType : String } -> Element msg
+viewVarArray label onChange tail =
+    let
+        fun index input =
+            input
+                |> viewInput
+                    { label = label ++ String.fromInt ((tail |> Array.length) - index)
+                    , onChange = onChange index
+                    }
+    in
+    (tail |> Array.indexedMap (\index { name } -> fun index name) |> Array.toList)
         |> Element.column Grid.simple
 
 
 view :
     { onChangedSmaller : Int -> String -> msg
     , onChangedBigger : Int -> String -> msg
+    , onChangedVariable : Int -> String -> msg
     , onChangedTypeVariables : Int -> String -> msg
+    , onChangedTypeVariableName : Int -> String -> msg
     , onChangedGuard : Int -> String -> msg
     , addType : msg
     , removeType : msg
@@ -55,15 +102,15 @@ view :
     -> List (Element msg)
 view msg { smaller, bigger, guards, typeVariables } =
     [ [ "T1 <: T2" |> Element.text |> Element.el Typography.h6
-      , ("T1 := " ++ (smaller |> LiquidType.formToString "x"))
+      , ("T1 := " ++ (smaller |> LiquidType.formToString "a" "x"))
             |> Element.text
             |> Element.el Typography.subtitle2
-      , smaller.baseType |> viewInputArray "x" msg.onChangedSmaller
-      , ("T2 := " ++ (bigger |> LiquidType.formToString "y"))
+      , smaller |> viewInputArray "x" msg.onChangedSmaller
+      , ("T2 := " ++ (bigger |> LiquidType.formToString "a" "y"))
             |> Element.text
             |> Element.el Typography.subtitle2
-      , bigger.baseType |> viewInputArray "y" msg.onChangedBigger
-      , (if bigger.baseType |> Tuple.first |> Array.isEmpty then
+      , bigger |> viewInputArray "y" msg.onChangedBigger
+      , (if bigger |> Tuple.first |> Array.isEmpty then
             []
 
          else
@@ -81,6 +128,13 @@ view msg { smaller, bigger, guards, typeVariables } =
                     }
                ]
             |> Element.row [ Element.alignRight ]
+      , if bigger |> Tuple.first |> Array.isEmpty then
+            Element.none
+
+        else
+            bigger
+                |> Tuple.first
+                |> viewVarArray "a" msg.onChangedVariable
       ]
     , [ "Guards" |> Element.text |> Element.el Typography.h6
       , guards
@@ -118,11 +172,12 @@ view msg { smaller, bigger, guards, typeVariables } =
       , typeVariables
             |> Array.indexedMap
                 (\index ( name, t ) ->
-                    t
-                        |> viewInput
-                            { label = name
-                            , onChange = msg.onChangedTypeVariables index
-                            }
+                    viewVarInput
+                        { name = name
+                        , value = t
+                        , onValueChange = msg.onChangedTypeVariables index
+                        , onNameChange = msg.onChangedTypeVariableName index
+                        }
                 )
             |> Array.toList
             |> Element.column Grid.simple

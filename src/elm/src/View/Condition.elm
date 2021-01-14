@@ -11,14 +11,8 @@ import Framework.Grid as Grid
 
 viewSimple : SimpleCondition -> Element msg
 viewSimple { smaller, bigger, guards, typeVariables } =
-    { smaller =
-        { name = ""
-        , baseType = ( [], smaller )
-        }
-    , bigger =
-        { name = ""
-        , baseType = ( [], bigger )
-        }
+    { smaller = ( [], smaller )
+    , bigger = ( [], bigger )
     , guards = guards
     , typeVariables = typeVariables
     }

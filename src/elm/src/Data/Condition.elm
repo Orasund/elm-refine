@@ -8,6 +8,7 @@ module Data.Condition exposing
     , addTypeVariable
     , decode
     , emptyForm
+    , liquidTypeVariables
     , removeBigger
     , removeGuard
     , removeSmaller
@@ -15,15 +16,18 @@ module Data.Condition exposing
     , setBigger
     , setGuard
     , setSmaller
+    , setTypeVariableName
     , setTypeVariables
+    , setVariable
+    , toSMTStatement
     )
 
 import Array exposing (Array)
 import Array.Extra as Array
-import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), WellFormedLiquidType)
+import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..))
 import Data.Refinement as Refinement exposing (IntExp(..), Refinement(..))
 import Data.Template as Template exposing (Template)
-import Dict
+import Dict exposing (Dict)
 import List.Extra as List
 import Parser
 import Result.Extra as Result
@@ -53,18 +57,34 @@ type alias ConditionForm =
     }
 
 
+liquidTypeVariables : SimpleCondition -> List Int
+liquidTypeVariables { smaller, bigger } =
+    (bigger |> Tuple.first)
+        :: (case smaller of
+                IntType _ ->
+                    []
+
+                LiquidTypeVariable ( int, _ ) ->
+                    [ int ]
+           )
+
+
 addSmaller : ConditionForm -> ConditionForm
 addSmaller form =
     { form
         | smaller =
             form.smaller
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> Tuple.mapFirst (\l -> Array.append l ([ "True" ] |> Array.fromList))
-                        }
-                   )
+                |> Tuple.mapFirst
+                    (\l ->
+                        Array.append
+                            ([ { name = "a" ++ String.fromInt (l |> Array.length |> (+) 1)
+                               , baseType = "[k" ++ String.fromInt (l |> Array.length) ++ "]_{}"
+                               }
+                             ]
+                                |> Array.fromList
+                            )
+                            l
+                    )
     }
 
 
@@ -73,17 +93,12 @@ removeSmaller form =
     { form
         | smaller =
             form.smaller
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> Tuple.mapFirst
-                                        (\l ->
-                                            l
-                                                |> Array.removeAt (l |> Array.length |> (+) -1)
-                                        )
-                        }
-                   )
+                |> Tuple.mapFirst
+                    (\l ->
+                        l
+                            |> Array.removeAt 0
+                     --(l |> Array.length |> (+) -1)
+                    )
     }
 
 
@@ -92,13 +107,17 @@ addBigger form =
     { form
         | bigger =
             form.bigger
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> Tuple.mapFirst (\l -> Array.append l ([ "True" ] |> Array.fromList))
-                        }
-                   )
+                |> Tuple.mapFirst
+                    (\l ->
+                        Array.append
+                            ([ { name = "a" ++ String.fromInt (l |> Array.length |> (+) 1)
+                               , baseType = "True"
+                               }
+                             ]
+                                |> Array.fromList
+                            )
+                            l
+                    )
     }
 
 
@@ -107,17 +126,12 @@ removeBigger form =
     { form
         | bigger =
             form.bigger
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> Tuple.mapFirst
-                                        (\l ->
-                                            l
-                                                |> Array.removeAt (l |> Array.length |> (+) -1)
-                                        )
-                        }
-                   )
+                |> Tuple.mapFirst
+                    (\l ->
+                        l
+                            |> Array.removeAt 0
+                     --(l |> Array.length |> (+) -1)
+                    )
     }
 
 
@@ -166,17 +180,18 @@ setSmaller index value form =
     { form
         | smaller =
             form.smaller
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> (if index == -1 then
-                                            Tuple.mapSecond (always value)
+                |> (if index == (form.smaller |> Tuple.first |> Array.length) then
+                        Tuple.mapSecond (always value)
 
-                                        else
-                                            Tuple.mapFirst (Array.set index value)
-                                       )
-                        }
+                    else
+                        Tuple.mapFirst
+                            (Array.update index
+                                (\{ name } ->
+                                    { name = name
+                                    , baseType = value
+                                    }
+                                )
+                            )
                    )
     }
 
@@ -186,18 +201,42 @@ setBigger index value form =
     { form
         | bigger =
             form.bigger
-                |> (\t ->
-                        { t
-                            | baseType =
-                                t.baseType
-                                    |> (if index == -1 then
-                                            Tuple.mapSecond (always value)
+                |> (if index == (form.smaller |> Tuple.first |> Array.length) then
+                        Tuple.mapSecond (always value)
 
-                                        else
-                                            Tuple.mapFirst (Array.set index value)
-                                       )
-                        }
+                    else
+                        Tuple.mapFirst
+                            (Array.update index
+                                (\{ name } ->
+                                    { name = name
+                                    , baseType = value
+                                    }
+                                )
+                            )
                    )
+    }
+
+
+setVariable : Int -> String -> ConditionForm -> ConditionForm
+setVariable index value form =
+    let
+        fun =
+            if index == -1 then
+                Tuple.mapSecond (always value)
+
+            else
+                Tuple.mapFirst
+                    (Array.update index
+                        (\{ baseType } ->
+                            { name = value
+                            , baseType = baseType
+                            }
+                        )
+                    )
+    in
+    { form
+        | bigger = fun form.bigger
+        , smaller = fun form.smaller
     }
 
 
@@ -211,6 +250,16 @@ setTypeVariables index value form =
     }
 
 
+setTypeVariableName : Int -> String -> ConditionForm -> ConditionForm
+setTypeVariableName index value form =
+    { form
+        | typeVariables =
+            form.typeVariables
+                |> Array.update index
+                    (\( k, v ) -> ( value, v ))
+    }
+
+
 setGuard : Int -> String -> ConditionForm -> ConditionForm
 setGuard index value form =
     { form
@@ -220,10 +269,10 @@ setGuard index value form =
     }
 
 
-emptyForm : Int -> ConditionForm
-emptyForm i =
-    { smaller = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "True" ) }
-    , bigger = { name = "b" ++ String.fromInt i, baseType = ( Array.empty, "[k1]_{}" ) }
+emptyForm : ConditionForm
+emptyForm =
+    { smaller = ( Array.empty, "True" )
+    , bigger = ( Array.empty, "[k1]_{}" )
     , guards = Array.empty
     , typeVariables = Array.empty
     }
@@ -233,32 +282,44 @@ decode : ConditionForm -> Result String Condition
 decode { smaller, bigger, guards, typeVariables } =
     Result.map4 Condition
         (smaller
-            |> (\{ name, baseType } ->
-                    let
-                        ( list, head ) =
-                            baseType
-                    in
+            |> (\( list, head ) ->
                     Result.map2
-                        (\a b -> { name = name, baseType = ( a, b ) })
+                        (\a b -> ( a, b ))
                         (list
                             |> Array.toList
-                            |> List.map Template.decode
+                            |> List.map
+                                (\{ name, baseType } ->
+                                    baseType
+                                        |> Template.decode
+                                        |> Result.map
+                                            (\b ->
+                                                { name = name
+                                                , baseType = b
+                                                }
+                                            )
+                                )
                             |> Result.combine
                         )
                         (head |> LiquidType.decodeSimpleLiquidType)
                )
         )
         (bigger
-            |> (\{ name, baseType } ->
-                    let
-                        ( list, head ) =
-                            baseType
-                    in
+            |> (\( list, head ) ->
                     Result.map2
-                        (\a b -> { name = name, baseType = ( a, b ) })
+                        (\a b -> ( a, b ))
                         (list
                             |> Array.toList
-                            |> List.map Refinement.decode
+                            |> List.map
+                                (\{ name, baseType } ->
+                                    baseType
+                                        |> Refinement.decode
+                                        |> Result.map
+                                            (\b ->
+                                                { name = name
+                                                , baseType = b
+                                                }
+                                            )
+                                )
                             |> Result.combine
                         )
                         (head
@@ -284,12 +345,9 @@ decode { smaller, bigger, guards, typeVariables } =
         )
 
 
-toSMTStatement : SimpleCondition -> String
-toSMTStatement { smaller, bigger, guards, typeVariables } =
+toSMTStatement : List String -> Dict Int Refinement -> SimpleCondition -> String
+toSMTStatement names dict { smaller, bigger, guards, typeVariables } =
     let
-        dict =
-            typeVariables |> Dict.fromList
-
         baseTypeRefinements : List Refinement
         baseTypeRefinements =
             typeVariables
@@ -300,11 +358,51 @@ toSMTStatement { smaller, bigger, guards, typeVariables } =
 
         r1 : Refinement
         r1 =
-            Debug.todo "case of"
+            case smaller of
+                IntType refinement ->
+                    refinement
+
+                LiquidTypeVariable ( int, list ) ->
+                    list
+                        |> List.foldl
+                            (\( k, v ) ->
+                                Refinement.substitute
+                                    { find = k
+                                    , replaceWith = v
+                                    }
+                            )
+                            (dict
+                                |> Dict.get int
+                                |> Maybe.withDefault IsFalse
+                            )
+
+        r2 : Refinement
+        r2 =
+            bigger
+                |> Tuple.second
+                |> List.foldl
+                    (\( k, v ) ->
+                        Refinement.substitute
+                            { find = k
+                            , replaceWith = v
+                            }
+                    )
+                    (dict
+                        |> Dict.get (bigger |> Tuple.first)
+                        |> Maybe.withDefault IsFalse
+                    )
+
+        statement : Refinement
+        statement =
+            (r1
+                :: baseTypeRefinements
+                ++ guards
+            )
+                |> List.foldl AndAlso (IsNot r2)
     in
-    (dict
-        |> Dict.keys
-        |> List.map (\k -> "(declare-const " ++ k ++ " Int)\n")
-        |> String.concat
-    )
-        ++ ("(assert " ++ Debug.todo "insert refinements" ++ ")\n(check-sat)")
+    "(declare-const v Int)\n"
+        ++ (names
+                |> List.map (\k -> "(declare-const " ++ k ++ " Int)\n")
+                |> String.concat
+           )
+        ++ ("(assert " ++ (statement |> Refinement.toSMTStatement) ++ ")\n(check-sat)")

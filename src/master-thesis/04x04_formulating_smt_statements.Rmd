@@ -136,9 +136,9 @@ $$
 \text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\to(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
 \text{Solve}&(C,A)=\\
 &\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
-&\text{If there exists } (\{v:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{v:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
-&\quad\neg (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\\
+&\text{If there exists } (\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
+&\quad\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
 &\quad\begin{aligned}\text{for }\ &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
 &r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
@@ -161,13 +161,13 @@ $$
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\neg (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\\
+&\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
 \end{aligned}
 $$
 by deciding the satisfiablity of
-$$(\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p\land \neg r_2$$
-with free variables $b_i\in\mathbb{N}$ for $i\in\mathbb{N}_1^n$.
+$$((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\land \neg r_2$$
+with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
 
 $$
 \begin{aligned}
@@ -186,8 +186,8 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
 | \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
-\land & (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\}
+\land & (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}\\
 &\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
 &\quad\text{where } k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{Q},r_1\in\mathcal{Q},p\in\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},\Theta':\mathcal{V}\nrightarrow\mathcal{T},\\
@@ -199,14 +199,14 @@ $$
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}
+&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}
 \end{aligned}
 $$
 To do so, we first need to compute $r_2 := [q]_{S_2}$, with that we can now use a SMT solver to decide the satisfiablity of
 $$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor r_2
 $$
-with free variables $b_i\in\mathbb{N}$ for $i\in\mathbb{N}_1^n$.
+with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
 
 ```{block2, type="myexample",latex.options="_"}
 Assume that we have given the following suptyping conditions:
@@ -492,8 +492,8 @@ $$
 &\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in\mathcal{V}.S'(a) \text{ is well defined}\Rightarrow \exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
 &\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
 &\quad\land ([\hat{T}_1]_{S'} <:_{\Theta',\Lambda} [\hat{T}_2]_{S'}\\
-&\quad\quad \Rightarrow (\forall a\in\mathcal{V}.S(a) \text{ and } S'(a) \text{ are well defined}\\ &\quad\quad\quad \Rightarrow (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\quad\quad\semantic{$S(a)$}_{(b_1,i_1),\dots,(b_n,i_n)} \Rightarrow \semantic{$S'(a)$}_{(b_1,i_1),\dots,(b_n,i_n)})))\end{aligned}
+&\quad\quad \Rightarrow (\forall a\in\mathcal{V}.S(a) \text{ and } S'(a) \text{ are well defined}\\ &\quad\quad\quad \Rightarrow (\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\quad\quad\semantic{$S(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}} \Rightarrow \semantic{$S'(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})))\end{aligned}
 $$
 ```
 The first post-condition states that $[\hat{T}_1]_S$ and $[\hat{T}_2]_S$ are not templates.
@@ -547,8 +547,8 @@ $$
 &\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in V.\exists Q\in \mathcal{P}(A_1(a)). S'(a) = \bigwedge Q)\\
 &\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
 &\quad\land ([\hat{T}_1]_{S'} <:_{\Theta',\Lambda} [\hat{T}_2]_{S'}\\
-&\quad\quad\Rightarrow \forall a\in V.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\quad\semantic{$S(a)$}_{(b_1,i_1),\dots,(b_n,i_n)} \Rightarrow \semantic{$S'(a)$}_{(b_1,i_1),\dots,(b_n,i_n)})
+&\quad\quad\Rightarrow \forall a\in V.\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\quad\semantic{$S(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}} \Rightarrow \semantic{$S'(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})
 \end{aligned}
 $$
 ```
@@ -573,8 +573,8 @@ Once the recursion is done, we can assume that for all $c\in C$, $c$ has the for
 
 $$
 \begin{aligned}
-  &(\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})
+  &(\forall z \in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})
 \end{aligned}
 $$
 for
@@ -649,8 +649,8 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
 | \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
-\land & (\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}})\}
+\land & (\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}
 $$
 where  $k,k_1\in\mathcal{K},Q,Q_2\subseteq\mathcal{Q},S:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}),r_1\in\mathcal{Q},p\in\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},\Theta':\mathcal{V}\nrightarrow\mathcal{T}, a\in\mathcal{V},T'\in\mathcal{T}\cup\mathcal{T}^?n\in\mathbb{N}, b_i\in\mathcal{V},T_i\in\mathcal{T}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
@@ -668,8 +668,8 @@ We finish off by proving that the result is the sharpest, meaning that $A_2$ is 
 This means for every $q\in A_2'(k_2)$ that $q\in A_1(k_2)$ and by the definition of subtyping, $\text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})$ and
 $$
 \begin{aligned}
-&\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
-&\quad\quad\semantic{$r_1\land p$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(b_1,i_1),\dots,(b_n,i_n)\}}.
+&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}.
 \end{aligned}
 $$
 By the definition of $A_2$, this means that $q\in A_2(k_2)$. Thus $A_2$ is the smallest subset.

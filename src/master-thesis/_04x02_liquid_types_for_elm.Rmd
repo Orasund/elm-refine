@@ -156,7 +156,7 @@ $$
 \begin{aligned}
 \{a_1:\mathit{Int}| q_1 \} &<:_{\Theta,\Lambda} \{ a_2 : \mathit{Int}| q_2\} \ :\Leftrightarrow \\  &\text{Let} \ \{(b_1,r_1),\dots,(b_n,r_n)\}=\Theta \ \text{in}\\
 &\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n\}).\\
-&\forall n\in\mathbb{N}.\forall e \in\Lambda.\\
+&\forall n\in\mathbb{Z}.\forall e \in\Lambda.\\
 &\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
 &\quad\land \semantic{$q_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
 &\Rightarrow\semantic{$q_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
