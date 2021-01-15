@@ -4,23 +4,16 @@ import Action exposing (Action)
 import Array exposing (Array)
 import Array.Extra as Array
 import Color
-import Data.Algorithm as Algorithm
-import Data.Condition as Condition exposing (Condition, ConditionForm, SimpleCondition)
+import Data.Condition as Condition exposing (SimpleCondition)
 import Data.IncomingMsg exposing (IncomingMsg)
-import Data.LiquidType as LiquidType exposing (Input(..))
+import Data.LiquidType exposing (Input(..))
 import Data.Refinement as Refinement exposing (IntExp, Refinement(..))
 import Dict exposing (Dict)
 import Element exposing (Element)
 import Element.Font as Font
-import Element.Input as Input
 import Framework.Grid as Grid
-import Html exposing (Html)
-import List.Extra exposing (find)
 import Page.Done as Done
-import Result.Extra as Result
-import Set exposing (Set)
 import View.Condition as Condition
-import View.ConditionForm as ConditionForm
 import Widget
 import Widget.Style.Material as Material
 import Widget.Style.Material.Typography as Typography
@@ -35,6 +28,7 @@ type alias Model =
             { index : Int
             , liquidTypeVariable : Int
             }
+    , error : Maybe String
     }
 
 
@@ -56,15 +50,6 @@ smtStatement model =
                     Just weaken ->
                         condition
                             |> Condition.toSMTStatement
-                                (model.conditions
-                                    |> Array.toList
-                                    |> List.map
-                                        (\{ typeVariables } ->
-                                            typeVariables
-                                                |> List.map (\( name, _ ) -> name)
-                                        )
-                                    |> List.concat
-                                )
                                 (model.predicates
                                     |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
                                     |> Dict.update (condition.bigger |> Tuple.first)
@@ -91,15 +76,6 @@ smtStatement model =
                     Nothing ->
                         condition
                             |> Condition.toSMTStatement
-                                (model.conditions
-                                    |> Array.toList
-                                    |> List.map
-                                        (\{ typeVariables } ->
-                                            typeVariables
-                                                |> List.map (\( name, _ ) -> name)
-                                        )
-                                    |> List.concat
-                                )
                                 (model.predicates
                                     |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
                                 )
@@ -146,6 +122,7 @@ init conditions =
                 |> Dict.fromList
       , index = 0
       , weaken = Nothing
+      , error = Nothing
       }
     , Cmd.none
     )
@@ -271,15 +248,15 @@ update : (String -> Cmd msg) -> Msg -> Model -> Update msg
 update sendMsg msg model =
     case msg of
         GotResponse bool ->
-            handleResponse bool model
+            handleResponse bool { model | error = Nothing }
 
-        IncomingMsg ({ kind, payload } as m) ->
-            if kind == "VERIFICATION_COMPLETE" then
-                case payload |> Debug.log "response" of
-                    ".true" ->
+        IncomingMsg { kind, payload } ->
+            if kind == "STDOUT" then
+                case payload of
+                    "sat" ->
                         handleResponse True model
 
-                    ".false" ->
+                    "unsat" ->
                         handleResponse False model
 
                     _ ->
@@ -288,14 +265,23 @@ update sendMsg msg model =
                             , Cmd.none
                             )
 
-            else
-                let
-                    _ =
-                        m
-                            |> Debug.log "response"
-                in
+            else if kind == "STDERR" then
+                Action.updating
+                    ( { model
+                        | error = Just payload
+                      }
+                    , Cmd.none
+                    )
+
+            else if kind == "VERIFICATION_COMPLETE" then
                 Action.updating
                     ( model
+                    , Cmd.none
+                    )
+
+            else
+                Action.updating
+                    ( { model | error = Just (kind ++ ":" ++ payload) }
                     , Cmd.none
                     )
 
@@ -310,19 +296,19 @@ view model =
             |> Element.text
             |> Element.el Typography.h5
             |> List.singleton
-      , [ "Conditions"
+      , ("Conditions"
             |> Element.text
             |> Element.el Typography.h6
-        ]
-            ++ (model.conditions
+        )
+            :: (model.conditions
                     |> Array.map Condition.viewSimple
                     |> Array.toList
                )
-      , [ "Partial Solution"
+      , ("Partial Solution"
             |> Element.text
             |> Element.el Typography.h6
-        ]
-            ++ (model.predicates
+        )
+            :: (model.predicates
                     |> Dict.toList
                     |> List.concatMap
                         (\( int, array ) ->
@@ -389,6 +375,21 @@ view model =
                 |> Element.row []
           ]
             |> Element.row [ Element.spaceEvenly, Element.width <| Element.fill ]
+        , model.error
+            |> Maybe.map
+                (\string ->
+                    "Error : "
+                        ++ string
+                        |> Element.text
+                        |> List.singleton
+                        |> Element.paragraph
+                            [ Font.color <|
+                                Element.fromRgb <|
+                                    Color.toRgba <|
+                                        Material.defaultPalette.error
+                            ]
+                )
+            |> Maybe.withDefault Element.none
         ]
       ]
         |> List.map

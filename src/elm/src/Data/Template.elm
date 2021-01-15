@@ -1,7 +1,7 @@
 module Data.Template exposing (Template, decode, decoder, toString)
 
 import Data.Refinement as Refinement exposing (IntExp)
-import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..), Trailing(..))
+import Parser exposing ((|.), (|=), Parser, Problem(..), Trailing(..))
 
 
 type alias Template =

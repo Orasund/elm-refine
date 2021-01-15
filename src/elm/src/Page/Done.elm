@@ -1,21 +1,13 @@
 module Page.Done exposing (Model, Transition, init, view)
 
 import Array exposing (Array)
-import Color
-import Data.Algorithm as Algorithm
-import Data.Condition as Condition exposing (Condition, ConditionForm, SimpleCondition)
-import Data.LiquidType as LiquidType exposing (Input(..))
+import Data.Condition as Condition exposing (SimpleCondition)
+import Data.LiquidType exposing (Input(..))
 import Data.Refinement as Refinement exposing (Refinement(..))
 import Dict exposing (Dict)
 import Element exposing (Element)
-import Element.Font as Font
-import Element.Input as Input
 import Framework.Grid as Grid
-import Html exposing (Html)
-import Result.Extra as Result
-import Set exposing (Set)
 import View.Condition as Condition
-import View.ConditionForm as ConditionForm
 import Widget
 import Widget.Style.Material as Material
 import Widget.Style.Material.Typography as Typography
@@ -44,19 +36,19 @@ view model =
             |> Element.text
             |> Element.el Typography.h5
             |> List.singleton
-      , [ "Conditions"
+      , ("Conditions"
             |> Element.text
             |> Element.el Typography.h6
-        ]
-            ++ (model.conditions
+        )
+            :: (model.conditions
                     |> Array.map Condition.viewSimple
                     |> Array.toList
                )
-      , [ "Solution"
+      , ("Solution"
             |> Element.text
             |> Element.el Typography.h6
-        ]
-            ++ (model.predicates
+        )
+            :: (model.predicates
                     |> Dict.toList
                     |> List.concatMap
                         (\( int, r ) ->

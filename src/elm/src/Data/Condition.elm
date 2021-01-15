@@ -31,6 +31,7 @@ import Dict exposing (Dict)
 import List.Extra as List
 import Parser
 import Result.Extra as Result
+import Set
 
 
 type alias Condition =
@@ -256,7 +257,7 @@ setTypeVariableName index value form =
         | typeVariables =
             form.typeVariables
                 |> Array.update index
-                    (\( k, v ) -> ( value, v ))
+                    (\( _, v ) -> ( value, v ))
     }
 
 
@@ -345,8 +346,8 @@ decode { smaller, bigger, guards, typeVariables } =
         )
 
 
-toSMTStatement : List String -> Dict Int Refinement -> SimpleCondition -> String
-toSMTStatement names dict { smaller, bigger, guards, typeVariables } =
+toSMTStatement : Dict Int Refinement -> SimpleCondition -> String
+toSMTStatement dict { smaller, bigger, guards, typeVariables } =
     let
         baseTypeRefinements : List Refinement
         baseTypeRefinements =
@@ -400,9 +401,10 @@ toSMTStatement names dict { smaller, bigger, guards, typeVariables } =
             )
                 |> List.foldl AndAlso (IsNot r2)
     in
-    "(declare-const v Int)\n"
-        ++ (names
-                |> List.map (\k -> "(declare-const " ++ k ++ " Int)\n")
-                |> String.concat
-           )
+    (statement
+        |> Refinement.variables
+        |> Set.toList
+        |> List.map (\k -> "(declare-const " ++ k ++ " Int)\n")
+        |> String.concat
+    )
         ++ ("(assert " ++ (statement |> Refinement.toSMTStatement) ++ ")\n(check-sat)")

@@ -1,7 +1,7 @@
-module Data.Refinement exposing (IntExp(..), Refinement(..), conjunction, deadEndsToString, decode, decoder, init, intExpDecoder, intExpToString, rename, substitute, toSMTStatement, toString, variableDecoder)
+module Data.Refinement exposing (IntExp(..), Refinement(..), conjunction, deadEndsToString, decode, decoder, init, intExpDecoder, intExpToString, rename, substitute, toSMTStatement, toString, variableDecoder, variables)
 
 import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..))
-import Set
+import Set exposing (Set)
 
 
 type IntExp
@@ -22,9 +22,58 @@ type Refinement
     | IsNot Refinement
 
 
+intExpVariables : IntExp -> Set String
+intExpVariables intExp =
+    case intExp of
+        Integer _ ->
+            Set.empty
+
+        Plus i1 i2 ->
+            Set.union (intExpVariables i1) (intExpVariables i2)
+
+        Times i _ ->
+            intExpVariables i
+
+        Var string ->
+            Set.singleton string
+
+
+variables : Refinement -> Set String
+variables refinement =
+    case refinement of
+        IsTrue ->
+            Set.empty
+
+        IsFalse ->
+            Set.empty
+
+        IsSmaller string intExp ->
+            intExpVariables intExp
+                |> Set.insert string
+
+        IsBigger string intExp ->
+            intExpVariables intExp
+                |> Set.insert string
+
+        IsEqual string intExp ->
+            intExpVariables intExp
+                |> Set.insert string
+
+        EitherOr r1 r2 ->
+            Set.union (variables r1) (variables r2)
+
+        AndAlso r1 r2 ->
+            Set.union (variables r1) (variables r2)
+
+        IsNot r ->
+            variables r
+
+
 init : List String -> List Refinement
 init vars =
     (vars
+        |> Set.fromList
+        |> Set.toList
         |> List.concatMap
             (\v ->
                 [ IsBigger "v" (Var v)

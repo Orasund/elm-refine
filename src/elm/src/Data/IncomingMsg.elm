@@ -1,7 +1,5 @@
 module Data.IncomingMsg exposing (IncomingMsg, fromTuple)
 
-import Json.Decode as D exposing (Decoder)
-
 
 type alias IncomingMsg =
     { kind : String

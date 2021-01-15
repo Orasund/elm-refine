@@ -1,10 +1,9 @@
 module View.Condition exposing (view, viewSimple)
 
 import Data.Condition exposing (Condition, SimpleCondition)
-import Data.LiquidType as LiquidType exposing (LiquidType)
+import Data.LiquidType as LiquidType
 import Data.Refinement as Refinement
 import Data.Template as Template
-import Dict
 import Element exposing (Element)
 import Framework.Grid as Grid
 
@@ -49,4 +48,4 @@ view { smaller, bigger, guards, typeVariables } =
                )
             |> Element.text
     ]
-        |> Element.textColumn Grid.simple
+        |> Element.paragraph Grid.simple

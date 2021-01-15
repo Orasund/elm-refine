@@ -1,11 +1,10 @@
 module Data.LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..), WellFormedLiquidType, decodeSimpleLiquidType, formToString, simpleLiquidTypeToString, simpleformToString, toString)
 
 import Array exposing (Array)
-import Data.Refinement as Refinement exposing (IntExp, Refinement(..))
+import Data.Refinement as Refinement exposing (Refinement(..))
 import Data.Template as Template exposing (Template)
-import Dict exposing (Dict)
 import List.Extra as List
-import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..), Trailing(..))
+import Parser exposing (Problem(..), Trailing(..))
 import Result.Extra as Result
 
 
@@ -15,7 +14,12 @@ type SimpleLiquidType
 
 
 type alias LiquidType a b =
-    ( List { name : String, baseType : a }, b )
+    ( List
+        { name : String
+        , baseType : a
+        }
+    , b
+    )
 
 
 type alias WellFormedLiquidType =
@@ -23,7 +27,12 @@ type alias WellFormedLiquidType =
 
 
 type alias LiquidTypeForm =
-    ( Array { name : String, baseType : String }, String )
+    ( Array
+        { name : String
+        , baseType : String
+        }
+    , String
+    )
 
 
 type Input
@@ -31,6 +40,8 @@ type Input
     | StringInput String
 
 
+
+{--
 substituteTemplate : Dict Int Refinement -> SimpleLiquidType -> Refinement
 substituteTemplate dict liquidType =
     case liquidType of
@@ -46,7 +57,7 @@ substituteTemplate dict liquidType =
                     (dict
                         |> Dict.get int
                         |> Maybe.withDefault IsFalse
-                    )
+                    )--}
 
 
 decodeSimpleLiquidType : String -> Result String SimpleLiquidType
@@ -74,7 +85,13 @@ formToString name typeVar form =
         |> Array.indexedMap
             (\i _ ->
                 name
-                    ++ String.fromInt (i + 1)
+                    ++ String.fromInt
+                        ((form
+                            |> Tuple.first
+                            |> Array.length
+                         )
+                            - i
+                        )
                     ++ " : "
                     ++ simpleformToString
                         (typeVar
@@ -108,7 +125,7 @@ toString : (a -> String) -> (b -> String) -> LiquidType a b -> String
 toString aToString bToString ( list, last ) =
     ((list
         |> List.indexedMap
-            (\i { name, baseType } ->
+            (\_ { name, baseType } ->
                 name
                     ++ " : "
                     ++ simpleformToString (baseType |> aToString)

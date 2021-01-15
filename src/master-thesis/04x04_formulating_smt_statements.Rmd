@@ -373,8 +373,8 @@ $$
 &\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad a < \nu\land \nu = b\land \neg (\nu = a)\land\nu < b \lor \nu = b\\
-&\quad\quad\land b < \nu \lor \nu = b\land\nu < a \lor \nu = a\land a < \nu \lor \nu = a.
+&\quad a < \nu\land \nu = b\land \neg (\nu = a)\land (\nu < b \lor \nu = b)\\
+&\quad\quad\land (b < \nu \lor \nu = b)\land(\nu < a \lor \nu = a)\land (a < \nu \lor \nu = a).
 \end{aligned}
 $$
 It is not valid, because $\nu = a \land \neg (a < b) \vDash\nu = b$ is not valid.
@@ -395,13 +395,13 @@ $$
 is valid.
 The resulting set $Q_2$ is the following.
 $$
-Q_2 := \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}
+Q_2 := \{b < \nu \lor \nu = b, a < \nu \lor \nu = a\}
 $$
 Thus we update $A$:
 $$
 \begin{aligned}
 A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),
-  &(\kappa_3, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}),
+  &(\kappa_3, \{b < \nu \lor \nu = b, a < \nu \lor \nu = a\}),
   &(\kappa_4,\mathit{Init}(V))\}
 \end{aligned}
 $$
@@ -422,7 +422,7 @@ $$
 &\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\{\nu < b \lor \nu = b\land \nu < a \lor \nu = a\}\\
+&\{b < \nu \lor \nu = b\land a < \nu \lor \nu = a\}\\
 &\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
 &\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
@@ -435,8 +435,8 @@ We update the corresponding entry in $A$:
 $$
 \begin{aligned}
 A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),\\
-  &(\kappa_3, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\}),\\
-  &(\kappa_4, \{\nu < b \lor \nu = b, \nu < a \lor \nu = a\})\}
+  &(\kappa_3, \{b < \nu \lor \nu = b, a < \nu\lor \nu = a\}),\\
+  &(\kappa_4, \{b < \nu \lor \nu = b, a < \nu \lor \nu = a\})\}
 \end{aligned}
 $$
   
@@ -447,8 +447,8 @@ The resulting set of substitutions is therefore the following
 $$
 \begin{aligned}
 \{ &(\kappa_1,\mathit{True}),(\kappa_2,\mathit{True}),\\
-  &(\kappa_3, (\nu < b \lor \nu = b) \land (\nu < a \lor \nu = a)),\\
-  &(\kappa_4, (\nu < b \lor \nu = b)\land (\nu < a \lor \nu = a))\}
+  &(\kappa_3, (b < \nu \lor \nu = b) \land (a < \nu \lor \nu = a)),\\
+  &(\kappa_4, (b < \nu \lor \nu = b)\land (a < \nu \lor \nu = a))\}
 \end{aligned}
 $$
 ```

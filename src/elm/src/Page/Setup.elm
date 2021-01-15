@@ -235,7 +235,7 @@ update msg model =
                         , Cmd.none
                         )
 
-        IncomingMsg ({ kind, payload } as m) ->
+        IncomingMsg { kind, payload } ->
             if kind == "READY" then
                 Action.updating
                     ( { model
@@ -244,14 +244,15 @@ update msg model =
                     , Cmd.none
                     )
 
-            else
-                let
-                    _ =
-                        m
-                            |> Debug.log "response"
-                in
+            else if kind == "PROGRESS" then
                 Action.updating
-                    ( model, Cmd.none )
+                    ( model
+                    , Cmd.none
+                    )
+
+            else
+                Action.updating
+                    ( { model | error = Just (kind ++ ":" ++ payload) }, Cmd.none )
 
 
 view : Model -> List (Element Msg)

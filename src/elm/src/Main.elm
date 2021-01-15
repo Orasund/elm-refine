@@ -6,8 +6,6 @@ import Data.IncomingMsg as IncomingMsg
 import Element
 import Element.Font as Font
 import Html exposing (Html)
-import Json.Decode as D
-import Json.Encode as E exposing (Value)
 import Page.Assistant as Assistant exposing (Msg(..))
 import Page.Done as Done
 import Page.Setup as Setup exposing (Msg(..))
@@ -28,7 +26,6 @@ type Model
 type Msg
     = WhileSetup Setup.Msg
     | WhileAssistant Assistant.Msg
-    | DecodingError D.Error
 
 
 init : () -> ( Model, Cmd Msg )
@@ -54,13 +51,6 @@ update mg ml =
                 |> Action.withTransition Done.init Done identity
                 |> Action.withUpdate Assistant WhileAssistant
                 |> Action.apply
-
-        ( DecodingError err, _ ) ->
-            let
-                _ =
-                    Debug.log "Decoding Error" err
-            in
-            ( ml, Cmd.none )
 
         ( _, _ ) ->
             ( ml, Cmd.none )

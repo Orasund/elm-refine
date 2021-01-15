@@ -1,7 +1,7 @@
-module View.ConditionForm exposing (..)
+module View.ConditionForm exposing (view)
 
 import Array exposing (Array)
-import Data.Condition as Condition exposing (ConditionForm)
+import Data.Condition exposing (ConditionForm)
 import Data.LiquidType as LiquidType exposing (Input(..))
 import Element exposing (Element)
 import Element.Input as Input
@@ -77,10 +77,10 @@ viewVarArray label onChange tail =
             input
                 |> viewInput
                     { label = label ++ String.fromInt ((tail |> Array.length) - index)
-                    , onChange = onChange index
+                    , onChange = onChange ((tail |> Array.length) - index - 1)
                     }
     in
-    (tail |> Array.indexedMap (\index { name } -> fun index name) |> Array.toList)
+    (tail |> Array.toList |> List.indexedMap (\index { name } -> fun index name))
         |> Element.column Grid.simple
 
 

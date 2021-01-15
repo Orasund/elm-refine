@@ -2,9 +2,6 @@ module Data.Algorithm exposing (split)
 
 import Data.Condition exposing (Condition, SimpleCondition)
 import Data.LiquidType exposing (SimpleLiquidType(..))
-import Data.Refinement exposing (Refinement)
-import Data.Template exposing (Template)
-import Dict exposing (Dict)
 
 
 split : Condition -> Result () (List SimpleCondition)
