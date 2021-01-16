@@ -1,0 +1,229 @@
+---
+title: "Refinement Types for Elm"
+subtitle: "Master Thesis Report"
+author: "Lucas Payr"
+date: "26 January 2020"
+output:
+  beamer_presentation:
+    theme: "metropolis" #"Boadilla" # "Rochester"
+    colortheme: "default" #"dolphin" #"dove" #"beaver" #"default" #"seagull"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Topics of this Talk
+
+* Revisiting the Max Function
+* The Inference Algorithm
+* Demonstration
+
+## Revisiting the Max Function
+
+```
+max : a:{ v:Int|True } -> b:{ v:Int|True } -> { v:Int|k4 };
+max =
+  \a -> \b ->
+    if 
+      (<) a b
+    then
+      b
+    else
+      a
+```
+
+We want to derive the refinement label as $k4$.
+
+## Revisiting the Max Function
+
+We remained with the following problem:
+
+Find refinements $\kappa_1,\kappa_2,\kappa_3$ and $\kappa_4$ such that:
+
+$$
+\begin{aligned}
+\{\nu:\mathit{Int}|\nu = b\}&<:_{\{(a,\{\mathit{Int}|\mathit{True}\}),(b,\{\mathit{Int}|\mathit{True}\})\},\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  \{\nu:\mathit{Int}|\nu = a\}&<:_{\{(a,\{\mathit{Int}|\mathit{True}\}),(b,\{\mathit{Int}|\mathit{True}\})\},\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},
+\end{aligned}
+$$
+$$
+\begin{aligned}
+  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+## The Inference Algorithm: Definitions
+
+### Subtyping Condition
+
+$$
+\begin{aligned}
+\text{We say }&c\text{ is a }\mathit{Subtyping} \ \mathit{Condition}:\Leftrightarrow c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
+&\text{where }\hat{T}_1,\hat{T}_2\text{ are a liquid types or templates},\Theta\text{ is a type}\\
+&\text{variable context and } \Lambda\subset\mathcal{Q}.
+\end{aligned}
+$$
+
+### Template
+
+$$
+\begin{aligned}
+       \text{We say }&\hat{T}\text{ is a }\mathit{template}:\Leftrightarrow \hat{T} \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
+         &\text{where } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\\
+  \lor \ & \hat{T} \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to\hat{T}\\
+         &\text{where } k\in\mathcal{K}, \hat{T} \text{ is a template and } S:\mathcal{V}\nrightarrow\mathit{IntExp}.\\
+\end{aligned}
+$$
+
+We define $\mathcal{K}:=\{\kappa_i \ | \ i\in\mathbb{N}\}$.
+
+## The Inference Algorithm
+
+$$
+\begin{aligned}
+&\text{Infer}:\mathcal{P}(\mathcal{C})\to\ (\mathcal{K}\nrightarrow \mathcal{Q})\\
+&\text{Infer}(C)=\\
+&\quad\begin{aligned}\text{Let}\
+V:=&\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}\\
+Q_0:=&\mathit{Init}(V),\\
+A_0:=&\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\},\\
+A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
+&\quad\text{in } \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
+\end{aligned}
+$$
+
+## The Inference Algorithm: Step 1 (Split)
+
+$$
+\begin{aligned}
+&\text{Split}:\mathcal{C}\nrightarrow\mathcal{P}(\mathcal{C^-})\\
+&\text{Split}(a:\{\nu:\mathit{Int}|q_1\}\to \hat{T}_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}|q_3\}\to\hat{T}_4 )=\\
+&\quad\quad\{\{\nu:\mathit{Int}|q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_1\}\}\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}\hat{T}_4\})\\
+&\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=\\
+&\quad\quad\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
+\end{aligned}
+$$
+
+$\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
+
+$$
+\begin{aligned}
+\mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\}\\
+| \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathit{IntExp})\\
+\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
+\end{aligned}$$
+
+## The Inference Algorithm: Step 1 (Split)
+
+$$
+\begin{aligned}
+\Theta := \{&(a,\{\mathit{Int}|\kappa_1\}),(b,\{\mathit{Int}|\kappa_2\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+### After Step 1:
+
+$$
+\begin{aligned}
+C:=\{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\},\\
+  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\},\\
+  &\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}
+\end{aligned}
+$$
+
+## The Inference Algorithm: Step 2 (Solve)
+
+$$
+{\tiny\begin{aligned}
+\mathit{Init}:\mathcal{P}(\mathcal{V})\to&\mathcal{P}(\mathcal{Q})\\
+\mathit{Init}(V)::=& \{0 < \nu\}\\
+      &\cup \{a < \nu \ | \ a\in V\}\\
+      &\cup \{\nu < 0\}\\
+      &\cup \{\nu < a \ | \ a\in V\}\\
+      &\cup \{\nu = a \ | \ a\in V\}\\
+      &\cup \{\nu = 0\}\\
+      &\cup \{a < \nu \lor \nu = a \ | \ a\in V\}\\
+      &\cup \{\nu < a \lor \nu = a \ | \ a\in V\}\\
+      &\cup \{0 < \nu \lor \nu = 0 \}\\
+      &\cup \{\nu < 0 \lor \nu = 0 \}\\
+      &\cup \{\neg (\nu = a) \ | \ a\in V \}\\
+      &\cup \{\neg (\nu = 0)\}\\
+\end{aligned}}
+$$
+
+In our example $V:=\{a,b\}$
+
+## The Inference Algorithm: Step 2 (Solve)
+
+$$
+\begin{aligned}
+\text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\to(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
+\text{Solve}&(C,A)=\\
+&\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
+&\text{If there exists } (\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
+&\quad\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\quad[[r_1\land p]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow [[r_2]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
+&\text{then } \text{Solve}(C,\text{Weaken}(c,A)) \text{ else } A
+\end{aligned}
+$$
+
+### SMT statement:
+
+$$((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\land \neg r_2$$
+with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
+
+## The Inference Algorithm: Step 3 (Weaken)
+
+$$
+{\small\begin{aligned}
+&\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\nrightarrow(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
+&\text{Weaken}(\{\nu:\mathit{Int}| x \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [k_2]_{S_2}\},A) =\\
+&\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
+&\begin{aligned}Q_2 := \{\ &q \\
+| \ &q\in A(k_2)\\
+\land & (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad[[r_1\land p]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow[[[q]_{S_2}]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
+\end{aligned}\end{aligned}\\
+&\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
+\end{aligned}}
+$$
+
+### SMT statement:
+
+$$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor r_2
+$$
+with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$ and $r_2 := [q]_{S_2}$.
+
+## Demonstration
+
+$$
+\begin{aligned}
+\Theta := \{&(a,\{\mathit{Int}|\kappa_1\}),(b,\{\mathit{Int}|\kappa_2\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+## Current State
+
+1. Formal language similar to Elm **(DONE)**
+2. Extension of the formal language with Liquid Types
+    1. A formal syntax **(DONE)**
+    2. A formal type system **(DONE)**
+    3. Proof that the extension infers the correct types. **(DONE)**
+    4. Implementation of the inference algorithm. **(DONE)**
+
+**Started thesis** in July 2019
+
+**Expected finish** in February 2021
