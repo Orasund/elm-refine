@@ -42,7 +42,7 @@ view { smaller, bigger, guards, typeVariables } =
                         (\( name, t ) ->
                             name
                                 ++ " in "
-                                ++ (t |> Refinement.toString)
+                                ++ (t |> Refinement.toString |> LiquidType.simpleformToString)
                         )
                     |> String.join ","
                )

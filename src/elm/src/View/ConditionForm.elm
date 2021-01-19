@@ -77,7 +77,7 @@ viewVarArray label onChange tail =
             input
                 |> viewInput
                     { label = label ++ String.fromInt ((tail |> Array.length) - index)
-                    , onChange = onChange ((tail |> Array.length) - index - 1)
+                    , onChange = onChange index
                     }
     in
     (tail |> Array.toList |> List.indexedMap (\index { name } -> fun index name))

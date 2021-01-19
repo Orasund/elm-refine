@@ -11,6 +11,7 @@ import Data.Refinement as Refinement exposing (IntExp, Refinement(..))
 import Dict exposing (Dict)
 import Element exposing (Element)
 import Element.Font as Font
+import Element.Input as Input
 import Framework.Grid as Grid
 import Page.Done as Done
 import View.Condition as Condition
@@ -28,6 +29,7 @@ type alias Model =
             { index : Int
             , liquidTypeVariable : Int
             }
+    , auto : Bool
     , error : Maybe String
     }
 
@@ -85,6 +87,7 @@ smtStatement model =
 type Msg
     = GotResponse Bool
     | IncomingMsg IncomingMsg
+    | ToggleAuto
     | AskSMT
 
 
@@ -122,14 +125,31 @@ init conditions =
                 |> Dict.fromList
       , index = 0
       , weaken = Nothing
+      , auto = False
       , error = Nothing
       }
     , Cmd.none
     )
 
 
-handleResponse : Bool -> Model -> Update msg
-handleResponse bool model =
+handleAuto : (String -> Cmd msg) -> Model -> Update msg
+handleAuto sendMsg model =
+    if model.auto then
+        ( model
+        , model
+            |> smtStatement
+            |> Maybe.map sendMsg
+            |> Maybe.withDefault Cmd.none
+        )
+            |> Action.updating
+
+    else
+        Action.updating
+            ( model, Cmd.none )
+
+
+handleResponse : (String -> Cmd msg) -> Bool -> Model -> Update msg
+handleResponse sendMsg bool model =
     case ( model.weaken, bool ) of
         ( Just weaken, False ) ->
             --continue
@@ -145,25 +165,21 @@ handleResponse bool model =
                             |> Maybe.withDefault 0
                        )
             then
-                Action.updating
-                    ( { model
-                        | weaken = Nothing
-                        , index = 0
-                      }
-                    , Cmd.none
-                    )
+                { model
+                    | weaken = Nothing
+                    , index = 0
+                }
+                    |> handleAuto sendMsg
 
             else
-                Action.updating
-                    ( { model
-                        | weaken =
-                            Just
-                                { liquidTypeVariable = weaken.liquidTypeVariable
-                                , index = index
-                                }
-                      }
-                    , Cmd.none
-                    )
+                { model
+                    | weaken =
+                        Just
+                            { liquidTypeVariable = weaken.liquidTypeVariable
+                            , index = index
+                            }
+                }
+                    |> handleAuto sendMsg
 
         ( Just weaken, True ) ->
             --remove
@@ -183,22 +199,18 @@ handleResponse bool model =
                             |> Maybe.withDefault 0
                        )
             then
-                Action.updating
-                    ( { model
-                        | predicates = predicates
-                        , weaken = Nothing
-                        , index = 0
-                      }
-                    , Cmd.none
-                    )
+                { model
+                    | predicates = predicates
+                    , weaken = Nothing
+                    , index = 0
+                }
+                    |> handleAuto sendMsg
 
             else
-                Action.updating
-                    ( { model
-                        | predicates = predicates
-                      }
-                    , Cmd.none
-                    )
+                { model
+                    | predicates = predicates
+                }
+                    |> handleAuto sendMsg
 
         ( Nothing, True ) ->
             --Start weaking
@@ -207,16 +219,14 @@ handleResponse bool model =
                     |> Array.get model.index
             of
                 Just { bigger } ->
-                    Action.updating
-                        ( { model
-                            | weaken =
-                                Just
-                                    { index = 0
-                                    , liquidTypeVariable = bigger |> Tuple.first
-                                    }
-                          }
-                        , Cmd.none
-                        )
+                    { model
+                        | weaken =
+                            Just
+                                { index = 0
+                                , liquidTypeVariable = bigger |> Tuple.first
+                                }
+                    }
+                        |> handleAuto sendMsg
 
                 Nothing ->
                     Action.updating ( model, Cmd.none )
@@ -236,28 +246,26 @@ handleResponse bool model =
                     }
 
             else
-                Action.updating
-                    ( { model
-                        | index = index
-                      }
-                    , Cmd.none
-                    )
+                { model
+                    | index = index
+                }
+                    |> handleAuto sendMsg
 
 
 update : (String -> Cmd msg) -> Msg -> Model -> Update msg
 update sendMsg msg model =
     case msg of
         GotResponse bool ->
-            handleResponse bool { model | error = Nothing }
+            handleResponse sendMsg bool { model | error = Nothing }
 
         IncomingMsg { kind, payload } ->
             if kind == "STDOUT" then
                 case payload of
                     "sat" ->
-                        handleResponse True model
+                        handleResponse sendMsg True model
 
                     "unsat" ->
-                        handleResponse False model
+                        handleResponse sendMsg False model
 
                     _ ->
                         Action.updating
@@ -284,6 +292,12 @@ update sendMsg msg model =
                     ( { model | error = Just (kind ++ ":" ++ payload) }
                     , Cmd.none
                     )
+
+        ToggleAuto ->
+            Action.updating
+                ( { model | auto = not model.auto }
+                , Cmd.none
+                )
 
         AskSMT ->
             Action.updating
@@ -356,11 +370,20 @@ view model =
                     >> Element.paragraph []
                 )
             |> Maybe.withDefault Element.none
-        , [ Widget.button (Material.containedButton Material.defaultPalette)
+        , [ [ Widget.button (Material.containedButton Material.defaultPalette)
                 { text = "Ask SMT Solver"
                 , icon = Element.none
                 , onPress = Just <| AskSMT
                 }
+            , Input.checkbox []
+                { onChange = always ToggleAuto
+                , icon = Input.defaultCheckbox
+                , checked = model.auto
+                , label = Input.labelHidden "Toggle Autorun"
+                }
+            , Element.text "auto"
+            ]
+                |> Element.row [ Element.spacing 10 ]
           , [ Widget.button (Material.textButton Material.defaultPalette)
                 { text = "No"
                 , icon = Element.none

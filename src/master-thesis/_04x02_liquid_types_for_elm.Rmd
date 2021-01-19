@@ -357,7 +357,7 @@ Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case,
 \Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:\hat{T}_1\to \hat{T}_2)\\
 \Gamma,\Delta,\Theta,\Lambda\vdash e_2: \hat{T}_1\quad
 e_2:e_2'\quad
-[\hat{T}_2]_{a\leftarrow e_2'} =\hat{T}_3
+[\hat{T}_2]_{\{(a, e_2')\}} =\hat{T}_3
 \end{gathered}
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_3}

@@ -5754,6 +5754,7 @@ var $author$project$Page$Assistant$init = function (conditions) {
 				conditions)));
 	return _Utils_Tuple2(
 		{
+			auto: false,
 			conditions: $elm$core$Array$fromList(conditions),
 			error: $elm$core$Maybe$Nothing,
 			index: 0,
@@ -5867,9 +5868,54 @@ var $elm$core$Dict$get = F2(
 			}
 		}
 	});
-var $elm$core$Array$length = function (_v0) {
-	var len = _v0.a;
-	return len;
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Data$Refinement$IsFalse = {$: 'IsFalse'};
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Page$Assistant$getLazySubstitute = function (_v0) {
+	var conditions = _v0.conditions;
+	var index = _v0.index;
+	return A2(
+		$elm$core$Maybe$withDefault,
+		_List_Nil,
+		A2(
+			$elm$core$Maybe$map,
+			A2(
+				$elm$core$Basics$composeR,
+				function ($) {
+					return $.bigger;
+				},
+				$elm$core$Tuple$second),
+			A2($elm$core$Array$get, index, conditions)));
 };
 var $elm$core$Dict$map = F2(
 	function (func, dict) {
@@ -5890,16 +5936,823 @@ var $elm$core$Dict$map = F2(
 				A2($elm$core$Dict$map, func, right));
 		}
 	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
+var $author$project$Data$Refinement$substituteIntExp = F2(
+	function (_v0, intExp) {
+		var find = _v0.find;
+		var replaceWith = _v0.replaceWith;
+		if (intExp.$ === 'Var') {
+			var string = intExp.a;
+			return _Utils_eq(string, find) ? replaceWith : $author$project$Data$Refinement$Var(string);
 		} else {
-			return $elm$core$Maybe$Nothing;
+			return intExp;
 		}
 	});
+var $author$project$Data$Refinement$substitute = F2(
+	function (theta, refinement) {
+		switch (refinement.$) {
+			case 'IsTrue':
+				return $author$project$Data$Refinement$IsTrue;
+			case 'IsFalse':
+				return $author$project$Data$Refinement$IsFalse;
+			case 'IsSmaller':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsSmaller,
+					string,
+					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
+			case 'IsBigger':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsBigger,
+					string,
+					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
+			case 'IsEqual':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsEqual,
+					string,
+					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
+			case 'EitherOr':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$EitherOr,
+					A2($author$project$Data$Refinement$substitute, theta, r1),
+					A2($author$project$Data$Refinement$substitute, theta, r2));
+			case 'AndAlso':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$AndAlso,
+					A2($author$project$Data$Refinement$substitute, theta, r1),
+					A2($author$project$Data$Refinement$substitute, theta, r2));
+			default:
+				var r = refinement.a;
+				return $author$project$Data$Refinement$IsNot(
+					A2($author$project$Data$Refinement$substitute, theta, r));
+		}
+	});
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
+var $author$project$Data$Refinement$rename = F2(
+	function (theta, refinement) {
+		var find = theta.find;
+		var replaceWith = theta.replaceWith;
+		switch (refinement.$) {
+			case 'IsTrue':
+				return $author$project$Data$Refinement$IsTrue;
+			case 'IsFalse':
+				return $author$project$Data$Refinement$IsFalse;
+			case 'IsSmaller':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsSmaller,
+					_Utils_eq(string, find) ? replaceWith : string,
+					intExp);
+			case 'IsBigger':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsBigger,
+					_Utils_eq(string, find) ? replaceWith : string,
+					intExp);
+			case 'IsEqual':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsEqual,
+					_Utils_eq(string, find) ? replaceWith : string,
+					intExp);
+			case 'EitherOr':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$EitherOr,
+					A2($author$project$Data$Refinement$rename, theta, r1),
+					A2($author$project$Data$Refinement$rename, theta, r2));
+			case 'AndAlso':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$AndAlso,
+					A2($author$project$Data$Refinement$rename, theta, r1),
+					A2($author$project$Data$Refinement$rename, theta, r2));
+			default:
+				var r = refinement.a;
+				return $author$project$Data$Refinement$IsNot(
+					A2($author$project$Data$Refinement$rename, theta, r));
+		}
+	});
+var $author$project$Data$Refinement$intExpToString = function (input) {
+	switch (input.$) {
+		case 'Integer':
+			var _int = input.a;
+			return $elm$core$String$fromInt(_int);
+		case 'Plus':
+			var intExp1 = input.a;
+			var intExp2 = input.b;
+			return '(+) ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + $author$project$Data$Refinement$intExpToString(intExp2)));
+		case 'Times':
+			var intExp = input.a;
+			var i = input.b;
+			return '(*) ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + $elm$core$String$fromInt(i)));
+		default:
+			var string = input.a;
+			return string;
+	}
+};
+var $author$project$Data$Refinement$intExpToSMTStatement = function (input) {
+	switch (input.$) {
+		case 'Integer':
+			var _int = input.a;
+			return $elm$core$String$fromInt(_int);
+		case 'Plus':
+			var intExp1 = input.a;
+			var intExp2 = input.b;
+			return '(+ ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + ($author$project$Data$Refinement$intExpToString(intExp2) + ')')));
+		case 'Times':
+			var intExp = input.a;
+			var i = input.b;
+			return '(* ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + ($elm$core$String$fromInt(i) + ')')));
+		default:
+			var string = input.a;
+			return string;
+	}
+};
+var $author$project$Data$Refinement$toSMTStatement = function (refinement) {
+	switch (refinement.$) {
+		case 'IsTrue':
+			return 'true';
+		case 'IsFalse':
+			return 'false';
+		case 'IsSmaller':
+			var string = refinement.a;
+			var intExp = refinement.b;
+			return '(< ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+		case 'IsBigger':
+			var string = refinement.a;
+			var intExp = refinement.b;
+			return '(> ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+		case 'IsEqual':
+			var string = refinement.a;
+			var intExp = refinement.b;
+			return '(= ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+		case 'EitherOr':
+			var r1 = refinement.a;
+			var r2 = refinement.b;
+			return '(or ' + ($author$project$Data$Refinement$toSMTStatement(r1) + (' ' + ($author$project$Data$Refinement$toSMTStatement(r2) + ')')));
+		case 'AndAlso':
+			var r1 = refinement.a;
+			var r2 = refinement.b;
+			return '(and ' + ($author$project$Data$Refinement$toSMTStatement(r1) + (' ' + ($author$project$Data$Refinement$toSMTStatement(r2) + ')')));
+		default:
+			var r = refinement.a;
+			return '(not ' + ($author$project$Data$Refinement$toSMTStatement(r) + ')');
+	}
+};
+var $elm$core$Dict$singleton = F2(
+	function (key, value) {
+		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+	});
+var $elm$core$Set$singleton = function (key) {
+	return $elm$core$Set$Set_elm_builtin(
+		A2($elm$core$Dict$singleton, key, _Utils_Tuple0));
+};
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $elm$core$Set$union = F2(
+	function (_v0, _v1) {
+		var dict1 = _v0.a;
+		var dict2 = _v1.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A2($elm$core$Dict$union, dict1, dict2));
+	});
+var $author$project$Data$Refinement$intExpVariables = function (intExp) {
+	intExpVariables:
+	while (true) {
+		switch (intExp.$) {
+			case 'Integer':
+				return $elm$core$Set$empty;
+			case 'Plus':
+				var i1 = intExp.a;
+				var i2 = intExp.b;
+				return A2(
+					$elm$core$Set$union,
+					$author$project$Data$Refinement$intExpVariables(i1),
+					$author$project$Data$Refinement$intExpVariables(i2));
+			case 'Times':
+				var i = intExp.a;
+				var $temp$intExp = i;
+				intExp = $temp$intExp;
+				continue intExpVariables;
+			default:
+				var string = intExp.a;
+				return $elm$core$Set$singleton(string);
+		}
+	}
+};
+var $author$project$Data$Refinement$variables = function (refinement) {
+	variables:
+	while (true) {
+		switch (refinement.$) {
+			case 'IsTrue':
+				return $elm$core$Set$empty;
+			case 'IsFalse':
+				return $elm$core$Set$empty;
+			case 'IsSmaller':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$elm$core$Set$insert,
+					string,
+					$author$project$Data$Refinement$intExpVariables(intExp));
+			case 'IsBigger':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$elm$core$Set$insert,
+					string,
+					$author$project$Data$Refinement$intExpVariables(intExp));
+			case 'IsEqual':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$elm$core$Set$insert,
+					string,
+					$author$project$Data$Refinement$intExpVariables(intExp));
+			case 'EitherOr':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$elm$core$Set$union,
+					$author$project$Data$Refinement$variables(r1),
+					$author$project$Data$Refinement$variables(r2));
+			case 'AndAlso':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$elm$core$Set$union,
+					$author$project$Data$Refinement$variables(r1),
+					$author$project$Data$Refinement$variables(r2));
+			default:
+				var r = refinement.a;
+				var $temp$refinement = r;
+				refinement = $temp$refinement;
+				continue variables;
+		}
+	}
+};
+var $author$project$Data$Condition$toSMTStatement = F2(
+	function (dict, _v0) {
+		var smaller = _v0.smaller;
+		var bigger = _v0.bigger;
+		var guards = _v0.guards;
+		var typeVariables = _v0.typeVariables;
+		var r2 = A3(
+			$elm$core$List$foldl,
+			function (_v5) {
+				var k = _v5.a;
+				var v = _v5.b;
+				return $author$project$Data$Refinement$substitute(
+					{find: k, replaceWith: v});
+			},
+			A2(
+				$elm$core$Maybe$withDefault,
+				$author$project$Data$Refinement$IsFalse,
+				A2($elm$core$Dict$get, bigger.a, dict)),
+			bigger.b);
+		var r1 = function () {
+			if (smaller.$ === 'IntType') {
+				var refinement = smaller.a;
+				return refinement;
+			} else {
+				var _v3 = smaller.a;
+				var _int = _v3.a;
+				var list = _v3.b;
+				return A3(
+					$elm$core$List$foldl,
+					function (_v4) {
+						var k = _v4.a;
+						var v = _v4.b;
+						return $author$project$Data$Refinement$substitute(
+							{find: k, replaceWith: v});
+					},
+					A2(
+						$elm$core$Maybe$withDefault,
+						$author$project$Data$Refinement$IsFalse,
+						A2($elm$core$Dict$get, _int, dict)),
+					list);
+			}
+		}();
+		var baseTypeRefinements = A2(
+			$elm$core$List$map,
+			function (_v1) {
+				var b = _v1.a;
+				var r = _v1.b;
+				return A2(
+					$author$project$Data$Refinement$rename,
+					{find: 'v', replaceWith: b},
+					r);
+			},
+			typeVariables);
+		var statement = A3(
+			$elm$core$List$foldl,
+			$author$project$Data$Refinement$AndAlso,
+			$author$project$Data$Refinement$IsNot(r2),
+			A2(
+				$elm$core$List$cons,
+				r1,
+				_Utils_ap(baseTypeRefinements, guards)));
+		return $elm$core$String$concat(
+			A2(
+				$elm$core$List$map,
+				function (k) {
+					return '(declare-const ' + (k + ' Int)\n');
+				},
+				$elm$core$Set$toList(
+					$author$project$Data$Refinement$variables(statement)))) + ('(assert ' + ($author$project$Data$Refinement$toSMTStatement(statement) + ')\n(check-sat)'));
+	});
+var $elm$core$Dict$getMin = function (dict) {
+	getMin:
+	while (true) {
+		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+			var left = dict.d;
+			var $temp$dict = left;
+			dict = $temp$dict;
+			continue getMin;
+		} else {
+			return dict;
+		}
+	}
+};
+var $elm$core$Dict$moveRedLeft = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var lLeft = _v1.d;
+			var lRight = _v1.e;
+			var _v2 = dict.e;
+			var rClr = _v2.a;
+			var rK = _v2.b;
+			var rV = _v2.c;
+			var rLeft = _v2.d;
+			var _v3 = rLeft.a;
+			var rlK = rLeft.b;
+			var rlV = rLeft.c;
+			var rlL = rLeft.d;
+			var rlR = rLeft.e;
+			var rRight = _v2.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				rlK,
+				rlV,
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					rlL),
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v4 = dict.d;
+			var lClr = _v4.a;
+			var lK = _v4.b;
+			var lV = _v4.c;
+			var lLeft = _v4.d;
+			var lRight = _v4.e;
+			var _v5 = dict.e;
+			var rClr = _v5.a;
+			var rK = _v5.b;
+			var rV = _v5.c;
+			var rLeft = _v5.d;
+			var rRight = _v5.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$moveRedRight = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var _v2 = _v1.d;
+			var _v3 = _v2.a;
+			var llK = _v2.b;
+			var llV = _v2.c;
+			var llLeft = _v2.d;
+			var llRight = _v2.e;
+			var lRight = _v1.e;
+			var _v4 = dict.e;
+			var rClr = _v4.a;
+			var rK = _v4.b;
+			var rV = _v4.c;
+			var rLeft = _v4.d;
+			var rRight = _v4.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				lK,
+				lV,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					lRight,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v5 = dict.d;
+			var lClr = _v5.a;
+			var lK = _v5.b;
+			var lV = _v5.c;
+			var lLeft = _v5.d;
+			var lRight = _v5.e;
+			var _v6 = dict.e;
+			var rClr = _v6.a;
+			var rK = _v6.b;
+			var rV = _v6.c;
+			var rLeft = _v6.d;
+			var rRight = _v6.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$removeHelpPrepEQGT = F7(
+	function (targetKey, dict, color, key, value, left, right) {
+		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+			var _v1 = left.a;
+			var lK = left.b;
+			var lV = left.c;
+			var lLeft = left.d;
+			var lRight = left.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				lK,
+				lV,
+				lLeft,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+		} else {
+			_v2$2:
+			while (true) {
+				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
+					if (right.d.$ === 'RBNode_elm_builtin') {
+						if (right.d.a.$ === 'Black') {
+							var _v3 = right.a;
+							var _v4 = right.d;
+							var _v5 = _v4.a;
+							return $elm$core$Dict$moveRedRight(dict);
+						} else {
+							break _v2$2;
+						}
+					} else {
+						var _v6 = right.a;
+						var _v7 = right.d;
+						return $elm$core$Dict$moveRedRight(dict);
+					}
+				} else {
+					break _v2$2;
+				}
+			}
+			return dict;
+		}
+	});
+var $elm$core$Dict$removeMin = function (dict) {
+	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+		var color = dict.a;
+		var key = dict.b;
+		var value = dict.c;
+		var left = dict.d;
+		var lColor = left.a;
+		var lLeft = left.d;
+		var right = dict.e;
+		if (lColor.$ === 'Black') {
+			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+				var _v3 = lLeft.a;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					key,
+					value,
+					$elm$core$Dict$removeMin(left),
+					right);
+			} else {
+				var _v4 = $elm$core$Dict$moveRedLeft(dict);
+				if (_v4.$ === 'RBNode_elm_builtin') {
+					var nColor = _v4.a;
+					var nKey = _v4.b;
+					var nValue = _v4.c;
+					var nLeft = _v4.d;
+					var nRight = _v4.e;
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						$elm$core$Dict$removeMin(nLeft),
+						nRight);
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			}
+		} else {
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				value,
+				$elm$core$Dict$removeMin(left),
+				right);
+		}
+	} else {
+		return $elm$core$Dict$RBEmpty_elm_builtin;
+	}
+};
+var $elm$core$Dict$removeHelp = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_cmp(targetKey, key) < 0) {
+				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
+					var _v4 = left.a;
+					var lLeft = left.d;
+					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+						var _v6 = lLeft.a;
+						return A5(
+							$elm$core$Dict$RBNode_elm_builtin,
+							color,
+							key,
+							value,
+							A2($elm$core$Dict$removeHelp, targetKey, left),
+							right);
+					} else {
+						var _v7 = $elm$core$Dict$moveRedLeft(dict);
+						if (_v7.$ === 'RBNode_elm_builtin') {
+							var nColor = _v7.a;
+							var nKey = _v7.b;
+							var nValue = _v7.c;
+							var nLeft = _v7.d;
+							var nRight = _v7.e;
+							return A5(
+								$elm$core$Dict$balance,
+								nColor,
+								nKey,
+								nValue,
+								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
+								nRight);
+						} else {
+							return $elm$core$Dict$RBEmpty_elm_builtin;
+						}
+					}
+				} else {
+					return A5(
+						$elm$core$Dict$RBNode_elm_builtin,
+						color,
+						key,
+						value,
+						A2($elm$core$Dict$removeHelp, targetKey, left),
+						right);
+				}
+			} else {
+				return A2(
+					$elm$core$Dict$removeHelpEQGT,
+					targetKey,
+					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
+			}
+		}
+	});
+var $elm$core$Dict$removeHelpEQGT = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBNode_elm_builtin') {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_eq(targetKey, key)) {
+				var _v1 = $elm$core$Dict$getMin(right);
+				if (_v1.$ === 'RBNode_elm_builtin') {
+					var minKey = _v1.b;
+					var minValue = _v1.c;
+					return A5(
+						$elm$core$Dict$balance,
+						color,
+						minKey,
+						minValue,
+						left,
+						$elm$core$Dict$removeMin(right));
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			} else {
+				return A5(
+					$elm$core$Dict$balance,
+					color,
+					key,
+					value,
+					left,
+					A2($elm$core$Dict$removeHelp, targetKey, right));
+			}
+		} else {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		}
+	});
+var $elm$core$Dict$remove = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$update = F3(
+	function (targetKey, alter, dictionary) {
+		var _v0 = alter(
+			A2($elm$core$Dict$get, targetKey, dictionary));
+		if (_v0.$ === 'Just') {
+			var value = _v0.a;
+			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
+		} else {
+			return A2($elm$core$Dict$remove, targetKey, dictionary);
+		}
+	});
+var $author$project$Page$Assistant$smtStatement = function (model) {
+	return A2(
+		$elm$core$Maybe$map,
+		function (condition) {
+			var _v0 = model.weaken;
+			if (_v0.$ === 'Just') {
+				var weaken = _v0.a;
+				return A2(
+					$author$project$Data$Condition$toSMTStatement,
+					A3(
+						$elm$core$Dict$update,
+						condition.bigger.a,
+						$elm$core$Maybe$map(
+							function (_v2) {
+								return A3(
+									$elm$core$List$foldl,
+									function (_v3) {
+										var find = _v3.a;
+										var replaceWith = _v3.b;
+										return $author$project$Data$Refinement$substitute(
+											{find: find, replaceWith: replaceWith});
+									},
+									A2(
+										$elm$core$Maybe$withDefault,
+										$author$project$Data$Refinement$IsFalse,
+										A2(
+											$elm$core$Maybe$andThen,
+											$elm$core$Array$get(weaken.index),
+											A2($elm$core$Dict$get, condition.bigger.a, model.predicates))),
+									$author$project$Page$Assistant$getLazySubstitute(model));
+							}),
+						A2(
+							$elm$core$Dict$map,
+							function (_v1) {
+								return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
+							},
+							model.predicates)),
+					condition);
+			} else {
+				return A2(
+					$author$project$Data$Condition$toSMTStatement,
+					A2(
+						$elm$core$Dict$map,
+						function (_v4) {
+							return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
+						},
+						model.predicates),
+					condition);
+			}
+		},
+		A2($elm$core$Array$get, model.index, model.conditions));
+};
+var $Orasund$elm_action$Action$Update = function (a) {
+	return {$: 'Update', a: a};
+};
+var $Orasund$elm_action$Action$updating = function (tuple) {
+	return $Orasund$elm_action$Action$Update(tuple);
+};
+var $author$project$Page$Assistant$handleAuto = F2(
+	function (sendMsg, model) {
+		return model.auto ? $Orasund$elm_action$Action$updating(
+			_Utils_Tuple2(
+				model,
+				A2(
+					$elm$core$Maybe$withDefault,
+					$elm$core$Platform$Cmd$none,
+					A2(
+						$elm$core$Maybe$map,
+						sendMsg,
+						$author$project$Page$Assistant$smtStatement(model))))) : $Orasund$elm_action$Action$updating(
+			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+	});
+var $elm$core$Array$length = function (_v0) {
+	var len = _v0.a;
+	return len;
+};
 var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
 var $elm$core$Elm$JsArray$slice = _JsArray_slice;
 var $elm$core$Array$appendHelpBuilder = F2(
@@ -6314,396 +7167,8 @@ var $Orasund$elm_action$Action$Transition = function (a) {
 var $Orasund$elm_action$Action$transitioning = function (transitionData) {
 	return $Orasund$elm_action$Action$Transition(transitionData);
 };
-var $elm$core$Dict$getMin = function (dict) {
-	getMin:
-	while (true) {
-		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
-			var left = dict.d;
-			var $temp$dict = left;
-			dict = $temp$dict;
-			continue getMin;
-		} else {
-			return dict;
-		}
-	}
-};
-var $elm$core$Dict$moveRedLeft = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var lLeft = _v1.d;
-			var lRight = _v1.e;
-			var _v2 = dict.e;
-			var rClr = _v2.a;
-			var rK = _v2.b;
-			var rV = _v2.c;
-			var rLeft = _v2.d;
-			var _v3 = rLeft.a;
-			var rlK = rLeft.b;
-			var rlV = rLeft.c;
-			var rlL = rLeft.d;
-			var rlR = rLeft.e;
-			var rRight = _v2.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
-				rlK,
-				rlV,
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					rlL),
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v4 = dict.d;
-			var lClr = _v4.a;
-			var lK = _v4.b;
-			var lV = _v4.c;
-			var lLeft = _v4.d;
-			var lRight = _v4.e;
-			var _v5 = dict.e;
-			var rClr = _v5.a;
-			var rK = _v5.b;
-			var rV = _v5.c;
-			var rLeft = _v5.d;
-			var rRight = _v5.e;
-			if (clr.$ === 'Black') {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$moveRedRight = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var _v2 = _v1.d;
-			var _v3 = _v2.a;
-			var llK = _v2.b;
-			var llV = _v2.c;
-			var llLeft = _v2.d;
-			var llRight = _v2.e;
-			var lRight = _v1.e;
-			var _v4 = dict.e;
-			var rClr = _v4.a;
-			var rK = _v4.b;
-			var rV = _v4.c;
-			var rLeft = _v4.d;
-			var rRight = _v4.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
-				lK,
-				lV,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					lRight,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v5 = dict.d;
-			var lClr = _v5.a;
-			var lK = _v5.b;
-			var lV = _v5.c;
-			var lLeft = _v5.d;
-			var lRight = _v5.e;
-			var _v6 = dict.e;
-			var rClr = _v6.a;
-			var rK = _v6.b;
-			var rV = _v6.c;
-			var rLeft = _v6.d;
-			var rRight = _v6.e;
-			if (clr.$ === 'Black') {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$removeHelpPrepEQGT = F7(
-	function (targetKey, dict, color, key, value, left, right) {
-		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-			var _v1 = left.a;
-			var lK = left.b;
-			var lV = left.c;
-			var lLeft = left.d;
-			var lRight = left.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				lK,
-				lV,
-				lLeft,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
-		} else {
-			_v2$2:
-			while (true) {
-				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
-					if (right.d.$ === 'RBNode_elm_builtin') {
-						if (right.d.a.$ === 'Black') {
-							var _v3 = right.a;
-							var _v4 = right.d;
-							var _v5 = _v4.a;
-							return $elm$core$Dict$moveRedRight(dict);
-						} else {
-							break _v2$2;
-						}
-					} else {
-						var _v6 = right.a;
-						var _v7 = right.d;
-						return $elm$core$Dict$moveRedRight(dict);
-					}
-				} else {
-					break _v2$2;
-				}
-			}
-			return dict;
-		}
-	});
-var $elm$core$Dict$removeMin = function (dict) {
-	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
-		var color = dict.a;
-		var key = dict.b;
-		var value = dict.c;
-		var left = dict.d;
-		var lColor = left.a;
-		var lLeft = left.d;
-		var right = dict.e;
-		if (lColor.$ === 'Black') {
-			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
-				var _v3 = lLeft.a;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					key,
-					value,
-					$elm$core$Dict$removeMin(left),
-					right);
-			} else {
-				var _v4 = $elm$core$Dict$moveRedLeft(dict);
-				if (_v4.$ === 'RBNode_elm_builtin') {
-					var nColor = _v4.a;
-					var nKey = _v4.b;
-					var nValue = _v4.c;
-					var nLeft = _v4.d;
-					var nRight = _v4.e;
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						$elm$core$Dict$removeMin(nLeft),
-						nRight);
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			}
-		} else {
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				key,
-				value,
-				$elm$core$Dict$removeMin(left),
-				right);
-		}
-	} else {
-		return $elm$core$Dict$RBEmpty_elm_builtin;
-	}
-};
-var $elm$core$Dict$removeHelp = F2(
-	function (targetKey, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		} else {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_cmp(targetKey, key) < 0) {
-				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
-					var _v4 = left.a;
-					var lLeft = left.d;
-					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
-						var _v6 = lLeft.a;
-						return A5(
-							$elm$core$Dict$RBNode_elm_builtin,
-							color,
-							key,
-							value,
-							A2($elm$core$Dict$removeHelp, targetKey, left),
-							right);
-					} else {
-						var _v7 = $elm$core$Dict$moveRedLeft(dict);
-						if (_v7.$ === 'RBNode_elm_builtin') {
-							var nColor = _v7.a;
-							var nKey = _v7.b;
-							var nValue = _v7.c;
-							var nLeft = _v7.d;
-							var nRight = _v7.e;
-							return A5(
-								$elm$core$Dict$balance,
-								nColor,
-								nKey,
-								nValue,
-								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
-								nRight);
-						} else {
-							return $elm$core$Dict$RBEmpty_elm_builtin;
-						}
-					}
-				} else {
-					return A5(
-						$elm$core$Dict$RBNode_elm_builtin,
-						color,
-						key,
-						value,
-						A2($elm$core$Dict$removeHelp, targetKey, left),
-						right);
-				}
-			} else {
-				return A2(
-					$elm$core$Dict$removeHelpEQGT,
-					targetKey,
-					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
-			}
-		}
-	});
-var $elm$core$Dict$removeHelpEQGT = F2(
-	function (targetKey, dict) {
-		if (dict.$ === 'RBNode_elm_builtin') {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_eq(targetKey, key)) {
-				var _v1 = $elm$core$Dict$getMin(right);
-				if (_v1.$ === 'RBNode_elm_builtin') {
-					var minKey = _v1.b;
-					var minValue = _v1.c;
-					return A5(
-						$elm$core$Dict$balance,
-						color,
-						minKey,
-						minValue,
-						left,
-						$elm$core$Dict$removeMin(right));
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			} else {
-				return A5(
-					$elm$core$Dict$balance,
-					color,
-					key,
-					value,
-					left,
-					A2($elm$core$Dict$removeHelp, targetKey, right));
-			}
-		} else {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		}
-	});
-var $elm$core$Dict$remove = F2(
-	function (key, dict) {
-		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $elm$core$Dict$update = F3(
-	function (targetKey, alter, dictionary) {
-		var _v0 = alter(
-			A2($elm$core$Dict$get, targetKey, dictionary));
-		if (_v0.$ === 'Just') {
-			var value = _v0.a;
-			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
-		} else {
-			return A2($elm$core$Dict$remove, targetKey, dictionary);
-		}
-	});
-var $Orasund$elm_action$Action$Update = function (a) {
-	return {$: 'Update', a: a};
-};
-var $Orasund$elm_action$Action$updating = function (tuple) {
-	return $Orasund$elm_action$Action$Update(tuple);
-};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Page$Assistant$handleResponse = F2(
-	function (bool, model) {
+var $author$project$Page$Assistant$handleResponse = F3(
+	function (sendMsg, bool, model) {
 		var _v0 = _Utils_Tuple2(model.weaken, bool);
 		if (_v0.a.$ === 'Just') {
 			if (!_v0.b) {
@@ -6717,20 +7182,20 @@ var $author$project$Page$Assistant$handleResponse = F2(
 						A2(
 							$elm$core$Maybe$map,
 							$elm$core$Array$length,
-							A2($elm$core$Dict$get, weaken.liquidTypeVariable, model.predicates)))) > -1) ? $Orasund$elm_action$Action$updating(
-					_Utils_Tuple2(
-						_Utils_update(
-							model,
-							{index: 0, weaken: $elm$core$Maybe$Nothing}),
-						$elm$core$Platform$Cmd$none)) : $Orasund$elm_action$Action$updating(
-					_Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								weaken: $elm$core$Maybe$Just(
-									{index: index, liquidTypeVariable: weaken.liquidTypeVariable})
-							}),
-						$elm$core$Platform$Cmd$none));
+							A2($elm$core$Dict$get, weaken.liquidTypeVariable, model.predicates)))) > -1) ? A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{index: 0, weaken: $elm$core$Maybe$Nothing})) : A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{
+							weaken: $elm$core$Maybe$Just(
+								{index: index, liquidTypeVariable: weaken.liquidTypeVariable})
+						}));
 			} else {
 				var weaken = _v0.a.a;
 				var predicates = A3(
@@ -6747,17 +7212,17 @@ var $author$project$Page$Assistant$handleResponse = F2(
 						A2(
 							$elm$core$Maybe$map,
 							$elm$core$Array$length,
-							A2($elm$core$Dict$get, weaken.liquidTypeVariable, predicates)))) > -1) ? $Orasund$elm_action$Action$updating(
-					_Utils_Tuple2(
-						_Utils_update(
-							model,
-							{index: 0, predicates: predicates, weaken: $elm$core$Maybe$Nothing}),
-						$elm$core$Platform$Cmd$none)) : $Orasund$elm_action$Action$updating(
-					_Utils_Tuple2(
-						_Utils_update(
-							model,
-							{predicates: predicates}),
-						$elm$core$Platform$Cmd$none));
+							A2($elm$core$Dict$get, weaken.liquidTypeVariable, predicates)))) > -1) ? A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{index: 0, predicates: predicates, weaken: $elm$core$Maybe$Nothing})) : A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{predicates: predicates}));
 			}
 		} else {
 			if (_v0.b) {
@@ -6765,15 +7230,15 @@ var $author$project$Page$Assistant$handleResponse = F2(
 				var _v2 = A2($elm$core$Array$get, model.index, model.conditions);
 				if (_v2.$ === 'Just') {
 					var bigger = _v2.a.bigger;
-					return $Orasund$elm_action$Action$updating(
-						_Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									weaken: $elm$core$Maybe$Just(
-										{index: 0, liquidTypeVariable: bigger.a})
-								}),
-							$elm$core$Platform$Cmd$none));
+					return A2(
+						$author$project$Page$Assistant$handleAuto,
+						sendMsg,
+						_Utils_update(
+							model,
+							{
+								weaken: $elm$core$Maybe$Just(
+									{index: 0, liquidTypeVariable: bigger.a})
+							}));
 				} else {
 					return $Orasund$elm_action$Action$updating(
 						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
@@ -6792,472 +7257,24 @@ var $author$project$Page$Assistant$handleResponse = F2(
 								return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
 							},
 							model.predicates)
-					}) : $Orasund$elm_action$Action$updating(
-					_Utils_Tuple2(
-						_Utils_update(
-							model,
-							{index: index}),
-						$elm$core$Platform$Cmd$none));
+					}) : A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{index: index}));
 			}
 		}
 	});
-var $author$project$Data$Refinement$IsFalse = {$: 'IsFalse'};
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $author$project$Page$Assistant$getLazySubstitute = function (_v0) {
-	var conditions = _v0.conditions;
-	var index = _v0.index;
-	return A2(
-		$elm$core$Maybe$withDefault,
-		_List_Nil,
-		A2(
-			$elm$core$Maybe$map,
-			A2(
-				$elm$core$Basics$composeR,
-				function ($) {
-					return $.bigger;
-				},
-				$elm$core$Tuple$second),
-			A2($elm$core$Array$get, index, conditions)));
-};
-var $author$project$Data$Refinement$substituteIntExp = F2(
-	function (_v0, intExp) {
-		var find = _v0.find;
-		var replaceWith = _v0.replaceWith;
-		if (intExp.$ === 'Var') {
-			var string = intExp.a;
-			return _Utils_eq(string, find) ? replaceWith : $author$project$Data$Refinement$Var(string);
-		} else {
-			return intExp;
-		}
-	});
-var $author$project$Data$Refinement$substitute = F2(
-	function (theta, refinement) {
-		switch (refinement.$) {
-			case 'IsTrue':
-				return $author$project$Data$Refinement$IsTrue;
-			case 'IsFalse':
-				return $author$project$Data$Refinement$IsFalse;
-			case 'IsSmaller':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsSmaller,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'IsBigger':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsBigger,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'IsEqual':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsEqual,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'EitherOr':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$EitherOr,
-					A2($author$project$Data$Refinement$substitute, theta, r1),
-					A2($author$project$Data$Refinement$substitute, theta, r2));
-			case 'AndAlso':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$AndAlso,
-					A2($author$project$Data$Refinement$substitute, theta, r1),
-					A2($author$project$Data$Refinement$substitute, theta, r2));
-			default:
-				var r = refinement.a;
-				return $author$project$Data$Refinement$IsNot(
-					A2($author$project$Data$Refinement$substitute, theta, r));
-		}
-	});
-var $elm$core$String$concat = function (strings) {
-	return A2($elm$core$String$join, '', strings);
-};
-var $author$project$Data$Refinement$rename = F2(
-	function (theta, refinement) {
-		var find = theta.find;
-		var replaceWith = theta.replaceWith;
-		switch (refinement.$) {
-			case 'IsTrue':
-				return $author$project$Data$Refinement$IsTrue;
-			case 'IsFalse':
-				return $author$project$Data$Refinement$IsFalse;
-			case 'IsSmaller':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsSmaller,
-					_Utils_eq(string, find) ? replaceWith : string,
-					intExp);
-			case 'IsBigger':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsBigger,
-					_Utils_eq(string, find) ? replaceWith : string,
-					intExp);
-			case 'IsEqual':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsEqual,
-					_Utils_eq(string, find) ? replaceWith : string,
-					intExp);
-			case 'EitherOr':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$EitherOr,
-					A2($author$project$Data$Refinement$rename, theta, r1),
-					A2($author$project$Data$Refinement$rename, theta, r2));
-			case 'AndAlso':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$AndAlso,
-					A2($author$project$Data$Refinement$rename, theta, r1),
-					A2($author$project$Data$Refinement$rename, theta, r2));
-			default:
-				var r = refinement.a;
-				return $author$project$Data$Refinement$IsNot(
-					A2($author$project$Data$Refinement$rename, theta, r));
-		}
-	});
-var $author$project$Data$Refinement$intExpToString = function (input) {
-	switch (input.$) {
-		case 'Integer':
-			var _int = input.a;
-			return $elm$core$String$fromInt(_int);
-		case 'Plus':
-			var intExp1 = input.a;
-			var intExp2 = input.b;
-			return '(+) ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + $author$project$Data$Refinement$intExpToString(intExp2)));
-		case 'Times':
-			var intExp = input.a;
-			var i = input.b;
-			return '(*) ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + $elm$core$String$fromInt(i)));
-		default:
-			var string = input.a;
-			return string;
-	}
-};
-var $author$project$Data$Refinement$intExpToSMTStatement = function (input) {
-	switch (input.$) {
-		case 'Integer':
-			var _int = input.a;
-			return $elm$core$String$fromInt(_int);
-		case 'Plus':
-			var intExp1 = input.a;
-			var intExp2 = input.b;
-			return '(+ ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + ($author$project$Data$Refinement$intExpToString(intExp2) + ')')));
-		case 'Times':
-			var intExp = input.a;
-			var i = input.b;
-			return '(* ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + ($elm$core$String$fromInt(i) + ')')));
-		default:
-			var string = input.a;
-			return string;
-	}
-};
-var $author$project$Data$Refinement$toSMTStatement = function (refinement) {
-	switch (refinement.$) {
-		case 'IsTrue':
-			return 'true';
-		case 'IsFalse':
-			return 'false';
-		case 'IsSmaller':
-			var string = refinement.a;
-			var intExp = refinement.b;
-			return '(< ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
-		case 'IsBigger':
-			var string = refinement.a;
-			var intExp = refinement.b;
-			return '(> ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
-		case 'IsEqual':
-			var string = refinement.a;
-			var intExp = refinement.b;
-			return '(= ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
-		case 'EitherOr':
-			var r1 = refinement.a;
-			var r2 = refinement.b;
-			return '(or ' + ($author$project$Data$Refinement$toSMTStatement(r1) + (' ' + ($author$project$Data$Refinement$toSMTStatement(r2) + ')')));
-		case 'AndAlso':
-			var r1 = refinement.a;
-			var r2 = refinement.b;
-			return '(and ' + ($author$project$Data$Refinement$toSMTStatement(r1) + (' ' + ($author$project$Data$Refinement$toSMTStatement(r2) + ')')));
-		default:
-			var r = refinement.a;
-			return '(not ' + ($author$project$Data$Refinement$toSMTStatement(r) + ')');
-	}
-};
-var $elm$core$Dict$singleton = F2(
-	function (key, value) {
-		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-	});
-var $elm$core$Set$singleton = function (key) {
-	return $elm$core$Set$Set_elm_builtin(
-		A2($elm$core$Dict$singleton, key, _Utils_Tuple0));
-};
-var $elm$core$Dict$foldl = F3(
-	function (func, acc, dict) {
-		foldl:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return acc;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldl, func, acc, left)),
-					$temp$dict = right;
-				func = $temp$func;
-				acc = $temp$acc;
-				dict = $temp$dict;
-				continue foldl;
-			}
-		}
-	});
-var $elm$core$Dict$union = F2(
-	function (t1, t2) {
-		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
-	});
-var $elm$core$Set$union = F2(
-	function (_v0, _v1) {
-		var dict1 = _v0.a;
-		var dict2 = _v1.a;
-		return $elm$core$Set$Set_elm_builtin(
-			A2($elm$core$Dict$union, dict1, dict2));
-	});
-var $author$project$Data$Refinement$intExpVariables = function (intExp) {
-	intExpVariables:
-	while (true) {
-		switch (intExp.$) {
-			case 'Integer':
-				return $elm$core$Set$empty;
-			case 'Plus':
-				var i1 = intExp.a;
-				var i2 = intExp.b;
-				return A2(
-					$elm$core$Set$union,
-					$author$project$Data$Refinement$intExpVariables(i1),
-					$author$project$Data$Refinement$intExpVariables(i2));
-			case 'Times':
-				var i = intExp.a;
-				var $temp$intExp = i;
-				intExp = $temp$intExp;
-				continue intExpVariables;
-			default:
-				var string = intExp.a;
-				return $elm$core$Set$singleton(string);
-		}
-	}
-};
-var $author$project$Data$Refinement$variables = function (refinement) {
-	variables:
-	while (true) {
-		switch (refinement.$) {
-			case 'IsTrue':
-				return $elm$core$Set$empty;
-			case 'IsFalse':
-				return $elm$core$Set$empty;
-			case 'IsSmaller':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$elm$core$Set$insert,
-					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
-			case 'IsBigger':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$elm$core$Set$insert,
-					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
-			case 'IsEqual':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$elm$core$Set$insert,
-					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
-			case 'EitherOr':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$elm$core$Set$union,
-					$author$project$Data$Refinement$variables(r1),
-					$author$project$Data$Refinement$variables(r2));
-			case 'AndAlso':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$elm$core$Set$union,
-					$author$project$Data$Refinement$variables(r1),
-					$author$project$Data$Refinement$variables(r2));
-			default:
-				var r = refinement.a;
-				var $temp$refinement = r;
-				refinement = $temp$refinement;
-				continue variables;
-		}
-	}
-};
-var $author$project$Data$Condition$toSMTStatement = F2(
-	function (dict, _v0) {
-		var smaller = _v0.smaller;
-		var bigger = _v0.bigger;
-		var guards = _v0.guards;
-		var typeVariables = _v0.typeVariables;
-		var r2 = A3(
-			$elm$core$List$foldl,
-			function (_v5) {
-				var k = _v5.a;
-				var v = _v5.b;
-				return $author$project$Data$Refinement$substitute(
-					{find: k, replaceWith: v});
-			},
-			A2(
-				$elm$core$Maybe$withDefault,
-				$author$project$Data$Refinement$IsFalse,
-				A2($elm$core$Dict$get, bigger.a, dict)),
-			bigger.b);
-		var r1 = function () {
-			if (smaller.$ === 'IntType') {
-				var refinement = smaller.a;
-				return refinement;
-			} else {
-				var _v3 = smaller.a;
-				var _int = _v3.a;
-				var list = _v3.b;
-				return A3(
-					$elm$core$List$foldl,
-					function (_v4) {
-						var k = _v4.a;
-						var v = _v4.b;
-						return $author$project$Data$Refinement$substitute(
-							{find: k, replaceWith: v});
-					},
-					A2(
-						$elm$core$Maybe$withDefault,
-						$author$project$Data$Refinement$IsFalse,
-						A2($elm$core$Dict$get, _int, dict)),
-					list);
-			}
-		}();
-		var baseTypeRefinements = A2(
-			$elm$core$List$map,
-			function (_v1) {
-				var b = _v1.a;
-				var r = _v1.b;
-				return A2(
-					$author$project$Data$Refinement$rename,
-					{find: 'v', replaceWith: b},
-					r);
-			},
-			typeVariables);
-		var statement = A3(
-			$elm$core$List$foldl,
-			$author$project$Data$Refinement$AndAlso,
-			$author$project$Data$Refinement$IsNot(r2),
-			A2(
-				$elm$core$List$cons,
-				r1,
-				_Utils_ap(baseTypeRefinements, guards)));
-		return $elm$core$String$concat(
-			A2(
-				$elm$core$List$map,
-				function (k) {
-					return '(declare-const ' + (k + ' Int)\n');
-				},
-				$elm$core$Set$toList(
-					$author$project$Data$Refinement$variables(statement)))) + ('(assert ' + ($author$project$Data$Refinement$toSMTStatement(statement) + ')\n(check-sat)'));
-	});
-var $author$project$Page$Assistant$smtStatement = function (model) {
-	return A2(
-		$elm$core$Maybe$map,
-		function (condition) {
-			var _v0 = model.weaken;
-			if (_v0.$ === 'Just') {
-				var weaken = _v0.a;
-				return A2(
-					$author$project$Data$Condition$toSMTStatement,
-					A3(
-						$elm$core$Dict$update,
-						condition.bigger.a,
-						$elm$core$Maybe$map(
-							function (_v2) {
-								return A3(
-									$elm$core$List$foldl,
-									function (_v3) {
-										var find = _v3.a;
-										var replaceWith = _v3.b;
-										return $author$project$Data$Refinement$substitute(
-											{find: find, replaceWith: replaceWith});
-									},
-									A2(
-										$elm$core$Maybe$withDefault,
-										$author$project$Data$Refinement$IsFalse,
-										A2(
-											$elm$core$Maybe$andThen,
-											$elm$core$Array$get(weaken.index),
-											A2($elm$core$Dict$get, condition.bigger.a, model.predicates))),
-									$author$project$Page$Assistant$getLazySubstitute(model));
-							}),
-						A2(
-							$elm$core$Dict$map,
-							function (_v1) {
-								return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
-							},
-							model.predicates)),
-					condition);
-			} else {
-				return A2(
-					$author$project$Data$Condition$toSMTStatement,
-					A2(
-						$elm$core$Dict$map,
-						function (_v4) {
-							return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
-						},
-						model.predicates),
-					condition);
-			}
-		},
-		A2($elm$core$Array$get, model.index, model.conditions));
-};
+var $elm$core$Basics$not = _Basics_not;
 var $author$project$Page$Assistant$update = F3(
 	function (sendMsg, msg, model) {
 		switch (msg.$) {
 			case 'GotResponse':
 				var bool = msg.a;
-				return A2(
+				return A3(
 					$author$project$Page$Assistant$handleResponse,
+					sendMsg,
 					bool,
 					_Utils_update(
 						model,
@@ -7268,9 +7285,9 @@ var $author$project$Page$Assistant$update = F3(
 				if (kind === 'STDOUT') {
 					switch (payload) {
 						case 'sat':
-							return A2($author$project$Page$Assistant$handleResponse, true, model);
+							return A3($author$project$Page$Assistant$handleResponse, sendMsg, true, model);
 						case 'unsat':
-							return A2($author$project$Page$Assistant$handleResponse, false, model);
+							return A3($author$project$Page$Assistant$handleResponse, sendMsg, false, model);
 						default:
 							return $Orasund$elm_action$Action$updating(
 								_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
@@ -7301,6 +7318,13 @@ var $author$project$Page$Assistant$update = F3(
 						}
 					}
 				}
+			case 'ToggleAuto':
+				return $Orasund$elm_action$Action$updating(
+					_Utils_Tuple2(
+						_Utils_update(
+							model,
+							{auto: !model.auto}),
+						$elm$core$Platform$Cmd$none));
 			default:
 				return $Orasund$elm_action$Action$updating(
 					_Utils_Tuple2(
@@ -7743,7 +7767,6 @@ var $elm$parser$Parser$Advanced$Token = F2(
 	});
 var $elm$parser$Parser$Advanced$isSubChar = _Parser_isSubChar;
 var $elm$parser$Parser$Advanced$isSubString = _Parser_isSubString;
-var $elm$core$Basics$not = _Basics_not;
 var $elm$parser$Parser$Advanced$keyword = function (_v0) {
 	var kwd = _v0.a;
 	var expecting = _v0.b;
@@ -8040,10 +8063,25 @@ var $author$project$Data$Refinement$variableDecoder = $elm$parser$Parser$variabl
 		start: $elm$core$Char$isLower
 	});
 function $author$project$Data$Refinement$cyclic$intExpDecoder() {
+	var intDecoder = $elm$parser$Parser$oneOf(
+		_List_fromArray(
+			[
+				$elm$parser$Parser$int,
+				A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$succeed($elm$core$Basics$identity),
+					$elm$parser$Parser$symbol('-')),
+				A2(
+					$elm$parser$Parser$map,
+					$elm$core$Basics$mul(-1),
+					$elm$parser$Parser$int))
+			]));
 	return $elm$parser$Parser$oneOf(
 		_List_fromArray(
 			[
-				A2($elm$parser$Parser$map, $author$project$Data$Refinement$Integer, $elm$parser$Parser$int),
+				A2($elm$parser$Parser$map, $author$project$Data$Refinement$Integer, intDecoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8084,7 +8122,7 @@ function $author$project$Data$Refinement$cyclic$intExpDecoder() {
 								return $author$project$Data$Refinement$cyclic$intExpDecoder();
 							}),
 						$elm$parser$Parser$spaces)),
-				$elm$parser$Parser$int),
+				intDecoder),
 				A2($elm$parser$Parser$map, $author$project$Data$Refinement$Var, $author$project$Data$Refinement$variableDecoder),
 				A2(
 				$elm$parser$Parser$keeper,
@@ -8641,15 +8679,15 @@ var $author$project$Data$Template$decoder = function () {
 						function (a, b) {
 							return _Utils_Tuple2(a, b);
 						})),
-				$elm$parser$Parser$keyword('(')),
+				$elm$parser$Parser$symbol('(')),
 			A2(
 				$elm$parser$Parser$ignorer,
 				$author$project$Data$Refinement$variableDecoder,
-				$elm$parser$Parser$keyword(','))),
+				$elm$parser$Parser$symbol(','))),
 		A2(
 			$elm$parser$Parser$ignorer,
 			$author$project$Data$Refinement$intExpDecoder,
-			$elm$parser$Parser$keyword(')')));
+			$elm$parser$Parser$symbol(')')));
 	return A2(
 		$elm$parser$Parser$keeper,
 		A2(
@@ -8859,6 +8897,150 @@ var $author$project$Data$Condition$decode = function (_v0) {
 						$elm$core$Array$map,
 						$elm$core$Tuple$mapSecond($author$project$Data$Refinement$decode),
 						typeVariables)))));
+};
+var $author$project$Page$Setup$handleAddingCondition = function (model) {
+	var _v0 = $author$project$Data$Condition$decode(model.form);
+	if (_v0.$ === 'Ok') {
+		var condition = _v0.a;
+		return _Utils_update(
+			model,
+			{
+				conditions: A2(
+					$elm$core$List$append,
+					_List_fromArray(
+						[condition]),
+					model.conditions),
+				error: $elm$core$Maybe$Nothing,
+				form: $author$project$Data$Condition$emptyForm
+			});
+	} else {
+		var err = _v0.a;
+		return _Utils_update(
+			model,
+			{
+				error: $elm$core$Maybe$Just(err)
+			});
+	}
+};
+var $author$project$Data$Save$abs = _List_fromArray(
+	[
+		{
+		bigger: _Utils_Tuple2($elm$core$Array$empty, '[k3]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['(<) a b'])),
+		smaller: _Utils_Tuple2($elm$core$Array$empty, '(==) v b'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	},
+		{
+		bigger: _Utils_Tuple2($elm$core$Array$empty, '[k3]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['not ((<) a b)'])),
+		smaller: _Utils_Tuple2($elm$core$Array$empty, '(==) v a'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	},
+		{
+		bigger: _Utils_Tuple2(
+			$elm$core$Array$fromList(
+				_List_fromArray(
+					[
+						{baseType: 'True', name: 'z'}
+					])),
+			'[k4]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['not ((<) a b)'])),
+		smaller: _Utils_Tuple2(
+			$elm$core$Array$fromList(
+				_List_fromArray(
+					[
+						{baseType: '[k1]_{}', name: 'z'}
+					])),
+			'[k3]_{(a,(*) z -1),(b,z)}'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	}
+	]);
+var $author$project$Data$Save$max = _List_fromArray(
+	[
+		{
+		bigger: _Utils_Tuple2($elm$core$Array$empty, '[k3]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['(<) a b'])),
+		smaller: _Utils_Tuple2($elm$core$Array$empty, '(==) v b'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	},
+		{
+		bigger: _Utils_Tuple2($elm$core$Array$empty, '[k3]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['not ((<) a b)'])),
+		smaller: _Utils_Tuple2($elm$core$Array$empty, '(==) v a'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	},
+		{
+		bigger: _Utils_Tuple2(
+			$elm$core$Array$fromList(
+				_List_fromArray(
+					[
+						{baseType: 'True', name: 'a'},
+						{baseType: 'True', name: 'b'}
+					])),
+			'[k4]_{}'),
+		guards: $elm$core$Array$fromList(
+			_List_fromArray(
+				['not ((<) a b)'])),
+		smaller: _Utils_Tuple2(
+			$elm$core$Array$fromList(
+				_List_fromArray(
+					[
+						{baseType: '[k1]_{}', name: 'a'},
+						{baseType: '[k2]_{}', name: 'b'}
+					])),
+			'[k3]_{}'),
+		typeVariables: $elm$core$Array$fromList(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('a', 'True'),
+					_Utils_Tuple2('b', 'True')
+				]))
+	}
+	]);
+var $author$project$Data$Save$load = function (_int) {
+	switch (_int) {
+		case 1:
+			return $author$project$Data$Save$max;
+		case 2:
+			return $author$project$Data$Save$abs;
+		default:
+			return _List_Nil;
+	}
 };
 var $author$project$Data$Condition$removeBigger = function (form) {
 	return _Utils_update(
@@ -9119,34 +9301,10 @@ var $author$project$Page$Setup$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'AddCondition':
-				var _v1 = $author$project$Data$Condition$decode(model.form);
-				if (_v1.$ === 'Ok') {
-					var condition = _v1.a;
-					return $Orasund$elm_action$Action$updating(
-						_Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									conditions: A2(
-										$elm$core$List$append,
-										_List_fromArray(
-											[condition]),
-										model.conditions),
-									error: $elm$core$Maybe$Nothing,
-									form: $author$project$Data$Condition$emptyForm
-								}),
-							$elm$core$Platform$Cmd$none));
-				} else {
-					var err = _v1.a;
-					return $Orasund$elm_action$Action$updating(
-						_Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									error: $elm$core$Maybe$Just(err)
-								}),
-							$elm$core$Platform$Cmd$none));
-				}
+				return $Orasund$elm_action$Action$updating(
+					_Utils_Tuple2(
+						$author$project$Page$Setup$handleAddingCondition(model),
+						$elm$core$Platform$Cmd$none));
 			case 'RemoveCondition':
 				return $Orasund$elm_action$Action$updating(
 					_Utils_Tuple2(
@@ -9279,10 +9437,10 @@ var $author$project$Page$Setup$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none));
 			case 'StartProving':
-				var _v2 = $elm_community$result_extra$Result$Extra$combine(
+				var _v1 = $elm_community$result_extra$Result$Extra$combine(
 					A2($elm$core$List$map, $author$project$Data$Algorithm$split, model.conditions));
-				if (_v2.$ === 'Ok') {
-					var conds = _v2.a;
+				if (_v1.$ === 'Ok') {
+					var conds = _v1.a;
 					return $Orasund$elm_action$Action$transitioning(
 						$elm$core$List$concat(conds));
 				} else {
@@ -9295,7 +9453,7 @@ var $author$project$Page$Setup$update = F2(
 								}),
 							$elm$core$Platform$Cmd$none));
 				}
-			default:
+			case 'IncomingMsg':
 				var kind = msg.a.kind;
 				var payload = msg.a.payload;
 				return (kind === 'READY') ? $Orasund$elm_action$Action$updating(
@@ -9312,6 +9470,23 @@ var $author$project$Page$Setup$update = F2(
 								error: $elm$core$Maybe$Just(kind + (':' + payload))
 							}),
 						$elm$core$Platform$Cmd$none)));
+			default:
+				var _int = msg.a;
+				var save = $author$project$Data$Save$load(_int);
+				return $Orasund$elm_action$Action$updating(
+					_Utils_Tuple2(
+						A3(
+							$elm$core$List$foldl,
+							F2(
+								function (a, m) {
+									return $author$project$Page$Setup$handleAddingCondition(
+										_Utils_update(
+											m,
+											{form: a}));
+								}),
+							model,
+							save),
+						$elm$core$Platform$Cmd$none));
 		}
 	});
 var $Orasund$elm_action$Action$map = function (fun) {
@@ -15170,6 +15345,7 @@ var $author$project$Page$Assistant$AskSMT = {$: 'AskSMT'};
 var $author$project$Page$Assistant$GotResponse = function (a) {
 	return {$: 'GotResponse', a: a};
 };
+var $author$project$Page$Assistant$ToggleAuto = {$: 'ToggleAuto'};
 var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
 var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
 	return {$: 'Describe', a: a};
@@ -15783,6 +15959,169 @@ var $Orasund$elm_ui_widgets$Widget$Style$Material$cardColumn = function (palette
 			])
 	};
 };
+var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
+var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
+var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
+var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
+var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
+	function (attrs, label, input) {
+		if (label.$ === 'HiddenLabel') {
+			var labelText = label.a;
+			return A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asColumn,
+				$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+				attrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[input])));
+		} else {
+			var position = label.a;
+			var labelAttrs = label.b;
+			var labelChild = label.c;
+			var labelElement = A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asEl,
+				$mdgriffith$elm_ui$Internal$Model$div,
+				labelAttrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[labelChild])));
+			switch (position.$) {
+				case 'Above':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+				case 'Below':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				case 'OnRight':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				default:
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+			}
+		}
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
+var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
+var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
+	return {$: 'Label', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		var textLabel = label.a;
+		return $mdgriffith$elm_ui$Internal$Model$Describe(
+			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
+	} else {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isHiddenLabel = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$tabindex = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Attributes$tabindex);
+var $mdgriffith$elm_ui$Element$Input$checkbox = F2(
+	function (attrs, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var checked = _v0.checked;
+		var onChange = _v0.onChange;
+		var attributes = _Utils_ap(
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Input$isHiddenLabel(label) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Element$spacing(6),
+					$mdgriffith$elm_ui$Internal$Model$Attr(
+					$elm$html$Html$Events$onClick(
+						onChange(!checked))),
+					$mdgriffith$elm_ui$Element$Region$announce,
+					$mdgriffith$elm_ui$Element$Input$onKeyLookup(
+					function (code) {
+						return _Utils_eq(code, $mdgriffith$elm_ui$Element$Input$enter) ? $elm$core$Maybe$Just(
+							onChange(!checked)) : (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$space) ? $elm$core$Maybe$Just(
+							onChange(!checked)) : $elm$core$Maybe$Nothing);
+					}),
+					$mdgriffith$elm_ui$Element$Input$tabindex(0),
+					$mdgriffith$elm_ui$Element$pointer,
+					$mdgriffith$elm_ui$Element$alignLeft,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			attrs);
+		return A3(
+			$mdgriffith$elm_ui$Element$Input$applyLabel,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$Attr(
+					A2($elm$html$Html$Attributes$attribute, 'role', 'checkbox')),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Internal$Model$Attr(
+						A2(
+							$elm$html$Html$Attributes$attribute,
+							'aria-checked',
+							checked ? 'true' : 'false')),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(label),
+						attributes))),
+			label,
+			A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asEl,
+				$mdgriffith$elm_ui$Internal$Model$div,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$centerY,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+					]),
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[
+							icon(checked)
+						]))));
+	});
 var $Orasund$elm_ui_widgets$Internal$List$internal = F2(
 	function (style, list) {
 		return A2(
@@ -15828,8 +16167,6 @@ var $Orasund$elm_ui_widgets$Widget$Style$Material$Typography$button = _List_from
 		$mdgriffith$elm_ui$Element$Font$semiBold,
 		$mdgriffith$elm_ui$Element$Font$letterSpacing(1.25)
 	]);
-var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
-var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
 var $mdgriffith$elm_ui$Element$paddingXY = F2(
 	function (x, y) {
 		if (_Utils_eq(x, y)) {
@@ -16113,6 +16450,120 @@ var $Orasund$elm_ui_widgets$Widget$Style$Material$containedButton = function (pa
 		text: $Orasund$elm_ui_widgets$Widget$Style$Material$baseButton(palette).text
 	};
 };
+var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
+var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
+var $elm$core$Basics$pi = _Basics_pi;
+var $elm$core$Basics$degrees = function (angleInDegrees) {
+	return (angleInDegrees * $elm$core$Basics$pi) / 180;
+};
+var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
+var $mdgriffith$elm_ui$Element$createNearby = F2(
+	function (loc, element) {
+		if (element.$ === 'Empty') {
+			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+		} else {
+			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
+		}
+	});
+var $mdgriffith$elm_ui$Element$inFront = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
+};
+var $mdgriffith$elm_ui$Internal$Model$MoveY = function (a) {
+	return {$: 'MoveY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Flag$moveY = $mdgriffith$elm_ui$Internal$Flag$flag(26);
+var $mdgriffith$elm_ui$Element$moveUp = function (y) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
+		$mdgriffith$elm_ui$Internal$Flag$moveY,
+		$mdgriffith$elm_ui$Internal$Model$MoveY(-y));
+};
+var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
+var $mdgriffith$elm_ui$Element$rgb = F3(
+	function (r, g, b) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
+	});
+var $mdgriffith$elm_ui$Element$rgba = $mdgriffith$elm_ui$Internal$Model$Rgba;
+var $mdgriffith$elm_ui$Internal$Model$Rotate = F2(
+	function (a, b) {
+		return {$: 'Rotate', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$rotate = $mdgriffith$elm_ui$Internal$Flag$flag(24);
+var $mdgriffith$elm_ui$Element$rotate = function (angle) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
+		$mdgriffith$elm_ui$Internal$Flag$rotate,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$Rotate,
+			_Utils_Tuple3(0, 0, 1),
+			angle));
+};
+var $mdgriffith$elm_ui$Internal$Model$Transparency = F2(
+	function (a, b) {
+		return {$: 'Transparency', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$transparency = $mdgriffith$elm_ui$Internal$Flag$flag(0);
+var $mdgriffith$elm_ui$Element$transparent = function (on) {
+	return on ? A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'transparent', 1.0)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'visible', 0.0));
+};
+var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
+var $mdgriffith$elm_ui$Element$Input$defaultCheckbox = function (checked) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Internal$Model$htmlClass('focusable'),
+				$mdgriffith$elm_ui$Element$width(
+				$mdgriffith$elm_ui$Element$px(14)),
+				$mdgriffith$elm_ui$Element$height(
+				$mdgriffith$elm_ui$Element$px(14)),
+				$mdgriffith$elm_ui$Element$Font$color($mdgriffith$elm_ui$Element$Input$white),
+				$mdgriffith$elm_ui$Element$centerY,
+				$mdgriffith$elm_ui$Element$Font$size(9),
+				$mdgriffith$elm_ui$Element$Font$center,
+				$mdgriffith$elm_ui$Element$Border$rounded(3),
+				$mdgriffith$elm_ui$Element$Border$color(
+				checked ? A3($mdgriffith$elm_ui$Element$rgb, 59 / 255, 153 / 255, 252 / 255) : A3($mdgriffith$elm_ui$Element$rgb, 211 / 255, 211 / 255, 211 / 255)),
+				$mdgriffith$elm_ui$Element$Border$shadow(
+				{
+					blur: 1,
+					color: checked ? A4($mdgriffith$elm_ui$Element$rgba, 238 / 255, 238 / 255, 238 / 255, 0) : A3($mdgriffith$elm_ui$Element$rgb, 238 / 255, 238 / 255, 238 / 255),
+					offset: _Utils_Tuple2(0, 0),
+					size: 1
+				}),
+				$mdgriffith$elm_ui$Element$Background$color(
+				checked ? A3($mdgriffith$elm_ui$Element$rgb, 59 / 255, 153 / 255, 252 / 255) : $mdgriffith$elm_ui$Element$Input$white),
+				$mdgriffith$elm_ui$Element$Border$width(
+				checked ? 0 : 1),
+				$mdgriffith$elm_ui$Element$inFront(
+				A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Border$color($mdgriffith$elm_ui$Element$Input$white),
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$px(6)),
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$px(9)),
+							$mdgriffith$elm_ui$Element$rotate(
+							$elm$core$Basics$degrees(-45)),
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$centerY,
+							$mdgriffith$elm_ui$Element$moveUp(1),
+							$mdgriffith$elm_ui$Element$transparent(!checked),
+							$mdgriffith$elm_ui$Element$Border$widthEach(
+							{bottom: 2, left: 2, right: 0, top: 0})
+						]),
+					$mdgriffith$elm_ui$Element$none))
+			]),
+		$mdgriffith$elm_ui$Element$none);
+};
 var $Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette = {
 	background: A3($avh4$elm_color$Color$rgb255, 255, 255, 255),
 	error: A3($avh4$elm_color$Color$rgb255, 176, 0, 32),
@@ -16137,7 +16588,10 @@ var $Orasund$elm_ui_widgets$Widget$Style$Material$Typography$h6 = _List_fromArra
 		$mdgriffith$elm_ui$Element$Font$semiBold,
 		$mdgriffith$elm_ui$Element$Font$letterSpacing(0.15)
 	]);
-var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
+var $mdgriffith$elm_ui$Element$Input$HiddenLabel = function (a) {
+	return {$: 'HiddenLabel', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$labelHidden = $mdgriffith$elm_ui$Element$Input$HiddenLabel;
 var $Orasund$elm_ui_widgets$Widget$Style$Material$outlinedButton = function (palette) {
 	return {
 		container: _Utils_ap(
@@ -16298,15 +16752,15 @@ var $author$project$Data$Refinement$toString = function (refinement) {
 		case 'IsSmaller':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(<) ' + (string + (' ' + $author$project$Data$Refinement$intExpToString(intExp)));
+			return '(<) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
 		case 'IsBigger':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(>) ' + (string + (' ' + $author$project$Data$Refinement$intExpToString(intExp)));
+			return '(>) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
 		case 'IsEqual':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(==) ' + (string + (' ' + $author$project$Data$Refinement$intExpToString(intExp)));
+			return '(==) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
 		case 'EitherOr':
 			var r1 = refinement.a;
 			var r2 = refinement.b;
@@ -16400,7 +16854,8 @@ var $author$project$View$Condition$view = function (_v0) {
 						function (_v1) {
 							var name = _v1.a;
 							var t = _v1.b;
-							return name + (' in ' + $author$project$Data$Refinement$toString(t));
+							return name + (' in ' + $author$project$Data$LiquidType$simpleformToString(
+								$author$project$Data$Refinement$toString(t)));
 						},
 						typeVariables)))
 			]));
@@ -16521,13 +16976,32 @@ var $author$project$Page$Assistant$view = function (model) {
 							_List_fromArray(
 								[
 									A2(
-									$Orasund$elm_ui_widgets$Widget$button,
-									$Orasund$elm_ui_widgets$Widget$Style$Material$containedButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
-									{
-										icon: $mdgriffith$elm_ui$Element$none,
-										onPress: $elm$core$Maybe$Just($author$project$Page$Assistant$AskSMT),
-										text: 'Ask SMT Solver'
-									}),
+									$mdgriffith$elm_ui$Element$row,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$spacing(10)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$Orasund$elm_ui_widgets$Widget$button,
+											$Orasund$elm_ui_widgets$Widget$Style$Material$containedButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
+											{
+												icon: $mdgriffith$elm_ui$Element$none,
+												onPress: $elm$core$Maybe$Just($author$project$Page$Assistant$AskSMT),
+												text: 'Ask SMT Solver'
+											}),
+											A2(
+											$mdgriffith$elm_ui$Element$Input$checkbox,
+											_List_Nil,
+											{
+												checked: model.auto,
+												icon: $mdgriffith$elm_ui$Element$Input$defaultCheckbox,
+												label: $mdgriffith$elm_ui$Element$Input$labelHidden('Toggle Autorun'),
+												onChange: $elm$core$Basics$always($author$project$Page$Assistant$ToggleAuto)
+											}),
+											$mdgriffith$elm_ui$Element$text('auto')
+										])),
 									A2(
 									$mdgriffith$elm_ui$Element$row,
 									_List_Nil,
@@ -16657,6 +17131,9 @@ var $author$project$Page$Setup$ChangedVariable = F2(
 	function (a, b) {
 		return {$: 'ChangedVariable', a: a, b: b};
 	});
+var $author$project$Page$Setup$Load = function (a) {
+	return {$: 'Load', a: a};
+};
 var $author$project$Page$Setup$RemoveCondition = {$: 'RemoveCondition'};
 var $author$project$Page$Setup$RemoveGuard = {$: 'RemoveGuard'};
 var $author$project$Page$Setup$RemoveType = {$: 'RemoveType'};
@@ -16727,118 +17204,17 @@ var $elm$core$Array$isEmpty = function (_v0) {
 	var len = _v0.a;
 	return !len;
 };
-var $mdgriffith$elm_ui$Element$Input$HiddenLabel = function (a) {
-	return {$: 'HiddenLabel', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$labelHidden = $mdgriffith$elm_ui$Element$Input$HiddenLabel;
 var $mdgriffith$elm_ui$Element$Input$TextInputNode = function (a) {
 	return {$: 'TextInputNode', a: a};
 };
 var $mdgriffith$elm_ui$Element$Input$TextArea = {$: 'TextArea'};
-var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
-var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
-var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
-	function (attrs, label, input) {
-		if (label.$ === 'HiddenLabel') {
-			var labelText = label.a;
-			return A4(
-				$mdgriffith$elm_ui$Internal$Model$element,
-				$mdgriffith$elm_ui$Internal$Model$asColumn,
-				$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-				attrs,
-				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-					_List_fromArray(
-						[input])));
-		} else {
-			var position = label.a;
-			var labelAttrs = label.b;
-			var labelChild = label.c;
-			var labelElement = A4(
-				$mdgriffith$elm_ui$Internal$Model$element,
-				$mdgriffith$elm_ui$Internal$Model$asEl,
-				$mdgriffith$elm_ui$Internal$Model$div,
-				labelAttrs,
-				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-					_List_fromArray(
-						[labelChild])));
-			switch (position.$) {
-				case 'Above':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asColumn,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[labelElement, input])));
-				case 'Below':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asColumn,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[input, labelElement])));
-				case 'OnRight':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asRow,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[input, labelElement])));
-				default:
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asRow,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[labelElement, input])));
-			}
-		}
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $mdgriffith$elm_ui$Element$Input$autofill = A2(
 	$elm$core$Basics$composeL,
 	$mdgriffith$elm_ui$Internal$Model$Attr,
 	$elm$html$Html$Attributes$attribute('autocomplete'));
 var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Element$createNearby = F2(
-	function (loc, element) {
-		if (element.$ === 'Empty') {
-			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-		} else {
-			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
-		}
-	});
 var $mdgriffith$elm_ui$Element$behindContent = function (element) {
 	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
-};
-var $mdgriffith$elm_ui$Internal$Model$MoveY = function (a) {
-	return {$: 'MoveY', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Flag$moveY = $mdgriffith$elm_ui$Internal$Flag$flag(26);
-var $mdgriffith$elm_ui$Element$moveUp = function (y) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
-		$mdgriffith$elm_ui$Internal$Flag$moveY,
-		$mdgriffith$elm_ui$Internal$Model$MoveY(-y));
 };
 var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (attrs) {
 	var gatherSpacing = F2(
@@ -16867,13 +17243,8 @@ var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (
 };
 var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
 var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
-var $mdgriffith$elm_ui$Element$rgb = F3(
-	function (r, g, b) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
-	});
 var $mdgriffith$elm_ui$Element$Input$darkGrey = A3($mdgriffith$elm_ui$Element$rgb, 186 / 255, 189 / 255, 182 / 255);
 var $mdgriffith$elm_ui$Element$Input$defaultTextPadding = A2($mdgriffith$elm_ui$Element$paddingXY, 12, 12);
-var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
 var $mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Input$defaultTextPadding,
@@ -16902,22 +17273,6 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
-	return {$: 'Label', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
-	if (label.$ === 'HiddenLabel') {
-		var textLabel = label.a;
-		return $mdgriffith$elm_ui$Internal$Model$Describe(
-			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
-	} else {
-		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-	}
-};
-var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
-var $mdgriffith$elm_ui$Element$inFront = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
-};
 var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
 	isConstrained:
 	while (true) {
@@ -16937,13 +17292,6 @@ var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
 				var l = len.b;
 				return true;
 		}
-	}
-};
-var $mdgriffith$elm_ui$Element$Input$isHiddenLabel = function (label) {
-	if (label.$ === 'HiddenLabel') {
-		return true;
-	} else {
-		return false;
 	}
 };
 var $mdgriffith$elm_ui$Element$Input$isStacked = function (label) {
@@ -17293,11 +17641,6 @@ var $mdgriffith$elm_ui$Element$Input$renderBox = function (_v0) {
 	var left = _v0.left;
 	return $elm$core$String$fromInt(top) + ('px ' + ($elm$core$String$fromInt(right) + ('px ' + ($elm$core$String$fromInt(bottom) + ('px ' + ($elm$core$String$fromInt(left) + 'px'))))));
 };
-var $mdgriffith$elm_ui$Internal$Model$Transparency = F2(
-	function (a, b) {
-		return {$: 'Transparency', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$transparency = $mdgriffith$elm_ui$Internal$Flag$flag(0);
 var $mdgriffith$elm_ui$Element$alpha = function (o) {
 	var transparency = function (x) {
 		return 1 - x;
@@ -17315,7 +17658,6 @@ var $mdgriffith$elm_ui$Element$alpha = function (o) {
 			transparency));
 };
 var $mdgriffith$elm_ui$Element$Input$charcoal = A3($mdgriffith$elm_ui$Element$rgb, 136 / 255, 138 / 255, 133 / 255);
-var $mdgriffith$elm_ui$Element$rgba = $mdgriffith$elm_ui$Internal$Model$Rgba;
 var $mdgriffith$elm_ui$Element$Input$renderPlaceholder = F3(
 	function (_v0, forPlaceholder, on) {
 		var placeholderAttrs = _v0.a;
@@ -17870,8 +18212,7 @@ var $author$project$View$ConditionForm$viewVarArray = F3(
 							label,
 							$elm$core$String$fromInt(
 								$elm$core$Array$length(tail) - index)),
-						onChange: onChange(
-							($elm$core$Array$length(tail) - index) - 1)
+						onChange: onChange(index)
 					},
 					input);
 			});
@@ -18162,26 +18503,57 @@ var $author$project$Page$Setup$view = function (model) {
 						$elm$core$List$singleton(
 						A2(
 							$mdgriffith$elm_ui$Element$row,
-							_List_Nil,
-							A2(
-								$elm$core$List$cons,
-								A2(
-									$Orasund$elm_ui_widgets$Widget$button,
-									$Orasund$elm_ui_widgets$Widget$Style$Material$containedButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
-									{
-										icon: $mdgriffith$elm_ui$Element$none,
-										onPress: $elm$core$Maybe$Just($author$project$Page$Setup$AddCondition),
-										text: 'Add Condition'
-									}),
-								$elm$core$List$isEmpty(model.conditions) ? _List_Nil : $elm$core$List$singleton(
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$spaceEvenly,
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							_List_fromArray(
+								[
 									A2(
-										$Orasund$elm_ui_widgets$Widget$button,
-										$Orasund$elm_ui_widgets$Widget$Style$Material$textButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
-										{
-											icon: $mdgriffith$elm_ui$Element$none,
-											onPress: $elm$core$Maybe$Just($author$project$Page$Setup$RemoveCondition),
-											text: 'Remove'
-										})))))
+									$mdgriffith$elm_ui$Element$row,
+									_List_Nil,
+									A2(
+										$elm$core$List$cons,
+										A2(
+											$Orasund$elm_ui_widgets$Widget$button,
+											$Orasund$elm_ui_widgets$Widget$Style$Material$containedButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
+											{
+												icon: $mdgriffith$elm_ui$Element$none,
+												onPress: $elm$core$Maybe$Just($author$project$Page$Setup$AddCondition),
+												text: 'Add Condition'
+											}),
+										$elm$core$List$isEmpty(model.conditions) ? _List_Nil : $elm$core$List$singleton(
+											A2(
+												$Orasund$elm_ui_widgets$Widget$button,
+												$Orasund$elm_ui_widgets$Widget$Style$Material$textButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
+												{
+													icon: $mdgriffith$elm_ui$Element$none,
+													onPress: $elm$core$Maybe$Just($author$project$Page$Setup$RemoveCondition),
+													text: 'Remove'
+												})))),
+									A2(
+									$mdgriffith$elm_ui$Element$row,
+									_List_Nil,
+									A2(
+										$elm$core$List$cons,
+										$mdgriffith$elm_ui$Element$text('Load'),
+										A2(
+											$elm$core$List$map,
+											function (n) {
+												return A2(
+													$Orasund$elm_ui_widgets$Widget$button,
+													$Orasund$elm_ui_widgets$Widget$Style$Material$textButton($Orasund$elm_ui_widgets$Widget$Style$Material$defaultPalette),
+													{
+														icon: $mdgriffith$elm_ui$Element$none,
+														onPress: $elm$core$Maybe$Just(
+															$author$project$Page$Setup$Load(n)),
+														text: $elm$core$String$fromInt(n)
+													});
+											},
+											_List_fromArray(
+												[1, 2]))))
+								])))
 					])))
 		]);
 };

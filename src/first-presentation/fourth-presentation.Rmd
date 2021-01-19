@@ -207,11 +207,66 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 
 $$
 \begin{aligned}
-\Theta := \{&(a,\{\mathit{Int}|\kappa_1\}),(b,\{\mathit{Int}|\kappa_2\})\}\\
+\Theta := \{&(a,\{\nu:\mathit{Int}|\mathit{True}\}),(b,\{\nu:\mathit{Int}|\mathit{True}\})\}\\
 C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
   &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
   & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
   &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+## Demonstration: Example 1
+
+$$
+\begin{aligned}
+\Theta := \{&(a,\{\mathit{Int}|\mathit{Int}\}),(b,\{\mathit{Int}|\mathit{Int}\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\end{aligned}
+$$
+
+## Example 2: abs
+
+```
+abs : {v:Int|True} -> {v:Int|k4}
+abs =
+  let
+    max =
+      \a -> \b ->
+        if a < b then
+          b
+        else
+          a
+  in
+  \z ->
+    max ((*) z -1) z
+```
+
+## Example 2: abs
+
+$$
+\frac
+{\begin{gathered}
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:\hat{T}_1\to \hat{T}_2)\\
+\Gamma,\Delta,\Theta,\Lambda\vdash e_2: \hat{T}_1\quad
+e_2:e_2'\quad
+[\hat{T}_2]_{\{(a, e_2')\}} =\hat{T}_3
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_3}
+$$
+
+## Example 3: abs
+
+$$
+\begin{aligned}
+\Theta := \{&(a,\{\mathit{Int}|\mathit{True}\}),(b,\{\mathit{Int}|(\mathit{True})\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
+  & z:\{\nu:\mathit{Int}|\kappa_1\}\to\{\nu:\mathit{Int}|[\kappa_3]_{\{(a,z \ \cdot\ -1),(b,z)\}}\}\\
+  &\quad<:_{\{\},\{\}}z:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
 \end{aligned}
 $$
 

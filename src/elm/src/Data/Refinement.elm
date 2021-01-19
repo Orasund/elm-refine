@@ -105,8 +105,17 @@ variableDecoder =
 
 intExpDecoder : Parser IntExp
 intExpDecoder =
+    let
+        intDecoder =
+            Parser.oneOf
+                [ Parser.int
+                , Parser.succeed identity
+                    |. Parser.symbol "-"
+                    |= Parser.map ((*) -1) Parser.int
+                ]
+    in
     Parser.oneOf
-        [ Parser.map Integer Parser.int
+        [ Parser.map Integer intDecoder
         , Parser.succeed Plus
             |. Parser.keyword "(+)"
             |. Parser.spaces
@@ -118,7 +127,7 @@ intExpDecoder =
             |. Parser.spaces
             |= Parser.lazy (\() -> intExpDecoder)
             |. Parser.spaces
-            |= Parser.int
+            |= intDecoder
         , Parser.map Var variableDecoder
         , Parser.succeed identity
             |. Parser.symbol "("
@@ -323,13 +332,13 @@ toString refinement =
             "False"
 
         IsSmaller string intExp ->
-            "(<) " ++ string ++ " " ++ intExpToString intExp
+            "(<) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
 
         IsBigger string intExp ->
-            "(>) " ++ string ++ " " ++ intExpToString intExp
+            "(>) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
 
         IsEqual string intExp ->
-            "(==) " ++ string ++ " " ++ intExpToString intExp
+            "(==) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
 
         EitherOr r1 r2 ->
             "Or (" ++ toString r1 ++ ") (" ++ toString r2 ++ ")"

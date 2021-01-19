@@ -26,11 +26,11 @@ decoder =
         item : Parser ( String, IntExp )
         item =
             Parser.succeed (\a b -> ( a, b ))
-                |. Parser.keyword "("
+                |. Parser.symbol "("
                 |= Refinement.variableDecoder
-                |. Parser.keyword ","
+                |. Parser.symbol ","
                 |= Refinement.intExpDecoder
-                |. Parser.keyword ")"
+                |. Parser.symbol ")"
     in
     Parser.succeed (\a b -> ( a, b ))
         |. Parser.symbol "[k"

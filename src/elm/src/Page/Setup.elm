@@ -6,7 +6,8 @@ import Data.Algorithm as Algorithm
 import Data.Condition as Condition exposing (Condition, ConditionForm)
 import Data.IncomingMsg exposing (IncomingMsg)
 import Data.LiquidType exposing (Input(..))
-import Element exposing (Element)
+import Data.Save as Save
+import Element exposing (Element, spaceEvenly)
 import Element.Font as Font
 import Page.Assistant as Assistant
 import Result.Extra as Result
@@ -42,6 +43,7 @@ type Msg
     | RemoveTypeVariable
     | StartProving
     | IncomingMsg IncomingMsg
+    | Load Int
 
 
 type alias Update =
@@ -65,30 +67,32 @@ init =
     }
 
 
+handleAddingCondition : Model -> Model
+handleAddingCondition model =
+    case model.form |> Condition.decode of
+        Ok condition ->
+            { model
+                | conditions =
+                    model.conditions
+                        |> List.append [ condition ]
+                , form = Condition.emptyForm
+                , error = Nothing
+            }
+
+        Err err ->
+            { model
+                | error = Just err
+            }
+
+
 update : Msg -> Model -> Update
 update msg model =
     case msg of
         AddCondition ->
-            case model.form |> Condition.decode of
-                Ok condition ->
-                    Action.updating
-                        ( { model
-                            | conditions =
-                                model.conditions
-                                    |> List.append [ condition ]
-                            , form = Condition.emptyForm
-                            , error = Nothing
-                          }
-                        , Cmd.none
-                        )
-
-                Err err ->
-                    Action.updating
-                        ( { model
-                            | error = Just err
-                          }
-                        , Cmd.none
-                        )
+            Action.updating
+                ( model |> handleAddingCondition
+                , Cmd.none
+                )
 
         RemoveCondition ->
             Action.updating
@@ -254,6 +258,19 @@ update msg model =
                 Action.updating
                     ( { model | error = Just (kind ++ ":" ++ payload) }, Cmd.none )
 
+        Load int ->
+            let
+                save =
+                    Save.load int
+            in
+            Action.updating
+                ( save
+                    |> List.foldl
+                        (\a m -> { m | form = a } |> handleAddingCondition)
+                        model
+                , Cmd.none
+                )
+
 
 view : Model -> List (Element Msg)
 view model =
@@ -317,7 +334,7 @@ view model =
                 , addTypeVariable = AddTypeVariable
                 , removeTypeVariable = RemoveTypeVariable
                 }
-      , Widget.button (Material.containedButton Material.defaultPalette)
+      , [ Widget.button (Material.containedButton Material.defaultPalette)
             { text = "Add Condition"
             , icon = Element.none
             , onPress = Just AddCondition
@@ -334,6 +351,20 @@ view model =
                         |> List.singleton
                )
             |> Element.row []
+        , ("Load" |> Element.text)
+            :: ([ 1, 2 ]
+                    |> List.map
+                        (\n ->
+                            Widget.button (Material.textButton Material.defaultPalette)
+                                { text = String.fromInt n
+                                , icon = Element.none
+                                , onPress = Just <| Load n
+                                }
+                        )
+               )
+            |> Element.row []
+        ]
+            |> Element.row [ Element.spaceEvenly, Element.width <| Element.fill ]
             |> List.singleton
       ]
         |> List.concat
