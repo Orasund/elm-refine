@@ -64,6 +64,7 @@ h1 {
     box-sizing: border-box;
     display: table-cell;
     width: 100%;
+    display: none;
 }
 
 #stdout {

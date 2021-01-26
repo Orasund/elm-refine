@@ -26,10 +26,11 @@ max =
                 |> Array.fromList
             , "[k4]_{}"
             )
-      , guards = [ "not ((<) a b)" ] |> Array.fromList
-      , typeVariables = [ ( "a", "True" ), ( "b", "True" ) ] |> Array.fromList
+      , guards = [] |> Array.fromList
+      , typeVariables = [] |> Array.fromList
       }
     ]
+        d
 
 
 abs : List ConditionForm
@@ -54,8 +55,8 @@ abs =
                 |> Array.fromList
             , "[k4]_{}"
             )
-      , guards = [ "not ((<) a b)" ] |> Array.fromList
-      , typeVariables = [ ( "a", "True" ), ( "b", "True" ) ] |> Array.fromList
+      , guards = [] |> Array.fromList
+      , typeVariables = [] |> Array.fromList
       }
     ]
 
