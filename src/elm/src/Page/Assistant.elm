@@ -6,8 +6,9 @@ import Array.Extra as Array
 import Color
 import Data.Condition as Condition exposing (SimpleCondition)
 import Data.IncomingMsg exposing (IncomingMsg)
+import Data.IntExp exposing (IntExp)
 import Data.LiquidType exposing (Input(..))
-import Data.Refinement as Refinement exposing (IntExp, Refinement(..))
+import Data.Refinement as Refinement exposing (Refinement(..))
 import Dict exposing (Dict)
 import Element exposing (Element)
 import Element.Font as Font
@@ -152,7 +153,7 @@ handleResponse : (String -> Cmd msg) -> Bool -> Model -> Update msg
 handleResponse sendMsg bool model =
     case ( model.weaken, bool ) of
         ( Just weaken, False ) ->
-            --continue
+            --Continue
             let
                 index =
                     weaken.index + 1
@@ -182,7 +183,7 @@ handleResponse sendMsg bool model =
                     |> handleAuto sendMsg
 
         ( Just weaken, True ) ->
-            --remove
+            --Remove
             let
                 predicates =
                     model.predicates
@@ -232,7 +233,7 @@ handleResponse sendMsg bool model =
                     Action.updating ( model, Cmd.none )
 
         ( Nothing, False ) ->
-            --continue
+            --Continue
             let
                 index =
                     model.index + 1

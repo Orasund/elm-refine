@@ -17,12 +17,12 @@ max =
       , typeVariables = [ ( "a", "True" ), ( "b", "True" ) ] |> Array.fromList
       }
     , { smaller =
-            ( [ { baseType = "[k1]_{}", name = "a" }, { baseType = "[k2]_{}", name = "b" } ]
+            ( [ { refinement = "[k1]_{}", name = "a" }, { refinement = "[k2]_{}", name = "b" } ]
                 |> Array.fromList
             , "[k3]_{}"
             )
       , bigger =
-            ( [ { baseType = "True", name = "a" }, { baseType = "True", name = "b" } ]
+            ( [ { refinement = "True", name = "a" }, { refinement = "True", name = "b" } ]
                 |> Array.fromList
             , "[k4]_{}"
             )
@@ -30,7 +30,6 @@ max =
       , typeVariables = [] |> Array.fromList
       }
     ]
-        d
 
 
 abs : List ConditionForm
@@ -46,12 +45,12 @@ abs =
       , typeVariables = [ ( "a", "True" ), ( "b", "True" ) ] |> Array.fromList
       }
     , { smaller =
-            ( [ { baseType = "[k1]_{}", name = "z" } ]
+            ( [ { refinement = "[k1]_{}", name = "z" } ]
                 |> Array.fromList
             , "[k3]_{(a,(*) z -1),(b,z)}"
             )
       , bigger =
-            ( [ { baseType = "True", name = "z" } ]
+            ( [ { refinement = "True", name = "z" } ]
                 |> Array.fromList
             , "[k4]_{}"
             )

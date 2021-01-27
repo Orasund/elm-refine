@@ -1,6 +1,7 @@
 module Data.Template exposing (Template, decode, decoder, toString)
 
-import Data.Refinement as Refinement exposing (IntExp)
+import Data.IntExp as IntExp exposing (IntExp)
+import Data.Refinement as Refinement
 import Parser exposing ((|.), (|=), Parser, Problem(..), Trailing(..))
 
 
@@ -14,7 +15,7 @@ toString ( int, list ) =
         ++ String.fromInt int
         ++ "]_{"
         ++ (list
-                |> List.map (\( k, v ) -> "(" ++ k ++ "," ++ (v |> Refinement.intExpToString) ++ ")")
+                |> List.map (\( k, v ) -> "(" ++ k ++ "," ++ (v |> IntExp.toString) ++ ")")
                 |> String.join ","
            )
         ++ "}"
@@ -27,9 +28,9 @@ decoder =
         item =
             Parser.succeed (\a b -> ( a, b ))
                 |. Parser.symbol "("
-                |= Refinement.variableDecoder
+                |= IntExp.variableDecoder
                 |. Parser.symbol ","
-                |= Refinement.intExpDecoder
+                |= IntExp.decoder
                 |. Parser.symbol ")"
     in
     Parser.succeed (\a b -> ( a, b ))

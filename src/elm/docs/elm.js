@@ -6276,7 +6276,7 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 					list);
 			}
 		}();
-		var baseTypeRefinements = A2(
+		var refinementRefinements = A2(
 			$elm$core$List$map,
 			function (_v1) {
 				var b = _v1.a;
@@ -6294,7 +6294,7 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 			A2(
 				$elm$core$List$cons,
 				r1,
-				_Utils_ap(baseTypeRefinements, guards)));
+				_Utils_ap(refinementRefinements, guards)));
 		return $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
@@ -7359,7 +7359,7 @@ var $author$project$Data$Condition$addBigger = function (form) {
 							_List_fromArray(
 								[
 									{
-									baseType: 'True',
+									refinement: 'True',
 									name: 'a' + $elm$core$String$fromInt(
 										1 + $elm$core$Array$length(l))
 								}
@@ -7394,7 +7394,7 @@ var $author$project$Data$Condition$addSmaller = function (form) {
 							_List_fromArray(
 								[
 									{
-									baseType: '[k' + ($elm$core$String$fromInt(
+									refinement: '[k' + ($elm$core$String$fromInt(
 										$elm$core$Array$length(l)) + ']_{}'),
 									name: 'a' + $elm$core$String$fromInt(
 										1 + $elm$core$Array$length(l))
@@ -8841,13 +8841,13 @@ var $author$project$Data$Condition$decode = function (_v0) {
 						$elm$core$List$map,
 						function (_v2) {
 							var name = _v2.name;
-							var baseType = _v2.baseType;
+							var refinement = _v2.refinement;
 							return A2(
 								$elm$core$Result$map,
 								function (b) {
-									return {baseType: b, name: name};
+									return {refinement: b, name: name};
 								},
-								$author$project$Data$Template$decode(baseType));
+								$author$project$Data$Template$decode(refinement));
 						},
 						$elm$core$Array$toList(list))),
 				$author$project$Data$LiquidType$decodeSimpleLiquidType(head));
@@ -8866,13 +8866,13 @@ var $author$project$Data$Condition$decode = function (_v0) {
 						$elm$core$List$map,
 						function (_v4) {
 							var name = _v4.name;
-							var baseType = _v4.baseType;
+							var refinement = _v4.refinement;
 							return A2(
 								$elm$core$Result$map,
 								function (b) {
-									return {baseType: b, name: name};
+									return {refinement: b, name: name};
 								},
-								$author$project$Data$Refinement$decode(baseType));
+								$author$project$Data$Refinement$decode(refinement));
 						},
 						$elm$core$Array$toList(list))),
 				A2(
@@ -8955,7 +8955,7 @@ var $author$project$Data$Save$abs = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{baseType: 'True', name: 'z'}
+						{refinement: 'True', name: 'z'}
 					])),
 			'[k4]_{}'),
 		guards: $elm$core$Array$fromList(
@@ -8965,7 +8965,7 @@ var $author$project$Data$Save$abs = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{baseType: '[k1]_{}', name: 'z'}
+						{refinement: '[k1]_{}', name: 'z'}
 					])),
 			'[k3]_{(a,(*) z -1),(b,z)}'),
 		typeVariables: $elm$core$Array$fromList(
@@ -9009,8 +9009,8 @@ var $author$project$Data$Save$max = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{baseType: 'True', name: 'a'},
-						{baseType: 'True', name: 'b'}
+						{refinement: 'True', name: 'a'},
+						{refinement: 'True', name: 'b'}
 					])),
 			'[k4]_{}'),
 		guards: $elm$core$Array$fromList(
@@ -9020,8 +9020,8 @@ var $author$project$Data$Save$max = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{baseType: '[k1]_{}', name: 'a'},
-						{baseType: '[k2]_{}', name: 'b'}
+						{refinement: '[k1]_{}', name: 'a'},
+						{refinement: '[k2]_{}', name: 'b'}
 					])),
 			'[k3]_{}'),
 		typeVariables: $elm$core$Array$fromList(
@@ -9156,7 +9156,7 @@ var $author$project$Data$Condition$setBigger = F3(
 						index,
 						function (_v0) {
 							var name = _v0.name;
-							return {baseType: value, name: name};
+							return {refinement: value, name: name};
 						})))(form.bigger)
 			});
 	});
@@ -9182,7 +9182,7 @@ var $author$project$Data$Condition$setSmaller = F3(
 						index,
 						function (_v0) {
 							var name = _v0.name;
-							return {baseType: value, name: name};
+							return {refinement: value, name: name};
 						})))(form.smaller)
 			});
 	});
@@ -9224,8 +9224,8 @@ var $author$project$Data$Condition$setVariable = F3(
 				$elm_community$array_extra$Array$Extra$update,
 				index,
 				function (_v0) {
-					var baseType = _v0.baseType;
-					return {baseType: baseType, name: value};
+					var refinement = _v0.refinement;
+					return {refinement: refinement, name: value};
 				}));
 		return _Utils_update(
 			form,
@@ -9256,9 +9256,9 @@ var $author$project$Data$Algorithm$split = function () {
 							$elm$core$Result$map,
 							$elm$core$List$cons(
 								{
-									bigger: q1.baseType,
+									bigger: q1.refinement,
 									guards: condition.guards,
-									smaller: $author$project$Data$LiquidType$IntType(q3.baseType),
+									smaller: $author$project$Data$LiquidType$IntType(q3.refinement),
 									typeVariables: condition.typeVariables
 								}),
 							A2(
@@ -9271,7 +9271,7 @@ var $author$project$Data$Algorithm$split = function () {
 										smaller: _Utils_Tuple2(t2, t2end),
 										typeVariables: A2(
 											$elm$core$List$cons,
-											_Utils_Tuple2(q3.name, q3.baseType),
+											_Utils_Tuple2(q3.name, q3.refinement),
 											condition.typeVariables)
 									}))) : $elm$core$Result$Err(_Utils_Tuple0);
 					} else {
@@ -16814,9 +16814,9 @@ var $author$project$Data$LiquidType$toString = F3(
 					F2(
 						function (_v1, _v2) {
 							var name = _v2.name;
-							var baseType = _v2.baseType;
+							var refinement = _v2.refinement;
 							return name + (' : ' + $author$project$Data$LiquidType$simpleformToString(
-								aToString(baseType)));
+								aToString(refinement)));
 						}),
 					list),
 				_List_fromArray(
@@ -18189,8 +18189,8 @@ var $author$project$View$ConditionForm$viewInputArray = F3(
 						$elm$core$Array$indexedMap,
 						F2(
 							function (index, _v1) {
-								var baseType = _v1.baseType;
-								return A2(fun, index, baseType);
+								var refinement = _v1.refinement;
+								return A2(fun, index, refinement);
 							}),
 						tail)),
 				_List_fromArray(

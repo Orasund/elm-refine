@@ -19,13 +19,13 @@ split =
                                 , bigger =
                                     ( t4, t4end )
                                 , typeVariables =
-                                    ( q3.name, q3.baseType )
+                                    ( q3.name, q3.refinement )
                                         :: condition.typeVariables
                             }
                             |> Result.map
                                 ((::)
-                                    { smaller = IntType q3.baseType
-                                    , bigger = q1.baseType
+                                    { smaller = IntType q3.refinement
+                                    , bigger = q1.refinement
                                     , guards = condition.guards
                                     , typeVariables = condition.typeVariables
                                     }

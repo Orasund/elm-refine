@@ -1,14 +1,8 @@
-module Data.Refinement exposing (IntExp(..), Refinement(..), conjunction, deadEndsToString, decode, decoder, init, intExpDecoder, intExpToString, rename, substitute, toSMTStatement, toString, variableDecoder, variables)
+module Data.Refinement exposing (Refinement(..), conjunction, deadEndsToString, decode, decoder, init, rename, substitute, toSMTStatement, toString, variables)
 
+import Data.IntExp as IntExp exposing (IntExp(..))
 import Parser exposing ((|.), (|=), DeadEnd, Parser, Problem(..))
 import Set exposing (Set)
-
-
-type IntExp
-    = Integer Int
-    | Plus IntExp IntExp
-    | Times IntExp Int
-    | Var String
 
 
 type Refinement
@@ -22,22 +16,6 @@ type Refinement
     | IsNot Refinement
 
 
-intExpVariables : IntExp -> Set String
-intExpVariables intExp =
-    case intExp of
-        Integer _ ->
-            Set.empty
-
-        Plus i1 i2 ->
-            Set.union (intExpVariables i1) (intExpVariables i2)
-
-        Times i _ ->
-            intExpVariables i
-
-        Var string ->
-            Set.singleton string
-
-
 variables : Refinement -> Set String
 variables refinement =
     case refinement of
@@ -48,15 +26,15 @@ variables refinement =
             Set.empty
 
         IsSmaller string intExp ->
-            intExpVariables intExp
+            IntExp.variables intExp
                 |> Set.insert string
 
         IsBigger string intExp ->
-            intExpVariables intExp
+            IntExp.variables intExp
                 |> Set.insert string
 
         IsEqual string intExp ->
-            intExpVariables intExp
+            IntExp.variables intExp
                 |> Set.insert string
 
         EitherOr r1 r2 ->
@@ -94,48 +72,6 @@ init vars =
            ]
 
 
-variableDecoder : Parser String
-variableDecoder =
-    Parser.variable
-        { start = Char.isLower
-        , inner = Char.isAlphaNum
-        , reserved = Set.fromList [ "or", "and", "not" ]
-        }
-
-
-intExpDecoder : Parser IntExp
-intExpDecoder =
-    let
-        intDecoder =
-            Parser.oneOf
-                [ Parser.int
-                , Parser.succeed identity
-                    |. Parser.symbol "-"
-                    |= Parser.map ((*) -1) Parser.int
-                ]
-    in
-    Parser.oneOf
-        [ Parser.map Integer intDecoder
-        , Parser.succeed Plus
-            |. Parser.keyword "(+)"
-            |. Parser.spaces
-            |= Parser.lazy (\() -> intExpDecoder)
-            |. Parser.spaces
-            |= Parser.lazy (\() -> intExpDecoder)
-        , Parser.succeed Times
-            |. Parser.keyword "(*)"
-            |. Parser.spaces
-            |= Parser.lazy (\() -> intExpDecoder)
-            |. Parser.spaces
-            |= intDecoder
-        , Parser.map Var variableDecoder
-        , Parser.succeed identity
-            |. Parser.symbol "("
-            |= Parser.lazy (\() -> intExpDecoder)
-            |. Parser.symbol ")"
-        ]
-
-
 decoder : Parser Refinement
 decoder =
     Parser.oneOf
@@ -150,7 +86,7 @@ decoder =
                 , reserved = Set.fromList [ "or", "and", "not" ]
                 }
             |. Parser.spaces
-            |= intExpDecoder
+            |= IntExp.decoder
         , Parser.succeed IsBigger
             |. Parser.keyword "(>)"
             |. Parser.spaces
@@ -160,7 +96,7 @@ decoder =
                 , reserved = Set.fromList [ "or", "and", "not" ]
                 }
             |. Parser.spaces
-            |= intExpDecoder
+            |= IntExp.decoder
         , Parser.succeed IsEqual
             |. Parser.keyword "(==)"
             |. Parser.spaces
@@ -170,7 +106,7 @@ decoder =
                 , reserved = Set.fromList [ "or", "and", "not" ]
                 }
             |. Parser.spaces
-            |= intExpDecoder
+            |= IntExp.decoder
         , Parser.succeed EitherOr
             |. Parser.keyword "or"
             |. Parser.spaces
@@ -199,36 +135,6 @@ decode =
     Parser.run
         decoder
         >> Result.mapError deadEndsToString
-
-
-intExpToString : IntExp -> String
-intExpToString input =
-    case input of
-        Integer int ->
-            String.fromInt int
-
-        Plus intExp1 intExp2 ->
-            "(+) " ++ intExpToString intExp1 ++ " " ++ intExpToString intExp2
-
-        Times intExp i ->
-            "(*) " ++ intExpToString intExp ++ " " ++ String.fromInt i
-
-        Var string ->
-            string
-
-
-substituteIntExp : { find : String, replaceWith : IntExp } -> IntExp -> IntExp
-substituteIntExp { find, replaceWith } intExp =
-    case intExp of
-        Var string ->
-            if string == find then
-                replaceWith
-
-            else
-                Var string
-
-        _ ->
-            intExp
 
 
 rename : { find : String, replaceWith : String } -> Refinement -> Refinement
@@ -296,17 +202,17 @@ substitute theta refinement =
         IsSmaller string intExp ->
             IsSmaller
                 string
-                (intExp |> substituteIntExp theta)
+                (intExp |> IntExp.substitute theta)
 
         IsBigger string intExp ->
             IsBigger
                 string
-                (intExp |> substituteIntExp theta)
+                (intExp |> IntExp.substitute theta)
 
         IsEqual string intExp ->
             IsEqual
                 string
-                (intExp |> substituteIntExp theta)
+                (intExp |> IntExp.substitute theta)
 
         EitherOr r1 r2 ->
             EitherOr
@@ -332,13 +238,13 @@ toString refinement =
             "False"
 
         IsSmaller string intExp ->
-            "(<) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
+            "(<) " ++ string ++ " (" ++ IntExp.toString intExp ++ ")"
 
         IsBigger string intExp ->
-            "(>) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
+            "(>) " ++ string ++ " (" ++ IntExp.toString intExp ++ ")"
 
         IsEqual string intExp ->
-            "(==) " ++ string ++ " (" ++ intExpToString intExp ++ ")"
+            "(==) " ++ string ++ " (" ++ IntExp.toString intExp ++ ")"
 
         EitherOr r1 r2 ->
             "Or (" ++ toString r1 ++ ") (" ++ toString r2 ++ ")"
@@ -348,22 +254,6 @@ toString refinement =
 
         IsNot r ->
             "Not (" ++ toString r ++ ")"
-
-
-intExpToSMTStatement : IntExp -> String
-intExpToSMTStatement input =
-    case input of
-        Integer int ->
-            String.fromInt int
-
-        Plus intExp1 intExp2 ->
-            "(+ " ++ intExpToString intExp1 ++ " " ++ intExpToString intExp2 ++ ")"
-
-        Times intExp i ->
-            "(* " ++ intExpToString intExp ++ " " ++ String.fromInt i ++ ")"
-
-        Var string ->
-            string
 
 
 toSMTStatement : Refinement -> String
@@ -376,13 +266,13 @@ toSMTStatement refinement =
             "false"
 
         IsSmaller string intExp ->
-            "(< " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
+            "(< " ++ string ++ " " ++ IntExp.toSMTStatement intExp ++ ")"
 
         IsBigger string intExp ->
-            "(> " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
+            "(> " ++ string ++ " " ++ IntExp.toSMTStatement intExp ++ ")"
 
         IsEqual string intExp ->
-            "(= " ++ string ++ " " ++ intExpToSMTStatement intExp ++ ")"
+            "(= " ++ string ++ " " ++ IntExp.toSMTStatement intExp ++ ")"
 
         EitherOr r1 r2 ->
             "(or " ++ toSMTStatement r1 ++ " " ++ toSMTStatement r2 ++ ")"

@@ -1,0 +1,293 @@
+\setcounter{section}{4}
+\setcounter{subsection}{4}
+
+## Implementation in Elm
+
+We will now discuss the implementation of algorithms discussed in the last section.
+
+In particular the `Infer`,`Split`, `Solve` and `Weaken` algorithms for computing the strongest refinements for a set of given subtyping conditions.
+
+Elm is a immutable pure functional langauge. The architecture of a typical elm program is similar to a state maschine: First a `init` function is called to define the initial state (In Elm typically called `Model`), then different messages can cause a call to an `update` function that updates the current state. Each time the update function is called, it afterwards passes the new state to a `view` function which displayes the state as HTML on the screen. In our case every state contains an satisfiability problem that either the SMT solver or the human needs to solve. The response will then be send to the `update` function, resulting in a new satisfiability problem. If this process stops, then the program ends and transitions into a dummy elm program that is simply displaying the results.
+
+### Types
+
+For liquidType we use the following representation:
+
+```
+type alias LiquidType a b =
+    ( List
+        { name : String
+        , type : a
+        }
+    , b
+    )
+```
+
+A function $a:\{\mathit{Int}|r1\}\to b:\{\mathit{Int}|r2\}\to\{\mathit{Int}|r3\}$ would be represented as `([{name=a,refinement=r1},{name=b,refinement=r2}],r3)`. We choose this more general definition, because this leaves us the possiblity to put more and more specific definitions for `a` and `b`:
+
+```
+type SimpleLiquidType
+    = IntType Refinement
+    | LiquidTypeVariable Template
+```
+
+Possible types for `a` and `b` are either the most general `SimpleLiquidType` or the more specific types `Refinement` and `Template`. Note on the naming: `SimpleLiquidType` is "simple" in the sense that its not a function type.
+
+In respect to conditions we have two types:
+
+```
+type alias Condition =
+    { smaller : LiquidType Template SimpleLiquidType
+    , bigger : LiquidType Refinement Template
+    , guards : List Refinement
+    , typeVariables : List ( String, Refinement )
+    }
+
+
+type alias SimpleCondition =
+    { smaller : SimpleLiquidType
+    , bigger : Template
+    , guards : List Refinement
+    , typeVariables : List ( String, Refinement )
+    }
+```
+
+`SimpleCondition` is the implementation of $\mathcal{C}^-$. We can transform a `Condition` into a `SimpleCondition` by using the `split` function.
+
+### Transition
+
+We will only look at the part of the algorithm that does the computing, we therefore now consider the input as some transition data coming from another elm program. This transition data will then be used to initate the state.
+
+```
+type alias Transition =
+    List SimpleCondition
+```
+
+ We obtain simple condition from the `Split` function.
+
+```
+split : Condition -> Result () (List SimpleCondition)
+split =
+  let
+    rec : Int -> Condition -> Result () (List SimpleCondition)
+    rec offset condition =
+      case ( condition.smaller, condition.bigger ) of
+        ( ( q1 :: t2, t2end ), ( q3 :: t4, t4end ) ) ->
+          if q1.name == q3.name then
+            rec (offset + 1)
+              { condition
+              | smaller = ( t2, t2end )
+              , bigger = ( t4, t4end )
+              , typeVariables =
+                ( q3.name, q3.refinement )
+                  :: condition.typeVariables
+              }
+              |> Result.map
+                ((::)
+                  { smaller = IntType q3.refinement
+                  , bigger = q1.refinement
+                  , guards = condition.guards
+                  , typeVariables = condition.typeVariables
+                  }
+                )
+
+          else
+            Err ()
+
+        ( ( [], q1 ), ( [], q2 ) ) ->
+          [ { smaller = q1
+            , bigger = q2
+            , guards = condition.guards
+            , typeVariables = condition.typeVariables
+            }
+          ]
+            |> Ok
+
+        _ ->
+          Err ()
+  in
+  rec 0
+```
+
+This is a 1:1 implementation of the split algorithm previously descripted.
+
+### Init
+
+After we have split the conditions, we now initiate the elm program. Note that this program will be implementing the `Solve` and `Weaken` algorithmn.
+
+```
+init : Transition -> ( Model, Cmd Msg )
+init conditions =
+    let
+        initList =
+            (conditions
+                |> List.map
+                    (\{ typeVariables } ->
+                        typeVariables
+                            |> List.map (\( name, _ ) -> name)
+                    )
+                |> List.concat
+            )
+                |> Refinement.init
+    in
+    ( { conditions = conditions |> Array.fromList
+      , predicates =
+            conditions
+                |> List.concatMap Condition.liquidTypeVariables
+                |> List.map (\v -> ( v, initList |> Array.fromList ))
+                |> Dict.fromList
+      , index = 0
+      , weaken = Nothing
+      , auto = False
+      , error = Nothing
+      }
+    , Cmd.none
+    )
+```
+
+We now go through all fields of our model.
+
+ * `conditions` contains a copy of the conditions.
+ * `predicates` contains a dictionary, mapping every liquid type variable to the initial set of predicates $\mathit{Init}(V)$, here called `Refinement.init`
+ * `index` contains the index of the current condition. Keep in mind, that the loop from the Solve algorithm is actually modeled as state machine transitions, therefore we can assume that we are always investigating one specific condition. If not, then the program would have already stopped.
+ * `weaken` says if we are currently weakening a condition. If this is set to `Nothing` then we are in the `solve` algorithm, else its `Just` an `Int`, namely the index of the predicate that we are currently investigating.
+ * `auto` - is a boolean expression that says if the SMT solver should be asked directly. If set to `False`, then the user may deside the satisfiability of the current SMT statement.
+ * `error` - contains any error message that should be displayed to the user.
+ 
+### Update
+ 
+```
+update : (String -> Cmd msg) -> Msg -> Model -> Update msg
+update sendMsg msg model =
+    case msg of
+        GotResponse bool ->
+            handleResponse sendMsg bool { model | error = Nothing }
+        .
+        .
+        .
+
+handleResponse : (String -> Cmd msg) -> Bool -> Model -> Update msg
+handleResponse sendMsg bool model =
+    case ( model.weaken, bool ) of
+        .
+        .
+        .
+```
+
+We will now look at each case distinction one after another.
+
+#### During the Solve Algorithm, Returning True
+
+```
+( Nothing, True ) ->
+    --Start weaking
+    case
+        model.conditions
+            |> Array.get model.index
+    of
+        Just { bigger } ->
+            { model
+                | weaken =
+                    Just
+                        { index = 0
+                        , liquidTypeVariable = bigger |> Tuple.first
+                        }
+            }
+                |> handleAuto sendMsg
+
+        Nothing ->
+            Action.updating ( model, Cmd.none )
+```
+
+#### During the Solve Algorithm, Returning False
+
+```
+( Nothing, False ) ->
+    --Continue
+    let
+        index =
+            model.index + 1
+    in
+    if index >= (model.conditions |> Array.length) then
+        Action.transitioning
+            { conditions = model.conditions
+            , predicates =
+                model.predicates
+                    |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
+            }
+
+    else
+        { model
+            | index = index
+        }
+            |> handleAuto sendMsg
+```
+
+#### During the Weaken Algorithm, Returning False
+
+```
+( Just weaken, False ) ->
+    --Continue
+    let
+        index =
+            weaken.index + 1
+    in
+    if
+        index
+            >= (model.predicates
+                    |> Dict.get weaken.liquidTypeVariable
+                    |> Maybe.map Array.length
+                    |> Maybe.withDefault 0
+               )
+    then
+        { model
+            | weaken = Nothing
+            , index = 0
+        }
+            |> handleAuto sendMsg
+
+    else
+        { model
+            | weaken =
+                Just
+                    { liquidTypeVariable = weaken.liquidTypeVariable
+                    , index = index
+                    }
+        }
+            |> handleAuto sendMsg
+```
+
+#### During the Weaken Algorithm, Returning True
+
+```
+( Just weaken, True ) ->
+    --Remove
+    let
+        predicates =
+            model.predicates
+                |> Dict.update weaken.liquidTypeVariable
+                    (Maybe.map
+                        (Array.removeAt weaken.index)
+                    )
+    in
+    if
+        weaken.index
+            >= (predicates
+                    |> Dict.get weaken.liquidTypeVariable
+                    |> Maybe.map Array.length
+                    |> Maybe.withDefault 0
+               )
+    then
+        { model
+            | predicates = predicates
+            , weaken = Nothing
+            , index = 0
+        }
+            |> handleAuto sendMsg
+
+    else
+        { model
+            | predicates = predicates
+        }
+            |> handleAuto sendMsg
+```

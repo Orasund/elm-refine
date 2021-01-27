@@ -24,8 +24,9 @@ module Data.Condition exposing
 
 import Array exposing (Array)
 import Array.Extra as Array
+import Data.IntExp exposing (IntExp(..))
 import Data.LiquidType as LiquidType exposing (Input(..), LiquidType, LiquidTypeForm, SimpleLiquidType(..))
-import Data.Refinement as Refinement exposing (IntExp(..), Refinement(..))
+import Data.Refinement as Refinement exposing (Refinement(..))
 import Data.Template as Template exposing (Template)
 import Dict exposing (Dict)
 import List.Extra as List
@@ -79,7 +80,7 @@ addSmaller form =
                     (\l ->
                         Array.append
                             ([ { name = "a" ++ String.fromInt (l |> Array.length |> (+) 1)
-                               , baseType = "[k" ++ String.fromInt (l |> Array.length) ++ "]_{}"
+                               , refinement = "[k" ++ String.fromInt (l |> Array.length) ++ "]_{}"
                                }
                              ]
                                 |> Array.fromList
@@ -112,7 +113,7 @@ addBigger form =
                     (\l ->
                         Array.append
                             ([ { name = "a" ++ String.fromInt (l |> Array.length |> (+) 1)
-                               , baseType = "True"
+                               , refinement = "True"
                                }
                              ]
                                 |> Array.fromList
@@ -189,7 +190,7 @@ setSmaller index value form =
                             (Array.update index
                                 (\{ name } ->
                                     { name = name
-                                    , baseType = value
+                                    , refinement = value
                                     }
                                 )
                             )
@@ -210,7 +211,7 @@ setBigger index value form =
                             (Array.update index
                                 (\{ name } ->
                                     { name = name
-                                    , baseType = value
+                                    , refinement = value
                                     }
                                 )
                             )
@@ -228,9 +229,9 @@ setVariable index value form =
             else
                 Tuple.mapFirst
                     (Array.update index
-                        (\{ baseType } ->
+                        (\{ refinement } ->
                             { name = value
-                            , baseType = baseType
+                            , refinement = refinement
                             }
                         )
                     )
@@ -289,13 +290,13 @@ decode { smaller, bigger, guards, typeVariables } =
                         (list
                             |> Array.toList
                             |> List.map
-                                (\{ name, baseType } ->
-                                    baseType
+                                (\{ name, refinement } ->
+                                    refinement
                                         |> Template.decode
                                         |> Result.map
                                             (\b ->
                                                 { name = name
-                                                , baseType = b
+                                                , refinement = b
                                                 }
                                             )
                                 )
@@ -311,13 +312,13 @@ decode { smaller, bigger, guards, typeVariables } =
                         (list
                             |> Array.toList
                             |> List.map
-                                (\{ name, baseType } ->
-                                    baseType
+                                (\{ name, refinement } ->
+                                    refinement
                                         |> Refinement.decode
                                         |> Result.map
                                             (\b ->
                                                 { name = name
-                                                , baseType = b
+                                                , refinement = b
                                                 }
                                             )
                                 )
@@ -349,8 +350,8 @@ decode { smaller, bigger, guards, typeVariables } =
 toSMTStatement : Dict Int Refinement -> SimpleCondition -> String
 toSMTStatement dict { smaller, bigger, guards, typeVariables } =
     let
-        baseTypeRefinements : List Refinement
-        baseTypeRefinements =
+        refinementntRefinements : List Refinement
+        refinementntRefinements =
             typeVariables
                 |> List.map
                     (\( b, r ) ->
@@ -396,7 +397,7 @@ toSMTStatement dict { smaller, bigger, guards, typeVariables } =
         statement : Refinement
         statement =
             (r1
-                :: baseTypeRefinements
+                :: refinementntRefinements
                 ++ guards
             )
                 |> List.foldl AndAlso (IsNot r2)

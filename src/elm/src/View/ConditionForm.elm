@@ -55,7 +55,7 @@ viewVarInput { onNameChange, onValueChange, name, value } =
         |> Element.row Grid.spacedEvenly
 
 
-viewInputArray : String -> (Int -> String -> msg) -> ( Array { name : String, baseType : String }, String ) -> Element msg
+viewInputArray : String -> (Int -> String -> msg) -> ( Array { name : String, refinement : String }, String ) -> Element msg
 viewInputArray label onChange ( tail, head ) =
     let
         fun index input =
@@ -65,12 +65,12 @@ viewInputArray label onChange ( tail, head ) =
                     , onChange = onChange index
                     }
     in
-    (tail |> Array.indexedMap (\index { baseType } -> fun index baseType) |> Array.toList)
+    (tail |> Array.indexedMap (\index { refinement } -> fun index refinement) |> Array.toList)
         ++ [ head |> fun (tail |> Array.length) ]
         |> Element.column Grid.simple
 
 
-viewVarArray : String -> (Int -> String -> msg) -> Array { name : String, baseType : String } -> Element msg
+viewVarArray : String -> (Int -> String -> msg) -> Array { name : String, refinement : String } -> Element msg
 viewVarArray label onChange tail =
     let
         fun index input =

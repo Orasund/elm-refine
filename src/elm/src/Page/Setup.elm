@@ -7,7 +7,7 @@ import Data.Condition as Condition exposing (Condition, ConditionForm)
 import Data.IncomingMsg exposing (IncomingMsg)
 import Data.LiquidType exposing (Input(..))
 import Data.Save as Save
-import Element exposing (Element, spaceEvenly)
+import Element exposing (Element)
 import Element.Font as Font
 import Page.Assistant as Assistant
 import Result.Extra as Result

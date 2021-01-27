@@ -16,7 +16,7 @@ type SimpleLiquidType
 type alias LiquidType a b =
     ( List
         { name : String
-        , baseType : a
+        , refinement : a
         }
     , b
     )
@@ -29,7 +29,7 @@ type alias WellFormedLiquidType =
 type alias LiquidTypeForm =
     ( Array
         { name : String
-        , baseType : String
+        , refinement : String
         }
     , String
     )
@@ -125,10 +125,10 @@ toString : (a -> String) -> (b -> String) -> LiquidType a b -> String
 toString aToString bToString ( list, last ) =
     ((list
         |> List.indexedMap
-            (\_ { name, baseType } ->
+            (\_ { name, refinement } ->
                 name
                     ++ " : "
-                    ++ simpleformToString (baseType |> aToString)
+                    ++ simpleformToString (refinement |> aToString)
             )
      )
         ++ [ simpleformToString (last |> bToString) ]
