@@ -350,8 +350,8 @@ decode { smaller, bigger, guards, typeVariables } =
 toSMTStatement : Dict Int Refinement -> SimpleCondition -> String
 toSMTStatement dict { smaller, bigger, guards, typeVariables } =
     let
-        refinementntRefinements : List Refinement
-        refinementntRefinements =
+        typeVariablesRefinements : List Refinement
+        typeVariablesRefinements =
             typeVariables
                 |> List.map
                     (\( b, r ) ->
@@ -397,7 +397,7 @@ toSMTStatement dict { smaller, bigger, guards, typeVariables } =
         statement : Refinement
         statement =
             (r1
-                :: refinementntRefinements
+                :: typeVariablesRefinements
                 ++ guards
             )
                 |> List.foldl AndAlso (IsNot r2)

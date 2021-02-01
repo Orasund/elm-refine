@@ -43,46 +43,64 @@ getLazySubstitute { conditions, index } =
         |> Maybe.withDefault []
 
 
+statementForSolve : Model -> SimpleCondition -> String
+statementForSolve model condition =
+    condition
+        |> Condition.toSMTStatement
+            (model.predicates
+                |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
+            )
+
+
+statementForWeaken :
+    { index : Int
+    , liquidTypeVariable : Int
+    }
+    -> Model
+    -> SimpleCondition
+    -> String
+statementForWeaken weaken model condition =
+    condition
+        |> Condition.toSMTStatement
+            (model.predicates
+                |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
+                |> Dict.update (condition.bigger |> Tuple.first)
+                    (Maybe.map
+                        (\_ ->
+                            model
+                                |> getLazySubstitute
+                                |> List.foldl
+                                    (\( find, replaceWith ) ->
+                                        Refinement.substitute
+                                            { find = find
+                                            , replaceWith = replaceWith
+                                            }
+                                    )
+                                    (model.predicates
+                                        |> Dict.get (condition.bigger |> Tuple.first)
+                                        |> Maybe.andThen (Array.get weaken.index)
+                                        |> Maybe.withDefault IsFalse
+                                    )
+                        )
+                    )
+            )
+
+
 smtStatement : Model -> Maybe String
 smtStatement model =
+    let
+        toString : SimpleCondition -> String
+        toString condition =
+            case model.weaken of
+                Just weaken ->
+                    statementForWeaken weaken model condition
+
+                Nothing ->
+                    statementForSolve model condition
+    in
     model.conditions
         |> Array.get model.index
-        |> Maybe.map
-            (\condition ->
-                case model.weaken of
-                    Just weaken ->
-                        condition
-                            |> Condition.toSMTStatement
-                                (model.predicates
-                                    |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
-                                    |> Dict.update (condition.bigger |> Tuple.first)
-                                        (Maybe.map
-                                            (\_ ->
-                                                model
-                                                    |> getLazySubstitute
-                                                    |> List.foldl
-                                                        (\( find, replaceWith ) ->
-                                                            Refinement.substitute
-                                                                { find = find
-                                                                , replaceWith = replaceWith
-                                                                }
-                                                        )
-                                                        (model.predicates
-                                                            |> Dict.get (condition.bigger |> Tuple.first)
-                                                            |> Maybe.andThen (Array.get weaken.index)
-                                                            |> Maybe.withDefault IsFalse
-                                                        )
-                                            )
-                                        )
-                                )
-
-                    Nothing ->
-                        condition
-                            |> Condition.toSMTStatement
-                                (model.predicates
-                                    |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
-                                )
-            )
+        |> Maybe.map toString
 
 
 type Msg
@@ -149,108 +167,127 @@ handleAuto sendMsg model =
             ( model, Cmd.none )
 
 
-handleResponse : (String -> Cmd msg) -> Bool -> Model -> Update msg
-handleResponse sendMsg bool model =
-    case ( model.weaken, bool ) of
-        ( Just weaken, False ) ->
-            --Continue
-            let
-                index =
-                    weaken.index + 1
-            in
-            if
-                index
-                    >= (model.predicates
-                            |> Dict.get weaken.liquidTypeVariable
-                            |> Maybe.map Array.length
-                            |> Maybe.withDefault 0
-                       )
-            then
-                { model
-                    | weaken = Nothing
-                    , index = 0
-                }
-                    |> handleAuto sendMsg
-
-            else
+handleSolve : (String -> Cmd msg) -> Bool -> Model -> Update msg
+handleSolve sendMsg bool model =
+    if bool then
+        --Start weaking
+        case
+            model.conditions
+                |> Array.get model.index
+        of
+            Just { bigger } ->
                 { model
                     | weaken =
                         Just
-                            { liquidTypeVariable = weaken.liquidTypeVariable
-                            , index = index
+                            { index = 0
+                            , liquidTypeVariable = bigger |> Tuple.first
                             }
                 }
                     |> handleAuto sendMsg
 
-        ( Just weaken, True ) ->
-            --Remove
-            let
-                predicates =
+            Nothing ->
+                Action.updating ( model, Cmd.none )
+
+    else
+        --Continue
+        let
+            index =
+                model.index + 1
+        in
+        if index >= (model.conditions |> Array.length) then
+            Action.transitioning
+                { conditions = model.conditions
+                , predicates =
                     model.predicates
-                        |> Dict.update weaken.liquidTypeVariable
-                            (Maybe.map
-                                (Array.removeAt weaken.index)
-                            )
-            in
-            if
-                weaken.index
-                    >= (predicates
-                            |> Dict.get weaken.liquidTypeVariable
-                            |> Maybe.map Array.length
-                            |> Maybe.withDefault 0
-                       )
-            then
-                { model
-                    | predicates = predicates
-                    , weaken = Nothing
-                    , index = 0
+                        |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
                 }
-                    |> handleAuto sendMsg
 
-            else
-                { model
-                    | predicates = predicates
-                }
-                    |> handleAuto sendMsg
+        else
+            { model
+                | index = index
+            }
+                |> handleAuto sendMsg
 
-        ( Nothing, True ) ->
-            --Start weaking
-            case
-                model.conditions
-                    |> Array.get model.index
-            of
-                Just { bigger } ->
-                    { model
-                        | weaken =
-                            Just
-                                { index = 0
-                                , liquidTypeVariable = bigger |> Tuple.first
-                                }
-                    }
-                        |> handleAuto sendMsg
 
-                Nothing ->
-                    Action.updating ( model, Cmd.none )
+handleWeaken :
+    { index : Int
+    , liquidTypeVariable : Int
+    }
+    -> (String -> Cmd msg)
+    -> Bool
+    -> Model
+    -> Update msg
+handleWeaken weaken sendMsg bool model =
+    if bool then
+        --Remove
+        let
+            predicates =
+                model.predicates
+                    |> Dict.update weaken.liquidTypeVariable
+                        (Maybe.map
+                            (Array.removeAt weaken.index)
+                        )
+        in
+        if
+            weaken.index
+                >= (predicates
+                        |> Dict.get weaken.liquidTypeVariable
+                        |> Maybe.map Array.length
+                        |> Maybe.withDefault 0
+                   )
+        then
+            { model
+                | predicates = predicates
+                , weaken = Nothing
+                , index = 0
+            }
+                |> handleAuto sendMsg
 
-        ( Nothing, False ) ->
-            --Continue
-            let
-                index =
-                    model.index + 1
-            in
-            if index >= (model.conditions |> Array.length) then
-                Action.transitioning
-                    { conditions = model.conditions
-                    , predicates =
-                        model.predicates
-                            |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
-                    }
+        else
+            { model
+                | predicates = predicates
+            }
+                |> handleAuto sendMsg
 
-            else
-                { model
-                    | index = index
-                }
-                    |> handleAuto sendMsg
+    else
+        --Continue
+        let
+            index =
+                weaken.index + 1
+        in
+        if
+            index
+                >= (model.predicates
+                        |> Dict.get weaken.liquidTypeVariable
+                        |> Maybe.map Array.length
+                        |> Maybe.withDefault 0
+                   )
+        then
+            { model
+                | weaken = Nothing
+                , index = 0
+            }
+                |> handleAuto sendMsg
+
+        else
+            { model
+                | weaken =
+                    Just
+                        { liquidTypeVariable = weaken.liquidTypeVariable
+                        , index = index
+                        }
+            }
+                |> handleAuto sendMsg
+
+
+handleResponse : (String -> Cmd msg) -> Bool -> Model -> Update msg
+handleResponse sendMsg bool model =
+    case model.weaken of
+        Just weaken ->
+            handleWeaken weaken sendMsg bool model
+
+        Nothing ->
+            handleSolve sendMsg bool model
 
 
 update : (String -> Cmd msg) -> Msg -> Model -> Update msg
