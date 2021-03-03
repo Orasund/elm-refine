@@ -5596,7 +5596,7 @@ var $author$project$Data$Refinement$EitherOr = F2(
 	function (a, b) {
 		return {$: 'EitherOr', a: a, b: b};
 	});
-var $author$project$Data$Refinement$Integer = function (a) {
+var $author$project$Data$IntExp$Integer = function (a) {
 	return {$: 'Integer', a: a};
 };
 var $author$project$Data$Refinement$IsBigger = F2(
@@ -5614,7 +5614,7 @@ var $author$project$Data$Refinement$IsSmaller = F2(
 	function (a, b) {
 		return {$: 'IsSmaller', a: a, b: b};
 	});
-var $author$project$Data$Refinement$Var = function (a) {
+var $author$project$Data$IntExp$Var = function (a) {
 	return {$: 'Var', a: a};
 };
 var $elm$core$Set$Set_elm_builtin = function (a) {
@@ -5640,40 +5640,40 @@ var $author$project$Data$Refinement$init = function (vars) {
 						A2(
 						$author$project$Data$Refinement$IsBigger,
 						'v',
-						$author$project$Data$Refinement$Var(v)),
+						$author$project$Data$IntExp$Var(v)),
 						A2(
 						$author$project$Data$Refinement$EitherOr,
 						A2(
 							$author$project$Data$Refinement$IsBigger,
 							'v',
-							$author$project$Data$Refinement$Var(v)),
+							$author$project$Data$IntExp$Var(v)),
 						A2(
 							$author$project$Data$Refinement$IsEqual,
 							'v',
-							$author$project$Data$Refinement$Var(v))),
+							$author$project$Data$IntExp$Var(v))),
 						A2(
 						$author$project$Data$Refinement$IsSmaller,
 						'v',
-						$author$project$Data$Refinement$Var(v)),
+						$author$project$Data$IntExp$Var(v)),
 						A2(
 						$author$project$Data$Refinement$EitherOr,
 						A2(
 							$author$project$Data$Refinement$IsSmaller,
 							'v',
-							$author$project$Data$Refinement$Var(v)),
+							$author$project$Data$IntExp$Var(v)),
 						A2(
 							$author$project$Data$Refinement$IsEqual,
 							'v',
-							$author$project$Data$Refinement$Var(v))),
+							$author$project$Data$IntExp$Var(v))),
 						A2(
 						$author$project$Data$Refinement$IsEqual,
 						'v',
-						$author$project$Data$Refinement$Var(v)),
+						$author$project$Data$IntExp$Var(v)),
 						$author$project$Data$Refinement$IsNot(
 						A2(
 							$author$project$Data$Refinement$IsEqual,
 							'v',
-							$author$project$Data$Refinement$Var(v)))
+							$author$project$Data$IntExp$Var(v)))
 					]);
 			},
 			$elm$core$Set$toList(
@@ -5683,40 +5683,40 @@ var $author$project$Data$Refinement$init = function (vars) {
 				A2(
 				$author$project$Data$Refinement$IsBigger,
 				'v',
-				$author$project$Data$Refinement$Integer(0)),
+				$author$project$Data$IntExp$Integer(0)),
 				A2(
 				$author$project$Data$Refinement$EitherOr,
 				A2(
 					$author$project$Data$Refinement$IsBigger,
 					'v',
-					$author$project$Data$Refinement$Integer(0)),
+					$author$project$Data$IntExp$Integer(0)),
 				A2(
 					$author$project$Data$Refinement$IsEqual,
 					'v',
-					$author$project$Data$Refinement$Integer(0))),
+					$author$project$Data$IntExp$Integer(0))),
 				A2(
 				$author$project$Data$Refinement$IsSmaller,
 				'v',
-				$author$project$Data$Refinement$Integer(0)),
+				$author$project$Data$IntExp$Integer(0)),
 				A2(
 				$author$project$Data$Refinement$EitherOr,
 				A2(
 					$author$project$Data$Refinement$IsSmaller,
 					'v',
-					$author$project$Data$Refinement$Integer(0)),
+					$author$project$Data$IntExp$Integer(0)),
 				A2(
 					$author$project$Data$Refinement$IsEqual,
 					'v',
-					$author$project$Data$Refinement$Integer(0))),
+					$author$project$Data$IntExp$Integer(0))),
 				A2(
 				$author$project$Data$Refinement$IsEqual,
 				'v',
-				$author$project$Data$Refinement$Integer(0)),
+				$author$project$Data$IntExp$Integer(0)),
 				$author$project$Data$Refinement$IsNot(
 				A2(
 					$author$project$Data$Refinement$IsEqual,
 					'v',
-					$author$project$Data$Refinement$Integer(0)))
+					$author$project$Data$IntExp$Integer(0)))
 			]));
 };
 var $author$project$Data$Condition$liquidTypeVariables = function (_v0) {
@@ -5837,6 +5837,39 @@ var $elm$core$Array$get = F2(
 			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
 			A3($elm$core$Array$getHelp, startShift, index, tree)));
 	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Dict$map = F2(
+	function (func, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				A2(func, key, value),
+				A2($elm$core$Dict$map, func, left),
+				A2($elm$core$Dict$map, func, right));
+		}
+	});
+var $author$project$Data$Refinement$IsFalse = {$: 'IsFalse'};
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
 		get:
@@ -5868,136 +5901,6 @@ var $elm$core$Dict$get = F2(
 			}
 		}
 	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $author$project$Data$Refinement$IsFalse = {$: 'IsFalse'};
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Page$Assistant$getLazySubstitute = function (_v0) {
-	var conditions = _v0.conditions;
-	var index = _v0.index;
-	return A2(
-		$elm$core$Maybe$withDefault,
-		_List_Nil,
-		A2(
-			$elm$core$Maybe$map,
-			A2(
-				$elm$core$Basics$composeR,
-				function ($) {
-					return $.bigger;
-				},
-				$elm$core$Tuple$second),
-			A2($elm$core$Array$get, index, conditions)));
-};
-var $elm$core$Dict$map = F2(
-	function (func, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		} else {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				key,
-				A2(func, key, value),
-				A2($elm$core$Dict$map, func, left),
-				A2($elm$core$Dict$map, func, right));
-		}
-	});
-var $author$project$Data$Refinement$substituteIntExp = F2(
-	function (_v0, intExp) {
-		var find = _v0.find;
-		var replaceWith = _v0.replaceWith;
-		if (intExp.$ === 'Var') {
-			var string = intExp.a;
-			return _Utils_eq(string, find) ? replaceWith : $author$project$Data$Refinement$Var(string);
-		} else {
-			return intExp;
-		}
-	});
-var $author$project$Data$Refinement$substitute = F2(
-	function (theta, refinement) {
-		switch (refinement.$) {
-			case 'IsTrue':
-				return $author$project$Data$Refinement$IsTrue;
-			case 'IsFalse':
-				return $author$project$Data$Refinement$IsFalse;
-			case 'IsSmaller':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsSmaller,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'IsBigger':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsBigger,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'IsEqual':
-				var string = refinement.a;
-				var intExp = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$IsEqual,
-					string,
-					A2($author$project$Data$Refinement$substituteIntExp, theta, intExp));
-			case 'EitherOr':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$EitherOr,
-					A2($author$project$Data$Refinement$substitute, theta, r1),
-					A2($author$project$Data$Refinement$substitute, theta, r2));
-			case 'AndAlso':
-				var r1 = refinement.a;
-				var r2 = refinement.b;
-				return A2(
-					$author$project$Data$Refinement$AndAlso,
-					A2($author$project$Data$Refinement$substitute, theta, r1),
-					A2($author$project$Data$Refinement$substitute, theta, r2));
-			default:
-				var r = refinement.a;
-				return $author$project$Data$Refinement$IsNot(
-					A2($author$project$Data$Refinement$substitute, theta, r));
-		}
-	});
-var $elm$core$String$concat = function (strings) {
-	return A2($elm$core$String$join, '', strings);
-};
 var $author$project$Data$Refinement$rename = F2(
 	function (theta, refinement) {
 		var find = theta.find;
@@ -6048,7 +5951,70 @@ var $author$project$Data$Refinement$rename = F2(
 					A2($author$project$Data$Refinement$rename, theta, r));
 		}
 	});
-var $author$project$Data$Refinement$intExpToString = function (input) {
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $author$project$Data$IntExp$substitute = F2(
+	function (_v0, intExp) {
+		var find = _v0.find;
+		var replaceWith = _v0.replaceWith;
+		if (intExp.$ === 'Var') {
+			var string = intExp.a;
+			return _Utils_eq(string, find) ? replaceWith : $author$project$Data$IntExp$Var(string);
+		} else {
+			return intExp;
+		}
+	});
+var $author$project$Data$Refinement$substitute = F2(
+	function (theta, refinement) {
+		switch (refinement.$) {
+			case 'IsTrue':
+				return $author$project$Data$Refinement$IsTrue;
+			case 'IsFalse':
+				return $author$project$Data$Refinement$IsFalse;
+			case 'IsSmaller':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsSmaller,
+					string,
+					A2($author$project$Data$IntExp$substitute, theta, intExp));
+			case 'IsBigger':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsBigger,
+					string,
+					A2($author$project$Data$IntExp$substitute, theta, intExp));
+			case 'IsEqual':
+				var string = refinement.a;
+				var intExp = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$IsEqual,
+					string,
+					A2($author$project$Data$IntExp$substitute, theta, intExp));
+			case 'EitherOr':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$EitherOr,
+					A2($author$project$Data$Refinement$substitute, theta, r1),
+					A2($author$project$Data$Refinement$substitute, theta, r2));
+			case 'AndAlso':
+				var r1 = refinement.a;
+				var r2 = refinement.b;
+				return A2(
+					$author$project$Data$Refinement$AndAlso,
+					A2($author$project$Data$Refinement$substitute, theta, r1),
+					A2($author$project$Data$Refinement$substitute, theta, r2));
+			default:
+				var r = refinement.a;
+				return $author$project$Data$Refinement$IsNot(
+					A2($author$project$Data$Refinement$substitute, theta, r));
+		}
+	});
+var $author$project$Data$IntExp$toString = function (input) {
 	switch (input.$) {
 		case 'Integer':
 			var _int = input.a;
@@ -6056,17 +6022,17 @@ var $author$project$Data$Refinement$intExpToString = function (input) {
 		case 'Plus':
 			var intExp1 = input.a;
 			var intExp2 = input.b;
-			return '(+) ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + $author$project$Data$Refinement$intExpToString(intExp2)));
+			return '(+) ' + ($author$project$Data$IntExp$toString(intExp1) + (' ' + $author$project$Data$IntExp$toString(intExp2)));
 		case 'Times':
 			var intExp = input.a;
 			var i = input.b;
-			return '(*) ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + $elm$core$String$fromInt(i)));
+			return '(*) ' + ($author$project$Data$IntExp$toString(intExp) + (' ' + $elm$core$String$fromInt(i)));
 		default:
 			var string = input.a;
 			return string;
 	}
 };
-var $author$project$Data$Refinement$intExpToSMTStatement = function (input) {
+var $author$project$Data$IntExp$toSMTStatement = function (input) {
 	switch (input.$) {
 		case 'Integer':
 			var _int = input.a;
@@ -6074,11 +6040,11 @@ var $author$project$Data$Refinement$intExpToSMTStatement = function (input) {
 		case 'Plus':
 			var intExp1 = input.a;
 			var intExp2 = input.b;
-			return '(+ ' + ($author$project$Data$Refinement$intExpToString(intExp1) + (' ' + ($author$project$Data$Refinement$intExpToString(intExp2) + ')')));
+			return '(+ ' + ($author$project$Data$IntExp$toString(intExp1) + (' ' + ($author$project$Data$IntExp$toString(intExp2) + ')')));
 		case 'Times':
 			var intExp = input.a;
 			var i = input.b;
-			return '(* ' + ($author$project$Data$Refinement$intExpToString(intExp) + (' ' + ($elm$core$String$fromInt(i) + ')')));
+			return '(* ' + ($author$project$Data$IntExp$toString(intExp) + (' ' + ($elm$core$String$fromInt(i) + ')')));
 		default:
 			var string = input.a;
 			return string;
@@ -6093,15 +6059,15 @@ var $author$project$Data$Refinement$toSMTStatement = function (refinement) {
 		case 'IsSmaller':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(< ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+			return '(< ' + (string + (' ' + ($author$project$Data$IntExp$toSMTStatement(intExp) + ')')));
 		case 'IsBigger':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(> ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+			return '(> ' + (string + (' ' + ($author$project$Data$IntExp$toSMTStatement(intExp) + ')')));
 		case 'IsEqual':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(= ' + (string + (' ' + ($author$project$Data$Refinement$intExpToSMTStatement(intExp) + ')')));
+			return '(= ' + (string + (' ' + ($author$project$Data$IntExp$toSMTStatement(intExp) + ')')));
 		case 'EitherOr':
 			var r1 = refinement.a;
 			var r2 = refinement.b;
@@ -6114,14 +6080,6 @@ var $author$project$Data$Refinement$toSMTStatement = function (refinement) {
 			var r = refinement.a;
 			return '(not ' + ($author$project$Data$Refinement$toSMTStatement(r) + ')');
 	}
-};
-var $elm$core$Dict$singleton = F2(
-	function (key, value) {
-		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-	});
-var $elm$core$Set$singleton = function (key) {
-	return $elm$core$Set$Set_elm_builtin(
-		A2($elm$core$Dict$singleton, key, _Utils_Tuple0));
 };
 var $elm$core$Dict$foldl = F3(
 	function (func, acc, dict) {
@@ -6159,8 +6117,16 @@ var $elm$core$Set$union = F2(
 		return $elm$core$Set$Set_elm_builtin(
 			A2($elm$core$Dict$union, dict1, dict2));
 	});
-var $author$project$Data$Refinement$intExpVariables = function (intExp) {
-	intExpVariables:
+var $elm$core$Dict$singleton = F2(
+	function (key, value) {
+		return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+	});
+var $elm$core$Set$singleton = function (key) {
+	return $elm$core$Set$Set_elm_builtin(
+		A2($elm$core$Dict$singleton, key, _Utils_Tuple0));
+};
+var $author$project$Data$IntExp$variables = function (intExp) {
+	variables:
 	while (true) {
 		switch (intExp.$) {
 			case 'Integer':
@@ -6170,13 +6136,13 @@ var $author$project$Data$Refinement$intExpVariables = function (intExp) {
 				var i2 = intExp.b;
 				return A2(
 					$elm$core$Set$union,
-					$author$project$Data$Refinement$intExpVariables(i1),
-					$author$project$Data$Refinement$intExpVariables(i2));
+					$author$project$Data$IntExp$variables(i1),
+					$author$project$Data$IntExp$variables(i2));
 			case 'Times':
 				var i = intExp.a;
 				var $temp$intExp = i;
 				intExp = $temp$intExp;
-				continue intExpVariables;
+				continue variables;
 			default:
 				var string = intExp.a;
 				return $elm$core$Set$singleton(string);
@@ -6197,21 +6163,21 @@ var $author$project$Data$Refinement$variables = function (refinement) {
 				return A2(
 					$elm$core$Set$insert,
 					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
+					$author$project$Data$IntExp$variables(intExp));
 			case 'IsBigger':
 				var string = refinement.a;
 				var intExp = refinement.b;
 				return A2(
 					$elm$core$Set$insert,
 					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
+					$author$project$Data$IntExp$variables(intExp));
 			case 'IsEqual':
 				var string = refinement.a;
 				var intExp = refinement.b;
 				return A2(
 					$elm$core$Set$insert,
 					string,
-					$author$project$Data$Refinement$intExpVariables(intExp));
+					$author$project$Data$IntExp$variables(intExp));
 			case 'EitherOr':
 				var r1 = refinement.a;
 				var r2 = refinement.b;
@@ -6234,17 +6200,37 @@ var $author$project$Data$Refinement$variables = function (refinement) {
 		}
 	}
 };
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Data$Condition$toSMTStatement = F2(
 	function (dict, _v0) {
 		var smaller = _v0.smaller;
 		var bigger = _v0.bigger;
 		var guards = _v0.guards;
 		var typeVariables = _v0.typeVariables;
+		var typeVariablesRefinements = A2(
+			$elm$core$List$map,
+			function (_v5) {
+				var b = _v5.a;
+				var r = _v5.b;
+				return A2(
+					$author$project$Data$Refinement$rename,
+					{find: 'v', replaceWith: b},
+					r);
+			},
+			typeVariables);
 		var r2 = A3(
 			$elm$core$List$foldl,
-			function (_v5) {
-				var k = _v5.a;
-				var v = _v5.b;
+			function (_v4) {
+				var k = _v4.a;
+				var v = _v4.b;
 				return $author$project$Data$Refinement$substitute(
 					{find: k, replaceWith: v});
 			},
@@ -6258,14 +6244,14 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 				var refinement = smaller.a;
 				return refinement;
 			} else {
-				var _v3 = smaller.a;
-				var _int = _v3.a;
-				var list = _v3.b;
+				var _v2 = smaller.a;
+				var _int = _v2.a;
+				var list = _v2.b;
 				return A3(
 					$elm$core$List$foldl,
-					function (_v4) {
-						var k = _v4.a;
-						var v = _v4.b;
+					function (_v3) {
+						var k = _v3.a;
+						var v = _v3.b;
 						return $author$project$Data$Refinement$substitute(
 							{find: k, replaceWith: v});
 					},
@@ -6276,17 +6262,6 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 					list);
 			}
 		}();
-		var refinementRefinements = A2(
-			$elm$core$List$map,
-			function (_v1) {
-				var b = _v1.a;
-				var r = _v1.b;
-				return A2(
-					$author$project$Data$Refinement$rename,
-					{find: 'v', replaceWith: b},
-					r);
-			},
-			typeVariables);
 		var statement = A3(
 			$elm$core$List$foldl,
 			$author$project$Data$Refinement$AndAlso,
@@ -6294,7 +6269,7 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 			A2(
 				$elm$core$List$cons,
 				r1,
-				_Utils_ap(refinementRefinements, guards)));
+				_Utils_ap(typeVariablesRefinements, guards)));
 		return $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
@@ -6304,6 +6279,43 @@ var $author$project$Data$Condition$toSMTStatement = F2(
 				$elm$core$Set$toList(
 					$author$project$Data$Refinement$variables(statement)))) + ('(assert ' + ($author$project$Data$Refinement$toSMTStatement(statement) + ')\n(check-sat)'));
 	});
+var $author$project$Page$Assistant$statementForSolve = F2(
+	function (model, condition) {
+		return A2(
+			$author$project$Data$Condition$toSMTStatement,
+			A2(
+				$elm$core$Dict$map,
+				function (_v0) {
+					return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
+				},
+				model.predicates),
+			condition);
+	});
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Page$Assistant$getLazySubstitute = function (_v0) {
+	var conditions = _v0.conditions;
+	var index = _v0.index;
+	return A2(
+		$elm$core$Maybe$withDefault,
+		_List_Nil,
+		A2(
+			$elm$core$Maybe$map,
+			A2(
+				$elm$core$Basics$composeR,
+				function ($) {
+					return $.bigger;
+				},
+				$elm$core$Tuple$second),
+			A2($elm$core$Array$get, index, conditions)));
+};
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -6677,56 +6689,53 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
+var $author$project$Page$Assistant$statementForWeaken = F3(
+	function (weaken, model, condition) {
+		return A2(
+			$author$project$Data$Condition$toSMTStatement,
+			A3(
+				$elm$core$Dict$update,
+				condition.bigger.a,
+				$elm$core$Maybe$map(
+					function (_v1) {
+						return A3(
+							$elm$core$List$foldl,
+							function (_v2) {
+								var find = _v2.a;
+								var replaceWith = _v2.b;
+								return $author$project$Data$Refinement$substitute(
+									{find: find, replaceWith: replaceWith});
+							},
+							A2(
+								$elm$core$Maybe$withDefault,
+								$author$project$Data$Refinement$IsFalse,
+								A2(
+									$elm$core$Maybe$andThen,
+									$elm$core$Array$get(weaken.index),
+									A2($elm$core$Dict$get, condition.bigger.a, model.predicates))),
+							$author$project$Page$Assistant$getLazySubstitute(model));
+					}),
+				A2(
+					$elm$core$Dict$map,
+					function (_v0) {
+						return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
+					},
+					model.predicates)),
+			condition);
+	});
 var $author$project$Page$Assistant$smtStatement = function (model) {
+	var toString = function (condition) {
+		var _v0 = model.weaken;
+		if (_v0.$ === 'Just') {
+			var weaken = _v0.a;
+			return A3($author$project$Page$Assistant$statementForWeaken, weaken, model, condition);
+		} else {
+			return A2($author$project$Page$Assistant$statementForSolve, model, condition);
+		}
+	};
 	return A2(
 		$elm$core$Maybe$map,
-		function (condition) {
-			var _v0 = model.weaken;
-			if (_v0.$ === 'Just') {
-				var weaken = _v0.a;
-				return A2(
-					$author$project$Data$Condition$toSMTStatement,
-					A3(
-						$elm$core$Dict$update,
-						condition.bigger.a,
-						$elm$core$Maybe$map(
-							function (_v2) {
-								return A3(
-									$elm$core$List$foldl,
-									function (_v3) {
-										var find = _v3.a;
-										var replaceWith = _v3.b;
-										return $author$project$Data$Refinement$substitute(
-											{find: find, replaceWith: replaceWith});
-									},
-									A2(
-										$elm$core$Maybe$withDefault,
-										$author$project$Data$Refinement$IsFalse,
-										A2(
-											$elm$core$Maybe$andThen,
-											$elm$core$Array$get(weaken.index),
-											A2($elm$core$Dict$get, condition.bigger.a, model.predicates))),
-									$author$project$Page$Assistant$getLazySubstitute(model));
-							}),
-						A2(
-							$elm$core$Dict$map,
-							function (_v1) {
-								return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
-							},
-							model.predicates)),
-					condition);
-			} else {
-				return A2(
-					$author$project$Data$Condition$toSMTStatement,
-					A2(
-						$elm$core$Dict$map,
-						function (_v4) {
-							return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
-						},
-						model.predicates),
-					condition);
-			}
-		},
+		toString,
 		A2($elm$core$Array$get, model.index, model.conditions));
 };
 var $Orasund$elm_action$Action$Update = function (a) {
@@ -6753,6 +6762,52 @@ var $elm$core$Array$length = function (_v0) {
 	var len = _v0.a;
 	return len;
 };
+var $Orasund$elm_action$Action$Transition = function (a) {
+	return {$: 'Transition', a: a};
+};
+var $Orasund$elm_action$Action$transitioning = function (transitionData) {
+	return $Orasund$elm_action$Action$Transition(transitionData);
+};
+var $author$project$Page$Assistant$handleSolve = F3(
+	function (sendMsg, bool, model) {
+		if (bool) {
+			var _v0 = A2($elm$core$Array$get, model.index, model.conditions);
+			if (_v0.$ === 'Just') {
+				var bigger = _v0.a.bigger;
+				return A2(
+					$author$project$Page$Assistant$handleAuto,
+					sendMsg,
+					_Utils_update(
+						model,
+						{
+							weaken: $elm$core$Maybe$Just(
+								{index: 0, liquidTypeVariable: bigger.a})
+						}));
+			} else {
+				return $Orasund$elm_action$Action$updating(
+					_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+			}
+		} else {
+			var index = model.index + 1;
+			return (_Utils_cmp(
+				index,
+				$elm$core$Array$length(model.conditions)) > -1) ? $Orasund$elm_action$Action$transitioning(
+				{
+					conditions: model.conditions,
+					predicates: A2(
+						$elm$core$Dict$map,
+						function (_v1) {
+							return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
+						},
+						model.predicates)
+				}) : A2(
+				$author$project$Page$Assistant$handleAuto,
+				sendMsg,
+				_Utils_update(
+					model,
+					{index: index}));
+		}
+	});
 var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
 var $elm$core$Elm$JsArray$slice = _JsArray_slice;
 var $elm$core$Array$appendHelpBuilder = F2(
@@ -7161,109 +7216,68 @@ var $elm_community$array_extra$Array$Extra$removeAt = F2(
 			xs0,
 			A3($elm$core$Array$slice, 1, len1, xs1));
 	});
-var $Orasund$elm_action$Action$Transition = function (a) {
-	return {$: 'Transition', a: a};
-};
-var $Orasund$elm_action$Action$transitioning = function (transitionData) {
-	return $Orasund$elm_action$Action$Transition(transitionData);
-};
+var $author$project$Page$Assistant$handleWeaken = F4(
+	function (weaken, sendMsg, bool, model) {
+		if (bool) {
+			var predicates = A3(
+				$elm$core$Dict$update,
+				weaken.liquidTypeVariable,
+				$elm$core$Maybe$map(
+					$elm_community$array_extra$Array$Extra$removeAt(weaken.index)),
+				model.predicates);
+			return (_Utils_cmp(
+				weaken.index,
+				A2(
+					$elm$core$Maybe$withDefault,
+					0,
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Array$length,
+						A2($elm$core$Dict$get, weaken.liquidTypeVariable, predicates)))) > -1) ? A2(
+				$author$project$Page$Assistant$handleAuto,
+				sendMsg,
+				_Utils_update(
+					model,
+					{index: 0, predicates: predicates, weaken: $elm$core$Maybe$Nothing})) : A2(
+				$author$project$Page$Assistant$handleAuto,
+				sendMsg,
+				_Utils_update(
+					model,
+					{predicates: predicates}));
+		} else {
+			var index = weaken.index + 1;
+			return (_Utils_cmp(
+				index,
+				A2(
+					$elm$core$Maybe$withDefault,
+					0,
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Array$length,
+						A2($elm$core$Dict$get, weaken.liquidTypeVariable, model.predicates)))) > -1) ? A2(
+				$author$project$Page$Assistant$handleAuto,
+				sendMsg,
+				_Utils_update(
+					model,
+					{index: 0, weaken: $elm$core$Maybe$Nothing})) : A2(
+				$author$project$Page$Assistant$handleAuto,
+				sendMsg,
+				_Utils_update(
+					model,
+					{
+						weaken: $elm$core$Maybe$Just(
+							{index: index, liquidTypeVariable: weaken.liquidTypeVariable})
+					}));
+		}
+	});
 var $author$project$Page$Assistant$handleResponse = F3(
 	function (sendMsg, bool, model) {
-		var _v0 = _Utils_Tuple2(model.weaken, bool);
-		if (_v0.a.$ === 'Just') {
-			if (!_v0.b) {
-				var weaken = _v0.a.a;
-				var index = weaken.index + 1;
-				return (_Utils_cmp(
-					index,
-					A2(
-						$elm$core$Maybe$withDefault,
-						0,
-						A2(
-							$elm$core$Maybe$map,
-							$elm$core$Array$length,
-							A2($elm$core$Dict$get, weaken.liquidTypeVariable, model.predicates)))) > -1) ? A2(
-					$author$project$Page$Assistant$handleAuto,
-					sendMsg,
-					_Utils_update(
-						model,
-						{index: 0, weaken: $elm$core$Maybe$Nothing})) : A2(
-					$author$project$Page$Assistant$handleAuto,
-					sendMsg,
-					_Utils_update(
-						model,
-						{
-							weaken: $elm$core$Maybe$Just(
-								{index: index, liquidTypeVariable: weaken.liquidTypeVariable})
-						}));
-			} else {
-				var weaken = _v0.a.a;
-				var predicates = A3(
-					$elm$core$Dict$update,
-					weaken.liquidTypeVariable,
-					$elm$core$Maybe$map(
-						$elm_community$array_extra$Array$Extra$removeAt(weaken.index)),
-					model.predicates);
-				return (_Utils_cmp(
-					weaken.index,
-					A2(
-						$elm$core$Maybe$withDefault,
-						0,
-						A2(
-							$elm$core$Maybe$map,
-							$elm$core$Array$length,
-							A2($elm$core$Dict$get, weaken.liquidTypeVariable, predicates)))) > -1) ? A2(
-					$author$project$Page$Assistant$handleAuto,
-					sendMsg,
-					_Utils_update(
-						model,
-						{index: 0, predicates: predicates, weaken: $elm$core$Maybe$Nothing})) : A2(
-					$author$project$Page$Assistant$handleAuto,
-					sendMsg,
-					_Utils_update(
-						model,
-						{predicates: predicates}));
-			}
+		var _v0 = model.weaken;
+		if (_v0.$ === 'Just') {
+			var weaken = _v0.a;
+			return A4($author$project$Page$Assistant$handleWeaken, weaken, sendMsg, bool, model);
 		} else {
-			if (_v0.b) {
-				var _v1 = _v0.a;
-				var _v2 = A2($elm$core$Array$get, model.index, model.conditions);
-				if (_v2.$ === 'Just') {
-					var bigger = _v2.a.bigger;
-					return A2(
-						$author$project$Page$Assistant$handleAuto,
-						sendMsg,
-						_Utils_update(
-							model,
-							{
-								weaken: $elm$core$Maybe$Just(
-									{index: 0, liquidTypeVariable: bigger.a})
-							}));
-				} else {
-					return $Orasund$elm_action$Action$updating(
-						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
-				}
-			} else {
-				var _v3 = _v0.a;
-				var index = model.index + 1;
-				return (_Utils_cmp(
-					index,
-					$elm$core$Array$length(model.conditions)) > -1) ? $Orasund$elm_action$Action$transitioning(
-					{
-						conditions: model.conditions,
-						predicates: A2(
-							$elm$core$Dict$map,
-							function (_v4) {
-								return A2($elm$core$Basics$composeR, $elm$core$Array$toList, $author$project$Data$Refinement$conjunction);
-							},
-							model.predicates)
-					}) : A2(
-					$author$project$Page$Assistant$handleAuto,
-					sendMsg,
-					_Utils_update(
-						model,
-						{index: index}));
-			}
+			return A3($author$project$Page$Assistant$handleSolve, sendMsg, bool, model);
 		}
 	});
 var $elm$core$Basics$not = _Basics_not;
@@ -7359,9 +7373,9 @@ var $author$project$Data$Condition$addBigger = function (form) {
 							_List_fromArray(
 								[
 									{
-									refinement: 'True',
 									name: 'a' + $elm$core$String$fromInt(
-										1 + $elm$core$Array$length(l))
+										1 + $elm$core$Array$length(l)),
+									refinement: 'True'
 								}
 								])),
 						l);
@@ -7394,10 +7408,10 @@ var $author$project$Data$Condition$addSmaller = function (form) {
 							_List_fromArray(
 								[
 									{
-									refinement: '[k' + ($elm$core$String$fromInt(
-										$elm$core$Array$length(l)) + ']_{}'),
 									name: 'a' + $elm$core$String$fromInt(
-										1 + $elm$core$Array$length(l))
+										1 + $elm$core$Array$length(l)),
+									refinement: '[k' + ($elm$core$String$fromInt(
+										$elm$core$Array$length(l)) + ']_{}')
 								}
 								])),
 						l);
@@ -7511,6 +7525,14 @@ var $author$project$Data$Refinement$deadEndsToString = function (deadEnds) {
 			'; ',
 			A2($elm$core$List$map, $author$project$Data$Refinement$deadEndToString, deadEnds)));
 };
+var $author$project$Data$IntExp$Plus = F2(
+	function (a, b) {
+		return {$: 'Plus', a: a, b: b};
+	});
+var $author$project$Data$IntExp$Times = F2(
+	function (a, b) {
+		return {$: 'Times', a: a, b: b};
+	});
 var $elm$core$Basics$always = F2(
 	function (a, _v0) {
 		return a;
@@ -7564,14 +7586,6 @@ var $elm$parser$Parser$Advanced$ignorer = F2(
 		return A3($elm$parser$Parser$Advanced$map2, $elm$core$Basics$always, keepParser, ignoreParser);
 	});
 var $elm$parser$Parser$ignorer = $elm$parser$Parser$Advanced$ignorer;
-var $author$project$Data$Refinement$Plus = F2(
-	function (a, b) {
-		return {$: 'Plus', a: a, b: b};
-	});
-var $author$project$Data$Refinement$Times = F2(
-	function (a, b) {
-		return {$: 'Times', a: a, b: b};
-	});
 var $elm$parser$Parser$ExpectingInt = {$: 'ExpectingInt'};
 var $elm$parser$Parser$Advanced$consumeBase = _Parser_consumeBase;
 var $elm$parser$Parser$Advanced$consumeBase16 = _Parser_consumeBase16;
@@ -8054,7 +8068,7 @@ var $elm$parser$Parser$variable = function (i) {
 	return $elm$parser$Parser$Advanced$variable(
 		{expecting: $elm$parser$Parser$ExpectingVariable, inner: i.inner, reserved: i.reserved, start: i.start});
 };
-var $author$project$Data$Refinement$variableDecoder = $elm$parser$Parser$variable(
+var $author$project$Data$IntExp$variableDecoder = $elm$parser$Parser$variable(
 	{
 		inner: $elm$core$Char$isAlphaNum,
 		reserved: $elm$core$Set$fromList(
@@ -8062,7 +8076,7 @@ var $author$project$Data$Refinement$variableDecoder = $elm$parser$Parser$variabl
 				['or', 'and', 'not'])),
 		start: $elm$core$Char$isLower
 	});
-function $author$project$Data$Refinement$cyclic$intExpDecoder() {
+function $author$project$Data$IntExp$cyclic$decoder() {
 	var intDecoder = $elm$parser$Parser$oneOf(
 		_List_fromArray(
 			[
@@ -8081,7 +8095,7 @@ function $author$project$Data$Refinement$cyclic$intExpDecoder() {
 	return $elm$parser$Parser$oneOf(
 		_List_fromArray(
 			[
-				A2($elm$parser$Parser$map, $author$project$Data$Refinement$Integer, intDecoder),
+				A2($elm$parser$Parser$map, $author$project$Data$IntExp$Integer, intDecoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8090,19 +8104,19 @@ function $author$project$Data$Refinement$cyclic$intExpDecoder() {
 						$elm$parser$Parser$ignorer,
 						A2(
 							$elm$parser$Parser$ignorer,
-							$elm$parser$Parser$succeed($author$project$Data$Refinement$Plus),
+							$elm$parser$Parser$succeed($author$project$Data$IntExp$Plus),
 							$elm$parser$Parser$keyword('(+)')),
 						$elm$parser$Parser$spaces),
 					A2(
 						$elm$parser$Parser$ignorer,
 						$elm$parser$Parser$lazy(
 							function (_v0) {
-								return $author$project$Data$Refinement$cyclic$intExpDecoder();
+								return $author$project$Data$IntExp$cyclic$decoder();
 							}),
 						$elm$parser$Parser$spaces)),
 				$elm$parser$Parser$lazy(
 					function (_v1) {
-						return $author$project$Data$Refinement$cyclic$intExpDecoder();
+						return $author$project$Data$IntExp$cyclic$decoder();
 					})),
 				A2(
 				$elm$parser$Parser$keeper,
@@ -8112,18 +8126,18 @@ function $author$project$Data$Refinement$cyclic$intExpDecoder() {
 						$elm$parser$Parser$ignorer,
 						A2(
 							$elm$parser$Parser$ignorer,
-							$elm$parser$Parser$succeed($author$project$Data$Refinement$Times),
+							$elm$parser$Parser$succeed($author$project$Data$IntExp$Times),
 							$elm$parser$Parser$keyword('(*)')),
 						$elm$parser$Parser$spaces),
 					A2(
 						$elm$parser$Parser$ignorer,
 						$elm$parser$Parser$lazy(
 							function (_v2) {
-								return $author$project$Data$Refinement$cyclic$intExpDecoder();
+								return $author$project$Data$IntExp$cyclic$decoder();
 							}),
 						$elm$parser$Parser$spaces)),
 				intDecoder),
-				A2($elm$parser$Parser$map, $author$project$Data$Refinement$Var, $author$project$Data$Refinement$variableDecoder),
+				A2($elm$parser$Parser$map, $author$project$Data$IntExp$Var, $author$project$Data$IntExp$variableDecoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8134,18 +8148,18 @@ function $author$project$Data$Refinement$cyclic$intExpDecoder() {
 					$elm$parser$Parser$ignorer,
 					$elm$parser$Parser$lazy(
 						function (_v3) {
-							return $author$project$Data$Refinement$cyclic$intExpDecoder();
+							return $author$project$Data$IntExp$cyclic$decoder();
 						}),
 					$elm$parser$Parser$symbol(')')))
 			]));
 }
 try {
-	var $author$project$Data$Refinement$intExpDecoder = $author$project$Data$Refinement$cyclic$intExpDecoder();
-	$author$project$Data$Refinement$cyclic$intExpDecoder = function () {
-		return $author$project$Data$Refinement$intExpDecoder;
+	var $author$project$Data$IntExp$decoder = $author$project$Data$IntExp$cyclic$decoder();
+	$author$project$Data$IntExp$cyclic$decoder = function () {
+		return $author$project$Data$IntExp$decoder;
 	};
 } catch ($) {
-	throw 'Some top-level definitions from `Data.Refinement` are causing infinite recursion:\n\n  ┌─────┐\n  │    intExpDecoder\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';}
+	throw 'Some top-level definitions from `Data.IntExp` are causing infinite recursion:\n\n  ┌─────┐\n  │    decoder\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';}
 function $author$project$Data$Refinement$cyclic$decoder() {
 	return $elm$parser$Parser$oneOf(
 		_List_fromArray(
@@ -8184,7 +8198,7 @@ function $author$project$Data$Refinement$cyclic$decoder() {
 								start: $elm$core$Char$isLower
 							}),
 						$elm$parser$Parser$spaces)),
-				$author$project$Data$Refinement$intExpDecoder),
+				$author$project$Data$IntExp$decoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8207,7 +8221,7 @@ function $author$project$Data$Refinement$cyclic$decoder() {
 								start: $elm$core$Char$isLower
 							}),
 						$elm$parser$Parser$spaces)),
-				$author$project$Data$Refinement$intExpDecoder),
+				$author$project$Data$IntExp$decoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8230,7 +8244,7 @@ function $author$project$Data$Refinement$cyclic$decoder() {
 								start: $elm$core$Char$isLower
 							}),
 						$elm$parser$Parser$spaces)),
-				$author$project$Data$Refinement$intExpDecoder),
+				$author$project$Data$IntExp$decoder),
 				A2(
 				$elm$parser$Parser$keeper,
 				A2(
@@ -8682,11 +8696,11 @@ var $author$project$Data$Template$decoder = function () {
 				$elm$parser$Parser$symbol('(')),
 			A2(
 				$elm$parser$Parser$ignorer,
-				$author$project$Data$Refinement$variableDecoder,
+				$author$project$Data$IntExp$variableDecoder,
 				$elm$parser$Parser$symbol(','))),
 		A2(
 			$elm$parser$Parser$ignorer,
-			$author$project$Data$Refinement$intExpDecoder,
+			$author$project$Data$IntExp$decoder,
 			$elm$parser$Parser$symbol(')')));
 	return A2(
 		$elm$parser$Parser$keeper,
@@ -8845,7 +8859,7 @@ var $author$project$Data$Condition$decode = function (_v0) {
 							return A2(
 								$elm$core$Result$map,
 								function (b) {
-									return {refinement: b, name: name};
+									return {name: name, refinement: b};
 								},
 								$author$project$Data$Template$decode(refinement));
 						},
@@ -8870,7 +8884,7 @@ var $author$project$Data$Condition$decode = function (_v0) {
 							return A2(
 								$elm$core$Result$map,
 								function (b) {
-									return {refinement: b, name: name};
+									return {name: name, refinement: b};
 								},
 								$author$project$Data$Refinement$decode(refinement));
 						},
@@ -8955,25 +8969,18 @@ var $author$project$Data$Save$abs = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{refinement: 'True', name: 'z'}
+						{name: 'z', refinement: 'True'}
 					])),
 			'[k4]_{}'),
-		guards: $elm$core$Array$fromList(
-			_List_fromArray(
-				['not ((<) a b)'])),
+		guards: $elm$core$Array$fromList(_List_Nil),
 		smaller: _Utils_Tuple2(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{refinement: '[k1]_{}', name: 'z'}
+						{name: 'z', refinement: '[k1]_{}'}
 					])),
 			'[k3]_{(a,(*) z -1),(b,z)}'),
-		typeVariables: $elm$core$Array$fromList(
-			_List_fromArray(
-				[
-					_Utils_Tuple2('a', 'True'),
-					_Utils_Tuple2('b', 'True')
-				]))
+		typeVariables: $elm$core$Array$fromList(_List_Nil)
 	}
 	]);
 var $author$project$Data$Save$max = _List_fromArray(
@@ -9009,27 +9016,20 @@ var $author$project$Data$Save$max = _List_fromArray(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{refinement: 'True', name: 'a'},
-						{refinement: 'True', name: 'b'}
+						{name: 'a', refinement: 'True'},
+						{name: 'b', refinement: 'True'}
 					])),
 			'[k4]_{}'),
-		guards: $elm$core$Array$fromList(
-			_List_fromArray(
-				['not ((<) a b)'])),
+		guards: $elm$core$Array$fromList(_List_Nil),
 		smaller: _Utils_Tuple2(
 			$elm$core$Array$fromList(
 				_List_fromArray(
 					[
-						{refinement: '[k1]_{}', name: 'a'},
-						{refinement: '[k2]_{}', name: 'b'}
+						{name: 'a', refinement: '[k1]_{}'},
+						{name: 'b', refinement: '[k2]_{}'}
 					])),
 			'[k3]_{}'),
-		typeVariables: $elm$core$Array$fromList(
-			_List_fromArray(
-				[
-					_Utils_Tuple2('a', 'True'),
-					_Utils_Tuple2('b', 'True')
-				]))
+		typeVariables: $elm$core$Array$fromList(_List_Nil)
 	}
 	]);
 var $author$project$Data$Save$load = function (_int) {
@@ -9156,7 +9156,7 @@ var $author$project$Data$Condition$setBigger = F3(
 						index,
 						function (_v0) {
 							var name = _v0.name;
-							return {refinement: value, name: name};
+							return {name: name, refinement: value};
 						})))(form.bigger)
 			});
 	});
@@ -9182,7 +9182,7 @@ var $author$project$Data$Condition$setSmaller = F3(
 						index,
 						function (_v0) {
 							var name = _v0.name;
-							return {refinement: value, name: name};
+							return {name: name, refinement: value};
 						})))(form.smaller)
 			});
 	});
@@ -9225,7 +9225,7 @@ var $author$project$Data$Condition$setVariable = F3(
 				index,
 				function (_v0) {
 					var refinement = _v0.refinement;
-					return {refinement: refinement, name: value};
+					return {name: value, refinement: refinement};
 				}));
 		return _Utils_update(
 			form,
@@ -14994,27 +14994,6 @@ var $mdgriffith$elm_ui$Element$column = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $mdgriffith$elm_ui$Element$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[child])));
-	});
-var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
-	return {$: 'Fill', a: a};
-};
-var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -15333,6 +15312,24 @@ var $mdgriffith$elm_ui$Internal$Model$map = F2(
 		}
 	});
 var $mdgriffith$elm_ui$Element$map = $mdgriffith$elm_ui$Internal$Model$map;
+var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
+var $mdgriffith$elm_ui$Element$padding = function (x) {
+	var f = x;
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(x),
+			f,
+			f,
+			f,
+			f));
+};
 var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 	return {$: 'Px', a: a};
 };
@@ -15517,6 +15514,23 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
+var $mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
 var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
 var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
 var $mdgriffith$elm_ui$Element$row = F2(
@@ -15651,6 +15665,10 @@ var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
 			'color',
 			fontColor));
 };
+var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
+	return {$: 'Fill', a: a};
+};
+var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
 	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
 };
@@ -15768,24 +15786,6 @@ var $mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			$mdgriffith$elm_ui$Internal$Model$PseudoSelector,
 			$mdgriffith$elm_ui$Internal$Model$Hover,
 			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
-};
-var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
-var $mdgriffith$elm_ui$Element$padding = function (x) {
-	var f = x;
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(x),
-			f,
-			f,
-			f,
-			f));
 };
 var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
 var $mdgriffith$elm_ui$Element$Border$roundEach = function (_v0) {
@@ -16752,15 +16752,15 @@ var $author$project$Data$Refinement$toString = function (refinement) {
 		case 'IsSmaller':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(<) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
+			return '(<) ' + (string + (' (' + ($author$project$Data$IntExp$toString(intExp) + ')')));
 		case 'IsBigger':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(>) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
+			return '(>) ' + (string + (' (' + ($author$project$Data$IntExp$toString(intExp) + ')')));
 		case 'IsEqual':
 			var string = refinement.a;
 			var intExp = refinement.b;
-			return '(==) ' + (string + (' (' + ($author$project$Data$Refinement$intExpToString(intExp) + ')')));
+			return '(==) ' + (string + (' (' + ($author$project$Data$IntExp$toString(intExp) + ')')));
 		case 'EitherOr':
 			var r1 = refinement.a;
 			var r2 = refinement.b;
@@ -16785,7 +16785,7 @@ var $author$project$Data$Template$toString = function (_v0) {
 			function (_v1) {
 				var k = _v1.a;
 				var v = _v1.b;
-				return '(' + (k + (',' + ($author$project$Data$Refinement$intExpToString(v) + ')')));
+				return '(' + (k + (',' + ($author$project$Data$IntExp$toString(v) + ')')));
 			},
 			list)) + '}')));
 };
@@ -18565,39 +18565,34 @@ var $author$project$Main$view = function (m) {
 				$mdgriffith$elm_ui$Element$Font$size(16)
 			]),
 		A2(
-			$mdgriffith$elm_ui$Element$el,
+			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(800)),
+					$mdgriffith$elm_ui$Element$spacing(10),
+					$mdgriffith$elm_ui$Element$padding(10)
 				]),
-			A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$centerX,
-						$mdgriffith$elm_ui$Element$width(
-						$mdgriffith$elm_ui$Element$px(800)),
-						$mdgriffith$elm_ui$Element$spacing(10)
-					]),
-				function () {
-					switch (m.$) {
-						case 'Setup':
-							var model = m.a;
-							return A2(
-								$elm$core$List$map,
-								$mdgriffith$elm_ui$Element$map($author$project$Main$WhileSetup),
-								$author$project$Page$Setup$view(model));
-						case 'Assistant':
-							var model = m.a;
-							return A2(
-								$elm$core$List$map,
-								$mdgriffith$elm_ui$Element$map($author$project$Main$WhileAssistant),
-								$author$project$Page$Assistant$view(model));
-						default:
-							var model = m.a;
-							return $author$project$Page$Done$view(model);
-					}
-				}())));
+			function () {
+				switch (m.$) {
+					case 'Setup':
+						var model = m.a;
+						return A2(
+							$elm$core$List$map,
+							$mdgriffith$elm_ui$Element$map($author$project$Main$WhileSetup),
+							$author$project$Page$Setup$view(model));
+					case 'Assistant':
+						var model = m.a;
+						return A2(
+							$elm$core$List$map,
+							$mdgriffith$elm_ui$Element$map($author$project$Main$WhileAssistant),
+							$author$project$Page$Assistant$view(model));
+					default:
+						var model = m.a;
+						return $author$project$Page$Done$view(model);
+				}
+			}()));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});

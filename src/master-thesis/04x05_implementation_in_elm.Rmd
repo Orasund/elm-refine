@@ -3,13 +3,19 @@
 
 ## Implementation in Elm
 
-We will now go over the implementation of functions discussed in the last section.
+We will now turn to the implementation of the core of the type inference algorithm discussed in the last section.
 
-In particular the `split`, `solve` and `weaken` functions for computing the strongest refinements for a set of given subtyping conditions.
+In particular we will present the `split`, `solve` and `weaken` functions for computing the strongest refinements for a set of given subtyping conditions.
 
-Elm is an immutable pure functional language. The architecture of a typical elm program is similar to that of a state machine: First a `init` function is called to define the initial state (In Elm typically called `Model`), then different messages (like a result of an SMT Solver) can cause a call to an `update` function that updates the current state. Each time the update function is called, it afterwards passes the new state to a `view` function that displays the state as HTML on the screen. We will be using an Elm package written by myself called Elm-Action \cite{elmAction}. This library simplifies the wiring to combine multiple Elm programs into one. To do so, the library models the different Elm programs as different states of a meta-level state machine: Each state is its own state machine. To transition from one program into another we define a transition function that takes some transition data as an input and returns the initial state of the new elm program.
+We have implemented these functions in Elm itself; to simplify testing, we have equipped the implementation with a GUI by using an Em package written by the author called Elm-Action \cite{elmAction}. See Figure \@ref(fig:gui).
 
-In our case, we have three elm programs representing different phases, called `Setup`, `Assistant` and `Done`. The `Setup` program handles the creation of our conditions. The `Assistant` program applies the `split`, `solve` and `weaken` functions to the conditions. The `Done` program shows the solution. We will only discuss the `Assistant` program, as it is the most interesting. In this program our state describes a satisfiability problem. This SAT problem needs to be solved by either the SMT solver or a human. The response will then be sent to the `update` function, resulting in a new satisfiability problem. If this process stops, then the program ends and transitions into the `Done` program.
+```{r gui, echo=FALSE, fig.align='center', fig.cap="A GUI for writing a set of input conditions.", out.width = '50%', eval=TRUE}
+knitr::include_graphics("ui.png")
+```
+
+Elm is an immutable pure functional language. The architecture of a typical elm program is similar to that of a state machine: First a `init` function is called to define the initial state (In Elm typically called `Model`), then different messages (like a result of an SMT Solver) can cause a call to an `update` function that updates the current state. Each time the update function is called, it afterwards passes the new state to a `view` function that displays the state as HTML on the screen. Our libary Elm-Action simplifies the wiring to combine multiple Elm programs into one. To do so, the library models the different Elm programs as different states of a meta-level state machine: Each state is its own state machine. To transition from one program into another we define a transition function that takes some transition data as an input and returns the initial state of the new elm program.
+
+In our case, we have three elm programs representing different phases, called `Setup`, `Assistant` and `Done`. The `Setup` program handles the creation of our conditions. The `Assistant` program applies the `split`, `solve` and `weaken` functions to the conditions. The `Done` program shows the solution. We will only discuss the `Assistant` program, as it is the most interesting. In this program our state describes a satisfiability problem. This SAT problem needs to be solved by either the SMT solver or a human. We are using Z3 as SMT Solver. To talk to Z3 we use a small Javascript code that communicated between Z3 and Elm. Elm will send the problem in question through Javascript to Z3 and then awaits a response. Once the response has been recieved, it will then be sent to the `update` function, resulting in a new satisfiability problem. This new problem can the be again send to either Z3 or displayed on the screen. If this process stops, then the program ends and transitions into the `Done` program.
 
 ### Types
 
@@ -66,7 +72,7 @@ type alias Transition =
     List SimpleCondition
 ```
 
- We obtain simple conditions from the `split` function. This is a 1:1 implementation of the split function previously described. We will now go through its definition.
+ We obtain simple conditions from the `split` function. This is a one-to-one implementation of the  _split_ function previously described. We will now go through its definition.
  
 \text{\textemdash}
 
@@ -139,7 +145,7 @@ $$
   rec 0
 ```
 
-The split function is a partial function, therefore we will return an error if neither case could be applied. If so, the `Setup` program will throw an error and the user would need to correct the given conditions. For a valid condition, the split function will always be successful. Once successful the new list of `SimpleCondition`s will be passed as transition data to the `Assistant`
+The _split_ function is a partial function, therefore we will return an error if neither case could be applied. If so, the `Setup` program will throw an error and the user would need to correct the given conditions. For a valid condition, the _split_ function will always be successful. Once successful the new list of `SimpleCondition`s will be passed as transition data to the `Assistant`
 program.
 
 ```
@@ -189,7 +195,7 @@ We now go through all fields of our model.
  * `conditions` contains a copy of the conditions.
  * `predicates` contains a dictionary, mapping every liquid type variable to the initial set of predicates $\mathit{Init}(V)$. (Equivalent to `Refinement.init`)
  * `index` contains the index of the current condition. Keep in mind, that the loop from the Solve function is actually modelled as state transitions. Therefore, we can assume that we are always investigating one specific condition at a time. If not, then the program would have already stopped.
- * `weaken` says if we are currently weakening a condition. If this is set to `Nothing` then we are in the `solve` function, else its `Just` an `Int`, namely the index of the predicate that we are currently investigating.
+ * `weaken` says if we are currently weakening a condition. If this is set to `Nothing` then we are in the `solve` function, else its `Just i` where `i` is the index of the predicate that we are currently investigating.
  * `auto` is a boolean expression that says if the SMT solver should be asked directly. If set to `False`, then the user may decide the satisfiability of the current SMT statement.
  * `error` contains any error message that should be displayed to the user. These errors come directly from the SMT solver.
  
@@ -315,7 +321,7 @@ handleWeaken weaken sendMsg bool model =
                 |> handleAuto sendMsg
 ```
 
-If the incoming result is `False` then the SMT statement is unsatifiable. Thus, we remove the predicate. If no other predicate exists, we finish the `weaken` function by setting `model.weaken` to `Nothing`.
+If the incoming result is `False` then the SMT statement is unsatifiable. Thus, we remove the predicate. If no predicate exists, we finish the `weaken` function by setting `model.weaken` to `Nothing`.
 
 \text{\textemdash}
 

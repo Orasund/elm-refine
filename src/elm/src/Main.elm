@@ -100,6 +100,7 @@ view m =
                     800
             , Element.spacing
                 10
+            , Element.padding 10
             ]
         |> Element.layout [ Font.size 16 ]
 
