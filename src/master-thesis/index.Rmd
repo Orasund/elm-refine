@@ -21,5 +21,6 @@ output:
     includes:
       in_header: preamble.tex
       before_body: doc-prefix.tex
+      #before_body: [doc-prefix.tex, coversheet.tex]
       after_body: doc-suffix.tex
 ---

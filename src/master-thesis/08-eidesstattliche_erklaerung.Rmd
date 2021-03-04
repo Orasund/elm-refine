@@ -1,0 +1,13 @@
+# Eidesstattliche Erklärung
+
+Ich erkläre an Eides statt, dass ich die vorliegende Masterarbeit selbstständig und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und Hilfsmittel nicht benutzt bzw. die wörtlich oder sinngemäß entnommenen Stellen als solche kenntlich gemacht habe.
+Die vorliegende Masterarbeit ist mit dem elektronisch übermittelten Textdokument identisch.
+
+\vspace*{20mm}
+
+\def\dotsign{\xleaders\hbox to .2em{\d{}}\hfill\d{}}
+
+\makebox[.5\linewidth][r]{}\dotsign\smallskip\newline
+\hspace*{.5\linewidth}Lucas Payr
+
+\newpage

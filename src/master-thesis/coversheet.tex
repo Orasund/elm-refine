@@ -1,0 +1,110 @@
+{
+\singlespacing
+\parindent 0pt
+\def\ifundefined#1{\expandafter\ifx\csname#1\endcsname\relax}
+\makeatletter
+\def\Huge{\@setfontsize\Huge{28pt}{28}}
+\makeatother
+\unitlength 1cm
+\sffamily	
+\small
+%
+%
+\begin{picture}(16.6,0)
+ \ifeng
+  \put(11.2,0){\includegraphics[width=5.2cm]{jkuen}}
+ \else
+  \put(11.2,0){\includegraphics[width=5.2cm]{jkude}}
+ \fi
+ \put(12.6,-1.7){%
+  \begin{minipage}[t]{3.9cm}
+   \begin{flushleft}
+	\ifdefined\elementA
+	 {\footnotesize\elementA \vskip.1mm}
+	 {\elementAA}
+	 \vskip5mm
+	\else
+	 \relax
+	\fi
+	\ifdefined\elementB
+	 {\footnotesize\elementB \vskip.1mm}
+	 {\elementBB}
+	 \vskip5mm
+	\else
+	 \relax
+	\fi
+	\ifdefined\elementC
+	 {\footnotesize\elementC \vskip.1mm}
+	 {\elementCC}
+	 \vskip5mm
+	\else
+	 \relax
+	\fi
+	\ifdefined\elementD
+	 {\footnotesize\elementD \vskip.1mm}
+	 {\elementDD}
+	 \vskip5mm
+	\else
+	 \relax
+	\fi
+	\ifdefined\elementE
+	 {\footnotesize\elementE \vskip.1mm}
+	 {\elementEE}
+	 \vskip5mm
+	\else
+	 \relax
+	\fi
+	\date
+   \end{flushleft}
+  \end{minipage}
+ }
+%	
+%	
+ \put(12.6,-21.5){%
+  \begin{minipage}[t]{3.9cm}
+   {\fontseries{black}\selectfont JOHANNES KEPLER\\
+  \ifeng
+   UNIVERSITY
+  \else
+   UNIVERSIT\"{A}T
+  \fi
+   LINZ}\\
+   Altenbergerstra{\ss}e 69\\
+   4040 Linz, \"{O}sterreich\\
+   www.jku.at\\
+   DVR 0093696
+  \end{minipage}
+ }
+%
+%		
+ \put(0,-10.2){\begin{minipage}[b]{12cm}
+ \fontseries{black}\selectfont
+ {\begin{flushleft}
+ \Huge \expandafter\MakeUppercase\expandafter \title
+ \end{flushleft}} \end{minipage}}
+%	
+ \put(0,-15.2){\includegraphics[width=4.4cm]{arr}}
+%	
+ \put(0,-16.3){\begin{minipage}[t]{12cm}
+  \ifthesis \Large
+   \ifeng
+    \ifcase\type Bachelor \or Master \or Doctoral \or Diploma \fi Thesis \vskip1mm
+    {\normalsize to obtain the academic degree of} \vskip2mm
+    \degree \vskip1mm
+    {\normalsize in the \ifcase\type Bachelor's \or Master's \or  Doctoral \or Diploma \fi Program} \vskip2mm
+   \else
+    \ifcase\type Bachelorarbeit \or Masterarbeit \or Dissertation \or Diplomarbeit \fi \vskip1mm
+    {\normalsize zur Erlangung des akademischen Grades} \vskip2mm
+    \degree \vskip1mm
+    {\normalsize im \ifcase\type Bachelorstudium \or Masterstudium \or  Doktoratsstudium \or Diplomstudium \fi} \vskip2mm
+   \fi
+    \study
+  \else
+   {\Large\lva}
+   \vskip2mm
+   {\Large\bfseries\subtitle} 
+   \fi
+ \end{minipage}}
+\end{picture}
+}
+\newpage

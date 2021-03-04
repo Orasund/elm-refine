@@ -8,6 +8,104 @@
 \usepackage{xtab} %tabular over multiple pages
 \usepackage{longtable} %tabular over multiple pages
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setup for title page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\input{config}
+	
+	%\usepackage[T1]{fontenc}
+	%\usepackage{roboto}
+	%\usepackage{mathpazo}
+	    
+	%\ifeng	\usepackage[ngerman,english]{babel}
+	%\else	\usepackage[english,ngerman]{babel}	
+	%\fi
+		
+	%\usepackage{amsmath}
+	%\usepackage{siunitx}	
+
+%% Zitierweise numerisch, Literaturverzeichnis alphabetisch sortiert:
+%% Citation listed numerically, bibliography listed alphabetically:
+%%\usepackage[backend=biber,sortlocale=auto,style=numeric-comp]{biblatex}
+%% Zitierweise numerisch, Literaturverzeichnis unsortiert:
+%% Citation listed numerically, bibliography unsorted:
+%	\usepackage[backend=biber,sorting=none,style=numeric-comp]{biblatex}
+%% Zitierweise Autor-Jahr, Literaturverzeichnis alphabetisch sortiert:
+%% Citation listed by author-year, bibliography listed alphabetically:
+%	\usepackage[backend=biber,style=authoryear,bibstyle=authoryear,citestyle=authoryear,maxcitenames=2]{biblatex}
+	%\addbibresource{literature.bib}
+    \usepackage{csquotes}
+    
+    %\usepackage[a4paper,left=30mm,right=14mm,top=27mm,bottom=10mm,includeheadfoot]{geometry}
+
+	\usepackage{lastpage}
+	\usepackage{scrlayer-scrpage}
+	\pagestyle{scrheadings}
+	\clearscrheadfoot
+	\ifeng	\ohead*{\includegraphics[width=3cm]{jkuen.png}}
+	\else	\ohead*{\includegraphics[width=3cm]{jkude.png}}
+	\fi
+	\ifoot*{\date}
+	\cfoot*{\name}
+	\ofoot*{\pagemark/\pageref{LastPage}}	
+	\setkomafont{pageheadfoot}{\sffamily \scriptsize}
+	\setkomafont{pagenumber}{\sffamily \scriptsize}
+
+	\usepackage[onehalfspacing]{setspace}
+	
+	%\usepackage{pdfpages}
+
+	%\usepackage{tabularx}
+	%\usepackage{ltxtable}
+	%\usepackage{booktabs}
+	%\usepackage{rotating}
+	%\usepackage{colortbl}
+	%\usepackage{multirow}
+	
+	%\usepackage{xcolor}
+
+	%\usepackage{graphicx}
+	%\usepackage{wrapfig}
+
+	\usepackage[section]{placeins} %\FloatBarrier
+
+	\usepackage{float} %[H]
+
+	%\usepackage{enumitem}
+		
+	%\usepackage{subfiles}
+	
+%	\usepackage[toc,lof,lot]{multitoc}
+
+	%\usepackage[
+	%	bookmarksnumbered=true,
+	%	pdfborder={0 0 0},
+	%	pdfa,
+	%	pdftitle={\pdfTitle},
+	%	pdfauthor={\pdfAuthor},
+	%	pdfsubject={\pdfSubject},
+	%	pdfkeywords={\pdfKeywords}
+	%]{hyperref}
+	
+%	\setcounter{tocdepth}{3} %subsubsection
+%	\setcounter{secnumdepth}{3}
+		
+	\tolerance=100
+	\clubpenalty=10000
+	\widowpenalty=10000
+	\displaywidowpenalty=10000
+	
+%	\addtocontents{toc}{\protect\enlargethispage{2\normalbaselineskip}}
+%	\addtocontents{lof}{\protect\enlargethispage{2\normalbaselineskip}}
+%	\addtocontents{lot}{\protect\enlargethispage{2\normalbaselineskip}}
+	
+	\addtokomafont{caption}{\small}
+	\setkomafont{captionlabel}{\small\sffamily\bfseries}
+	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Fonts and typesetting
 %\setmainfont{tex-gyre-pagella}
