@@ -1,21 +1,9 @@
-\setcounter{section}{4}
-\setcounter{subsection}{4}
+\setcounter{section}{5}
+\setcounter{subsection}{2}
 
-## Implementation in Elm
+## Details of the Elm implementation
 
-We will now turn to the implementation of the core of the type inference algorithm discussed in the last section.
-
-In particular we will present the `split`, `solve` and `weaken` functions for computing the strongest refinements for a set of given subtyping conditions.
-
-We have implemented these functions in Elm itself; to simplify testing, we have equipped the implementation with a GUI by using an Em package written by the author called Elm-Action \cite{elmAction}. See Figure \@ref(fig:gui).
-
-```{r gui, echo=FALSE, fig.align='center', fig.cap="A GUI for writing a set of input conditions.", out.width = '50%', eval=TRUE}
-knitr::include_graphics("ui.png")
-```
-
-Elm is an immutable pure functional language. The architecture of a typical elm program is similar to that of a state machine: First a `init` function is called to define the initial state (In Elm typically called `Model`), then different messages (like a result of an SMT Solver) can cause a call to an `update` function that updates the current state. Each time the update function is called, it afterwards passes the new state to a `view` function that displays the state as HTML on the screen. Our libary Elm-Action simplifies the wiring to combine multiple Elm programs into one. To do so, the library models the different Elm programs as different states of a meta-level state machine: Each state is its own state machine. To transition from one program into another we define a transition function that takes some transition data as an input and returns the initial state of the new elm program.
-
-In our case, we have three elm programs representing different phases, called `Setup`, `Assistant` and `Done`. The `Setup` program handles the creation of our conditions. The `Assistant` program applies the `split`, `solve` and `weaken` functions to the conditions. The `Done` program shows the solution. We will only discuss the `Assistant` program, as it is the most interesting. In this program our state describes a satisfiability problem. This SAT problem needs to be solved by either the SMT solver or a human. We are using Z3 as SMT Solver. To talk to Z3 we use a small Javascript code that communicated between Z3 and Elm. Elm will send the problem in question through Javascript to Z3 and then awaits a response. Once the response has been recieved, it will then be sent to the `update` function, resulting in a new satisfiability problem. This new problem can the be again send to either Z3 or displayed on the screen. If this process stops, then the program ends and transitions into the `Done` program.
+We will now go over the Elm code in more detail. 
 
 ### Types
 
@@ -585,4 +573,3 @@ We therefore swap the result around: We keep the predicate if we SMT statement i
 $$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor q
 $$
 with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
-

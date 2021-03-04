@@ -1,7 +1,12 @@
-\setcounter{section}{3}
-\setcounter{subsection}{5}
+\setcounter{section}{4}
 
-## Type System Written in K Framework
+# Implementation
+
+We will now discuss the implementation of the elm type system and then the implementation of the refinement types. We use this implementation for rapid prototyping.
+
+Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the research language K Framework. In section \@ref(implementation-in-elm) we will go over the implementation of the refinement types in Elm. Sadly we could not do this implementation in K Framework, as it lacked a way to communicate to an SMT-Solver. Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In section \@ref(demonstration) we will demonstrate the implemented algorithm by looking at an example code.
+
+## The Elm Type System in the K Framework
 
 K Framework[@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification[@Kframework_verification]. Most of the features of the system are done by rewriting systems that are specified using its programming language called "K Language". 
 
@@ -9,7 +14,7 @@ The main usage besides the creation and formalization of new languages is to cre
 
 The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The project itself is open source while the various more specialized tools are published under the Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language[@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
 
-We will be using K Framework to express small step semantics of the denotational semantics from the earlier section. We can validate the semantic by letting K Framework apply the rewriting rules upon some examples.
+We will be using K Framework to express small step semantics of the denotational semantics from a previous chapter. We can validate the semantic by letting K Framework apply the rewriting rules upon some examples.
 
 ```
 require "unification.k"
