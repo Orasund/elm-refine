@@ -2,19 +2,19 @@
 
 # Implementation
 
-We will now discuss the implementation of the elm type system and then the implementation of the refinement types. We use this implementation for rapid prototyping.
+We will now discuss the implementation of the Elm type system and then the implementation of the refinement types. We use these implementations for rapid prototyping.
 
-Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the research language K Framework. In section \@ref(implementation-in-elm) we will go over the implementation of the refinement types in Elm. Sadly we could not do this implementation in K Framework, as it lacked a way to communicate to an SMT-Solver. Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In section \@ref(demonstration) we will demonstrate the implemented algorithm by looking at an example code.
+Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the software system \enquote{K Framework}. In Section \@ref(implementation-in-elm) we will go over the implementation of the refinement types in Elm (we could not do this implementation in the K Framework, as it lacks a way to communicate with an external SMT-Solver). In Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In Section \@ref(demonstration) we will demonstrate the implemented algorithm on an example code.
 
 ## The Elm Type System in the K Framework
 
-K Framework[@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification[@Kframework_verification]. Most of the features of the system are done by rewriting systems that are specified using its programming language called "K Language". 
+The K Framework [@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification [@Kframework_verification]. Most of the features of the system are performed by rewriting systems that are specified using its programming language called "K Language". 
 
-The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C[@Kframework_C], Java[@Kframework_Java], JavaScript[@Kframework_Js], Php[@Kframework_Php], Python[@Kframework_Python] and Rust[@Kframework_Rust].
+The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C [@Kframework_C], Java [@Kframework_Java], JavaScript [@Kframework_Js], PHP [@Kframework_Php], Python [@Kframework_Python] and Rust [@Kframework_Rust].
 
-The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The project itself is open source while the various more specialized tools are published under the Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language[@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
+The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
 
-We will be using K Framework to express small step semantics of the denotational semantics from a previous chapter. We can validate the semantic by letting K Framework apply the rewriting rules upon some examples.
+We will be using K Framework to express small step semantics of the denotational semantics from a previous chapter. We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
 
 ```
 require "unification.k"
@@ -74,7 +74,7 @@ With all of this applied, the type system can infer types by applying rules as l
 
 ### Implementing Algorithm J
 
-In the original paper by Milner[@Milner_type_polymorphism] an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
+In the original paper by Milner [@Milner_type_polymorphism], an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
 
 \logicRule
 {a:T_1\quad
@@ -112,7 +112,7 @@ So all we need to do, is to replace the rules of _let in_, _lambda_, _call_ and 
 * _inst_ instantiates a type with new variables.
 * _inify_ checks whether two types can be unified.
 
-K Framework has these imperative functions implemented in the `Unification.k` module. In order to use them, we need to first properly define poly types.
+The K Framework has these imperative functions implemented in the `Unification.k` module. In order to use them, we need to first properly define poylmorphic types.
 
 ```
 syntax PolyType ::= "forall" Set "." Type
@@ -166,7 +166,7 @@ By using a new function `=Type` with the rewriting rule `rule T =Type T => .` we
 
 ### Example
 
-We will now showcase how K-Framework infers types using the following example:
+We will now showcase how the K Framework infers types using the following example:
 
 ```
 let
@@ -175,7 +175,7 @@ in
 (::) 1 model
 ```
 
-We first need to write the example into a form that K-Framework can parse. Using the following syntax:
+We first need to write the example into a form that K Framework can parse. Using the following syntax:
 
 ```
 syntax Exp
@@ -188,7 +188,7 @@ syntax Exp
       | ..
 ```
 
-Translating the program into our K-Framework syntax, this results in the following file.
+Translating the program into our K Framework syntax, this results in the following file:
 
 ```
 <k>
@@ -200,9 +200,9 @@ in
 <tenv> .Map </tenv>
 ```
 
-Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. K-Framework uses this rule in parse-time, so this is just syntax sugar.
+Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. The K Framework uses this rule at parse time, so this is just syntax sugar.
 
-K-Framework will now walk through the abstract syntax tree to find the first term it can match.
+The K Framework will now walk through the abstract syntax tree to find the first term it can match.
 By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is rewritten. By appling the rule
 
 ```

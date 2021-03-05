@@ -1,7 +1,7 @@
 \setcounter{section}{5}
 \setcounter{subsection}{2}
 
-## Details of the Elm implementation
+## Details of the Elm Implementation
 
 We will now go over the Elm code in more detail. 
 
@@ -309,7 +309,7 @@ handleWeaken weaken sendMsg bool model =
                 |> handleAuto sendMsg
 ```
 
-If the incoming result is `False` then the SMT statement is unsatifiable. Thus, we remove the predicate. If no predicate exists, we finish the `weaken` function by setting `model.weaken` to `Nothing`.
+If the incoming result is `False`, then the SMT statement is unsatifiable. Thus, we remove the predicate. If no predicate exists, we finish the `weaken` function by setting `model.weaken` to `Nothing`.
 
 \text{\textemdash}
 
@@ -345,7 +345,7 @@ If the incoming result is `False` then the SMT statement is unsatifiable. Thus, 
                 |> handleAuto sendMsg
 ```
 
-If the incoming result is `True` then the SMT statement is satisfiable. We therefore check out the next predicate. We finish the function if no following predicate exists. To do so we again set `model.weaken` to `Nothing`.
+If the incoming result is `True`, then the SMT statement is satisfiable. We therefore check out the next predicate. We finish the function if no following predicate exists. To do so we again set `model.weaken` to `Nothing`.
 
 ### SMT Statement
 

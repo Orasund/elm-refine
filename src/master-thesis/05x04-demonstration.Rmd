@@ -3,7 +3,7 @@
 
 ## Demonstration
 
-For this demonstration we will consider the following function.
+For a demonstration, we will consider the following function.
 
 ```
 max : a:{ v:Int|True } -> b:{ v:Int|True } -> { v:Int|k4 };
@@ -55,13 +55,13 @@ knitr::include_graphics("2.png")
 
 Here we see the conditions on top, displaying the conditions that are now split. Next we see that for each `kappa` the set of predicated have been initiated with all possible predicates for variables `a` and `b`. Below it presents the first SMT statement in the `Solve`-step, mainly if the first condition is not satisfiable for the current value of `kappa_1`. Therefore, the SMT statement is satisfiable.
 
-Next program goes into the `Weaken`-step as starts checking each and every predicate currently associated with `kappa_1`, as seen in Figure \@ref(fig:assistant3).
+Next, the program goes into the `Weaken`-step as starts checking each and every predicate currently associated with `kappa_1`, as seen in Figure \@ref(fig:assistant3).
 
 ```{r assistant3, echo=FALSE, fig.align='center', fig.cap="Weakening the predicates.", out.width = '75%', eval=TRUE}
 knitr::include_graphics("3.png")
 ```
 
-Once it has checked every predicate, it goes back to the `Solve`-step and repeats. In Figure \@ref(fig:assistant4) you can see the result after a few iterations.
+Once it has checked every predicate, it goes back to the `Solve`-step and repeats. In Figure \@ref(fig:assistant4) one can see the result after a few iterations.
 
 ```{r assistant4, echo=FALSE, fig.align='center', fig.cap="The partial result after a few iterations.", out.width = '75%', eval=TRUE}
 knitr::include_graphics("4.png")
