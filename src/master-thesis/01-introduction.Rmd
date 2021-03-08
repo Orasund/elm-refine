@@ -1,0 +1,21 @@
+\newpage
+# Introduction
+
+On 21. September 1997 the onboard computer of the USS Yorktown aircraft carrier threw an uncaught division by zero exception. This resulted in the board computer shutting down and the ship becoming unable to be controlled until an engineer was able to restart the computer. Fortunately this happened during a training maneuver [@humblePi].
+
+Typically, such errors can only be found by extensive testing. Instead one might try to use a more expressive type system that can ensure at compile time that division by zero and similar bugs are impossible to occur.
+
+These more expressive types are called *Refinement Types* [@refinement_types_for_ML]. Some authors also call them *Dependent Types*&nbsp;[@little_typer], though dependent types are typically more general: They are used to prove specific properties by letting the type definition depend on a quantified predicate, whereas a refinement type takes an existing type and excludes certain values that do not ensure a specific property. To avoid confusion, we will use the term \enquote{refinement types} within this thesis. The predicate describing the valid values of a refinement type is called a _refinement_.
+
+Refinement types were first introduced by Tim Freeman and Frank Pfenning in 1991 [@refinement_types_for_ML]. In 2008 Patrick M. Rondon, Ming Kawaguchi and Ranjit Jhala from the university of California came up with a variant of refinement types called Logically Quantified Data Types, or *Liquid Types* for short. Liquid Types limit themself to refinements on Integers and Booleans written in propositional logic together with order relations and addition.
+
+Most work on Liquid Types was done in the UCSD Programming System research group, from which the original paper originated. The group has presented different implementations of Liquid types:
+
+* **DSolve** for OCaml/ML&nbsp;[@DSolve]. This type checker originated from the original paper. In the original paper liquid types could only be ensured for a calculus called $\lambda_L$. It first translates OCaml to $\lambda_L$ and then checks for type safety.
+* **CSolve** for C&nbsp;[@CSolve]. As a follow-up to DSolve, this checker implements Low-Level Liquid Type (LTLL) [@LTLL] for a formal language called *NanoC* that extends $\lambda_L$ with pointer arithmetics.
+* **LiquidHaskell** for Haskell [@RT_for_Haskell]. Extending $\lambda_L$, this type checker uses a new calculus called $\lambda_P$, a polymorphic $\lambda$-calculus [@abstract_refinement_types]. Newer versions can also reason about termination, totalness (of functions) and basic theorems.
+* **RefScript** for TypeScript [@Refined_TypeScript]. In a two phase process, the dynamic typed language gets translated into a static typed abstract language [@trust_but_verify]. This language can then be type checked using $\lambda_P$.
+
+Outside of that research group, refinement types have also been implemented for Racket&nbsp;[@Racket], Ruby&nbsp;[@Ruby] and F#&nbsp;[@F_sharp].
+
+The goal of this thesis is to define Liquid Types for the pure functional language called _Elm_&nbsp;[@elm]. In Chapter \@ref(state-of-the-art) we will give a quick history of type systems and the Elm language. In Chapter \@ref(formal-definition-of-elm) we will formally define the type system of Elm. In Chapter \@ref(liquid-types) we introduce refinement types and describe how we can extend the type system using liquid types. In Chapter \@ref(implementation) we discuss the implementation and provide a demonstration. In Chapter \@ref(conclusion) we give the conclusion of the thesis.

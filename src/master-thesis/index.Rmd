@@ -14,13 +14,12 @@ output:
     citation_package: biblatex
     latex_engine: xelatex
     number_sections: yes
-    toc: no
+    toc: true
     toc_depth: 2
     keep_tex: true
     template: template.tex
     includes:
       in_header: preamble.tex
       before_body: doc-prefix.tex
-      #before_body: [doc-prefix.tex, coversheet.tex]
       after_body: doc-suffix.tex
 ---

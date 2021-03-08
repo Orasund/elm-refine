@@ -1,0 +1,45 @@
+\setcounter{section}{5}
+
+# Conclusion
+
+In this thesis we have looked at the type system for the Elm language and discussed extending it using refinement types. The final implementation was done in Elm in order for it to be included into the Elm-in-Elm compiler [@elmInElm].
+
+We have seen that liquid types are refinement types that can reason upon the if-then-else branches and derive sharper subtypes for each of the branches. In combination with an SMT-solver this means that one can have different range types as subtypes of integers.
+
+The expressiveness of liquid types are directly dependent on the initial set of predicates and the allowed expressions in $\mathcal{Q}$. Extending the allowed expressions in $\mathcal{Q}$ requires that the SMT solver can still cope with them. Therefore, we can expect to see more complicated use cases for liquid types as SMT solvers get better. We also know that the search space for the derived predicates must be finite. We will always have a maximal recursion depth with respect to $\mathcal{Q}$ for expressions in our search space. This means that no matter how big the space we are considering is, there will always be a predicate in $\mathcal{Q}$ that can not be found.
+
+When considering if one would want to add liquid types to a language (like Elm), one must keep in mind that liquid types can not always be checked. Thus, the type system is no longer complete. Note that we have only proven soundness under the assumption that all if-then-else conditions are in $\mathcal{Q}$. Therefore, one must consider if the benefits, in particular having subtypes of integers, out way the downsides, in particular the type system being no longer complete.
+
+For Elm the biggest benefit would be to have range types. This would allow writing enum types and give more compile type guaranties.
+
+To turn the implementation described in Section \@ref(details-of-the-elm-implementation) into a usable product, one would need to rewrite the type-checker part of the Elm-in-Elm compiler. The updated checker would need to collect the subtyping conditions while inferring the type. (As discussed in Section \@ref(liquid-types-for-elm)) This can not be done by simply traversing the abstract syntax tree. Such an addition would be simple but tedious, as every type inference rule would need to be updated.
+
+A simpler solution for adding a range type in Elm has been found by the author while working on this thesis: One can use a phantom type (an algebraic type were not all type variables are used) to encode the length of an integer into its type:
+
+```
+type One = One
+
+type OnePlus n = OnePlus n
+  
+type Range n = Range Int
+
+type Const n = Const Int
+  
+one : Const One
+one =
+  Const 1
+  
+plus1 : Const n -> Const (OnePlus n)
+plus1 (Const n) =
+  Const (n + 1)
+  
+fromModBy : Const n -> Int -> Range n
+fromModBy (Const n) int =
+  Range (modBy n int)
+```
+
+An additional benefit of this approach is that Elm removes single constructor types in compile time. This means that `Range` and `Const` are modelled as `Int` in the compiled source code.
+
+The author has published a usable package containing said types under the name \enquote{Elm-Static-Array} [@elmStaticArray].
+\newpage
+
