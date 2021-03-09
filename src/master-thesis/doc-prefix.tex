@@ -193,10 +193,29 @@
 \include{coversheet}
 \end{titlepage}
 
+
+\section*{Zusammenfassung}
+
+TODO
+\newpage
+
 \section*{Abstract}
 
-Liquid types provide a theory for implementing refinement types for a Hindley-Miler type system. Elm is a pure functional programming language using such a type system. In this thesis we discuss the extension of Elm with Liquid types.
+The aim of this thesis is to add refinement types to Elm. Elm is a pure functional programming language that uses a Hindley-Miler type system. Refinement types are subtypes of existing types. These subtypes are defined by a predicate that specifies which values are part of the subtypes. To extend a Hindley-Miler type system one can use so-called Liquid types. Liquid types are special refinement types that come with an algorithm for type inferring. This algorithm interacts with an SMT solver to solve subtyping conditions. A type system using Liquid types is not complete, meaning not every valid program can be checked. Instead, Liquid types are only defined for a subset of expressions and only allow specific predicates.
+In this thesis we give a formal definition of the Elm language and its type system. We extend the type system with Liquid types and provide a subset of expressions and a subset of predicates such that the extended type system is sound. We used the software system \enquote{K Framework} for rapid prototyping of the formal Elm type system. For rapid prototyping of the core algorithm of the extended type system we implemented said algorithm in Elm and checked the subtyping condition in the SMT solver Z3.
 
+\newpage
+
+\section*{Eidesstattliche Erklärung}
+
+Ich erkläre an Eides statt, dass ich die vorliegende Masterarbeit selbstständig und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und Hilfsmittel nicht benutzt bzw. die wörtlich oder sinngemäß entnommenen Stellen als solche kenntlich gemacht habe.
+Die vorliegende Masterarbeit ist mit dem elektronisch übermittelten Textdokument identisch.
+
+\vspace*{20mm}
+
+
+\makebox[.5\linewidth][r]{}\dotsign\smallskip\newline
+\hspace*{.5\linewidth}Lucas Payr
 \newpage
 
 \section*{Thanks}
@@ -206,5 +225,3 @@ I would like to thank my supervisor Wolfgang Schreiner for his continuous advice
 I would also like to thank my friends and my girlfriend for this lovely time I had at university. I would not have been able to finish my degree if it would not have been without your love and support. It was a great time.
 
 Last but not least, a big thanks to my family. I am privileged to have you all.
-
-\newpage

@@ -2,7 +2,7 @@
 
 # State of the art
 
-In this section we give a quick history of type theory and the Elm langauge.
+In this chapter we give a quick history of type theory and the Elm langauge.
 
 ## Type Theory
 

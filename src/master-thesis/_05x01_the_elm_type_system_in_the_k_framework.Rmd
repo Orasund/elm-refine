@@ -8,7 +8,7 @@ Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implement
 
 ## The Elm Type System in the K Framework
 
-The K Framework [@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification [@Kframework_verification]. Most of the features of the system are performed by rewriting systems that are specified using its programming language called "K Language". 
+The K Framework [@K_framework] was created in 2003 by Grigore Rosu. It is a research language and a system of tools for designing and formalizing programming languages. These include tools for parsing, execution, type checking and program verification [@Kframework_verification]. Most of the features of the system are performed by rewriting systems that are specified using its programming language called \enquote{K Language}. 
 
 The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C [@Kframework_C], Java [@Kframework_Java], JavaScript [@Kframework_Js], PHP [@Kframework_Php], Python [@Kframework_Python] and Rust [@Kframework_Rust].
 

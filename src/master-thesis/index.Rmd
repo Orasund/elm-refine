@@ -5,7 +5,7 @@
 #date: "`r Sys.Date()`"
 geometry: "margin=3.5cm" #,showframe"
 site: bookdown::bookdown_site
-documentclass: scrartcl
+documentclass: scrbook
 bibliography: [book.bibtex, packages.bib]
 biblio-style: alphabetic
 link-citations: yes
