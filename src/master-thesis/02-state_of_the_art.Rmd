@@ -21,24 +21,41 @@ In Russell's original _ramified theory of types_ he defined an order amongst the
 In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is in general referred to as _Simple Type Theory_.
 
 ```{definition,name="Simple Type Theory"}
+\label{thm:simple_type_theory}
 \begin{enumerate}
-\item \mf{0} is a type;
-\item If $T_1,\dots,T_n$ are simple types, then also $(T_1,\dots,T_n)$ is a simple type. For $n=0$ we obtain the simple type $()$;
-\item All simple types can be constructed using rules 1 and 2.
+\item $0$ is a type and $()$ is a type;
+\item If $T_1,\dots,T_n$ are simple types, then also $(T_1, \dots, T_n)$ is a simple type.
 \end{enumerate} [@modern_perspective_on_type_theory].
 ```
 
-Note that $()$ stands for the type of all propositions and \mf{0} is the type of all variables. $(T_1,\dots,T_n)$ denotes the type of $n$-nary relations between values in $T_i$, for $i$ from $1$ to $n$. For example the predicate $a < b$ for variables $a,b$ would be of type $(0,0)$. For $P$ and $Q$ of type $(0)$, the predicate $P(a) \land Q(b)$ would be of type $((0))$ [@modern_perspective_on_type_theory]. The theory of types has changed a lot since then.
+Note that $()$ stands for the type of all propositions and $0$ is the type of all variables. $(T_1, \dots, T_n)$ denotes the type of $n$-nary relations between values in $T_i$, for $i$ from $1$ to $n$. For example the predicate $\lambda a,b. a < b$ for variables $a,b$ would be of type $(0,0)$. For $P$ of type $(0)$ and $Q$ of type $()$, the predicate $\lambda a,b. P(a) \land Q(b)$ would be of type $((0),())$ [@modern_perspective_on_type_theory]. The theory of types has changed a lot since then.
 
 At that time another method for dealing with Russell's paradox was invented by Ernst Zermelo: His axiomatic set theory. It was further refined by Abraham Fraenkel in 1920 to what is now known as Zermelo-Fraenkels set theory (ZF). Mathematicians nowadays prefer using ZF over type theory, as it is more expressive.
 
 Type theory lost any relevance for about 30 year. Then in the 1950s type theory finally found its use amongst computer scientists, when type checkers were added to compilers. A type checker ensures that an expression has a specific type and therefore proves that the program is well-typed. One of the first programming languages with a type checker was Fortran. Earlier type checkers existed, but only in the realm of academia.
 
-Between 1934 and 1969 Haskell Curry and William Howard noticed that proofs could be represented as programs: A theorem can be represented by a type and the corresponding proof can be represented as a program of said type. More explicitly they noticed a relation between natural deduction and lambda calculus. This realization, now known as the _Curry-Howard-Correspondence_, resulted in the invention of proof checking programs.
+Between 1934 and 1969 Haskell Curry and William Howard noticed that proofs could be represented as programs: A theorem can be represented by a type and the corresponding proof can be represented as a program of said type. More explicitly they noticed a relation between natural deduction and lambda calculus. This realization, now known as the _Curry-Howard-Correspondence_, resulted in the invention of proof checking programs and automated reasoning.
 
-The next big step for type theory was in 1972 as Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced dependent types.
+## Hindley Milner Types System
+
+One of the first systems for automated reasoning was LCF (Logic for Computable Functions) invented in 1973 by Robin Milner. To realize LCF he invented a functional programming language called ML (Meta Language). ML uses a special system of types known as the _Hindley-Milner Type System_. This system introduces _polymorphic types_: Types that can be instantiated to obtain new types. As an example, we consider the simple type theory extended by polymorphic types, as used in the Hindley-Milner type system.
+
+```{definition,name="polymorphic types for Simple Type Theory"}
+\begin{enumerate}
+\item Let $T$ be a type. Then $\forall a. T$ is a polymorphic type. We call $a$ a \textit{type variable}.
+\item Let $T_0$ be a type, let $T$ be a polymorphic type. Then $T\ T_0$ is a type. Such a type is called a \textit{type application}.
+\item We call types defined in \ref{thm:simple_type_theory} \textit{monomorphic} types.
+\end{enumerate}
+```
+
+With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicate $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type.
+
+$$\Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))$$
+Nowdays ML exists in different dialects such as SML(Standard ML), OCaml and F#.
 
 ## Dependent types and Refinement types
+
+In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced dependent types.
 
 Because dependent types have the same expressiveness as statements in predicate logic it can be used to check proofs written in predicate logic. This checking process is currently still far from automatic, but it has the benefit of producing bulletproof proofs. Note that dependent types can not be automatically checked. In comparison, an extension to type theory that can be checked automatically are so-called _refinement types_. The idea behind _refinement types_ is to use a predicate to restrict possible values of an existing type. Refinement types are therefore a form of _subtyping_.
 
