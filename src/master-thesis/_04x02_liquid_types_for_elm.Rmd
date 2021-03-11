@@ -3,7 +3,7 @@
 
 ## Liquid Types for Elm
 
-We will now extend the type system of Elm with liquid types.
+We will now extend the type system of Elm with Liquid types.
 
 ### Syntax
 
@@ -125,7 +125,7 @@ Note that we assume for $r\in\mathcal{Q}$ that $[r]_{a\leftarrow e}$ is well for
 
 #### Well-formed Liquid Type
 
-We have already defined well-formed logical qualifiers expressions. We will now extend the notion to well-formed liquid types.
+We have already defined well-formed logical qualifiers expressions. We will now extend the notion to well-formed Liquid types.
 
 ```{definition,name="Well-formed Liquid Type"}
 \begin{letIn}
@@ -165,7 +165,7 @@ a_1:\{b_1:\mathit{Int}| q_1 \}\to\hat{T}_2 &<:_{\Theta,\Lambda} a_1:\{ b_2 : \ma
 &\land\hat{T}_2<:_{\Theta\cup\{(a_1,\{ b_2 : \mathit{Int}| r_2\})\},\Lambda}\hat{T}_4
 \end{aligned}
 $$
-For two liquid types $\hat{T}_1,\hat{T}_2$, we say $\hat{T}_1$ is a subtype of $\hat{T}_2$ with respect to $\Theta$ and $\Lambda$ if and only if $\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ is valid. 
+For two Liquid types $\hat{T}_1,\hat{T}_2$, we say $\hat{T}_1$ is a subtype of $\hat{T}_2$ with respect to $\Theta$ and $\Lambda$ if and only if $\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ is valid. 
 ```
 
 Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpness of the inferred subtype depends on the capabilities of the SMT-Solver. Using this optional inference rule, the SMT-Solver will need to find the sharpest subtype, or at least sharp enough: In the case of type checking, it might be that the subtype is too sharp and therefore the SMT-Solver can't check the type successfully.
@@ -313,7 +313,7 @@ All other inference rules for types have already been described.
 
 #### Exp
 
-The following are special inference rules for liquid types. For non-liquid types the old rules still apply.
+The following are special inference rules for Liquid types. For non-Liquid types the old rules still apply.
 
 \logicRule
 {}
@@ -350,7 +350,7 @@ e_1:e_1'\\
 {}
 
 We add the condition $e_1$ to $\Lambda$ and ensure that the resulting liquid type is well-formed.
-Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the inference rule can not be applied and therefore the judgment can not be derived. In some cases we can recover by falling back to the old rule for non-liquid types, but recovery is not guaranteed.
+Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case, then the inference rule can not be applied and therefore the judgment can not be derived. In some cases we can recover by falling back to the old rule for non-Liquid types, but recovery is not guaranteed.
 
 \logicRule
 {\begin{gathered}
@@ -363,7 +363,7 @@ e_2:e_2'\quad
 {\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_3}
 {}
 
-We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ can't escape the scope, we substitute it with $e_2'$. Note that we assume that $e_2\in\mf{<qualifier-type>}$, else we can try to recover by using the inference rules for non-liquid types.
+We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ can't escape the scope, we substitute it with $e_2'$. Note that we assume that $e_2\in\mf{<qualifier-type>}$, else we can try to recover by using the inference rules for non-Liquid types.
 
 \logicRule
 {\begin{gathered}
@@ -374,7 +374,7 @@ a:\{\nu:\mathit{Int}|q\}\to \hat{T}_1 = \hat{T}_2\\
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_2}
 {}
 
-We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
+We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of Liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
 
 \logicRule
 {\begin{gathered}
@@ -438,9 +438,9 @@ $$
     &\text{such that } r = \semantic{$\mathit{qt}$}\text{ where } r\in\mathcal{Q}\\
 \semantic{$a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}$}=& a: \hat{T}_1 \to \hat{T}_2\\
     &\text{such that } \hat{T}_1 = \semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$},\\
-    &\text{and } \hat{T}_2 \semantic{$\mathit{lt}$}\text{ where } \hat{T}_1,\hat{T}_2 \text{ are liquid types}
+    &\text{and } \hat{T}_2 \semantic{$\mathit{lt}$}\text{ where } \hat{T}_1,\hat{T}_2 \text{ are Liquid types}
 \end{aligned}
 $$
 
-We extend $\semantic{.}_\Gamma:\mf{<type>}\to\mathcal{T}$ by \(\semantic{$lt$}_\Gamma =\semantic{$lt$}\) to now allow liquid types as type signatures.
+We extend $\semantic{.}_\Gamma:\mf{<type>}\to\mathcal{T}$ by \(\semantic{$lt$}_\Gamma =\semantic{$lt$}\) to now allow Liquid types as type signatures.
 ```

@@ -4,7 +4,7 @@
 
 ## Notion of Liquid Types
 
-So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it is important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be usable with an arbitrary solver.
+So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it is important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _Liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of Liquid types. Note that definitions of Liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be usable with an arbitrary solver.
 
 We start by defining the syntax and semantic of valid refinements.
 
@@ -133,7 +133,7 @@ T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
   \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to \hat{T}\\
          & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\ \text{ are}\\
-         & \text{liquid types.}\\
+         & \text{Liquid types.}\\
 \end{aligned}
 $$
 
@@ -229,7 +229,7 @@ $$
 $\Theta$ is called the set of substitutions.
 ```
 
-We will now redefine the notion of values. As mentioned before, liquid types exclude values that do not ensure a specific refinement. 
+We will now redefine the notion of values. As mentioned before, Liquid types exclude values that do not ensure a specific refinement. 
 
 ```{definition,name="Values"}
 \begin{letIn}

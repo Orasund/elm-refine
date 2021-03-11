@@ -67,4 +67,4 @@ Once it has checked every predicate, it goes back to the `Solve`-step and repeat
 knitr::include_graphics("4.png")
 ```
 
-Once every condition is valid (meaning that all SMT statements in the `Solve`-step are unsatifiable) the program holds and the result is displayed as seen in Figure \@ref(fig:done).  
+Once every condition is valid (meaning that all SMT statements in the `Solve`-step are unsatifiable) the program holds and the result is displayed as seen in Figure \@ref(fig:done).
