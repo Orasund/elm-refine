@@ -49,27 +49,47 @@ variables refinement =
 
 init : List String -> List Refinement
 init vars =
-    (vars
-        |> Set.fromList
-        |> Set.toList
-        |> List.concatMap
-            (\v ->
-                [ IsBigger "v" (Var v)
-                , EitherOr (IsBigger "v" (Var v)) (IsEqual "v" (Var v))
-                , IsSmaller "v" (Var v)
-                , EitherOr (IsSmaller "v" (Var v)) (IsEqual "v" (Var v))
-                , IsEqual "v" (Var v)
-                , IsNot (IsEqual "v" (Var v))
-                ]
+    let
+        noOr =
+            (vars
+                |> Set.fromList
+                |> Set.toList
+                |> List.concatMap
+                    (\v ->
+                        [ IsBigger "v" (Var v)
+                        , EitherOr (IsBigger "v" (Var v)) (IsEqual "v" (Var v))
+                        , IsSmaller "v" (Var v)
+                        , EitherOr (IsSmaller "v" (Var v)) (IsEqual "v" (Var v))
+                        , IsEqual "v" (Var v)
+                        , IsNot (IsEqual "v" (Var v))
+                        ]
+                    )
             )
-    )
-        ++ [ IsBigger "v" (Integer 0)
-           , EitherOr (IsBigger "v" (Integer 0)) (IsEqual "v" (Integer 0))
-           , IsSmaller "v" (Integer 0)
-           , EitherOr (IsSmaller "v" (Integer 0)) (IsEqual "v" (Integer 0))
-           , IsEqual "v" (Integer 0)
-           , IsNot (IsEqual "v" (Integer 0))
-           ]
+                ++ [ IsBigger "v" (Integer 0)
+                   , EitherOr (IsBigger "v" (Integer 0)) (IsEqual "v" (Integer 0))
+                   , IsSmaller "v" (Integer 0)
+                   , EitherOr (IsSmaller "v" (Integer 0)) (IsEqual "v" (Integer 0))
+                   , IsEqual "v" (Integer 0)
+                   , IsNot (IsEqual "v" (Integer 0))
+                   ]
+    in
+    noOr
+
+
+
+{--|> List.map
+            (\a ->
+                noOr
+                    |> List.map
+                        (\b ->
+                            if a == b then
+                                a
+
+                            else
+                                EitherOr a b
+                        )
+            )
+        |> List.concat--}
 
 
 decoder : Parser Refinement

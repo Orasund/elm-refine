@@ -2,44 +2,18 @@
 
 # Conclusion
 
-In this thesis we have looked at the type system for the Elm language and discussed extending it using refinement types. The final implementation was done in Elm in order for it to be included into the Elm-in-Elm compiler [@elmInElm].
+In this thesis we have looked at the type system for the Elm language and discussed extending it using refinement types.
 
-We have seen that liquid types are refinement types that can reason upon the if-then-else branches and derive sharper subtypes for each of the branches. In combination with an SMT-solver this means that one can have different range types as subtypes of integers.
+The original intent was to have an implementation of the type checker for Liquid types. We expected that the resulting Liquid types are defined such that non-negative integers, range types and non-zero integers can be defined. We expected to implement Liquid types for `Int`, `Bool` and tuples of Liquid types. Additionally, we expected that the inferred type of the `max` function can be sharp. Such a sharp refinement is $(a \leq \nu) \land (b \leq \nu)\land (\nu = b \lor \nu = a)$.
 
-The expressiveness of liquid types are directly dependent on the initial set of predicates and the allowed expressions in $\mathcal{Q}$. Extending the allowed expressions in $\mathcal{Q}$ requires that the SMT solver can still cope with them. Therefore, we can expect to see more complicated use cases for liquid types as SMT solvers get better. We also know that the search space for the derived predicates must be finite. We will always have a maximal recursion depth with respect to $\mathcal{Q}$ for expressions in our search space. This means that no matter how big the space we are considering is, there will always be a predicate in $\mathcal{Q}$ that can not be found.
+The resulting type system is capable of defining all described integer types and also allows inferring Liquid types for functions over integers. It does not include Liquid types over `Bool` and tuples. Additionally, the inferred type of the max function is not sharp: $(a \leq \nu) \land (b \leq \nu)$. Adding these features would have been too time-consuming and would not have added any new theory to the system. The inclusion of booleans would have meant that we would have needed to type check the liquid expressions. This would have added unnecessary complexity, as we are mainly interested in subtypes of integers. Tuples would have been easy to add but would not add additional behaviour:  Tuples as arguments can be flattened and then transformed into a list of arguments. Tuples as a return argument are syntax sugar for defining multiple functions with the same input values. To infer a sharp refinement for the `max` function one can simply add $\nu = b \lor \nu = a$ to the search space, but that is not very sophisticated. Another way would be to add $P \lor Q$ for a specific set of allowed predicates for $P$ and $Q$. We used our Elm implementation to test this for the definition of $P$ and $Q$ not containing $\lor$. The resulting refinement was sharp but included a lot of trivial  conditions. The search space increased by a factor of four. This factor could be decreased by ensuring that no two predicates are equivalent.
 
-When considering if one would want to add liquid types to a language (like Elm), one must keep in mind that liquid types can not always be checked. Thus, the type system is no longer complete. Note that we have only proven soundness under the assumption that all if-then-else conditions are in $\mathcal{Q}$. Therefore, one must consider if the benefits, in particular having subtypes of integers, out way the downsides, in particular the type system being no longer complete.
+While working on the thesis it became clear that the original expectations did not match the possibilities of Liquid types. In particular, the expressiveness of Liquid types is directly dependent on the initial set of predicates and the allowed expressions in $\mathcal{Q}$. Extending the allowed expressions in $\mathcal{Q}$ requires that the SMT solver can still cope with them. Opposite to our original expectation, the set of predicates allowed in If-branches $\mathcal{Q}$ is a superset of the predicates allowed in refinements. Additionally, the search space for the derived predicates must be finite. This means that no matter how big the space we are considering is, there will always be a predicate in $\mathcal{Q}$ that can not be found.
 
-For Elm the biggest benefit would be to have range types. This would allow writing enum types and give more compile type guaranties.
+There are multiple future topics that can be explored.
 
-To turn the implementation described in Section \@ref(details-of-the-elm-implementation) into a usable product, one would need to rewrite the type-checker part of the Elm-in-Elm compiler. The updated checker would need to collect the subtyping conditions while inferring the type. (As discussed in Section \@ref(liquid-types-for-elm)) This can not be done by simply traversing the abstract syntax tree. Such an addition would be simple but tedious, as every type inference rule would need to be updated.
-
-A simpler solution for adding a range type in Elm has been found by the author while working on this thesis: One can use a phantom type (an algebraic type were not all type variables are used) to encode the length of an integer into its type:
-
-```
-type One = One
-
-type OnePlus n = OnePlus n
-  
-type Range n = Range Int
-
-type Const n = Const Int
-  
-one : Const One
-one =
-  Const 1
-  
-plus1 : Const n -> Const (OnePlus n)
-plus1 (Const n) =
-  Const (n + 1)
-  
-fromModBy : Const n -> Int -> Range n
-fromModBy (Const n) int =
-  Range (modBy n int)
-```
-
-An additional benefit of this approach is that Elm removes single constructor types in compile time. This means that `Range` and `Const` are modelled as `Int` in the compiled source code.
-
-The author has published a usable package containing said types under the name \enquote{Elm-Static-Array} [@elmStaticArray].
+* The set of allowed expressions $\mathcal{Q}$ and the search space for the inferred refinements can be extended to sharpen the inferred predicates. At some point this would also need to include an algorithm to simplify the inferred predicates. Otherwise, the inferred predicates can only be hardly read by humans.
+* The current implementation in Elm can be extended to a full type checker by using the Elm-in-Elm compiler [@elmInElm]. This would require some changes to the type-checker part of the Elm-in-Elm compiler. The updated checker would need to collect the subtyping conditions while inferring the type (as discussed in Section \@ref(liquid-types-for-elm)). This can not be done by simply traversing the abstract syntax tree. Such an addition would be simple but tedious, as every type inference rule would need to be updated.
+* One can try to implement a specific type in Elm without Liquid types. Liquid types make a type system incomplete. Therefore, this is a far better solution of implementing a specific type. For the range type, the author of this thesis has actually found another way. Namely, to implement these types using phantom types (an algebraic type were not all type variables are used) [@elmStaticArray].
 \newpage
 

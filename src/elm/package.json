@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "elm-live": "^4.0.2"
+  }
+}

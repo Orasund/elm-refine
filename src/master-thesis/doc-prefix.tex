@@ -202,7 +202,7 @@ TODO
 \section*{Abstract}
 
 The aim of this thesis is to add refinement types to Elm. Elm is a pure functional programming language that uses a Hindley-Miler type system. Refinement types are subtypes of existing types. These subtypes are defined by a predicate that specifies which values are part of the subtypes. To extend a Hindley-Miler type system one can use so-called Liquid types. Liquid types are special refinement types that come with an algorithm for type inferring. This algorithm interacts with an SMT solver to solve subtyping conditions. A type system using Liquid types is not complete, meaning not every valid program can be checked. Instead, Liquid types are only defined for a subset of expressions and only allow specific predicates.
-In this thesis we give a formal definition of the Elm language and its type system. We extend the type system with Liquid types and provide a subset of expressions and a subset of predicates such that the extended type system is sound. We used the software system \enquote{K Framework} for rapid prototyping of the formal Elm type system. For rapid prototyping of the core algorithm of the extended type system we implemented said algorithm in Elm and checked the subtyping condition in the SMT solver Z3.
+In this thesis we give a formal definition of the Elm language and its type system. We extend the type system with Liquid types and provide a subset of expressions and a subset of predicates such that the extended type system is sound. We use the software system \enquote{K Framework} for rapid prototyping of the formal Elm type system. For rapid prototyping of the core algorithm of the extended type system we implemented said algorithm in Elm and checked the subtyping condition in the SMT solver Z3.
 
 \newpage
 
@@ -215,7 +215,7 @@ Die vorliegende Masterarbeit ist mit dem elektronisch übermittelten Textdokumen
 
 
 \makebox[.5\linewidth][r]{}\dotsign\smallskip\newline
-\hspace*{.5\linewidth}Lucas Payr
+\hspace*{.5\linewidth}\ Lucas Payr
 \newpage
 
 \section*{Thanks}

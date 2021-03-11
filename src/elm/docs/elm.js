@@ -5631,7 +5631,7 @@ var $elm$core$Set$fromList = function (list) {
 	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
 };
 var $author$project$Data$Refinement$init = function (vars) {
-	return _Utils_ap(
+	var noOr = _Utils_ap(
 		A2(
 			$elm$core$List$concatMap,
 			function (v) {
@@ -5685,29 +5685,9 @@ var $author$project$Data$Refinement$init = function (vars) {
 				'v',
 				$author$project$Data$IntExp$Integer(0)),
 				A2(
-				$author$project$Data$Refinement$EitherOr,
-				A2(
-					$author$project$Data$Refinement$IsBigger,
-					'v',
-					$author$project$Data$IntExp$Integer(0)),
-				A2(
-					$author$project$Data$Refinement$IsEqual,
-					'v',
-					$author$project$Data$IntExp$Integer(0))),
-				A2(
 				$author$project$Data$Refinement$IsSmaller,
 				'v',
 				$author$project$Data$IntExp$Integer(0)),
-				A2(
-				$author$project$Data$Refinement$EitherOr,
-				A2(
-					$author$project$Data$Refinement$IsSmaller,
-					'v',
-					$author$project$Data$IntExp$Integer(0)),
-				A2(
-					$author$project$Data$Refinement$IsEqual,
-					'v',
-					$author$project$Data$IntExp$Integer(0))),
 				A2(
 				$author$project$Data$Refinement$IsEqual,
 				'v',
@@ -5718,6 +5698,18 @@ var $author$project$Data$Refinement$init = function (vars) {
 					'v',
 					$author$project$Data$IntExp$Integer(0)))
 			]));
+	return $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (a) {
+				return A2(
+					$elm$core$List$map,
+					function (b) {
+						return _Utils_eq(a, b) ? a : A2($author$project$Data$Refinement$EitherOr, a, b);
+					},
+					noOr);
+			},
+			noOr));
 };
 var $author$project$Data$Condition$liquidTypeVariables = function (_v0) {
 	var smaller = _v0.smaller;

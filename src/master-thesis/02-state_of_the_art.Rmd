@@ -53,13 +53,16 @@ With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$
 $$\Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))$$
 Nowdays ML exists in different dialects such as SML(Standard ML), OCaml and F#.
 
+Additionally, ML also provides rules for inferring the type for a given expression. These inference rules provide the most general type possible. This means it will only instantiate a polymorphic type if necessary.
+
+
 ## Dependent types and Refinement types
 
 In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced dependent types.
 
 Because dependent types have the same expressiveness as statements in predicate logic it can be used to check proofs written in predicate logic. This checking process is currently still far from automatic, but it has the benefit of producing bulletproof proofs. Note that dependent types can not be automatically checked. In comparison, an extension to type theory that can be checked automatically are so-called _refinement types_. The idea behind _refinement types_ is to use a predicate to restrict possible values of an existing type. Refinement types are therefore a form of _subtyping_.
 
-The main theory behind refinement types was developed by Tim Freeman and Frank Pfenning in 1991 in the paper titled _Refinement Types for ML_ [@refinement_types_for_ML]. The original paper only allowed predicates using $\land$ and $\lor$. The underlying method for inferring the types was based on the already implemented type inference for the programming language ML. A type inference finds the most general type for a given expression. The type inference for ML, also called _Hindley-Milner-Type inference_ has become essential not only for refinement types, but also for all modern functional programming languages.
+The main theory behind refinement types was developed by Tim Freeman and Frank Pfenning in 1991 in the paper titled _Refinement Types for ML_ [@refinement_types_for_ML]. The original paper only allowed predicates using $\land$ and $\lor$. The underlying method for inferring the types was based on the type inference for ML.
 
 Modern refinement types are mostly influenced by a paper in 2008 by Patrick Rondan, Ming Kawaguchi and Ranji Jhala titled _Liquid Types_. Whereas the approach in 1991 used the Hindley-Milner inference with small modifications, this method introduced an additional theory on top of the Hindley-Milner inference. This new form of refinement types allow predicates written in propositional logic for integers with the order relations $\leq$ and $<$, addition and multiplication with constants. In theory one can extend the realm of allowed relations to any relation that can be reasoned upon using an SMT-Solver.
 
