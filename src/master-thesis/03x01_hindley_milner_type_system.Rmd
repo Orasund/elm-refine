@@ -1,8 +1,6 @@
-\setcounter{section}{2}
-
 # Formal definition of Elm
 
-First, we define some notations:
+For this thesis we will use the following notations:
 
 * $\mathbb{N}$ is the set of the natural numbers starting from $1$.
 * $\mathbb{N}_0$ is the set of the natural numbers starting from $0$.
@@ -10,17 +8,23 @@ First, we define some notations:
 * We will use "$.$" to separate a quantifier from a statement: $\forall a . F$ and $\exists a . F$, where $a$ is a variable and $F$ is a formula.
 * Function types will be written as $a_1 \to \dots \to a_n \to b$ instead of $a_1 \times \dots \times a_n \to b$, thus an n-ary function is represented as a unary function whoes result is a (n-1)-ary function. This concept is called "currying".
 * We allow the use of lambda notation for functions, i.e. $\lambda x.T$ denotes the function $f$ defined by the equation $f(x) = T$ where $T$ is a term.
+* For a term $t$, we use the notation $[t]_{\{(s_1,a_1),(s_2,a_2),\dots,(s_n,a_n)\}}$ for denoting the term-wise substitution of $s_i$ with $a_i$, for $i\in\mathbb{N}_1^n$ in $t$. Sometimes we also write $[t]_S$ if the set $S = \{(s_1,a_1),(s_2,a_2),\dots,(s_n,a_n)\}$ is given.
+* We write $f : T_1 \nrightarrow T_2$ so say that $f$ is a partial function from $T_1$ to $T_2$, meaning
+    $$\forall x\in T_1,y\in T_2.(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_2.$$
+* We use $\mathcal{V}$ to denote the set of all symbols.
 
-## Hindley-Milner Type System
+In this chapter we will formally define the Elm language. Section \@ref(defining-the-hindley-milner-type-system) will properly introduce types. Section \@ref(syntax) will give a definition of the Elm syntax in Backus-Naur-Form. Section \@ref(type-inference) will give type inference rules to infer the proper type of an Elm program. In  Section \@ref(denotational-semantic) we provide the denotational semantic of an Elm program. Section \@ref(soundness-of-the-inference-rules) will show that the type inference rules are sound with respect to the denotational semantic.
 
-For functional languages considered in this thesis we will use a Hindley-Milner type system [@Principal_Type-Schemes_for_Functional_Programs].
-The main idea is to have a type system that implies an order among the types. The ordering will then allow us to infer the type of any expression. In the following, we give a formal definition of this type system.
+## Defining the Hindley-Milner Type System
+
+We will use a Hindley-Milner type system [@Principal_Type-Schemes_for_Functional_Programs].
+The main idea of such a type system is to have a defined order amongst the types. The ordering will  allow us to infer the type of any expression. In the following, we give a formal definition of this type system.
 
 ### Notion of Types
 
-We will first introduce types, afterwards we will define how types relate to sets by explicitly defining the values of types as finite sets. Types are split in _mono types_ and _poly types_. Mono types can contain so called _type variables_ that can then be bound by a quantifier within a poly type. Note that quantifiers can only occur in the outermost position, thus poly types are more general types than mono types.
+We will first introduce types, afterwards we will define how types relate to sets by explicitly defining the values of types as finite sets. Types are split in _mono types_ (monomorphic types) and _poly types_ (polymorphic types). Mono types can contain so called _type variables_ that can then be bound by a quantifier within a poly type. Note that quantifiers can only occur in the outermost position, thus poly types are more general types than mono types.
 
-```{definition,name="Mono types, poly types, types"}
+```{definition,name="Mono Types, Poly Types, Types"}
 \label{thm:types}
 We define
 $$
@@ -28,90 +32,99 @@ $$
   T \text{ is a }\mathit{mono} \ \mathit{type}:\Leftrightarrow
        \ & T \text{ is a type variable}\\
   \lor \ & T \text{ is a type application}\\
-  \lor \ & T \text{ is a algebraic type}\\
+  \lor \ & T \text{ is an algebraic type}\\
   \lor \ & T \text{ is a product type}\\
-  \lor \ & T \text{ is a function type}\\
+  \lor \ & T \text{ is a function type.}\\
   T \text{ is a }\mathit{poly} \ \mathit{type} :\Leftrightarrow
-       \ & T = \forall a.T'\\
-         & \text{where } T' \text{ is a mono type or poly type and } a \text{ is a symbol}\\
+       \ & T \text{ is of form } \forall a.T'\\
+         & \text{where } T' \text{ is a mono type or poly type and } a\in\mathcal{V}.\\
   T \text{ is a }\mathit{type} :\Leftrightarrow 
-       \ & T \text{ is a mono type} \ \lor \ T \text{ is a poly type}.
+       \ & T \text{ is a mono type or poly type}.
 \end{aligned}
 $$  
 by using the following predicates:
 $$
 \begin{aligned}
-T \text{ is a } \mathit{type} \ \mathit{variable}:\Leftrightarrow \
-         & T \text{ is a symbol.}\\
+T \text{ is a } \mathit{type} \ \mathit{variable}:\Leftrightarrow \ & T \in\mathcal{V}\\
 T \text{ is a } \mathit{type} \ \mathit{application}:\Leftrightarrow \
          & T \text{ is of form } C \ T_1 \dots T_n\\
-         & \text{ where } n\in\mathbb{N}, C \text{ is a symbol and the } T_i \text{ are mono}\\
-         & \text{types for all } i\in\mathbb{N}_1^n.\\
-T \text{ is a } \mathit{algebraic} \ \mathit{type}:\Leftrightarrow \
+         & \text{where } n\in\mathbb{N}, C\in\mathcal{V} \text{ and the } T_i \text{ are mono types for}\\
+         & \text{all } i\in\mathbb{N}_1^n.\\
+T \text{ is an } \mathit{algebraic} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form }\\
-         & \mu C. C_1 \ T_{1,1} \dots T_{1,k(1)} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k(n)}\\
-         & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k(i)}.T_{i,j}\neq C\\
-         & \text{where } n\in\mathbb{N},k\in\mathbb{N}_1^n\to\mathbb{N}_0, C \text{ is a symbol and } T_{i,k(j)}\\
-         & \text{ is a mono type or } C \text{ for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k(i)}.\\ 
+         & \mu C. C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}\\
+         & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k_i}.T_{i,j}\neq C\\
+         & \text{where } n\in\mathbb{N},k_i\in\mathbb{N}_0 \text{ for all } i\in\mathbb{N}_1^n, C\in\mathcal{V} \text{ and } T_{i,k_j}\\
+         & \text{is a mono type or } C \text{ for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k_i}.
+\end{aligned}
+$$
+$$
+\begin{aligned}
 T \text{ is a } \mathit{product} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } \{l_1:T_1,\dots,l_n:T_n\}\\
-         & \text{where }n\in\mathbb{N}_0\text{ and } l_i \text{ are symbols and } T_i \text{ are mono}\\
-         & \text{types for all } i\in\mathbb{N}_1^n.\\
+         & \text{where }n\in\mathbb{N}_0, l_i\in\mathcal{V} \text{ and } T_i \text{ are mono types for}\\
+         & \text{all } i\in\mathbb{N}_1^n.\\
 T \text{ is a } \mathit{function} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } T_1 \to T_2\\
          & \text{where } T_1 \text{ and } T_2 \text{ are mono types}.
 \end{aligned}
 $$
+We define $\mathcal{T} := \{T \ | \ T \text{ is a type}\}$ as the set of all types.
+```
+Note that the quantifier $\mu C$ is called a _recursive quantifier_. By using the symbol $C$ we can describe a recursive structure in a non recursive way. That said we need to ensure that every algebraic type has a non-recursive case (called a base case). This is why we require $\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k_i}.T_{i,j}\neq C$.
+
+The presented types are in a normal form: mono types can not contain poly types and type variables are unique. We will therefore say that any term is a type if it can be rewritten into one.
+```{definition,name="Type Equivalence"}
+We say two terms $T_1,T_2$ are equivalent (Notation: $T_1=T_2$) if and only if one of the following properties holds.
+
+* $T_2 = T_1$. (Symmetry)
+* $T_1$ is structually equivalent to $T_2$. (Reflexivity)
+* $T_1$ is of form $\forall a.T_1'$ and $T_2$ is of form $\forall b.T_2'$ and $T_1'=[T_2']_{\{(b,a)\}}$ for terms $T_1'$ and $T_2'$ and $a,b\in\mathcal{V}$. ($\alpha$-Conversion)
+* $T_1$ is of form $(\forall a.T_1')\ T_3$ and $[T_1']_{\{(a,T_3)\}}=T_2$ for terms $T_1',T_2$ and $a\in\mathcal{V}$. ($\beta$-Reduction)
+
+We say the term $T_1$ is a type if there exists a type $T_2$ such that $T_1 = T_2$.
 ```
 
-Note that the quantifier $\mu C$ is called a _recursive quantifier_. By using the symbol $C$ we can describe a recursive structure in a non recursive way. That said we need to ensure that every algebraic type has a non-recursive case (called a base case). That's why we require $\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k(i)}.T_{i,j}\neq C$.
-
+Note that both the $\alpha$-Conversion and the $\beta$-Reduction are taken from the Lambda-Calculus. The underlying rewriting rules are confluent and terminating. Thus, the equivalence relation is trasitive and therefore well defined [@Types_and_Programming_Languages].
 ```{block2, type="axiom",latex.options="_"}
-We consider the types $T_i$ for $i\in\mathbb{N}$ in a product type as unordered, i.e., 
+We consider types $T_i$ for $i\in\mathbb{N}$ in a product type as unordered, i.e., 
 
 $$\{a:T_1,b:T_2,\dots\} = \{b:T_2,a:T_1,\dots\}$$
 
-for all symbols $a,b,\dots$ and mono types $T_1,T_2,\dots$.
+for all $a,b\in\mathcal{V}$ and mono types $T_1,T_2$.
 ```
-
 ```{block2, type="myexample",latex.options="_"}
 The symbol `Char` is a type variable. The expression $\mf{Sequence} \ \mf{Char}$ is a type application. These expressions can be thought of as types whose implementation is unknown. The interpretation of a type variable or a type application depends on its context.
 ```
-
 ```{block2, type="myexample",latex.options="_"}
 \label{ex:bool_list}
 $\mathit{Bool} = \mu \_.\mathit{True} \ | \ \mathit{False}$ is an algebraic type.
 
-Note that we use the symbol $\_$ to specify a symbol that i only used once in the definition. Multiple occurrences of $\_$ would be seen as multiple difference symbols. We call $\_$ a _wild card_.
+Note that we use the symbol $\_$ to specify a symbol that is only used once in the definition. Multiple occurrences of $\_$ would be seen as multiple different symbols. We call $\_$ a _wild card_.
 ```
-
 ```{block2, type="myexample",latex.options="_"}
 $List = \forall a.\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$ is a poly type whose body $\mu C. \mathit{Empty} \ | \ \mathit{Cons} \ a \ C$ is an algebraic type.
 ```
-
 ```{block2, type="myexample",latex.options="_"}
-The empty product type $\{\}$ is a mono type.
+The empty product type $\{\}$ is a mono type. Its sometimes also called a _unit_ type.
 ```
-
 ```{definition,name="Sort, Terminal"}
 \begin{letIn}
 $n\in\mathbb{N}$,
 $k_j\in\mathbb{N}$,
-$T_{i,j}$ be a mono type,
-$C,C_i$ be symbols,
-$t_j: T_{i,j}$ for all $j\in\mathbb{N}_1^n$,
+$T_{i,j}$ be mono types,
+$C,C_i\in\mathcal{V}$ for all $j\in\mathbb{N}_1^n$,
 $i\in\mathbb{N}_1^n$ and
 $T = \mu C.C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}$ be a algebraic type.
 \end{letIn}
 
 We call
 
-* $C_i$ a _terminal_ of $T$ and
-* $C_i \ T_{i,1} \dots T_{i,k_i}$ a _sort_ of $T$ for all instantiation of  all type-variables in $T_{i,j}$ by mono types that do not contain type variables.
-
-&nbsp;
+\begin{itemize}
+\item $C_i$ a \textit{terminal} of $T$ and
+\item $C_i \ T_{i,1} \dots T_{i,k_i}$ a \textit{sort} of $T$ for all instantiation of  all type-variables in $T_{i,j}$ by mono types that do not contain type variables.
+\end{itemize}
 ```
-
 ```{block2, type="myexample",latex.options="_"}
 \label{ex:int}
 The natural numbers and the integers can be defined as algebraic types using the peano axioms&nbsp;[@peano]:
@@ -119,57 +132,52 @@ The natural numbers and the integers can be defined as algebraic types using the
 * $1$ is a natural number.
 * Every natural number has a successor.
 
-These axioms can be used for the definition of the type application.
-
-$$\mathit{Nat} ::= \mu C.1 \ | \ \mathit{Succ} \ C$$
-
-For integers, we can use the property that they contain $0$ as well as all positive and negative numbers.
-  
-$$\mathit{Int} ::= \mu \_.0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}$$
-
-In this case numbers like $1, \mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $1$ and $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg},\mathit{Pos}$ and $0$ for $\mathit{Int}$ are terminals.
+These axioms can be used for the definition of the type.
+$$
+\mathit{Nat} ::= \mu C.1 \ | \ \mathit{Succ} \ C
+$$
+For integers, we can use the natural numbers for constructing the positive and negative numbers.
+$$
+\mathit{Int} ::= \mu \_.0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}
+$$
+Term like $1, \mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $1$ and $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg},\mathit{Pos}$ and $0$ for $\mathit{Int}$ are terminals.
 ```
-
 ```{definition,name="Label"}
 \begin{letIn}
-$n \in \mathbb{N}$.
-Let $T_i$ be a type,
-$l_i$ be a unique symbol for all $i\in\mathbb{N}_1^n$.
+$n \in \mathbb{N}$, $T_i\in\mathcal{T}$,
+$l_i\in\mathcal{V}$ for all $i\in\mathbb{N}_1^n$.
 \end{letIn}
 
 We say $l_i$ is a _label_ of the product type $\{l_1:T_1,..,l_n:T_n\}$ for all $i\in\mathbb{N}_1^n$.
 
 We define 
-
-$$T_1 \times \dots \times T_n := \{1:T_1,\dots,n:T_n\}$$
-
+$$
+T_1 \times \dots \times T_n := \{1:T_1,\dots,n:T_n\}
+$$
 as the _ordered product type_ with $n$ components.
 ```
-
 The most general example of a product type is a record. Tuples can be represented as ordered product types.
-
-```{definition,name="Bound, Free, Set of free variables"}
+```{definition,name="Bound, Free, Set of Free Variables"}
 \begin{letIn}
 $n\in\mathbb{N}_0$,
-$a$ be a type variable,
-$T$ be a type,
-$C$ be a symbol,
-$k\in\mathbb{N}_1^n\to\mathbb{N}_0$,
-$T_i$ be a type,
-$T_{i,k(j)}$ be a type or a symbol and $C_i$ be a symbol for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+$a,C,C_i\in\mathcal{V}$,
+$k_j\in\mathbb{N}_0$,
+$T,T_i\in\mathcal{T}$,
+$T_{i,k(j)}\in\mathcal{T}\cup\mathcal{V}$ and for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
 \end{letIn}
 
 We say
 
-* $a$ is _free_ in $T :\Leftrightarrow a \in \mathit{free}(T)$
-* $a$ is _bound_ in $T :\Leftrightarrow a \not\in \mathit{free}(T)$ and $a$ occurs in $T$.
+* $a$ is _free_ in $T :\Leftrightarrow a \in \text{free}(T)$
+* $a$ is _bound_ in $T :\Leftrightarrow a \not\in \text{free}(T)$ and $a$ occurs in $T$.
 
 where
 
 $$
   \begin{aligned}
-    \mathrm{free}(a) :=& \{a\}\\
-    \mathrm{free}(C \ T_1 \dots T_n) :=& \bigcup_{i\in\mathbb{N}_1^n}\mathrm{free}(T_i)\\
+    \text{free}:\ & \mathcal{T}\to\mathcal{P}(\mathcal{V})\\
+    \text{free}(a) :=& \{a\}\\
+    \text{free}(C \ T_1 \dots T_n) :=& \bigcup_{i\in\mathbb{N}_1^n}\mathrm{free}(T_i)\\
    \mathrm{free}\begin{pmatrix*}[l]
     \mu C.\\
     C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
@@ -186,51 +194,32 @@ $$
   \end{aligned}
 $$
 ```
+A poly type can be instanciated with mono type by appling the $\beta$-Reduction. The result will again be a type.
 
-```{definition,name="Partial function"}
-\begin{letIn}
-$T_1$ and $T_2$ be sets and
-$f \subseteq T_1 \times T_2$. 
-\end{letIn}
-We say $f$ is a _partial function_ (Notation: $f : T_1 \nrightarrow T_2$) $:\Leftrightarrow$
-$$\forall x\in T_1,y\in T_2.(x,y_1)\in f \land (x,y_2)\in f \Rightarrow y_1 = y_2.$$
-```
-
-```{definition,name="Sets of Types"}
-We define
-
-* $\mathcal{V} := \{a \ | \ a \text{ is a symbol} \}$ as the set of all type variables (symbols).
-* $\mathcal{T} := \{T \ | \ T \text{ is a type}\}$ as the set of all types.
-
-&nbsp;
-```
-
-A type can be substituted by replacing a bound type variable with a mono type:
-
-```{definition,name="Type substitution"}
+```{definition,name="Type Instatiation"}
 \begin{letIn}
 $n\in\mathbb{N}$,
 $\Theta:\mathcal{V}\nrightarrow\{t\in\mathcal{T}| t \text{ is a mono type}\}$,
 $a\in\mathcal{V}$.
 Let $T,T_1,T_2$,
-$k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
-$T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+$k_j\mathbb{N}_0$ and
+$T_{i,k_j}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
 \end{letIn}
-We define the substitute of a type $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
+We denote $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
 $$
   \begin{aligned}[]
     [a]_\Theta :=& \begin{cases} S & \text{if } (a,S) \in \Theta\\ a &\text{else} \end{cases}\\
     \begin{bmatrix*}[l]
     \mu C.\\
-    C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
     | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
     \end{bmatrix*}_\Theta:=&
     \begin{matrix*}[l]
     \mu C.\\
-    C_1 \ [T_{1,1}]_{\Theta\setminus\{C,\_\}} \dots [T_{1,k_1}]_{\Theta\setminus\{C,\_\}} \\
+    C_1 \ [T_{1,1}]_{\Theta\setminus\{(C,\_\)}} \dots [T_{1,k_1}]_{\Theta\setminus\{(C,\_)\}} \\
     | \dots \\
-    | \ C_n \ [T_{n,1}]_{\Theta\setminus\{C,\_\}} \dots [T_{n,k_n}]_{\Theta\setminus\{C,\_\}}
+    | \ C_n \ [T_{n,1}]_{\Theta\setminus\{(C,\_)\}} \dots [T_{n,k_n}]_{\Theta\setminus\{(C,\_)\}}
     \end{matrix*}\\
     [\{l_1:T_1,\dots,l_n:T_n\}]_\Theta:=&\{l_1:[T_1]_\Theta,\dots,l_n:[T_n]_\Theta\}\\
     [T_1\to T_2]_\Theta :=& [T_1]_\Theta\to [T_2]_\Theta\\
