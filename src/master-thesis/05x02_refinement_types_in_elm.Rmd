@@ -1,6 +1,3 @@
-\setcounter{section}{5}
-\setcounter{subsection}{1}
-
 ## Refinement Types in Elm
 
 We will now turn to the implementation of the core of the type inference algorithm discussed in section \@ref(formulating-smt-statements) previous chapter.

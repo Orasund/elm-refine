@@ -1,6 +1,3 @@
-\setcounter{section}{5}
-\setcounter{subsection}{3}
-
 ## Demonstration
 
 For a demonstration, we will consider the following function.

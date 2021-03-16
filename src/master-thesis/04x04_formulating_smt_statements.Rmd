@@ -1,6 +1,3 @@
-\setcounter{section}{4}
-\setcounter{subsection}{3}
-
 ## Formulating SMT Statements
 
 So far we have described the inference rules and the subtyping rule. We have yet to describe an algorithm that can derive a valid type for a set of given subtyping rules.
@@ -38,7 +35,7 @@ We say $c$ is a _Subtyping Condition_ $:\Leftrightarrow$
 $$
 \begin{aligned}
 &c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
-&\text{where }\hat{T}_1,\hat{T}_2\text{ are a Liquid types or templates},\Theta\text{ is a type variable context and }\\
+&\text{where }\hat{T}_1,\hat{T}_2\text{ are a liquid types or templates},\Theta\text{ is a type variable context and }\\
 &\Lambda\subset\mathcal{Q}.
 \end{aligned}
 $$

@@ -1,5 +1,3 @@
-\setcounter{section}{3}
-\setcounter{subsection}{1}
 
 ## Syntax
 
@@ -49,8 +47,7 @@ $$
 $$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
 $$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
 $$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
-$$
-\begin{aligned}
+\(\begin{aligned}
 \mf{<exp>} \ ::=& \ \mf{"foldl"}\\
                |& \ \mf{"(::)"}\\
                |& \ \mf{"(+)"} \ | \ \mf{"(-)"} \ | \ \mf{"(*)"} \ | \ \mf{"(//)"}\\
@@ -71,7 +68,7 @@ $$
                |& \ \mf{<upper-var>}\\
                |& \ \mf{<lower-var>}
 \end{aligned}
-$$
+\)
 ```
 
 Additionally, Elm also allows global constants, type aliases and custom types.

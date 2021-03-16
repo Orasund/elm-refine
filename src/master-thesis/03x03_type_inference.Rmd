@@ -1,6 +1,3 @@
-\setcounter{section}{3}
-\setcounter{subsection}{2}
-
 ## Type Inference
 
 In the first section of this chapter we defined a type system, in the second section we introduced a syntax for our language. Now we want to define rules how to obtain the type of a given program written in our language.
