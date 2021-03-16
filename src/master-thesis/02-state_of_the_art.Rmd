@@ -1,6 +1,4 @@
-\setcounter{section}{1}
-
-# State of the art
+# State of the Art
 
 In this chapter we give a quick history of type theory and the Elm langauge.
 
@@ -12,79 +10,78 @@ In 1902, Bertrand Russell wrote Gottlob Frege a letter, pointing out a paradox i
 Given the set of all sets that do not contain themselfs $R = \{x|x\not \in x\}$, then $R\in R$ and $R\not\in R$.
 ```
 
-To fix this problem, Russell added a basic theory of types in the appendix of _Principia Mathematica_ [@Principia_Mathematica], which at the time was already in the printer. This rushed theory was not perfect, but it marks the first appearance of type theory.
+To fix this problem, Russell added a basic theory of types in the appendix of _Principia Mathematica_ [@Principia_Mathematica], which at the time was already in the printer. This rushed theory was not perfect, but it marks the first appearance.
 
 Russell thought that the main pain point of set theory was that sets could be defined implicitly, (without listing all elements). Type theory is therefore by design constructive. Every value has exactly one type. Once the type of value is given, it can not change. This is a big difference to sets, where elements can live in any amount of different sets.
 
-In Russell's original _ramified theory of types_ he defined an order amongst the predicates. The lowest predicates could only reason about types. Higher predicates could reason only about lower predicates. This made the type of functions not only depend on the types of its arguments but also on the types of predicates contained in the definition of the function. Thus, the type of a function could get very complicated even for simple functions [@modern_perspective_on_type_theory].
+In Russell's original _ramified theory of types_ [@modern_perspective_on_type_theory] he defined an order amongst the predicates. The lowest predicates could only reason about types. Higher predicates could reason only about lower predicates. This made the type of functions not only dependent on the types of its arguments but also on the types of predicates contained in the definition of the function. Thus, the type of a function could get very complicated even for simple functions.
 
-In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is in general referred to as _Simple Type Theory_.
+In 1921 Leon Chwistek and Frank Ramsey noticed that if one would allow recursive type definitions, the complexity could be avoided. This new theory is in general referred to as _Simple Type Theory_ [@modern_perspective_on_type_theory].
 
 ```{definition,name="Simple Type Theory"}
 \label{thm:simple_type_theory}
 \begin{enumerate}
 \item $0$ is a type and $()$ is a type;
 \item If $T_1,\dots,T_n$ are simple types, then also $(T_1, \dots, T_n)$ is a simple type.
-\end{enumerate} [@modern_perspective_on_type_theory].
+\end{enumerate}
 ```
 
-Note that $()$ stands for the type of all propositions and $0$ is the type of all variables. $(T_1, \dots, T_n)$ denotes the type of $n$-nary relations between values in $T_i$, for $i$ from $1$ to $n$. For example the predicate $\lambda a,b. a < b$ for variables $a,b$ would be of type $(0,0)$. For $P$ of type $(0)$ and $Q$ of type $()$, the predicate $\lambda a,b. P(a) \land Q(b)$ would be of type $((0),())$ [@modern_perspective_on_type_theory]. The theory of types has changed a lot since then.
+Note that $()$ stands for the type of all propositions and $0$ is the type of all variables. $(T_1, \dots, T_n)$ denotes the type of $n$-nary relations between values in $T_i$, for $i$ from $1$ to $n$. For example the predicate $\lambda a,b. a < b$ for variables $a,b$ would be of type $(0,0)$. For $P$ of type $(0)$ and $Q$ of type $(0)$, the predicate $\lambda a,b. P(a) \land Q(b)$ would be of type $((0),(0))$ [@modern_perspective_on_type_theory]. The theory of types has changed a lot since then.
 
-At that time another method for dealing with Russell's paradox was invented by Ernst Zermelo: His axiomatic set theory. It was further refined by Abraham Fraenkel in 1920 to what is now known as Zermelo-Fraenkels set theory (ZF). Mathematicians nowadays prefer using ZF over type theory, as it is more expressive.
+At that time another method for dealing with Russell's paradox was invented by Ernst Zermelo: his axiomatic set theory. It was further refined by Abraham Fraenkel in 1920 to what is now known as _Zermelo-Fraenkels set theory_ (ZF) [@modern_perspective_on_type_theory]. Mathematicians nowadays prefer using ZF over type theory, as it is more expressive.
 
-Type theory lost any relevance for about 30 year. Then in the 1950s type theory finally found its use amongst computer scientists, when type checkers were added to compilers. A type checker ensures that an expression has a specific type and therefore proves that the program is well-typed. One of the first programming languages with a type checker was Fortran. Earlier type checkers existed, but only in the realm of academia.
+Type theory lost most of its relevance for about 30 years. Then in the 1950s type theory finally found its use amongst computer scientists, when type checkers were added to compilers. A type checker ensures that an expression has a specific type and therefore proves that the program is well-typed. One of the first programming languages with a type checker was Fortran. Earlier type checkers existed, but only in the realm of academia.
 
-Between 1934 and 1969 Haskell Curry and William Howard noticed that proofs could be represented as programs: A theorem can be represented by a type and the corresponding proof can be represented as a program of said type. More explicitly they noticed a relation between natural deduction and lambda calculus. This realization, now known as the _Curry-Howard-Correspondence_, resulted in the invention of proof checking programs and automated reasoning.
+Between 1934 and 1969 Haskell Curry and William Howard noticed that proofs could be represented as programs: A theorem can be represented by a type and the corresponding proof can be represented as a program of said type. More explicitly they noticed a relation between natural deduction and lambda calculus. This realization, now known as the _Curry-Howard-Correspondence_ [@modern_perspective_on_type_theory], resulted in the invention of proof checking programs and automated reasoning.
 
-## Hindley Milner Types System
+## The Hindley Milner Type System
 
-One of the first systems for automated reasoning was LCF (Logic for Computable Functions) invented in 1973 by Robin Milner. To realize LCF he invented a functional programming language called ML (Meta Language). ML uses a special system of types known as the _Hindley-Milner Type System_. This system introduces _polymorphic types_: Types that can be instantiated to obtain new types. As an example, we consider the simple type theory extended by polymorphic types, as used in the Hindley-Milner type system.
+One of the first systems for automated reasoning was LCF (Logic for Computable Functions) invented in 1973 by Robin Milner. To implement LCF, he invented a functional programming language called ML (Meta Language). ML uses a special system of types known as the _Hindley-Milner Type System_. This system introduces _polymorphic types_; i.e. types that can be instantiated to obtain new types. As an example, we consider the simple type theory extended by polymorphic types, as used in the Hindley-Milner type system.
 
-```{definition,name="polymorphic types for Simple Type Theory"}
+```{definition,name="Polymorphic Types for Simple Type Theory"}
 \begin{enumerate}
 \item Let $T$ be a type. Then $\forall a. T$ is a polymorphic type. We call $a$ a \textit{type variable}.
 \item Let $T_0$ be a type, let $T$ be a polymorphic type. Then $T\ T_0$ is a type. Such a type is called a \textit{type application}.
-\item We call types defined in \ref{thm:simple_type_theory} \textit{monomorphic} types.
+\item We call types defined in Definition \ref{thm:simple_type_theory} \textit{monomorphic} types.
 \end{enumerate}
 ```
 
 With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicate $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type.
-
-$$\Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))$$
-Nowdays ML exists in different dialects such as SML(Standard ML), OCaml and F#.
+$$
+\Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))
+$$
+Nowdays ML exists in different dialects such as SML(Standard ML), OCaml and&nbsp;F#.
 
 Additionally, ML also provides rules for inferring the type for a given expression. These inference rules provide the most general type possible. This means it will only instantiate a polymorphic type if necessary.
 
 
-## Dependent types and Refinement types
+## Dependent Types and Refinement Types
 
-In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced dependent types.
+In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced _dependent types_ [@modern_perspective_on_type_theory].
 
-Because dependent types have the same expressiveness as statements in predicate logic it can be used to check proofs written in predicate logic. This checking process is currently still far from automatic, but it has the benefit of producing bulletproof proofs. Note that dependent types can not be automatically checked. In comparison, an extension to type theory that can be checked automatically are so-called _refinement types_. The idea behind _refinement types_ is to use a predicate to restrict possible values of an existing type. Refinement types are therefore a form of _subtyping_.
+Because dependent types have the same expressiveness as statements in predicate logic, they can be used to check proofs written in predicate logic. This checking process is still far from automatic, but it has the benefit of producing bulletproof proofs. Note that dependent types can not be automatically checked. In comparison, an extension to type theory that can be checked automatically are so-called _refinement types_. The idea behind _refinement types_ is to use a predicate to restrict possible values of an existing type. Refinement types are therefore a form of _subtyping_.
 
-The main theory behind refinement types was developed by Tim Freeman and Frank Pfenning in 1991 in the paper titled _Refinement Types for ML_ [@refinement_types_for_ML]. The original paper only allowed predicates using $\land$ and $\lor$. The underlying method for inferring the types was based on the type inference for ML.
+The main theory behind refinement types was developed by Tim Freeman and Frank Pfenning in 1991 in the paper titled _Refinement Types for ML_ [@refinement_types_for_ML]. The original paper only allowed predicates using the logical connectives $\land$ and $\lor$. The underlying method for inferring the types was based on the type inference for ML.
 
-Modern refinement types are mostly influenced by a paper in 2008 by Patrick Rondan, Ming Kawaguchi and Ranji Jhala titled _Liquid Types_. Whereas the approach in 1991 used the Hindley-Milner inference with small modifications, this method introduced an additional theory on top of the Hindley-Milner inference. This new form of refinement types allow predicates written in propositional logic for integers with the order relations $\leq$ and $<$, addition and multiplication with constants. In theory one can extend the realm of allowed relations to any relation that can be reasoned upon using an SMT-Solver.
+Modern refinement types are mostly influenced by a paper in 2008 by Patrick Rondan, Ming Kawaguchi and Ranji Jhala titled _Liquid Types_ [@liquidTypes]. Whereas the approach in 1991 used the Hindley-Milner inference with small modifications, this method introduced an additional theory on top of the Hindley-Milner inference. This new form of refinement types allow predicates written in propositional logic for integers with the order relations $\leq$ and $<$, addition and multiplication with constants. In theory one can extend the realm of allowed relations to anything that can be reasoned upon using an SMT-Solver.
 
-## Introduction for Elm
+## An Introduction to Elm
 
-The programming language Elm was developed by Evan Czaplicki as his master thesis in 2012. It was initially developed as a reactive programming language. In reactive programming effects are modelled as data streams (a sequence of effects). This was implemented in Elm by a data type called _Signal_. Signals allowed for \enquote{time-travel debugging}: One can step forwards and backwards through the events.
+The programming language Elm was developed by Evan Czaplicki as his master thesis [@elm] in 2012. It was initially developed as a reactive programming language. In reactive programming effects are modelled as data streams (sequences of effects). This was implemented in Elm by a data type called _Signal_. Signals allowed for \enquote{time-travel debugging}: One can step forwards and backwards through the events.
 
-While signals where a very direct implementation of the mathematical model(a sequence of effects), it turned out to be not very useful. Thus, it got replaced by a special architecture, now known as _The Elm Architecture_ (TEA). Nowadays, an Elm program is more like a state machine with events being state transitions:
+While signals where a very direct implementation of the mathematical model, it turned out to be not very useful. Thus, it got replaced by a special architecture, now known as _The Elm Architecture_ (TEA) [@ElmPage]. Nowadays, an Elm program is more like a state machine with events being state transitions:
 
 We call the state of a program the `Model`, the events are called messages or `Msg` for short.
-The TEA has three functions:
+The TEA has three exposed functions:
 
 ```
 init : Model
-
 update : Msg -> Model -> Model
-
 view : Model -> Html Msg
 ```
 
 The program start with an `init` model. The model then gets displayed on screen using the `view` function. The result of the view function is an HTML document. This resulting HTML allows the user to send messages (for example by pressing a button). These messages then get send one at the time through the `update` function. The `update` function changes the model and then calls the `view` function, resulting in an update of the HTML document. To allow impure effects like time-related actions or randomness, Elm can send and receive asynchronous messages from and to a local or remote computer.
 
-Elm claims that it has no runtime errors. This is technically not true. There exist three types of runtime errors: running out of memory, non-terminating functions and comparing functions. For this thesis we can safely ignore the first two types of runtime errors. The reason why Elm has problems comparing functions is that it uses the mathematical definition of equal. Two functions $f$ and $g$ are equal if $\forall x. f(x) = g(x)$. For infinite sets, like the real numbers, this is impossible to check numerically. Thus, elm can not reason about $(\lambda x. x\cdot 2) = (\lambda x. x + x)$. For our thesis we do not allow comparisons between functions.
+Elm claims that it has no runtime errors [@ElmPage]. This is actually not completely true. There exist three sorts of runtime errors: running out of memory, non-terminating functions and comparing functions. For this thesis we can safely ignore the first sort of runtime errors as our formal language does not consider memory. We can also ignore the second sort as our formal language will only allow terminating functions. As for the thrid sort of errors, the reason why Elm has problems comparing functions is that it uses the mathematical definition of equality. Two functions $f$ and $g$ are equal if for all $x$ we have $f(x) = g(x)$. For infinite sets, like the real numbers, this is impossible to check numerically. Thus, Elm can not reason about $(\lambda x. x\cdot 2) = (\lambda x. x + x)$. For our thesis we therefore do not allow comparisons between functions.
 
-Elm has a lot of hidden features that are intended for advanced programmers and therefore mostly syntax sugar or quality-of-life features. These features include recursive types, opaque types, extendable records and constraint type variables. For this thesis we will not consider any of these features. 
+Elm has a lot of hidden features that are intended for advanced programmers. These features are mostly syntactic sugar or quality-of-life features and include recursive types (which is the only way to write non terminating functions), opaque types, extendable records and constraint type variables. For this thesis, we will not consider any of these features. 
