@@ -1,6 +1,8 @@
 ### Inference Rules for Expressions
 
-#### list-exp-field
+We will now go over the inference rules for expressions. In Elm, any expression has a type with respect to a given type context $\Gamma$ and variable context $\Delta$.
+
+#### Inference Rules for `<list-exp-field>` {-}
 
 Judgment: $\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$
 
@@ -17,7 +19,7 @@ Judgment: $\Gamma,\Delta\vdash lef:\{a_1:T_1,\dots, a_n:T_n\}$
 {\Gamma,\Delta\vdash a_0 \ \mf{"="} \ e \ \mf{","} \ lef : T}
 {}
 
-#### maybe-exp-sign
+#### Inference Rules for `<maybe-exp-sign>` {-}
 
 Judgment: $\Gamma,mes\vdash a:T$
 
@@ -28,14 +30,14 @@ Judgment: $\Gamma,mes\vdash a:T$
 If no argument is given, then we do nothing.
 
 \logicRule
-{\Gamma\vdash t:T
+{\Gamma\vdash t:T\quad
 a_1 = a_2
 }
-{\Gamma,a_1 \mf{":"} t \mf{";"} \vdash a_2 : T}
+{\Gamma,a_1 \ \mf{":"} \ t\ \mf{";"} \vdash a_2 : T}
 {}
 If we have a variable $a_1$ and a type $T$, then the variables $a_2$ need to match. The type signature $t$ defines the type of $a_2$.
 
-#### bool
+#### Inference Rules for `<bool>` {-}
 
 Judgment: $b:T$
 
@@ -44,7 +46,7 @@ Judgment: $b:T$
 {b:\mathit{Bool}}
 {}
 
-#### int
+#### Inference Rules for `<int>` {-}
 
 Judgment: $i:T$
 
@@ -52,9 +54,9 @@ Judgment: $i:T$
 {}
 {i:\mathit{Int}}
 {}
-We have proven in theorem \ref{ex:int} that $\mathit{Nat}$ is isomorph to $\mathbb{N}$. Is should be trivial to therefore conclude that $\mathit{Int}$ is isomorph to $\mathbb{Z}$. And therefore this rule is justified.
+We have proven in Theorem \ref{ex:int} that $\mathit{Nat}$ is isomorph to $\mathbb{N}$. Is should be trivial to therefore conclude that $\mathit{Int}$ is isomorph to $\mathbb{Z}$. And therefore this rule is justified.
 
-#### list-exp
+#### Inference Rules for `<list-exp>` {-}
 
 Judgment: $\Gamma,\Delta\vdash le:\mathit{List} \ T$
 
@@ -70,7 +72,7 @@ Judgment: $\Gamma,\Delta\vdash le:\mathit{List} \ T$
 {\Gamma,\Delta\vdash e \ \mf{","} \ \mathit{le}:\mathit{List} \ T}
 {}
 
-#### exp
+#### Inference Rules for `<exp>` {-}
 
 Judgment: $\Gamma,\Delta\vdash e:T$
 
@@ -160,7 +162,6 @@ T_0=\{a_1:T_1,\dots,a_n:T_n,\dots \}
 }
 {\Gamma,\Delta\vdash\mf{"\{"} \ a \ \mf{"|"} \ \mathit{lef} \ \mf{"\}"}:T_0}
 {}
-Since Elm version 0.19, released in 2018, setters are not allowed to change the type of a field in a record.
 
 \logicRule
 {(a_1,\{a_2:T,\dots\})\in\Delta
@@ -229,11 +230,13 @@ mes:T_1\vdash a:T_1\\
 {}
 
 ```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now check the type $T_0 = \forall a.\mathit{List} \ a \to \mathit{List} \ a$ of the `reverse` function for $\Gamma = \Delta = \varnothing$, $\Delta = \varnothing$. The body of the $reverse$ function is as follows:
+In Example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function. We can now check the type $T_0 = \forall a.\mathit{List} \ a \to \mathit{List} \ a$ of the `reverse` function for $\Gamma = \Delta = \varnothing$, $\Delta = \varnothing$. The body of the $reverse$ function is as follows:
 
 \begin{lstlisting}[language=elm]
 foldl (::) []
 \end{lstlisting}
+
+For deriving the judgment the following sets are required.
 
 \begin{center}
 \small

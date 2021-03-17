@@ -1,6 +1,8 @@
 ### Inference Rules for Statements
 
-#### list-statement-var
+We now provide the inference rules for statements. We can model statements as functions and a list of statements as a composition of functions.
+
+#### Inference Rules for `<list-statement-var>` {-}
 
 Judgment: $\mathit{lsv}:(a_1,\dots,a_n)$
 
@@ -14,7 +16,7 @@ Judgment: $\mathit{lsv}:(a_1,\dots,a_n)$
 {a_0 \ \mathit{lsv}:(a_0,a_1,\dots,a_n)}
 {}
 
-#### list-statement-sort
+#### Inference Rules for `<list-statement-sort>` {-}
 
 Judgment: $\mathit{lss}:(c_1:(T_{1,1}, \dots,T_{1,k_1}),\dots,c_n:(T_{n,1}, \dots,T_{n,k_n}))$
 
@@ -43,7 +45,7 @@ a_n:(T_{n,1}, \dots,T_{n,k_n})
 }
 {}
 
-#### list-statement
+#### Inference Rules for `<list-statement>`
 
 Judgment: $\Gamma_1,\Delta_1,\mathit{ls}\vdash \Gamma_2,\Delta_2$
 
@@ -61,7 +63,7 @@ Judgment: $\Gamma_1,\Delta_1,\mathit{ls}\vdash \Gamma_2,\Delta_2$
 {\Gamma_1,\Delta_1, s \ \mf{";"} \ \mathit{ls} \vdash \Gamma_3,\Delta_3}
 {}
 
-#### maybe-statement-sign
+#### Inference Rules for `<maybe-statement-sign>`
 
 Judgment: $\Gamma,mss\vdash a:T$
 
@@ -76,7 +78,7 @@ a_1 = a_2}
 {\Gamma,a_1 \ \mf{":"} \ t \ \mf{";"}\vdash a_2:T}
 {}
 
-#### statement
+#### Inference Rules for `<statement>`
 
 Judgment: $\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$
 
@@ -127,12 +129,12 @@ T_2 \text{ is a mono type}\quad
 \end{Bmatrix*}) = \Delta_2
 \end{gathered}
 }
-{\Gamma_1,\Delta_1,\mf{"type"} \ c \ \mathit{lsv} \mf{"="} \mathit{lss} \vdash\Gamma_2,\Delta_2
+{\Gamma_1,\Delta_1,\mf{"type"} \ c \ \mathit{lsv} \ \mf{"="}\ \mathit{lss} \vdash\Gamma_2,\Delta_2
 }
 {}
 The list $\mathit{lss}$ provides us with the structure of the type. From there we construct the type $T_2$ and bind all variables, thus creating the poly type $T_1$. Additionally, every sort $c_i$ for $i\in\mathbb{N}_1^n$ has its own constructor that gets added to $\Delta_1$ under the name $c_i$. In Elm these constructors are the only constants beginning with an upper-case letter.
 
-#### maybe-main-sign
+#### Inference Rules for `<maybe-main-sign>`
 
 Judgment: $\Gamma,\mathit{mms}\vdash \text{main}:T$
 
@@ -146,7 +148,7 @@ Judgment: $\Gamma,\mathit{mms}\vdash \text{main}:T$
 {\Gamma,\mf{"main :"} t \mf{";"}\vdash \text{main}:T}
 {}
 
-#### program
+#### Inference Rules for `<program>`
 
 Judgment: $\textit{prog}:T$
 

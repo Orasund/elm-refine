@@ -1,6 +1,8 @@
 ### Inference Rules for Type Signatures
 
-#### list-type-fields
+We will now describe the inference rules for type signatures. This is nothing more than a translation from `<type>` to $\mathcal{T}$.
+
+#### Inference Rules for `<list-type-fields>` {-}
 
 Judgment: $\Gamma\vdash ltf:\{a_1:T_1,\dots,a_n:T_n\}$
 
@@ -17,9 +19,9 @@ Judgment: $\Gamma\vdash ltf:\{a_1:T_1,\dots,a_n:T_n\}$
 {\Gamma\vdash a_0 \ \mf{":"} \ t \ \mf{","} \ \mathit{ltf}:T}
 {}
 
-The type context $\Gamma$ is used in the judgment $\Gamma\vdash t:T_0$ that turns the type signature $t$ into a type $T_0$.
+The type context $\Gamma$ is used for the judgment $\Gamma\vdash t:T_0$ that turns the type signature $t$ into a type $T_0$.
 
-#### list-type
+#### Inference Rules for `<list-type>` {-}
 
 Judgment: $\Gamma\vdash lt:(T_1,\dots,T_n)$
 
@@ -36,7 +38,7 @@ Judgment: $\Gamma\vdash lt:(T_1,\dots,T_n)$
 {\Gamma\vdash t \ lt:T}
 {}
 
-#### type
+#### Inference Rules for `<type>` {-}
 
 Judgment: $\Gamma\vdash t:T$
 
@@ -90,31 +92,3 @@ For a given type $T$ we write the application constructor as $\overline{T}$.
 {\forall a.a = T}
 {\Gamma\vdash a:T}
 {}
-
-```{block2, type="myexample",latex.options="_"}
-In example \ref{ex:reverse_list} we have looked at the syntax for a list reversing function.
-
-The type signiture for the $\mf{reverse}$ function was $\mf{List a -> List a}$. We will now show how we can obtain the curresponding type $T_0$. For that, let $\Gamma = \varnothing$.
-  
-\begin{center}
-\small
-\begin{prooftree}
-        \AxiomC{}
-      \UnaryInfC{$\forall a.a=T_3$}
-    \UnaryInfC{$\varnothing \vdash a:T_3$}
-      \AxiomC{}
-    \UnaryInfC{$List \ T_3=T_1$}
-  \BinaryInfC{$\varnothing \vdash \mathit{List} a:T_1$}
-        \AxiomC{}
-      \UnaryInfC{$\forall a.a=T_4$}
-    \UnaryInfC{$\varnothing \vdash a:T_4$}
-      \AxiomC{}
-    \UnaryInfC{$\mathit{List} \ T_4=T_2$}
-  \BinaryInfC{$\varnothing \vdash \mathit{List} a:T_2$}
-\BinaryInfC{$T_1 \to T_2 = T_0$}
-\UnaryInfC{$\varnothing\vdash \mf{List a -> List a}:T_0$}
-\end{prooftree}
-\end{center}
-```
-
-We can therefore conclude that $T_0 = \mathit{List} \ (\forall a.a) \to \mathit{List} \ (\forall a.a)= \forall a. \mathit{List} \ a \to \mathit{List} \ a$.

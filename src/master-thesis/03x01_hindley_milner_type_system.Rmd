@@ -267,14 +267,7 @@ $\Gamma : \mathcal{V}\nrightarrow\mathcal{T}$ is called a _type context_.
 ```
 ```{definition,name="Values"}
 \begin{letIn}
-$\mathcal{S}$ be the class of all finite sets,
-$n\in\mathbb{N}$,
-$\Theta:\mathcal{V}\nrightarrow\mathcal{T}$,
-$a\in\mathcal{V}$,
-$T,T_1,T_2,S\in\mathcal{T}$,
-$k_j\in\mathbb{N}_0$ and
-$T_{i,k_j}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
-Let $\Gamma$ be a type context.
+$\mathcal{S}$ be the class of all finite sets and $\Gamma$ be a type context.
 \end{letIn}
 
 We define
