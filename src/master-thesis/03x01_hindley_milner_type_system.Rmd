@@ -22,7 +22,7 @@ The main idea of such a type system is to have a defined order amongst the types
 
 ### Notion of Types
 
-We will first introduce types, afterwards we will define how types relate to sets by explicitly defining the values of types as finite sets. Types are split in _mono types_ (monomorphic types) and _poly types_ (polymorphic types). Mono types can contain so called _type variables_ that can then be bound by a quantifier within a poly type. Note that quantifiers can only occur in the outermost position, thus poly types are more general types than mono types.
+We will first introduce types, afterwards we will define how types relate to sets by explicitly defining the values of types as finite sets. Types are split in _mono types_ (monomorphic types) and _poly types_ (polymorphic types). Mono types can contain so-called _type variables_ that can then be bound by a quantifier within a poly type. Note that quantifiers can only occur in the outermost position, thus poly types are more general types than mono types.
 
 ```{definition,name="Mono Types, Poly Types, Types"}
 \label{thm:types}
@@ -73,19 +73,18 @@ We define $\mathcal{T} := \{T \ | \ T \text{ is a type}\}$ as the set of all typ
 ```
 Note that the quantifier $\mu C$ is called a _recursive quantifier_. By using the symbol $C$ we can describe a recursive structure in a non recursive way. That said we need to ensure that every algebraic type has a non-recursive case (called a base case). This is why we require $\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k_i}.T_{i,j}\neq C$.
 
-The presented types are in a normal form: mono types can not contain poly types and type variables are unique. We will therefore say that any term is a type if it can be rewritten into one.
+The presented types are in a normal form: mono types can not contain poly types and type variables are unique. We will therefore say that any term is equal to a type if it can be rewritten into one.
 ```{definition,name="Type Equivalence"}
 We say two terms $T_1,T_2$ are equivalent (Notation: $T_1=T_2$) if and only if one of the following properties holds.
 
-* $T_2 = T_1$. (Symmetry)
-* $T_1$ is structually equivalent to $T_2$. (Reflexivity)
-* $T_1$ is of form $\forall a.T_1'$ and $T_2$ is of form $\forall b.T_2'$ and $T_1'=[T_2']_{\{(b,a)\}}$ for terms $T_1'$ and $T_2'$ and $a,b\in\mathcal{V}$. ($\alpha$-Conversion)
-* $T_1$ is of form $(\forall a.T_1')\ T_3$ and $[T_1']_{\{(a,T_3)\}}=T_2$ for terms $T_1',T_2$ and $a\in\mathcal{V}$. ($\beta$-Reduction)
-
-We say the term $T_1$ is a type if there exists a type $T_2$ such that $T_1 = T_2$.
+\begin{itemize}
+\item $T_2 = T_1$. (Symmetry)
+\item $T_1$ is structually equivalent to $T_2$. (Reflexivity)
+\item $T_1$ is of form $\forall a.T_1'$ and $T_2$ is of form $\forall b.T_2'$ and $T_1'=[T_2']_{\{(b,a)\}}$ where $T_1',T_2'$ are terms and $a,b\in\mathcal{V}$. ($\alpha$-Conversion)
+\item $T_1$ is of form $(\forall a.T_1')\ T_3$ and $[T_1']_{\{(a,T_3)\}}=T_2$ where $T_1',T_2$ are terms and $a\in\mathcal{V}$. ($\beta$-Reduction)
+\end{itemize}
 ```
-
-Note that both the $\alpha$-Conversion and the $\beta$-Reduction are taken from the Lambda-Calculus. The underlying rewriting rules are confluent and terminating. Thus, the equivalence relation is trasitive and therefore well defined [@Types_and_Programming_Languages].
+Note that both the $\alpha$-Conversion and the $\beta$-Reduction are taken from Lambda-Calculus. The underlying rewriting rules are confluent and terminating. Thus, the equivalence relation is transitive and therefore well-defined [@Types_and_Programming_Languages].
 ```{block2, type="axiom",latex.options="_"}
 We consider types $T_i$ for $i\in\mathbb{N}$ in a product type as unordered, i.e., 
 
@@ -156,14 +155,10 @@ T_1 \times \dots \times T_n := \{1:T_1,\dots,n:T_n\}
 $$
 as the _ordered product type_ with $n$ components.
 ```
-The most general example of a product type is a record. Tuples can be represented as ordered product types.
+The most basic example of a product type is a record. Tuples can be represented as ordered product types.
 ```{definition,name="Bound, Free, Set of Free Variables"}
 \begin{letIn}
-$n\in\mathbb{N}_0$,
-$a,C,C_i\in\mathcal{V}$,
-$k_j\in\mathbb{N}_0$,
-$T,T_i\in\mathcal{T}$,
-$T_{i,k(j)}\in\mathcal{T}\cup\mathcal{V}$ and for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+$a\in\mathcal{V}$ and $T\in\mathcal{T}$.
 \end{letIn}
 
 We say
@@ -172,7 +167,6 @@ We say
 * $a$ is _bound_ in $T :\Leftrightarrow a \not\in \text{free}(T)$ and $a$ occurs in $T$.
 
 where
-
 $$
   \begin{aligned}
     \text{free}:\ & \mathcal{T}\to\mathcal{P}(\mathcal{V})\\
@@ -194,75 +188,39 @@ $$
   \end{aligned}
 $$
 ```
-A poly type can be instanciated with mono type by appling the $\beta$-Reduction. The result will again be a type.
-
+A poly type can be instantiated with a mono type by applying $\alpha$-Conversion and $\beta$-Reduction. The result will again be a type.
 ```{definition,name="Type Instatiation"}
-\begin{letIn}
-$n\in\mathbb{N}$,
-$\Theta:\mathcal{V}\nrightarrow\{t\in\mathcal{T}| t \text{ is a mono type}\}$,
-$a\in\mathcal{V}$.
-Let $T,T_1,T_2$,
-$k_j\mathbb{N}_0$ and
-$T_{i,k_j}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
-\end{letIn}
-We denote $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
+We define
 $$
-  \begin{aligned}[]
-    [a]_\Theta :=& \begin{cases} S & \text{if } (a,S) \in \Theta\\ a &\text{else} \end{cases}\\
-    \begin{bmatrix*}[l]
-    \mu C.\\
-    C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
-    | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
-    \end{bmatrix*}_\Theta:=&
-    \begin{matrix*}[l]
-    \mu C.\\
-    C_1 \ [T_{1,1}]_{\Theta\setminus\{(C,\_\)}} \dots [T_{1,k_1}]_{\Theta\setminus\{(C,\_)\}} \\
-    | \dots \\
-    | \ C_n \ [T_{n,1}]_{\Theta\setminus\{(C,\_)\}} \dots [T_{n,k_n}]_{\Theta\setminus\{(C,\_)\}}
-    \end{matrix*}\\
-    [\{l_1:T_1,\dots,l_n:T_n\}]_\Theta:=&\{l_1:[T_1]_\Theta,\dots,l_n:[T_n]_\Theta\}\\
-    [T_1\to T_2]_\Theta :=& [T_1]_\Theta\to [T_2]_\Theta\\
-    [\forall b.T]_\Theta :=&
-        \begin{cases}
-            [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\not\in\mathcal{V}\\
-            \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
-            \forall b. [T]_\Theta & \text{else.}
-        \end{cases}
+  \begin{aligned}
+   \text{Inst}:\ &\mathcal{T}\to(\mathcal{V}\nrightarrow\{t\in\mathcal{T}\ |\ t \text{ is a mono type}\})\to\mathcal{T}\\
+   \text{Inst}(T,\Theta) :=& \begin{cases}
+     \text{Inst}(T',\Theta) 
+     & \text{If } T \text{ is of form } \forall a.T' \text{ and } (a,T_0)\in\Theta \text{ for } T_0\not\in\mathcal{V}\\
+     & \text{where } T' \text{ is a type,} a \text{ is a variable and } T_0 \in\mathcal{T}\\
+     \forall t.\text{Inst}(T',\Theta)
+     & \text{If } T \text{ is of form } \forall a.T' \text{ and } (a,T_0)\in\Theta \text{ for } T_0\in\mathcal{V}\\
+     & \text{where } T' \text{ is a type, } a \text{ is a variable and } T_0 \in\mathcal{T}\\
+     [T]_\Theta&\text{else}
+\end{cases}
   \end{aligned}
 $$
-$\Theta$ is called the set of substitutions.
 ```
-
-The type substitution gives raise to a partial order $\sqsubseteq$:
-
+The type instatiation gives raise to a partial order $\sqsubseteq$:
 ```{definition,name="Type Order"}
 \begin{letIn}
-$n,m\in\mathbb{N}$,
+$n,m\in\mathbb{N}_0$,
 $T_1,T_2\in\mathcal{T}$,
 $a_i$
-for all $i\in\mathbb{N}_0^n$ and $b_i\in\mathcal{V}$ for all $i\in\mathbb{N}_0^m$
+for all $i\in\mathbb{N}^n$ and $b_j\in\mathcal{V}$ for all $j\in\mathbb{N}_0^m$
 .
 \end{letIn}
-We define the partial order $\sqsubseteq$ on poly types as
-$$
-\begin{aligned}
-\forall a_1 \dots \forall a_n.T_1 \sqsubseteq \forall b_1 \dots \forall b_m.T_2:\Leftrightarrow \
-  & \exists \Theta = \{(a_i,S_i) \ | \ i\in\mathbb{N}_1^n\land a_i\in\mathcal{V}\land
-S_i\in\mathcal{T}\}.\\
-  & T_2=[T_1]_\Theta \land \forall i\in\mathbb{N}_0^m.b_i\not\in\mathrm{free}(\forall a_1 \dots \forall a_n.T_1)
-\end{aligned}
-$$
+We define the partial order $\sqsubseteq\subseteq\mathcal{T}\times\mathcal{T}$ such that
+$\forall a_1 \dots \forall a_n.T_1 \sqsubseteq \forall b_1 \dots \forall b_m.T_2$ if and only if there exists a $\Theta = \{(a_i,T_i') \ | \ i\in\mathbb{N}_1^n, T_i'\in\mathcal{T}\}$ such that ${T_2=\text{Inst}(T_1,\Theta)}$ and $b_j\not\in\mathrm{free}(\forall a_1 \dots \forall a_n.T_1)$ for all $j\in\mathbb{N}_0^m$.
 ```
-
-From a given type $T_1$ we can construct a more specialized type $T_2$ such that $T_1\sqsubseteq T_2$ by the following steps
-
-1. First replace all bounded variables $a_i$ with types $S_i$.
-2. Next rebound any new variables $b_i$ that were previously not free.
-
 ```{block2, type="myexample",latex.options="_"}
 $\forall a.a$ is the smallest type in the type system.
-The partial order forms a tree structure with $\forall a.a$ at the root and different branches for $\forall a. C \ a$, $\forall a.\forall b. a \to b$ and so on. The leaves of the tree are all possible mono types.
+The partial order forms a tree structure with $\forall a.a$ at the root and different branches for $\forall a. C \ a$, $\forall a.\forall b. a \to b$ and so on. The mono types form the leaves of the tree.
 ```
 
 ### Interpretation of Types
@@ -271,55 +229,51 @@ Before we interpret a type, we will first introduce a set of labelled elements a
 
 ```{definition,name="Record"}
 \begin{letIn}
-$n$ in $\mathbb{N}$, $l_i$ be a symbol, $t_i$ arbitary for all $i$ in $\mathbb{N}_1^n$.
+$n$ in $\mathbb{N}$, $l_i$ be symbols, $t_i$ terms for all $i$ in $\mathbb{N}_1^n$.
 \end{letIn}
 We define
 $$
 \begin{aligned}
 \{l_1=t_1,\dots,l_n=t_n\}:&\{l_1,\dots,l_n\}\to\{t_1,\dots,t_n\}\\
-\{l_1=t_1,\dots,l_n=t_n\}(l):=&\ t\text{ such that } \exists i \in \mathbb{N}_1^n. l = l_i \land t = t_i
+\{l_1=t_1,\dots,l_n=t_n\}(l):=&\ t_i \text{ such that } l = l_i \text{ for some } i \in \mathbb{N}_1^n
 \end{aligned}
 $$
-
-Note that values of an ordered product type are equivalent to tuples:
-
-$$\forall i\in \mathbb{N}_1^n.\{1=t_1,\dots,n=t_n\}(i) = (t_1,\dots,t_n).i$$
-
+Note that values of an ordered product type are equivalent to values of a tuple:
+$$
+\forall i\in \mathbb{N}_1^n.\{1=t_1,\dots,n=t_n\}(i) = t_i
+$$
 Thus, we will use the notation of tuples for values of an ordered product type.
 ```
 
 ```{definition,name="Application Constructor"}
 \begin{letIn}
 $n\in\mathbb{N}_0$.
-Let $T$ be a mono type. Let $\{a_1,\dots,a_n\}:=\text{free}(T)$.
+Let $T$ be a mono type. Let $\{a_1,\dots,a_n\}=\text{free}(T)$ where $a_i\in\mathcal{V}$ for all $i\in\mathbb{N}_1^n$.
 \end{letIn}
 We call the function
 $$
 \begin{aligned}
 \overline{\forall a_1 \dots a_n. T} :& \underbrace{\mathcal{T} \to \dots \to \mathcal{T}}_{n \text{ times}} \to \mathcal{T}\\
-(\forall a_1 \dots a_n. T)(T_1,\dots,T_n) :=& [ \forall a_1 \dots a_n. T]_{\{(a_1,T_1),\dots,(a_n,T_n)\}}.
+(\forall a_1 \dots a_n. T)(T_1,\dots,T_n) :=& \text{Apply}(\forall a_1 \dots a_n. T,\{(a_i,T_i)\ | \ i\in\mathbb{N}_0^n\})
 \end{aligned}
 $$
 the _application constructor_ of $T$.
 
-Therefore, for a given type $T'$ is defined as $\overline{T'}$.
+Therefore, for a given type $T'$, the application constructor of $T'$ is defined as $\overline{T'}$.
 ```
-
+Note that mono types with no free variables are considered to be application constructors with no arguments.
 ```{definition,name="Type Context"}
 $\Gamma : \mathcal{V}\nrightarrow\mathcal{T}$ is called a _type context_.
 ```
-
-Note that mono types with no free variables are considered to be application constructors with no arguments.
-
 ```{definition,name="Values"}
 \begin{letIn}
-$\mathcal{S}$ the class of all finite sets,
+$\mathcal{S}$ be the class of all finite sets,
 $n\in\mathbb{N}$,
 $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$,
 $a\in\mathcal{V}$,
 $T,T_1,T_2,S\in\mathcal{T}$,
-$k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
-$T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
+$k_j\in\mathbb{N}_0$ and
+$T_{i,k_j}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
 Let $\Gamma$ be a type context.
 \end{letIn}
 
@@ -331,17 +285,17 @@ $$
 \mathrm{values}_\Gamma(C \ T_1 \ \dots \ T_n) :=& \mathrm{values}_\Gamma(\overline{\Gamma(C)}(T_1,\dots,T_n))\\
 \mathrm{values}_\Gamma\small\begin{pmatrix*}[l]
     \mu C.\\
-    | C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \ C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
     | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
     \end{pmatrix*} :=&\bigcup_{i\in\mathbb{N}_0} \mathrm{rvalues}_\Gamma
   \begin{pmatrix*}[l]
   i,&
   \small\begin{matrix*}[l]
     \mu C.\\
-    | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \ C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
     | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
   \end{matrix*}
   \end{pmatrix*}\\
 \small{\mathrm{values}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\})} :=&\Big\{\small{\{l_1=t_1,\dots,l_n=t_n\}} \\
@@ -353,26 +307,26 @@ $$
 $$
 using the following helper function.
   
-Let $l\in\mathbb{N},T := \mu C.\ | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\ | \dots \ | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}$. We define:
+Let $l\in\mathbb{N},T := \mu C.\ C_1 \ T_{1,1} \dots \ T_{1,k_1}\ | \dots \ | \ C_n \ T_{n,1} \dots \ T_{n,k_n}$ in
 $$
 \begin{aligned}
 \mathrm{rvalues}_\Gamma(0,T):=&
   \begin{Bmatrix*}[l]
     \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
+      C_i \ v_{i,1} \dots v_{i,n}
       & \begin{matrix*}[l]
         i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. T_{i,j} \neq C \land v_j \in \mathrm{values}_\Gamma(T_{i,j})
+        \land \forall j\in\mathbb{N}_1^{k_i}. T_{i,j} \neq C \land v_{i,j} \in \mathrm{values}_\Gamma(T_{i,j})
         \end{matrix*}
     \end{array}
   \end{Bmatrix*}\\
 \mathrm{rvalues}_\Gamma({l+1},T):=&
   \small\begin{Bmatrix*}[l]
     \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
+      C_i \ v_{i,1} \dots v_{i,n}
       & \begin{matrix*}[l]
         i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        \land \forall j\in\mathbb{N}_1^{k_i}. v_j \in
         \begin{cases}
           \mathrm{rvalues}_\Gamma(l,T)&\text{if } T_{i,j} = C\\
           \mathrm{values}_\Gamma(T_{i,j})&\text{else}
@@ -385,39 +339,35 @@ $$
 ```
 The base case of this recursive function is in $\mathrm{rvalues}_\Gamma(0,T)$ for a given $T$.
 
-As an example we will prove that the values of $\mathit{Nat}$ from example \ref{ex:int} are isomorphic to the natural numbers.
+As an example we will prove that the values of $\mathit{Nat}$ from Example \ref{ex:int} are isomorphic to the natural numbers.
 ```{theorem}
 \begin{letIn}
-the algebraic type $\mathit{Nat}$ defined as $\mathit{Nat}:=\mu C.1| \mathit{Succ} \ C$. Let $<_\mathbb{N}:\mathbb{N}\times\mathbb{N}$ be the Well-order such that $a<_\mathbb{N}b :\Leftrightarrow \exists c\in\mathbb{N}. a = b + c$. Let $<_\mathit{Nat}:\mathit{Nat}\times\mathit{Nat}$ be a order such that $\mathit{Succ}^a \ 1<_\mathit{Nat}\mathit{Succ}^b \ 1:\Leftrightarrow a+1 <_\mathbb{N} b+1$.
+the algebraic type $\mathit{Nat}$ be defined as $\mathit{Nat}:=\mu C.1| \mathit{Succ} \ C$. Let $<_\mathbb{N}:\mathbb{N}\times\mathbb{N}$ be the well-order such that $a<_\mathbb{N}b :\Leftrightarrow \exists c\in\mathbb{N}. a = b + c$. Let $<_\mathit{Nat}:\mathit{Nat}\times\mathit{Nat}$ be a order such that $\underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{a \text{ times}} \ 1<_\mathit{Nat}\underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{b \text{ times}} \ 1:\Leftrightarrow a+1 <_\mathbb{N} b+1$.
 \end{letIn}
 Then we have:
 $$(\mathrm{values}(\mathit{Nat}),<_\mathit{Nat})\cong(\mathbb{N},<_\mathbb{N})$$
 ```
 ```{proof}
-First we will introduce a new notation in order to simplify the proof:
-For any $n\in\mathbb{N}_0$ We define $\mathit{Succ}^n \ 1 := \underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{n \text{ times}} \ 1$. Note that $\mathit{Succ}^0 \ 1 = 1$.
+We will introduce a new notation in order to simplify the proof:
+For any $n\in\mathbb{N}_0$ we define $\mathit{Succ}^n \ 1 := \underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{n \text{ times}} \ 1$. Note that $\mathit{Succ}^0 \ 1 = 1$.
 
 Next we show by induction over $n\in\mathbb{N}_0$ that
-\begin{equation}\label{proof:natProof1}
-\textrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}.
-\end{equation}
-
+\begin{equation}\label{proof:natProof1} \textrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)=\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}. \end{equation}
 \begin{addmargin}[1cm]{0cm}
-\textbf{Base case}: $\mathrm{rvalues}_\Gamma(0,\mu C.1| Succ \ C) =\{1\}= \{\mathit{Succ}^0\}$. This is true.\newline
+\textbf{Base case}: $\mathrm{rvalues}_\Gamma(0,\mu C.1\ |\ Succ \ C) =\{1\}= \{\mathit{Succ}^0\}$. This is true.\newline
 \textbf{Inductive step}:\newline
-Assuming $\textrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C) =\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\},$
-we will prove $\textrm{rvalues}_\Gamma(n+1,\mu C.1| \mathit{Succ} \ C)
-=\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^{n+1}_0\}.$
-  
+Assuming $\textrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C) =\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\},$
+we will prove $\textrm{rvalues}_\Gamma(n+1,\mu C.1\ |\ \mathit{Succ} \ C)
+=\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^{n+1}_0\}.$
 $$
 \begin{aligned}
 &\mathrm{rvalues}_\Gamma(n+1,\mu C.1| \mathit{Succ} \ C)\\
 &=\small\begin{Bmatrix*}[l]
     \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
+      C_i \ v_{i,1} \dots v_{i,n}
       & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        i\in\mathbb{N}_1^n\land C_1 = 1 \land C_2 =\mathit{Succ}\land  k_1=0\land  k_2 = 1\land  T_{2,1} = C \\
+        \land\ \forall j\in\mathbb{N}_1^{k(i)}. v_{i,j} \in
         \begin{cases}
           \mathrm{rvalues}_\Gamma(n,T)&\text{if } T_{i,j} = C\\
           \mathrm{values}_\Gamma(T_{i,j})&\text{else}
@@ -427,92 +377,94 @@ $$
   \end{Bmatrix*}\\
 &=\small\begin{Bmatrix*}[l]
     \begin{array}{l|l}
-      C_i \ v_1 \dots v_n
+      C_i \ v_{i,1} \dots v_{i,n}
       & \begin{matrix*}[l]
-        i\in\mathbb{N}_1^n\\
-        \land \forall j\in\mathbb{N}_1^{k(i)}. v_j \in
+        i\in\mathbb{N}_1^n \land C_1 = 1 \land C_2 =\mathit{Succ}\land  k_1=0\land  k_2 = 1\land  T_{2,1} = C \\
+        \land \forall j\in\mathbb{N}_1^{k(i)}. v_{i,j} \in
         \begin{cases}
-          \{\mathit{Succ}^k \ 1|k\in\mathbb{N}^n_0\}&\text{if } T_{i,j} = C\\
+          \{\mathit{Succ}^k \ 1\ |\ k\in\mathbb{N}^n_0\}&\text{if } T_{i,j} = C\\
           \mathrm{values}_\Gamma(T_{i,j})&\text{else}
         \end{cases}
         \end{matrix*}
     \end{array}
   \end{Bmatrix*}\\
-&=\{1\}\cup\{\mathit{Succ} v | v \in \{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}\}\\
-&=\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^{n+1}_0\}
+&=\{1\}\cup\{\mathit{Succ}\ v | v \in \{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}\}\\
+&=\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^{n+1}_0\}
 \end{aligned}
 $$
 \end{addmargin}
-
 Now we will prove 
 \begin{equation}\label{proof:natProof2}
-\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.
+\textrm{values}(\mu C.1\ |\ \mathit{Succ} \ C)=\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}.
 \end{equation}
-
 \begin{addmargin}[1cm]{0cm}
 "$\subseteq$":
-Let $x\in\textrm{values}(\mu C.1| \mathit{Succ} \ C)$.
+Let $x\in\textrm{values}(\mu C.1\ |\ \mathit{Succ} \ C)$.
 We show
 $$
-x\in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.
+x\in\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}.
 $$
 We know
 $$
-\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)
+\textrm{values}(\mu C.1\ |\ \mathit{Succ} \ C)=\bigcup_{i\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(i,\mu C.1\ |\ \mathit{Succ} \ C)
 $$
 and
 $$
-\mathrm{rvalues}_\Gamma(i,\mu C.1| \mathit{Succ} \ C)\overset{(\ref{proof:natProof1})}{=}\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\}
+\mathrm{rvalues}_\Gamma(i,\mu C.1\ |\ \mathit{Succ} \ C)\overset{(\ref{proof:natProof1})}{=}\{\mathit{Succ}^k \ 1\ |\ k\in\mathbb{N}^i_0\}
 $$
 This means, there exists an $i\in\mathbb{N}_0$ such that
 $$
-x\in\{\mathit{Succ}^k \ 1|k\in\mathbb{N}^i_0\}
+x\in\{\mathit{Succ}^k \ 1\ |\ k\in\mathbb{N}^i_0\}
 $$
 Therefore there exists a $k\in\mathbb{N}^i_0$, such that
-$$x = \mathit{Succ}^k \ 1.$$
+$$
+x = \mathit{Succ}^k \ 1.
+$$
 Thus, in conclusion,
-$$x\in\{Succ^n \ 1|n\in\mathbb{N}_0\}.$$
-
+$$
+x\in\{Succ^n \ 1\ |\ n\in\mathbb{N}_0\}.
+$$
 "$\supseteq$":
-Let $x \in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$. We show 
+Let $x \in\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}$. We show 
 $$
 x \in \textrm{values}(\mu C.1| \mathit{Succ} \ C)
 $$
 We know
 $$
-\textrm{values}(\mu C.1| \mathit{Succ} \ C)=\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C).
+\textrm{values}(\mu C.1\ |\ \mathit{Succ} \ C)=\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C).
 $$
 Thus, it is suffice to show
 $$
-x \in \bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)
+x \in \bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)
 $$
-From $x \in\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}$ we know that there exists a $n\in\mathbb{N}_0$ such that 
+From $x \in\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}$ we know that there exists a $n\in\mathbb{N}_0$ such that 
 $$x = \mathit{Succ}^n \ 1.$$
-Using said $n$, we now construct $\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}$.
+Using said $n$, we now construct $\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}$.
 We know
 $$
 \begin{aligned}
-\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}&\overset{(\ref{proof:natProof1})}{=} \mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)\\
-&\subseteq\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)
+\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}&\overset{(\ref{proof:natProof1})}{=} \mathrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)\\
+&\subseteq\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)
 \end{aligned}
 $$
-As $x \in\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}$ and $\{\mathit{Succ}^i \ 1|i\in\mathbb{N}^n_0\}\subseteq\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)$ we conclude
+As $x \in\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}$ and $\{\mathit{Succ}^i \ 1 \ |\ i\in\mathbb{N}^n_0\}\subseteq\bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1\ |\  \mathit{Succ} \ C)$ we conclude
 $$
-x \in \bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1| \mathit{Succ} \ C)
+x \in \bigcup_{n\in\mathbb{N}_0}\mathrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)
 $$
 \end{addmargin}
-
-To summarize, we have just shown that $$\mathrm{values}(\mathit{Nat})=\textrm{values}(\mu C.1| \mathit{Succ} \ C)\overset{(\ref{proof:natProof2})}{=}\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}.$$
-
+To summarize, we have just shown that
+$$
+\mathrm{values}(\mathit{Nat})=\textrm{values}(\mu C.1\ |\ \mathit{Succ} \ C)\overset{(\ref{proof:natProof2})}{=}\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}.
+$$
 For the last step, we define a bijection
 $$
 \begin{aligned}
-&h:\{\mathit{Succ}^n \ 1|n\in\mathbb{N}_0\}\to\mathbb{N}\\
+&h:\{\mathit{Succ}^n \ 1\ |\ n\in\mathbb{N}_0\}\to\mathbb{N}\\
 &h(\mathit{Succ}^n \ 1) = n+1\\
 &h^{-1}(n) = \mathit{Succ}^{n-1} \ 1
 \end{aligned}
 $$
-Thus $$|\{Succ^n \ 1|n\in\mathbb{N}_0\}|=|\mathbb{N}|.$$
+Thus $$|\{Succ^n \ 1\ |\ n\in\mathbb{N}_0\}|=|\mathbb{N}|.$$
 For all $n,m\in\mathbb{N}_0$ we see that
 $$
 \begin{aligned}
