@@ -1,9 +1,8 @@
-
 ## Syntax
 
 Elm differentiates variables depending on the capitalization of the first letter. For the formal language we define `<upper-var>` for variables with the first letter capitalized and `<lower-var>` for variables without.
 
-Syntactically we can build our types from booleans, integers, lists, tuples, records, functions, custom types and type variables.
+Syntactically, we can build our types from booleans, integers, lists, tuples, records, functions, custom types and type variables.
 
 We will define our syntax in a Backus-Naur-Form [@backus-naur-form].
 
@@ -20,13 +19,13 @@ $$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type>} \ \mf{<list-type>}$$
 $$
 \begin{aligned}
 \mf{<type>} ::=& \mf{"Bool"}\\
-              |& \mf{"Int"}\\
-              |& \mf{"List" <type>}\\
-              |& \mf{"(" <type> "," <type> ")"}\\
-              |& \mf{"\{" <list-type-fields> "\}"}\\
-              |& \mf{<type> "->" <type>}\\
-              |& \mf{<upper-var> <list-type>}\\
-              |& \mf{<lower-var>}
+              |\ & \mf{"Int"}\\
+              |\ & \mf{"List" <type>}\\
+              |\ & \mf{"(" <type> "," <type> ")"}\\
+              |\ & \mf{"\{" <list-type-fields> "\}"}\\
+              |\ & \mf{<type> "->" <type>}\\
+              |\ & \mf{<upper-var> <list-type>}\\
+              |\ & \mf{<lower-var>}
 \end{aligned}
 $$
 ```
@@ -36,18 +35,26 @@ Because Elm is a pure functional programming language, a program contains just a
 
 ```{definition,name="Expression Syntax"}
 Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
-$$
+\[
 \begin{aligned}
 \mf{<list-exp-field>} \ ::=& \ \mf{<lower-var> "=" <exp>} \\
                           |& \ \mf{<lower-var> "=" <exp> "," <list-exp-field>}
 \end{aligned}
-$$
-$$\mf{<maybe-exp-sign>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}$$
-$$
-$$\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}$$
-$$\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots$$
-$$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
-\(\begin{aligned}
+\]
+\[
+\mf{<maybe-exp-sign>} ::= \mf{""} \ | \ \mf{<lower-var> ":" <type> ";"}
+\]
+\[
+\mf{<bool>} \ ::= \ \mf{"True"} \ | \ \mf{"False"}
+\]
+\[
+\mf{<int>} \ ::= \ \mf{"0"} \ | \ \mf{"-1"} \ | \ \mf{"1"} \ | \ \mf{"-2"} \ | \ \mf{"2"} \ | \ \dots
+\]
+\[
+\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}
+\]
+\[
+\begin{aligned}
 \mf{<exp>} \ ::=& \ \mf{"foldl"}\\
                |& \ \mf{"(::)"}\\
                |& \ \mf{"(+)"} \ | \ \mf{"(-)"} \ | \ \mf{"(*)"} \ | \ \mf{"(//)"}\\
@@ -68,7 +75,7 @@ $$\mf{<list-exp>} ::= \mf{""} \ | \ \mf{<exp> "," <list-exp>}$$
                |& \ \mf{<upper-var>}\\
                |& \ \mf{<lower-var>}
 \end{aligned}
-\)
+\]
 ```
 
 Additionally, Elm also allows global constants, type aliases and custom types.
@@ -77,7 +84,7 @@ Additionally, Elm also allows global constants, type aliases and custom types.
 Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
 $$
 \begin{aligned}
-\mf{<list-statement-var>} ::=& \ \mf{""} \ | \mf{<lower-var> <list-statement-var>}\\
+\mf{<list-statement-var>} ::=& \ \mf{""} \ | \ \mf{<lower-var> <list-statement-var>}\\
 \end{aligned}
 $$
 $$
@@ -97,7 +104,7 @@ $$
                       &\quad\mf{"=" <type>}
 \end{aligned}
 $$
-$$\mf{<maybe-main-sign>} \ ::= \ \mf{""} | \mf{"main" ":" <type> ";"}$$
+$$\mf{<maybe-main-sign>} \ ::= \ \mf{""} \ |\ \mf{"main" ":" <type> ";"}$$
 $$\mf{<program>} \ ::= \ \mf{<list-statement> <maybe-main-sign> "main" "=" <exp>}$$
 ```
 
