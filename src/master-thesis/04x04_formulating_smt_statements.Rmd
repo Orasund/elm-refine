@@ -9,66 +9,61 @@ Note that $\kappa$ is a special character.
 ```
 
 ```{definition,name="Template"}
-We say $\hat{T}$ is a _template_ $:\Leftrightarrow$
+We say $T$ is a _template_ $:\Leftrightarrow$
 $$
 \begin{aligned}
-       \ & \hat{T} \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
+       \ & T \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
          &\text{where } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\\
-  \lor \ & \hat{T} \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to\hat{T}\\
-         &\text{where } k\in\mathcal{K}, \hat{T} \text{ is a template and } S:\mathcal{V}\nrightarrow\mathit{IntExp}.\\
+  \lor \ & T \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to T\\
+         &\text{where } a\in\mathcal{V}, k\in\mathcal{K}, T \text{ is a template and } S:\mathcal{V}\nrightarrow\mathit{IntExp}.\\
 \end{aligned}
 $$
 
-We define $\mathcal{T}^?:=\{\hat{T} \ | \ \hat{T} \text{ is a template}\}$
+We define $\mathcal{T}^?:=\{T \ | \ T \text{ is a template}\}$
 ```
 A template will be used for a liquid type with unknown refinement. Note that the inference rule for function applications introduces a refinement substitution $S$. For templates this substitution is not defined and needs to be delayed until the corresponding liquid type has been derived. We will point out whenever the substitution $[k]_S$ will be applied.
-
 ```{definition,name="Type Variable Context"}
-\begin{letIn} $K := \{[k]_S|k\in\mathcal{K}\land S:\mathcal{V}\nrightarrow\mathit{IntExp}\}$.
+\begin{letIn} $K := \{[k]_S\ |\ k\in\mathcal{K}\land S:\mathcal{V}\nrightarrow\mathit{IntExp}\}$.
 \end{letIn}
 We say $\Theta:\mathcal{V}\nrightarrow(\mathcal{Q}\cup K)$ is a type variable context.
 ```
-
 Our algorithm will resolve a set of suptyping conditions:
 ```{definition,name="Subtyping Condition"}
 We say $c$ is a _Subtyping Condition_ $:\Leftrightarrow$
 $$
 \begin{aligned}
-&c \text{ is of form }\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\\
-&\text{where }\hat{T}_1,\hat{T}_2\text{ are a liquid types or templates},\Theta\text{ is a type variable context and }\\
+&c \text{ is of form }T_1<:_{\Theta,\Lambda}T_2\\
+&\text{where }T_1,T_2\text{ are liquid types or templates},\Theta\text{ is a type variable context and }\\
 &\Lambda\subset\mathcal{Q}.
 \end{aligned}
 $$
 
 We define $\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
 ```
-
 We will also need a function to obtain the set of all liquid type variables of a template or subtyping condition. 
-
 ```{definition,name="Vars"}
+We define the following.
 $$
 \begin{aligned}
   \text{Vars}:(\mathcal{T}\cup\mathcal{T}^?)\to&\mathcal{P}(\mathcal{K})\\
-  \text{Vars}(\{\nu\in\mathit{Int}|r\}) =& \{\}\\
-  \text{Vars}(\{\nu\in\mathit{Int}|\kappa_i\}) =& \{\kappa_i\}\\
-  \text{Vars}(a:\{\nu\in\mathit{Int}|\kappa_i\}\to\hat{T}) =& \{\kappa_i\}\cup\text{Vars}(\hat{T})
+  \text{Vars}(\{\nu\in\mathit{Int}\ |\ r\}) =& \{\}\\
+  \text{Vars}(\{\nu\in\mathit{Int}\ |\ \kappa_i\}) =& \{\kappa_i\}\\
+  \text{Vars}(a:\{\nu\in\mathit{Int}\ |\ \kappa_i\}\to T) =& \{\kappa_i\}\cup\text{Vars}(T)
 \end{aligned}
 $$
   
 $$
 \begin{aligned}
   \text{Vars}:\mathcal{C}\to&\mathcal{P}(\mathcal{K})\\
-  \text{Vars}(\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2) =
-  &\text{Vars}(\hat{T}_1)\cup\text{Vars}(\hat{T}_2)\\
-  &\cup\{k|(\_,q)\in\Theta\land q = [k]_S \text{ for } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathit{IntExp}\}
+  \text{Vars}(T_1<:_{\Theta,\Lambda}T_2) =
+  &\text{Vars}(T_1)\cup\text{Vars}(T_2)\\
+  &\cup\{k\ |\ (\_,q)\in\Theta\land q = [k]_S \text{ for } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathit{IntExp}\}
 \end{aligned}
 $$
 ```
-
 The main idea of the algorithm is to first generate a set of predicates and then exclude elements until all subtyping conditions are valid for the remaining predicates. By conjunction over all remaining predicates we result in a valid refinement.
 
 We therefore need a function, depending on a set of variable $Q$, that will generate a set of predicates. Note that the resulting set should be finite and a subset of $\mathcal{Q}$. If the generated set is too small, then our resulting subtyping conditions might be too weak.
-  
 $$
 \begin{aligned}
 \mathit{Init}:\mathcal{P}(\mathcal{V})\to&\mathcal{P}(\mathcal{Q})\\
@@ -91,6 +86,8 @@ We can always extend the realm of predicates if the resulting refinements are to
 
 ### The Inference Algorithm
 
+We will now discuss the inference algorithm. This algorithm inferes a refinements for every template within a set of subtyping conditions.
+
 $$
 \begin{aligned}
 &\text{Infer}:\mathcal{P}(\mathcal{C})\to\ (\mathcal{K}\nrightarrow \mathcal{Q})\\
@@ -105,39 +102,37 @@ A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
 \end{aligned}
 $$
 We first split the subtyping conditions for functions into subtyping conditions for simpler templates:
-
 $$
 \begin{aligned}
-\mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\}\\
+\mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\}\\
 | \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathit{IntExp})\\
 \land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
-\end{aligned}$$
-
+\end{aligned}
+$$
 With this we can now define the Split function.
-
 $$
 \begin{aligned}
 &\text{Split}:\mathcal{C}\nrightarrow\mathcal{P}(\mathcal{C^-})\\
-&\text{Split}(a:\{\nu:\mathit{Int}|q_1\}\to \hat{T}_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}|q_3\}\to\hat{T}_4 )=\\
-&\quad\quad\{\{\nu:\mathit{Int}|q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_1\}\}\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}\hat{T}_4\})\\
-&\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=\\
-&\quad\quad\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
+&\text{Split}(a:\{\nu:\mathit{Int}\ |\ q_1\}\to T_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}\ |\ q_3\}\to T_4 )=\\
+&\quad\quad\{\{\nu:\mathit{Int}\ |\ q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_1\}\}\cup\text{Split}(T_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}T_4\})\\
+&\text{Split}(\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} )=\\
+&\quad\quad\{ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} \}
 \end{aligned}
 $$
 Note that Split will result in an error, if the subtyping condition is not one of the two cases above.
 
 We resolve the obtained subtyping conditions by repeatably checking if a subtyping condition is not valid and removing all predicates that contradict it. By removing the predicate we weaken the resulting refinement.
-
 $$
 \begin{aligned}
 \text{Solve}&:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\to(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
 \text{Solve}&(C,A)=\\
 &\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
 &\text{If there exists } (\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
-&\quad\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
 &\quad\begin{aligned}\text{for }\ &r_2 := \bigwedge [S(\kappa_2)]_{S_2},\ p:=\bigwedge\Lambda,\\
-&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
+&r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and}\\
+&S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases},\\
 &\begin{aligned} \Theta':= \{\ (&a,r)\\
@@ -154,11 +149,10 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\text{substitution } A.\\
 \end{aligned}
 $$
-
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
 \end{aligned}
 $$
@@ -169,7 +163,7 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 $$
 \begin{aligned}
 &\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\nrightarrow(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
-&\text{Weaken}(\{\nu:\mathit{Int}| x \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}| [k_2]_{S_2}\},A) =\\
+&\text{Weaken}(\{\nu:\mathit{Int}\ |\ x \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\},A) =\\
 &\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
 &r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
@@ -182,8 +176,8 @@ q_1& \text{if }q_1\in\mathcal{Q}
 \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
-| \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
-\land & (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+| \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}\ |\ r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}\ |\ r_n'\})\})\\
+\land & (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}\\
 &\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
@@ -192,11 +186,10 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\quad \text{substitution for the term } t \text{ with a substitution } A.
 \end{aligned}
 $$
-
 Note that we can use a SMT solver to validate
 $$
 \begin{aligned}
-&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}
 \end{aligned}
 $$
@@ -209,48 +202,48 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 Assume that we have given the following suptyping conditions:
 $$
 \begin{aligned}
-\Theta := \{&(a,\{\mathit{Int}|\kappa_1\}),(b,\{\mathit{Int}|\kappa_2\})\}\\
-C_0 := \{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
-  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
-  & a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
-  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\}\\
+\Theta := \{&(a,\{\mathit{Int}\ |\ \kappa_1\}),(b,\{\mathit{Int}\ |\ \kappa_2\})\}\\
+C_0 := \{&\{\nu:\mathit{Int}\ |\ \nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}\ |\ \kappa_3\},\\
+  &\{\nu:\mathit{Int}\ |\ \nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}\ |\ \kappa_3\},\\
+  & a:\{\nu:\mathit{Int}\ |\ \kappa_1\}\to b:\{\nu:\mathit{Int}\ |\ \kappa_2\}\to\{\nu:\mathit{Int}\ |\ \kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\to b:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\to\{\nu:\mathit{Int}\ |\ \kappa_4\}\\
 \end{aligned}
 $$
 
 Then $V:=\{a,b\}$ and $A_0:=\{(\kappa_1,\mathit{Init}(V)),(\kappa_2,\mathit{Init}(V)),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}$.
 
-**Splitting the conditions**
+**Splitting the Conditions**
 
 We will only consider the last subtyping condition of $C_0$, all other conditions do not need to be split.
 $$
 \begin{aligned}
-  &\text{Split}(a:\{\nu:\mathit{Int}|\kappa_1\}\to b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
-  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\}\to b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\})\\
-  & = \text{Split}(a:\{\nu:\mathit{Int}|\kappa_1\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\mathit{True}\})\\
-  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}|\kappa_2\}\to\{\nu:\mathit{Int}|\kappa_3\}\\
-  &\quad\quad<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}|\mathit{True}\}\to\{\nu:\mathit{Int}|\kappa_4\})\\
-  & = \{a:\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}|\kappa_1\}\}\\
-  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}|\kappa_2\})\\
-  &\quad\cup\text{Split}(\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\})\\
-  & = \{\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\},\\
-  &\quad \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\},\\
-  &\quad\{\nu:\mathit{Int}|\kappa_3\}<:_{\{\Theta\},\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}
+  &\text{Split}(a:\{\nu:\mathit{Int}\ |\ \kappa_1\}\to b:\{\nu:\mathit{Int}\ |\ \kappa_2\}\to\{\nu:\mathit{Int}\ |\ \kappa_3\}\\
+  &\quad<:_{\{\},\{\}}a:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\to b:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\to\{\nu:\mathit{Int}\ |\ \kappa_4\})\\
+  & = \text{Split}(a:\{\nu:\mathit{Int}\ |\ \kappa_1\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}\ |\ \mathit{True}\})\\
+  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}\ |\ \kappa_2\}\to\{\nu:\mathit{Int}\ |\ \kappa_3\}\\
+  &\quad\quad<:_{\{(a,\{\nu:\mathit{Int}\ |\ \mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\to\{\nu:\mathit{Int}\ |\ \kappa_4\})\\
+  & = \{a:\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{\},\{\}}a:\{\nu:\mathit{Int}\ |\ \kappa_1\}\}\\
+  &\quad\cup\text{Split}(b:\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}\ |\  \mathit{True}\})\},\{\}}b:\{\nu:\mathit{Int}\ |\ \kappa_2\})\\
+  &\quad\cup\text{Split}(\{\nu:\mathit{Int}\  |\ \kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}\ |\ \kappa_4\})\\
+  & = \{\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_1\},\\
+  &\quad \{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}\ |\ \mathit{True}\})\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_2\},\\
+  &\quad\{\nu:\mathit{Int}\ |\ \kappa_3\}<:_{\{\Theta\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_4\}\}
 \end{aligned}
 $$
 So in conclusion we have the following set of subtypings conditions:
 $$
 \begin{aligned}
-C:=\{&\{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\},\\
-  &\{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\},\\
-  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\},\\
-  &\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\},\\
-  &\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}
+C:=\{&\{\nu:\mathit{Int}\ |\ \nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}\ |\ \kappa_3\},\\
+  &\{\nu:\mathit{Int}\ |\ \nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}\ |\ \kappa_3\},\\
+  &\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_1\},\\
+  &\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}\ |\ \mathit{True}\})\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_2\},\\
+  &\{\nu:\mathit{Int}\ |\ \kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}\ |\ \kappa_4\}\}
 \end{aligned}
 $$
 
 We therefore now will go through each condition $c\in C$ and check its validity. 
 
-**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}\ |\ \nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}\ |\ \kappa_3\}$:
   
 We define
 $S :=\{(\kappa_1,\bigwedge \mathit{Init}(V)),(\kappa_2,\bigwedge \mathit{Init}(V)),(\kappa_3,\bigwedge \mathit{Init}(V)),(\kappa_4,\bigwedge \mathit{Init}(V))\}$.
@@ -260,13 +253,13 @@ $\mathit{Init}(V)$ contains $\nu = 0$ and $\neg \nu = 0$, so we know that $\bigw
 We now check if
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{False}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{False}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\nu = b \land a < b\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{False}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{False}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{False}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad\mathit{False}
 \end{aligned}
 $$
@@ -274,21 +267,21 @@ is not valid.
 
 We know that $\text{values}_{\{\}}(\{\nu:\mathit{False}\})=\{\}$, and therefore this can be simplified to $\mathit{True}\vDash\mathit{True}$, which is valid.
 
-**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}\ |\ \nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}\ |\ \kappa_3\}$:
   
 The argument is analogously to the previous case.
 
-**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\}$:
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}\ |\  \mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_1\}$:
 
 We now check if
 $$
-\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\mathit{True}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\mathit{False}
+\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\mathit{True}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\mathit{False}
 $$
 is valid. This time we can ignore the quantifiers and thus it simplifies to $\mathit{True}\vDash\mathit{False}$, which is not valid.
 
 We therefore will now weaken $A_0$. To do so we compute all $q\in A_0(\kappa_1)$ such that $\text{wellFormed}(q)$ and 
 $$
-\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\semantic{$\mathit{True}$}_{\{\}}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\semantic{$q$}_{\{\}}.
+\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\semantic{$\mathit{True}$}_{\{\}}\vDash\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\semantic{$q$}_{\{\}}.
 $$
 There are only two values for $q$ that are well formed: $\mathit{True}$ and $\mathit{False}$.
 
@@ -298,7 +291,7 @@ $$
 A := \{(\kappa_1,\{\mathit{True}\}),(\kappa_2,\mathit{Init}(V)),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}
 $$
 
-**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\}$:
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}\ |\ \mathit{True}\})\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_2\}$:
   
 The argument is analogously to the previous case, resulting in the updated value for $A$:
   
@@ -306,22 +299,22 @@ $$
 A = \{(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),(\kappa_3,\mathit{Init}(V)),(\kappa_4,\mathit{Init}(V))\}
 $$
   
-**Iteration 1, Case ** $c = \{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}\}$:
+**Iteration 1, Case ** $c = \{\nu:\mathit{Int}\ |\ \kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}\ |\ \kappa_4\}\}$:
   
 The suptyping condition is valid, analogously to the first case of this iteration.
 
-**Iteration 2, Case ** $c = \{\nu:\mathit{Int}|\nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+**Iteration 2, Case ** $c = \{\nu:\mathit{Int}\ |\ \nu = b\}<:_{\Theta,\{a < b\}}\{\nu:\mathit{Int}\ |\ \kappa_3\}$:
 
 We check the validity of 
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\nu = b \land a < b\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad\mathit{False}.
 \end{aligned}
 $$
@@ -330,13 +323,13 @@ It is easy to see, that it is not valid.
 Thus we now compute all $q\in A(\kappa_3)$ such that $\text{wellFormed}(q)$ and
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\nu = b \land a < b\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad q.
 \end{aligned}
 $$
@@ -358,18 +351,18 @@ A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),\\
 \end{aligned}
 $$
 
-**Iteration 2, Case ** $c = \{\nu:\mathit{Int}|\nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}|\kappa_3\}$:
+**Iteration 2, Case ** $c = \{\nu:\mathit{Int}\ |\ \nu = a\}<:_{\Theta,\{\neg (a < b)\}}\{\nu:\mathit{Int}\ |\ \kappa_3\}$:
 
 We check the validity of
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\nu = a \land \neg (a < b)\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad a < \nu\land \nu = b\land \neg (\nu = a)\land (\nu < b \lor \nu = b)\\
 &\quad\quad\land (b < \nu \lor \nu = b)\land(\nu < a \lor \nu = a)\land (a < \nu \lor \nu = a).
 \end{aligned}
@@ -379,13 +372,13 @@ It is not valid, because $\nu = a \land \neg (a < b) \vDash\nu = b$ is not valid
 Thus we compute all $q\in A(\kappa_3)$ such that $\text{wellFromed}(q)$ and
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\nu = a \land \neg (a < b)\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad q.
 \end{aligned}
 $$
@@ -403,26 +396,26 @@ A = \{ &(\kappa_1,\{\mathit{True}\}),(\kappa_2,\{\mathit{True}\}),
 \end{aligned}
 $$
 
-**Iteration 2, Case ** $\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}|\kappa_1\}$:
+**Iteration 2, Case ** $\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_1\}$:
 
 Nothing has changed since the last iteration, therefore this case can be skipped.
 
-**Iteration 2, Case ** $\{\nu:\mathit{Int}|\mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}|\mathit{True}\})\},\{\}}\{\nu:\mathit{Int}|\kappa_2\}$:
+**Iteration 2, Case ** $\{\nu:\mathit{Int}\ |\ \mathit{True}\}<:_{\{(a,\{\nu:\mathit{Int}\ |\ \mathit{True}\})\},\{\}}\{\nu:\mathit{Int}\ |\ \kappa_2\}$:
 
 The argument is analogously to the previous case, therefore this case  can be skipped.
 
-**Iteration 2, Case **: $\{\nu:\mathit{Int}|\kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}|\kappa_4\}$:
+**Iteration 2, Case **: $\{\nu:\mathit{Int}\ |\ \kappa_3\}<:_{\Theta,\{\}}\{\nu:\mathit{Int}\ |\ \kappa_4\}$:
 
 We check the validity of
 $$
 \begin{aligned}
-&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\{b < \nu \lor \nu = b\land a < \nu \lor \nu = a\}\\
-&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
-&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}|\mathit{True}\}).\\
+&\vDash\forall a\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall b\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
+&\quad\forall \nu\in\text{values}_{\{\}}(\{\nu:\mathit{Int}\ |\ \mathit{True}\}).\\
 &\quad \mathit{False}.
 \end{aligned}
 $$
@@ -452,27 +445,32 @@ $$
 
 ### Correctness
 
+We now show the correctnes of the algorithm.
+
 The algorithm that we described can fail if the subtyping conditions are not well-formed.
 
-```{definition,name="Wellformed Subtyping Condition"}
+```{definition,name="Well-formed Subtyping Condition"}
 We say a subtyping condition $c$ is well-formed if the following holds
 $$
 \begin{aligned}
-&c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
-\lor\ &c \text{ has the form } \{\nu:\mathit{Int}|r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}\\
-\lor\ &c \text{ has the form } \{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2\\
-&\quad\text{ such that } \hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2 \text{ is well-formed.}
+&c \text{ has the form } \{\nu:\mathit{Int}\ |\ [k_1]_{S_1}\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\}\\
+\lor\ &c \text{ has the form } \{\nu:\mathit{Int}\ |\ r\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\}\\
+\lor\ &c \text{ has the form } \{\nu:\mathit{Int}\ |\ [k_1]_{S_1}\}\to T_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ r\}\to T_2\\
+&\quad\text{ such that } T_1 <:_{\Theta,\Lambda} T_2 \text{ is well-formed.}
 \end{aligned}
 $$
 where $r\in\mathcal{Q}$,$k_1,k_2\in\mathcal{K}$, $S_1,S_2:\mathcal{V}\nrightarrow\mathit{IntExp}$,$\Theta$ is a type variable context, $\Lambda\subset\mathcal{Q}$ and $T_1,T_2\in(\mathcal{T}\cup\mathcal{T}^?)$
 ```
 
+We will prove that for a given set of well-formed subtyping conditions the algorithm generates  refinements that satisfy the conditions. Addtionally we will show that the conditions are the sharpest possible conditions that can be generated from predicates in $\mathit{Init}$.
+
 ```{theorem}
 \label{thm:correctness_infer}
 \begin{letIn}
-$C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
+$C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and\\
+$V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ |\ (a,\_)\in\Theta\}$.
 \end{letIn}
-For every subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
+For every subtyping condition $(T_1 <:_{\Theta,\Lambda} T_2)\in C$, let 
 $$
 \begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
@@ -484,17 +482,17 @@ and $\{(b_1,r_1'),\dots,(b_n,r_n')\}:=\Theta'$.
 Then we have the following correctness property:
 $$
 \begin{aligned}
-&[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
-&\land \ [\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S\\
+&[T_1]_S \in\mathcal{T} \land [T_2]_S \in\mathcal{T}\\
+&\land \ [T_1]_S <:_{\Theta',\Lambda} [T_2]_S\\
 &\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in\mathcal{V}.S'(a) \text{ is well defined}\Rightarrow \exists Q\in\mathit{Init}(V). S'(a) = \bigwedge Q)\\
-&\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
-&\quad\land ([\hat{T}_1]_{S'} <:_{\Theta',\Lambda} [\hat{T}_2]_{S'}\\
-&\quad\quad \Rightarrow (\forall a\in\mathcal{V}.S(a) \text{ and } S'(a) \text{ are well defined}\\ &\quad\quad\quad \Rightarrow (\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\land [T_1]_{S'} \in\mathcal{T} \land [T_2]_{S'} \in\mathcal{T}\\
+&\quad\land ([T_1]_{S'} <:_{\Theta',\Lambda} [T_2]_{S'}\\
+&\quad\quad \Rightarrow (\forall a\in\mathcal{V}.S(a) \text{ and } S'(a) \text{ are well defined}\\ &\quad\quad\quad \Rightarrow (\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\quad\quad\quad\semantic{$S(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}} \Rightarrow \semantic{$S'(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})))\end{aligned}
 $$
 ```
-The first post-condition states that $[\hat{T}_1]_S$ and $[\hat{T}_2]_S$ are not templates.
-The second condition states that $S$ is a solution, meaning that $[\hat{T}_1]_S$ is a subtype of $[\hat{T}_2]_S$.
+The first post-condition states that $[T_1]_S$ and $[T_2]_S$ are not templates.
+The second condition states that $S$ is a solution, meaning that $[T_1]_S$ is a subtype of $[T_2]_S$.
 The third condition states that $S$ is the sharpest solution.
 ```{proof}
 Let $C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
@@ -512,22 +510,22 @@ Then $C\subseteq \mathcal{C^-}$ and, for every $c\in C$, $c$ is a well-formed co
 ```{proof}
 Let $c$ is a well-formed condition. Then $C := \text{Split}(c)$ is well-defined. We prove the theorem by induction on well-formed conditions.
 
-\textbf{Case} c = $\{\nu:\mathit{Int}|q\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$:
+\textbf{Case} c = $\{\nu:\mathit{Int}\ |\ q\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\}$:
   $c$ is well-formed and $c\in C^-$. Then $C = {c}$ and therefore the conclusion holds.
 
-\textbf{Case} c = $\{\nu:\mathit{Int}|[k_1]_{S_1}\}\to \hat{T}_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|r\}\to \hat{T}_2$ such that $\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2$ is well-formed: Let $C_0:=\text{Split}(\hat{T}_1<:_{\Theta,\Lambda} \hat{T}_2)$. By the induction hypothesis $C_0\subseteq \mathcal{C^-}$ and for every $c\in C_0$, $c$ is a well-formed condition. Therefore, by appling Theorem \ref{thm:correctness_lemma} to each element in $C :=\{\{\nu:\mathit{Int}|r\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|[k_1]_{S_1}\}\}\cup C_0$, the conlusion holds.
+\textbf{Case} c = $\{\nu:\mathit{Int}\ |\ [k_1]_{S_1}\}\to T_1 <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ r\}\to T_2$ such that $T_1 <:_{\Theta,\Lambda} T_2$ is well-formed: Let $C_0:=\text{Split}(T_1<:_{\Theta,\Lambda} T_2)$. By the induction hypothesis $C_0\subseteq \mathcal{C^-}$ and for every $c\in C_0$, $c$ is a well-formed condition. Therefore, by appling Theorem \ref{thm:correctness_infer} to each element in $C :=\{\{\nu:\mathit{Int}\ |\ r\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ [k_1]_{S_1}\}\}\cup C_0$, the conlusion holds.
 ```
 
 
 ```{theorem}
 \label{thm:correctness_solve}
 \begin{letIn}
-$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
+$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
 $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 \end{letIn}
 Then for every $a\in V$, $A_2(a)\subseteq A_1(a)$
 
-For every subtyping condition $(\hat{T}_1 <:_{\Theta,\Lambda} \hat{T}_2)\in C$, let 
+For every subtyping condition $(T_1 <:_{\Theta,\Lambda} T_2)\in C$, let 
 $$
 \begin{aligned} \Theta':= \{\ (&a,r)\\
    | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
@@ -539,12 +537,12 @@ and $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'$.
 We then have the following correctness property.
 $$
 \begin{aligned}
-&[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}\\
-&\land\ [\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S\\
+&[T_1]_S \in\mathcal{T} \land [T_2]_S \in\mathcal{T}\\
+&\land\ [T_1]_S <:_{\Theta',\Lambda} [T_2]_S\\
 &\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in V.\exists Q\in \mathcal{P}(A_1(a)). S'(a) = \bigwedge Q)\\
-&\quad\land [\hat{T}_1]_{S'} \in\mathcal{T} \land [\hat{T}_2]_{S'} \in\mathcal{T}\\
-&\quad\land ([\hat{T}_1]_{S'} <:_{\Theta',\Lambda} [\hat{T}_2]_{S'}\\
-&\quad\quad\Rightarrow \forall a\in V.\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\quad\land [T_1]_{S'} \in\mathcal{T} \land [T_2]_{S'} \in\mathcal{T}\\
+&\quad\land ([T_1]_{S'} <:_{\Theta',\Lambda} [T_2]_{S'}\\
+&\quad\quad\Rightarrow \forall a\in V.\forall \nu\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\quad\quad\semantic{$S(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}} \Rightarrow \semantic{$S'(a)$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})
 \end{aligned}
 $$
@@ -554,23 +552,20 @@ The post-condition is the same as for Infer.
 Let $C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
 $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 
-\textbf{Show that the then-branch ensures the postcondition}
-
+\textbf{Show that the then-branch ensures the postcondition}\newline
 So let $c\in C$ be a condition, such that the if-condition holds. 
-We know that $A_2 = \text{Solve}(C,\text{Weaken}(c,A_1))$. We know that $c$ is a wellformed condition and for all $a\in V$, $A_1(a)$ is defined and therfore the precondition of $\text{Weaken}(c,A_1)$ holds. By Theorem \ref{thm:correctness_weaken} $A_2(a)$ is defined for all $a$ for which $A_1$ is defined, namely for all $a\in V$, thus the precondition of $\text{Solve}(C,\text{Weaken}(c,A_1))$ holds and therefore the postcondition of  $\text{Solve}(C,\text{Weaken}(c,A_1))$ holds. In particular we know that for every $a\in V$, $A_2(a) \subseteq \text{Weaken}(c,A_1)$. By Theorem \ref{thm:correctness_weaken} we also know that  for every $a\in V$,
+We know that $A_2 = \text{Solve}(C,\text{Weaken}(c,A_1))$. We know that $c$ is a wellformed condition and for all $a\in V$, $A_1(a)$ is defined and therfore the precondition of $\text{Weaken}(c,A_1)$ holds. By Theorem&nbsp;\ref{thm:correctness_weaken} $A_2(a)$ is defined for all $a$ for which $A_1$ is defined, namely for all $a\in V$, thus the precondition of $\text{Solve}(C,\text{Weaken}(c,A_1))$ holds and therefore the postcondition of  $\text{Solve}(C,\text{Weaken}(c,A_1))$ holds. In particular we know that for every $a\in V$, $A_2(a) \subseteq \text{Weaken}(c,A_1)$. By Theorem \ref{thm:correctness_weaken} we also know that  for every $a\in V$,
 $\text{Weaken}(c,A_1)(a)\subseteq A_1(a)$. Thus for every $a\in V$,$A_2(a)\subseteq A_1(a)$.
 
 We have left to show that for every $a\in V$, if the sharpest solution is generated by subsets of $A_2(a)$, than it is also the sharpest solution over all subsets of $A_1(a)$.
 
 By theorem \ref{thm:correctness_weaken} we know that for every $a\in V$, $A_2(a)$ contains the smallest subset of $A_1(a)$ such that the properies hold. Thus $A_2(a)$ is its definition the sharpest solution over all subsets of $A_1(a)$.
 
-\textbf{Show that the else-branch ensures the postcondition}
-
-Once the recursion is done, we can assume that for all $c\in C$, $c$ has the form $(\{\nu:\mathit{Int}|q_1\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\})$ and the following holds:
-
+\textbf{Show that the else-branch ensures the postcondition}\newline
+Once the recursion is done, we can assume that for all $c\in C$, $c$ has the form $(\{\nu:\mathit{Int}\ |\ q_1\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})$ and the following holds:
 $$
 \begin{aligned}
-  &(\forall z \in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+  &(\forall z \in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow \semantic{$r_2$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})
 \end{aligned}
 $$
@@ -591,8 +586,8 @@ q_1& \text{if }q_1\in\mathcal{Q}
 \end{aligned}
 $$
 where $k,k_2\in\mathcal{K},S:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}),Q,\Lambda\subseteq\mathcal{Q},S_2:\mathcal{V}\nrightarrow\mathit{IntExp},q_1\in\mathcal{K}\cup\mathcal{Q}, \Theta$ be a type variable context $,r_1,p,r_2\in\mathcal{Q},a\in\mathcal{V},\Theta':\mathcal{V}\nrightarrow\mathcal{Q},r\in\mathcal{Q},n\in\mathbb{N}, b_i\in\mathcal{V},r_i\in\mathcal{Q}$ for $i\in\mathbb{N}_0^n$ and $[t]_A$ denotes the substitution for the term $t$ with a substitution $A$.
-This is the same as saying $[\hat{T}_1]_S <:_{\Theta',\Lambda} [\hat{T}_2]_S$ if $[\hat{T}_1]_S \in\mathcal{T}$ and $[\hat{T}_2]_S \in\mathcal{T}$. We know by Theorem \ref{thm:correctness_weaken} that $A_2(a)$ is defined for all $a\in V$ and thus
-$[\hat{T}_1]_S \in\mathcal{T} \land [\hat{T}_2]_S \in\mathcal{T}$.
+This is the same as saying $[T_1]_S <:_{\Theta',\Lambda} [T_2]_S$ if $[T_1]_S \in\mathcal{T}$ and $[T_2]_S \in\mathcal{T}$. We know by Theorem \ref{thm:correctness_weaken} that $A_2(a)$ is defined for all $a\in V$ and thus
+$[T_1]_S \in\mathcal{T} \land [T_2]_S \in\mathcal{T}$.
 
 We still need to show that it is the sharpest solution. To do so, we will sketch a proof by contradiction. Assume there exists S' and $a\in V$ such that $S'(a)$ is sharper then $S(a)$. If $S(a) = \mathit{False}$ then there can not exist a sharper refinement $S'(a)$ and therefore this is a contradiction. If $S(a) \neq \mathit{False}$ then it must have been produced by calling Weaken. This is a contradiction, as by Theorem \ref{thm:correctness_weaken} we know that Weaken produces the sharpest solution therefore $S'(a) = S(a)$. 
 ```
@@ -600,40 +595,44 @@ We still need to show that it is the sharpest solution. To do so, we will sketch
 ```{theorem}
 \label{thm:correctness_weaken}
 \begin{letIn}
-$c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $$\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
-$$
+$c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form\\
+$\{\nu:\mathit{Int}\ |\ x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\}$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let $S := \{(k,\bigwedge Q)\ |\ (k,Q)\in A_2\}$ and
+$
 \begin{aligned}
-  S &:= \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
-r_1 &:= \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
-q_1& \text{if }q_1\in\mathcal{Q}
-\end{cases}.
+r_1 &:= \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1}\\ &\text{for } k\in\mathcal{K}\\
+&\text{and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
+q_1& \text{if }q_1\in\mathcal{Q}.
+\end{cases}
 \end{aligned}
-$$
+$
 \end{letIn}
+  
+Then the following holds.
 
-Then the following holds
 $$
 \begin{aligned}
 &(\forall k\neq k_2. A_1(k) = A_2(k))\\
 \land\ &A_2(k_2)\subseteq A_1(k_2)\\
-\land\ &[k_2]_S\in\mathcal{Q}\land \{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_S]_{S_2}\}\\
+\land\ &[k_2]_S\in\mathcal{Q}\land \{\nu:\mathit{Int}\ |\ r_1\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [[k_2]_S]_{S_2}\}\\
 \land\ &\forall A_2':\mathcal{V}\nrightarrow\mathcal{P}(\mathcal{Q}).(\forall k\neq k_2. A_1(k) = A_2'(k))\\
   &\land\ A_2'(k_2)\subseteq A_1(k_2)\\
-  &\land \text{Let } S' := \{(k,\bigwedge Q)| (k,Q)\in A_2'\},\\
+  &\land \text{Let } S' := \{(k,\bigwedge Q)\ |\ (k,Q)\in A_2'\},\\
   &\quad\quad r_1' := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}\\
   &\quad \text{in }[k_2]_{S'}\in\mathcal{Q}\\
-  &\quad \quad \land \{\nu:\mathit{Int}|r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}\Rightarrow A_2'\subseteq A_2
+  &\quad \quad \land \{\nu:\mathit{Int}\ |\ r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [[k_2]_{S'}]_{S_2}\}\Rightarrow A_2'\subseteq A_2
 \end{aligned}
 $$
 ```
+
 The first post-condition states that by updating $A_1$ to $A_2$ only the value for $k_2$ changes. The second condition states that the updated value $A_2(k_2)$ needs to be a subset of the old value $A_1(k_2)$. The third condition states that the resulting substitution $S$ generates a refinement $[k_1]_S$ that makes the subtyping condition valid. The fourth condition states that the value $A_2(k_2)$ is the smallest subset of $A_1(k_2)$ such that the previous conditions hold.
+
 ```{proof}
-Let $c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $\{\nu:\mathit{Int}|x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[k_2]_{S_2}\}$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
+Let $c\in\mathcal{C}^-$ be a well-formed condition and therefore $c$ has the form $\{\nu:\mathit{Int}\ |\ x\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\}$ where $x$ has the form $[k_1]_{S_1}$ or $r$. Let $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$. Let for all $a\in V$, $A_1(a)$ be well defined and $A_2 = \text{Weaken}(c,A_1)$. Let 
 $$
 \begin{aligned}
-  &S := \{(k,\bigwedge Q)| (k,Q)\in A_2\}\\
+  &S := \{(k,\bigwedge Q)\ |\ (k,Q)\in A_2\}\\
 &r_1 := \begin{cases}\bigwedge [S(k_1)]_{S_1}&\text{if } q_1 \text{ has the form } [k_1]_{S_1} \text{ for } k\in\mathcal{K}\text{ and } S_1\in\mathcal{V}\nrightarrow\mathit{IntExp}\\
 q_1& \text{if }q_1\in\mathcal{Q}
 \end{cases}\\
@@ -645,8 +644,8 @@ q_1& \text{if }q_1\in\mathcal{Q}
 \end{aligned}\\
 &\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'\\
 &\begin{aligned}Q_2 := \{\ &q \\
-| \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})\\
-\land & (\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+| \ &q\in A(k_2)\land \text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}\ |\ r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}\ |\ r_n'\})\})\\
+\land & (\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
 \end{aligned}\end{aligned}
 $$
@@ -658,14 +657,14 @@ and therefore $\forall k\neq k_2. A_1(k) = A_2(k)$.
 
 We know $A_2(k_2) = Q_2$ and $Q_2\subseteq A_1(k_2)$ and therefore $A_2(k_2)\subseteq A_1(k_2)$.
 
-We know by the definition of $S$ that $S(k_2) = \bigwedge Q_2$. Therefore it is easy to see that $\{\nu:\mathit{Int}|r_1\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_S]_{S_2}\}$ is true because by definiton of $Q_2$ it is true for all $q\in Q_2$, thus it is true for $\bigwedge Q_2$ as well.
+We know by the definition of $S$ that $S(k_2) = \bigwedge Q_2$. Therefore it is easy to see that $\{\nu:\mathit{Int}\ |\ r_1\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [[k_2]_S]_{S_2}\}$ is true because by definiton of $Q_2$ it is true for all $q\in Q_2$, thus it is true for $\bigwedge Q_2$ as well.
 
-We finish off by proving that the result is the sharpest, meaning that $A_2$ is the smallest subset such hat the premise holds. So let there exists a $A_2'$ such that $\forall k\neq k_2. A_1(k) = A_2'(k)$, $A_2'(k_2)\subseteq A_1(k_2)$,$[k_2]_{S'}\in\mathcal{Q}$,$\{\nu:\mathit{Int}|r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}|[[k_2]_{S'}]_{S_2}\}$ and $A_2'\subseteq A_2$ for given $S'$ and $r_1$.
+We finish off by proving that the result is the sharpest, meaning that $A_2$ is the smallest subset such hat the premise holds. So let there exists a $A_2'$ such that $\forall k\neq k_2. A_1(k) = A_2'(k)$, $A_2'(k_2)\subseteq A_1(k_2)$,$[k_2]_{S'}\in\mathcal{Q}$,$\{\nu:\mathit{Int}\ |\ r_1'\}<:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [[k_2]_{S'}]_{S_2}\}$ and $A_2'\subseteq A_2$ for given $S'$ and $r_1$.
 
-This means for every $q\in A_2'(k_2)$ that $q\in A_1(k_2)$ and by the definition of subtyping, $\text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}|r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}|r_n'\})\})$ and
+This means for every $q\in A_2'(k_2)$ that $q\in A_1(k_2)$ and by the definition of subtyping, $\text{wellFormed}(q,\{(b_1,\{\nu:\mathit{Int}\ |\ r_1'\}),\dots,(b_n,\{\nu:\mathit{Int}\ |\ r_n'\})\})$ and
 $$
 \begin{aligned}
-&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_n'\}).\\
+&\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}.
 \end{aligned}
 $$

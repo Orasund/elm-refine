@@ -1,8 +1,11 @@
 # Liquid Types
 
+In this chapter we will specify a version of liquid types that can be inferred using an arbitrary SMT solver. Section \@ref(notion-of-liquid-types) will formally define liquid types. Section \@ref(liquid-types-for-elm) will extend the type system of Elm with liquid types. This included the syntax, type inference rules and the denotational semantic. Section \@ref(soundness-of-liquid-types) gives a proof that the extended denotational semantic is sound with respect to the extended type inference rules. Section \@ref(formulating-smt-statements) explains how the SMT statements used for the SMT solver can be generated and proves that the provided algorithm is correct.
+
+
 ## Notion of Liquid Types
 
-So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it is important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types). We will now specify a version of liquid types. Note that definitions of liquid types vary dependent on the capability of the underlying SMT solver. In our case we will use a very modest definition that should be usable with an arbitrary solver.
+So-called _refinement types_ exclude values from existing types by using a predicate (in this context also called a _refinement_). The definition of such a refinement can be chosen quite freely, but it is important to note that one will also need to provide an algorithm to validate such refinements. This motivates the use of SMT solvers and refinements tailored to the capabilities of specific solvers. Such a set of refinement types are for example _liquid types_ (**l**og**i**cally **qu**al**i**fie**d** data types).
 
 We start by defining the syntax and semantic of valid refinements.
 
@@ -70,7 +73,7 @@ $$
 $$
 ```
 
-We will now extend our previous definition of types (see Definition \label{thm:types}) with the notion of refinement types. This extension is not very interesting, as refinement types don't behave differently from their underlying type.
+We will now extend our previous definition of types (see Definition \ref{thm:types}) with the notion of refinement types. This extension is not very interesting, as refinement types don't behave differently from their underlying type.
 
 ```{definition,name="Extended Types"}
  We define the following
@@ -105,53 +108,41 @@ by using the  predicates:
 $$
 \begin{aligned}
 T \text{ is a } \mathit{type} \ \mathit{variable}:\Leftrightarrow \
-         & T \text{ is a symbol.}\\
+         & T\in\mathcal{V}\\
 T \text{ is a } \mathit{type} \ \mathit{application}:\Leftrightarrow \
          & T \text{ is of form } C \ T_1 \dots T_n\\
-         & \text{where } n\in\mathbb{N}, C \text{ is a symbol and the } T_i \text{ are mono}\\
-         & \text{types for all } i\in\mathbb{N}_1^n.\\
+         & \text{where } n\in\mathbb{N}, C\in\mathcal{V} \text{ and the } T_i \text{ are mono types for}\\
+         & \text{all } i\in\mathbb{N}_1^n.\\
 T \text{ is a } \mathit{algebraic} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form }\\
-         & \mu C. C_1 \ T_{1,1} \dots T_{1,k(1)} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k(n)}\\
-         & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k(i)}.T_{i,j}\neq C\\
-         & \text{where } n\in\mathbb{N},k\in\mathbb{N}_1^n\to\mathbb{N}_0, C \text{ is a symbol and }\\
-         & T_{i,k(j)} \text{ is a mono type}\\
-         & \text{ or } T_{i,k(j)} = C \text{ for all } i\in\mathbb{N}_1^n \text{ and } j\in\mathbb{N}_1^{k(i)}.\\
+         & \mu C. C_1 \ T_{1,1} \dots T_{1,k_1} \ | \dots | \ C_n \ T_{n,1} \dots T_{n,k_n}\\
+         & \text{such that }\exists i\in\mathbb{N}.\forall j\in\mathbb{N}_1^{k_i}.T_{i,j}\neq C\\
+         & \text{where } n\in\mathbb{N}, C\in\mathcal{V} , k_i\in\mathbb{N}_0 \text{ for all } i\in\mathbb{N}_1^n \\
+         & \text{and } \ T_{i,k_i} \text{ is a mono type or } T_{i,k_i} = C \text{ for all } i\in\mathbb{N}_1^n\\
+         & \text{and } j\in\mathbb{N}_1^{k_i}.\\
 T \text{ is a } \mathit{product} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } \{l_1:T_1,\dots,l_n:T_n\}\\
-         & \text{where }n\in\mathbb{N}_0\text{ and } l_i \text{ are symbols and } T_i \text{ are mono}\\
-         & \text{types for all } i\in\mathbb{N}_1^n.\\
+         & \text{where }n\in\mathbb{N}_0\text{ and } l_i\in\mathcal{V} \text{ and } T_i \text{ are mono types for}\\
+         & \text{all } i\in\mathbb{N}_1^n.\\
 T \text{ is a } \mathit{function} \ \mathit{type}:\Leftrightarrow \
          & T \text{ is of form } T_1 \to T_2\\
          & \text{where } T_1 \text{ and } T_2 \text{ are mono types}.\\
 T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ 
          & T \text{ is of form } \{ a :\mathit{Int} \ | \ r \}\\
-         & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
-         & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
+         & \text{where } \ a \in\mathcal{V}, r\in \mathcal{Q},\mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
-  \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to \hat{T}\\
-         & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}, \hat{T} \text{ and } \hat{T}_1\ \text{ are}\\
-         & \text{liquid types.}\\
+  \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to T_0\\
+         & \text{where } a,b \in\mathcal{V}, r\in \mathcal{Q}, \text{ and } T_0\ \text{ is a liquid type.}\\
 \end{aligned}
 $$
-
-Note that we mark a liquid type with a hat: $\hat{T}$ to distinguish it from a regular type $T$.  
-  
 ```
 
 We will also need to redefine the definition of free variables and type substitution. The only change is the trival addition of refinement types.
 
 ```{definition,name="Bound, Free, Set of free variables"}
 \begin{letIn}
-$r\in \mathcal{Q}$,
-$n\in\mathbb{N}_0$,
-$a$ be a type variable,
-$T$ be a type,
-$C$ be a symbol,
-$k\in\mathbb{N}_1^n\to\mathbb{N}_0$,
-$T_i$ be a type,
-$T_{i,k(j)}$ be a type or a symbol and $C_i$ be a symbol for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$. Let $\mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C$ and
-$\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}$.
+$a$ be a type variable and
+$T$ be a type
 \end{letIn}
 
 We say
@@ -179,66 +170,17 @@ $$
     \mathrm{free}(T_1 \to T_2) :=& \mathrm{free}(T_1)\cup\mathrm{free}(T_2)\\
     \mathrm{free}(\forall a.T) :=& \mathrm{free}(T)\backslash\{a\}\\
     \mathrm{free}(\{a :\mathit{Int} \ | \ r \}) :=& \{\}\\
-    \mathrm{free}(a:\{b :\mathit{Int} \ | \ r \}\to \hat{T}) :=& \{\}
+    \mathrm{free}(a:\{b :\mathit{Int} \ | \ r \}\to T) :=& \{\}
 \end{aligned}
 $$
   
-```
-
-```{definition,name="Type substitution"}
-\begin{letIn}
-$r\in \mathcal{Q}$,
-$n\in\mathbb{N}$,
-$\Theta:\mathcal{V}\nrightarrow\{t\in\mathcal{T}| t \text{ is a mono type}\}$,
-$a\in\mathcal{V}$.
-Let $T,T_1,$ $T_2\in\mathcal{T}$,
-$k:\mathbb{N}_1^n\to\mathbb{N}_0$ and
-$T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
-Let $\hat{T}$ be a liquid type.
-\end{letIn}
-We define the substitute of a type $[.]_\Theta:\mathcal{T}\to\mathcal{T}$ as
-$$
-  \begin{aligned}[]
-    [a]_\Theta :=& \begin{cases} S & \text{if } (a,S) \in \Theta\\ a &\text{else} \end{cases}\\
-    \begin{bmatrix*}[l]
-    \mu C.\\
-    C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
-    | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
-    \end{bmatrix*}_\Theta:=&
-    \begin{matrix*}[l]
-    \mu C.\\
-    C_1 \ [T_{1,1}]_{\Theta\setminus\{C,\_\}} \dots [T_{1,k_1}]_{\Theta\setminus\{C,\_\}} \\
-    | \dots \\
-    | \ C_n \ [T_{n,1}]_{\Theta\setminus\{C,\_\}} \dots [T_{n,k_n}]_{\Theta\setminus\{C,\_\}}
-    \end{matrix*}\\
-    [\{l_1:T_1,\dots,l_n:T_n\}]_\Theta:=&\{l_1:[T_1]_\Theta,\dots,l_n:[T_n]_\Theta\}\\
-    [T_1\to T_2]_\Theta :=& [T_1]_\Theta\to [T_2]_\Theta\\
-    [\forall b.T]_\Theta :=&
-        \begin{cases}
-            [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\not\in\mathcal{V}\\
-            \forall S. [T]_\Theta & \text{if } \exists (b,S)\in \Theta\land S\in\mathcal{V}\\
-            \forall b. [T]_\Theta & \text{else.}
-        \end{cases}\\
-    [\{a:\mathit{Int} \ | \ r \}]_\Theta :=& \{a:\mathit{Int}\ | \ r \}\\
-    [a:\{b:\mathit{Int} \ | \ r \}\to \hat{T}]_\Theta :=& a:\{b:\mathit{Int} \ | \ r \}\to \hat{T}
-  \end{aligned}
-$$
-$\Theta$ is called the set of substitutions.
 ```
 
 We will now redefine the notion of values. As mentioned before, liquid types exclude values that do not ensure a specific refinement. 
 
 ```{definition,name="Values"}
 \begin{letIn}
-$r\in \mathcal{Q}$,
-$\mathcal{S}$ the class of all finite sets,
-$n\in\mathbb{N}$,
-$a\in\mathcal{V}$,
-$T,T_1,T_2,S\in\mathcal{T}$,
-$k\in\mathbb{N}_1^n\to\mathbb{N}_0$ and
-$T_{i,k(j)}\in\mathcal{T}$ for all $i\in\mathbb{N}_1^n$ and $j\in\mathbb{N}_1^n$.
-Let $\Gamma$ be a type context. Let $\hat{T}$ be a liquid type.
+$\mathcal{S}$ be the class of all finite sets and $\Gamma$ be a type context.
 \end{letIn}
 
 We define
@@ -249,26 +191,26 @@ $$
 \mathrm{values}_\Gamma(C \ T_1 \ \dots \ T_n) :=& \mathrm{values}_\Gamma(\overline{\Gamma(C)}(T_1,\dots,T_n))\\
 \mathrm{values}_\Gamma\small\begin{pmatrix*}[l]
     \mu C.\\
-    | C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \ C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
     | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
     \end{pmatrix*} :=&\bigcup_{i\in\mathbb{N}_0} \mathrm{rvalues}_\Gamma
   \begin{pmatrix*}[l]
   i,&
   \small\begin{matrix*}[l]
     \mu C.\\
-    | \ C_1 \ T_{1,1} \dots \ T_{1,k(1)}\\
+    | \ C_1 \ T_{1,1} \dots \ T_{1,k_1}\\
     | \dots \\
-    | \ C_n \ T_{n,1} \dots \ T_{n,k(n)}
+    | \ C_n \ T_{n,1} \dots \ T_{n,k_n}
   \end{matrix*}
   \end{pmatrix*}\\
 \small{\mathrm{values}_\Gamma(\{l_1:T_1,\dots,l_n:T_n\})} :=&\Big\{\small{\{l_1=t_1,\dots,l_n=t_n\}} \\
   &| \ \small{\forall i\in\mathbb{N}_1^n.t_i \in\mathrm{values}_\Gamma(T_i)}\Big\}\\
-\mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f\in\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
+\mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f:\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
-  &\text{ not occur in } T.\\
+  &\text{not occur in } T.\\
 \mathrm{values}_\Gamma(\{ a:\mathit{Int} \ | \ r \}) :=& \mathrm{refinedValues}_{\{\}}(\{ a:\mathit{Int} \ | \ r \})\\
-\mathrm{values}_\Gamma(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T}) :=& \mathrm{refinedValues}_{\{\}}(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T})
+\mathrm{values}_\Gamma(a:\{ b:\mathit{Int} \ | \ r \}\to T) :=& \mathrm{refinedValues}_{\{\}}(a:\{ b:\mathit{Int} \ | \ r \}\to T)
 \end{aligned}
 $$
 using the following helper functions.
@@ -312,10 +254,10 @@ $$
 $$
 $$
 \begin{aligned}
-\mathrm{refinedValues}_{\Theta}&(a:\{ b:\mathit{Int} \ | \ r \}\to \hat{T}) :=\\
-   &\{b\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \} \to \hat{T})\\
+\mathrm{refinedValues}_{\Theta}&(a:\{ b:\mathit{Int} \ | \ r \}\to T) :=\\
+   &\{b\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \} \to T)\\
  &| \ \forall n\in \mathrm{refinedValues}_{\Theta}(\{ b:\mathit{Int} \ | \ r \}).\\
-     &\quad b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(\hat{T})\}
+     &\quad b(n) \in \mathrm{refinedValues}_{\Theta\cup\{(a,n)\}}(T)\}
 \end{aligned}
 $$
 ```

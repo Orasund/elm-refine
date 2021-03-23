@@ -4,16 +4,19 @@ We will now extend the type system of Elm with liquid types.
 
 ### Syntax
 
-We will use the syntax described in the last section.
+We will use the syntax described in the Section \@ref(notion-of-liquid-types).
 
 ```{definition,name="Extended Type Signature Syntax"}
-Given two variable domains `<upper-var>` and `<lower-var>`, we define the following syntax:
+\begin{letIn} `<upper-var>` and `<lower-var>` be two variable domains and $\mf{<int>}$ as in Section \@ref(syntax) definined.
+\end{letIn}
+
+We define the following syntax:
 
 $$
   \begin{aligned}
-    \mf{<int-exp-type>} ::=& \mathit{Int}\\
+    \mf{<int-exp-type>} ::=& \mf{<int>}\\
       | \ & \mf{<int-exp-type> + <int-exp-type>}\\
-      | \ & \mf{<int-exp-type> * }\mathit{Int}\\
+      | \ & \mf{<int-exp-type> * <int>}\\
       | \ & \mathcal{V}
   \end{aligned}
 $$
@@ -52,14 +55,14 @@ $$
 
 ### Type Inference
 
-We will also extend the inference rules. The interesting part is the new judgment for \mf{<exp>}: We introduce two new sets: $\Theta$ and $\Lambda$.
-As before, $\Theta$ will contain the type of a variable (similarly to the previous section where  in $\Theta$ we stored the value of a variable). The set $\Lambda$ contains boolean expressions that get collected while traversing if-then-else branches. We will use these expressions to allow path sensitive subtyping.
+We will also extend the inference rules. The interesting part is the new judgment for \mf{<exp>}: We introduce two new sets $\Theta$ and $\Lambda$.
+As before, $\Theta$ will contain the type of a variable. This is similarly to Section \@ref(notion-of-liquid-types) where $\Theta$ contained the value of a variable. The set $\Lambda$ contains boolean expressions that get collected while traversing if-branches. We will use these expressions to allow path sensitive subtyping.
 
 #### Type Signature Judgments
 
 For type signature judgments, let $\mathit{exp}\in\mathit{IntExp}$, $q\in\mathcal{Q}$. Let $\Gamma,\Delta$ be type contexts. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{Q}$.
 
-For $\mathit{iet}\in\mf{"<int-exp-type>"}$, the judgment has the form
+For $\mathit{iet}\in\mf{<int-exp-type>}$, the judgment has the form
 
 $$
 \mathit{iet}:\mathit{exp}
@@ -67,7 +70,7 @@ $$
 
 which can be read as "$\mathit{iet}$ corresponds to $\mathit{exp}$".
 
-For $\mathit{qt}\in\mf{"<qualifier-type>"}$, the judgment has the form
+For $\mathit{qt}\in\mf{<qualifier-type>}$, the judgment has the form
 
 $$
 \mathit{qt}:q
@@ -75,13 +78,13 @@ $$
 
 which can be read as "$\mathit{qt}$ corresponds to $q$"
 
-For $\mathit{lt}\in\mf{"<liquid-type>"}$, the judgment has the form
+For $\mathit{lt}\in\mf{<liquid-type>}$, the judgment has the form
 
 $$
-\mathit{lt}:_\Theta\hat{T}
+\mathit{lt}:_\Theta T
 $$
 
-which can be read as "$\mathit{lt}$ corresponds to the liquid type $\hat{T}$ with respect to $\Theta$".
+which can be read as \enquote{$\mathit{lt}$ corresponds to the liquid type $T$ with respect to $\Theta$}.
 
 As previously already stated, for $t\in\mf{<type>}$ the judgment has the form
 
@@ -101,26 +104,9 @@ which can be read as "given $\Gamma$, $\Delta$, $\Theta$ and $\Lambda$, $e$ has 
 
 ### Auxiliary Definitions
 
-#### Substitution
+We will use all auxiliary definitions defined in Section \@ref(type-inference).
 
-```{definition,name="Refinement Substitution"}
-\begin{letIn}
-$a$ be a variable, $e\in\mathit{IntExp}$. For $r\in\mathcal{Q}$ let $[r]_{a\leftarrow e}$ denote the substitution on expressions.
-\end{letIn}
-
-For a given liquid type we define the _refinement substitution_ as follows:
-
-$$
-\begin{aligned}
-[\{b:\mathit{Int}| r \}]_{a\leftarrow e} :=& \{b:\mathit{Int}| [r]_{a\leftarrow e} \}\\
-[b:\{c:\mathit{Int}| r \}\to\hat{T}]_{a\leftarrow e} :=& b:\{c:\mathit{Int}| [r]_{a\leftarrow e} \}\to[\hat{T}]_{a\leftarrow e}
-\end{aligned}
-$$
-```
-
-Note that we assume for $r\in\mathcal{Q}$ that $[r]_{a\leftarrow e}$ is well formed. In particular, that $[r]_{a\leftarrow e}$ must again life in $\mathcal{Q}$. We can enforce this requirement by the inference rules for \mf{<qualifier-type>}.
-
-#### Well-formed Liquid Type
+#### Well-formed Liquid Type {-}
 
 We have already defined well-formed logical qualifiers expressions. We will now extend the notion to well-formed liquid types.
 
@@ -130,19 +116,21 @@ $\Theta:\mathcal{V}\nrightarrow\mathcal{T}$.
 \end{letIn}
 We define following.
 \[\begin{aligned}
- \text{wellFormed}&\subseteq\{t\in\mathcal{T}| t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})\\
-\text{wellFormed}&(\{b:\mathit{Int}| r \},\{(a_1,r_1),\dots,(a_n,r_n)\}) :\Leftrightarrow\\
-&\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}|r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{nu:\mathit{Int}|r_n\}).\\
+ \text{wellFormed}&\subseteq\{t\in\mathcal{T}\ |\ t \text{ is a liquid type}\}\times(\mathcal{V}\nrightarrow\mathbb{N})\\
+\text{wellFormed}&(\{b:\mathit{Int}\ |\ r \},\{(a_1,r_1),\dots,(a_n,r_n)\}) :\Leftrightarrow\\
+&\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{nu:\mathit{Int}\ |\ r_n\}).\\
 &r\text{ is well defined with respect to } \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathit{Int})\}\\
-\text{wellFormed}&(a:\{b:\mathit{Int}| r \}\to\hat{T},\Theta) :\Leftrightarrow\\
+\text{wellFormed}&(a:\{b:\mathit{Int}\ |\ r \}\to\hat{T},\Theta) :\Leftrightarrow\\
 &(a,\_)\not\in \Theta\\
-\land \ &\text{wellFormed}(\{b:\mathit{Int}| r \},\Theta)\\
-\land \ &\text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}| r \})\})
+\land \ &\text{wellFormed}(\{b:\mathit{Int}\ |\ r \},\Theta)\\
+\land \ &\text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}\ |\ r \})\})
 \end{aligned}
 \]
 ```
 
-#### Subtyping
+#### Subtyping {-}
+
+There are some liquid types that hows values are a subset of the values from another type. In this case we say it is a subtype. For our usecase we will use a different definition of subtyping.
 
 ```{definition,name="Subtyping"}
 \begin{letIn}
@@ -175,11 +163,11 @@ Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpnes
 {\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_2}
 {}
 
-Note that we include $\Lambda$ in our definition. This way we require that the SMT-Solver will allow path sensitive subtyping.
+We will discuss in Chapter \@ref(formulating-smt-statements) how one can use this inference rule for automated type checking.
 
 ### Inference Rules for Type Signatures
 
-#### int-exp-type
+#### Inference Rules for `<int-exp-type>` {-}
 
 Judgment: $\mathit{iet}:\mathit{exp}$
 
@@ -210,11 +198,11 @@ Judgment: $\mathit{iet}:\mathit{exp}$
 {\mathit{a}:\mathit{exp}}
 {}
 
-#### qualifier-type
+#### Inference Rules for `<qualifier-type>` {-}
 
 Judgment: $\mathit{qt}:q$
 
-This judgment is used to convert from $\mf{qualifier-type}$ to $\mathcal{Q}$. 
+This judgment is used to convert from $\mf{<qualifier-type>}$ to $\mathcal{Q}$. 
 
 \logicRule
 {
@@ -234,7 +222,7 @@ This judgment is used to convert from $\mf{qualifier-type}$ to $\mathcal{Q}$.
 }
 {\mf{(<)} \ \mathit{iet} \ \mf{v}:q}
 {}
-Note that where we replace the letter $\mf{v}$ with a special character $\nu$.
+Note that we replace the letter $\mf{v}$ with a special character $\nu$.
 
 \logicRule
 {\mathit{iet}:\mathit{exp}_0\quad
@@ -274,41 +262,41 @@ Note that where we replace the letter $\mf{v}$ with a special character $\nu$.
 {\mf{not} \ \mathit{qt}:\mathit{q}_2}
 {}
 
-#### liquid-type
+#### Inference Rules for `<liquid-type>` {-}
 
-Judgment: $\mathit{lt}:_\Theta\hat{T}$
+Judgment: $\mathit{lt}:_\Theta T$
 
 \logicRule
 {\mathit{qt}:q\quad
-\{\nu:\mathit{Int}| \ q \ \}=\hat{T}\quad
-\text{wellFormed}(\hat{T}_2,\Theta\cup\{(\nu,\mathit{True})\})
+\{\nu:\mathit{Int}| \ q \ \}=T\quad
+\text{wellFormed}(T_2,\Theta\cup\{(\nu,\mathit{True})\})
 }
-{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\hat{T}}
+{\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta T}
 {}
 
 \logicRule
 {\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}:_\Theta\{\nu:\mathit{Int}| \ q \ \}\quad
-\mathit{lt}:_{\Theta\cup\{(a,q)\}}\hat{T}_2\quad
-(a:\{\nu:\mathit{Int}| \ q \ \}\rightarrow\hat{T}_2) = \hat{T}_3
+\mathit{lt}:_{\Theta\cup\{(a,q)\}} T_2\quad
+(a:\{\nu:\mathit{Int}| \ q \ \}\rightarrow T_2) = T_3
 }
-{a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}:_\Theta\hat{T}_3}
+{a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}:_\Theta T_3}
 {}
 
-#### type
+#### Inference Rules for `<type>` {-}
 
 Judgment: $\Gamma\vdash t:T$
 
 \logicRule
-{\mathit{lt}:_{\{\}}\hat{T}
+{\mathit{lt}:_{\{\}} T
 }
-{\Gamma\vdash \mathit{lt}:\hat{T}}
+{\Gamma\vdash \mathit{lt}: T}
 {}
 
 All other inference rules for types have already been described.
 
 ### Inference Rules for Expressions
 
-#### Exp
+#### Inference Rules for `<Exp>` {-}
 
 The following are special inference rules for liquid types. For non-liquid types the old rules still apply.
 
@@ -332,18 +320,18 @@ The following are special inference rules for liquid types. For non-liquid types
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(//)"}:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \neg (\nu = 0)\}\to\mathit{Int}}
 {}
 
-By using a liquid type we can avoid dividin by zero.
+By using a liquid type we can avoid dividing by zero.
 
 \logicRule
 {
 \begin{gathered}
 \Gamma,\Delta,\Theta,\Lambda\vdash e_1:\textit{Bool}\quad
 e_1:e_1'\\
-\Gamma,\Delta,\Theta,\Lambda\cup\{e_1'\}\vdash e_2: \hat{T}\quad
-\Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1'\}\vdash e_3: \hat{T}
+\Gamma,\Delta,\Theta,\Lambda\cup\{e_1'\}\vdash e_2: T\quad
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1'\}\vdash e_3: T
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:\hat{T}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"if"} \ e_1  \ \mf{"then"} \ e_2 \ \mf{"else"} \ e_3:T}
 {}
 
 We add the condition $e_1$ to $\Lambda$ and ensure that the resulting liquid type is well-formed.
@@ -351,35 +339,35 @@ Note that we assume that $e_1\in\mf{<qualifier-type>}$. If this is not the case,
 
 \logicRule
 {\begin{gathered}
-\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:\hat{T}_1\to \hat{T}_2)\\
-\Gamma,\Delta,\Theta,\Lambda\vdash e_2: \hat{T}_1\quad
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1: (a:T_1\to T_2)\\
+\Gamma,\Delta,\Theta,\Lambda\vdash e_2: T_1\quad
 e_2:e_2'\quad
-[\hat{T}_2]_{\{(a, e_2')\}} =\hat{T}_3
+[T_2]_{\{(a, e_2')\}} =T_3
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: \hat{T}_3}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e_1 \ e_2: T_3}
 {}
 
-We change the type of $e_1$ to $a:\hat{T}_1\to \hat{T}_2$. To ensure that $a$ can't escape the scope, we substitute it with $e_2'$. Note that we assume that $e_2\in\mf{<qualifier-type>}$, else we can try to recover by using the inference rules for non-liquid types.
+We change the type of $e_1$ to $a:T_1\to T_2$. To ensure that $a$ can't escape the scope, we substitute it with $e_2'$. Note that we assume that $e_2\in\mf{<qualifier-type>}$, else we can try to recover by using the inference rules for non-liquid types.
 
 \logicRule
 {\begin{gathered}
-a:\{\nu:\mathit{Int}|q\}\to \hat{T}_1 = \hat{T}_2\\
-\Gamma,\Delta\cup\{(a,\{\nu:\mathit{Int}|q\})\},\Theta\cup\{(a,q)\},\Lambda\vdash e: \hat{T}_1
+a:\{\nu:\mathit{Int}\ |\ q\}\to T_1 = T_2\\
+\Gamma,\Delta\cup\{(a,\{\nu:\mathit{Int}\ |\ q\})\},\Theta\cup\{(a,q)\},\Lambda\vdash e: T_1
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: \hat{T}_2}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"\textbackslash"} \ a \ \mf{"->"} \ e: T_2}
 {}
 
-We define the type as $a:\hat{T}_1\to \hat{T}_2 = \hat{T}_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:\hat{T}_1\to \hat{T}_2$ is well-formed.
+We define the type as $a:T_1\to T_2 = T_3$. Note that the variable $a$ in the expression realm and the variable $a$ within the context of liquid types are the same. This is because we assume that renaming can be applied at any step of the type inference. To avoid having double bound variables, we require that $a:T_1\to T_2$ is well-formed.
 
 \logicRule
 {\begin{gathered}
-(a,\{\nu:\mathit{Int}| \ q\}) \in \Delta\quad
+(a,\{\nu:\mathit{Int}\ |\ \ q\}) \in \Delta\quad
 (a,q) \in \Theta
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\mathit{Int}| \ \nu = a\}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash a: \{\nu:\mathit{Int}\ | \ \nu = a\}}
 {}
 
 We can give a variable a sharp liquid type.
@@ -433,9 +421,9 @@ $$
 \semantic{.}:&\mf{<liquid-type>}\to\mathcal{T}\\
 \semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$}=&\{\nu:\mathit{Int}|\ r \ \}\\
     &\text{such that } r = \semantic{$\mathit{qt}$}\text{ where } r\in\mathcal{Q}\\
-\semantic{$a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}$}=& a: \hat{T}_1 \to \hat{T}_2\\
-    &\text{such that } \hat{T}_1 = \semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$},\\
-    &\text{and } \hat{T}_2 \semantic{$\mathit{lt}$}\text{ where } \hat{T}_1,\hat{T}_2 \text{ are liquid types}
+\semantic{$a \ \mf{":"} \ \mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"} \ \mf{"->"} \ \mathit{lt}$}=& a: T_1 \to T_2\\
+    &\text{such that } T_1 = \semantic{$\mf{"\{v:Int|"}\ \mathit{qt} \ \mf{"\}"}$},\\
+    &\text{and } T_2 \semantic{$\mathit{lt}$}\text{ where } T_1,T_2 \text{ are liquid types}
 \end{aligned}
 $$
 
