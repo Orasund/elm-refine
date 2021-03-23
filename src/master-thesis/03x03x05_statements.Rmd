@@ -45,7 +45,7 @@ a_n:(T_{n,1}, \dots,T_{n,k_n})
 }
 {}
 
-#### Inference Rules for `<list-statement>`
+#### Inference Rules for `<list-statement>` {-}
 
 Judgment: $\Gamma_1,\Delta_1,\mathit{ls}\vdash \Gamma_2,\Delta_2$
 
@@ -63,7 +63,7 @@ Judgment: $\Gamma_1,\Delta_1,\mathit{ls}\vdash \Gamma_2,\Delta_2$
 {\Gamma_1,\Delta_1, s \ \mf{";"} \ \mathit{ls} \vdash \Gamma_3,\Delta_3}
 {}
 
-#### Inference Rules for `<maybe-statement-sign>`
+#### Inference Rules for `<maybe-statement-sign>` {-}
 
 Judgment: $\Gamma,mss\vdash a:T$
 
@@ -78,7 +78,7 @@ a_1 = a_2}
 {\Gamma,a_1 \ \mf{":"} \ t \ \mf{";"}\vdash a_2:T}
 {}
 
-#### Inference Rules for `<statement>`
+#### Inference Rules for `<statement>` {-}
 
 Judgment: $\Gamma_1,\Delta_1,s\vdash \Gamma_2,\Delta_2$
 
@@ -134,7 +134,7 @@ T_2 \text{ is a mono type}\quad
 {}
 The list $\mathit{lss}$ provides us with the structure of the type. From there we construct the type $T_2$ and bind all variables, thus creating the poly type $T_1$. Additionally, every sort $c_i$ for $i\in\mathbb{N}_1^n$ has its own constructor that gets added to $\Delta_1$ under the name $c_i$. In Elm these constructors are the only constants beginning with an upper-case letter.
 
-#### Inference Rules for `<maybe-main-sign>`
+#### Inference Rules for `<maybe-main-sign>` {-}
 
 Judgment: $\Gamma,\mathit{mms}\vdash \text{main}:T$
 
@@ -148,7 +148,7 @@ Judgment: $\Gamma,\mathit{mms}\vdash \text{main}:T$
 {\Gamma,\mf{"main :"} t \mf{";"}\vdash \text{main}:T}
 {}
 
-#### Inference Rules for `<program>`
+#### Inference Rules for `<program>` {-}
 
 Judgment: $\textit{prog}:T$
 

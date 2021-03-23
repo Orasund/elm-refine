@@ -295,7 +295,7 @@ $$
   &| \ \small{\forall i\in\mathbb{N}_1^n.t_i \in\mathrm{values}_\Gamma(T_i)}\Big\}\\
 \mathrm{values}_\Gamma(T_1 \to T_2) :=&\{f \ | \ f:\mathrm{values}_\Gamma(T_1)\to\mathrm{values}_\Gamma(T_2)\}\\
 \mathrm{values}_\Gamma(\forall a.T) :=& \lambda b.\mathrm{values}_{\{(a,b)\}\cup\Gamma}(T) \text{ where the symbol } b \text{ does}\\
-  &\text{ not occur in } T.
+  &\text{not occur in } T.
 \end{aligned}
 $$
 using the following helper function.
@@ -333,18 +333,19 @@ $$
 The base case of this recursive function is in $\mathrm{rvalues}_\Gamma(0,T)$ for a given $T$.
 
 As an example we will prove that the values of $\mathit{Nat}$ from Example \ref{ex:int} are isomorphic to the natural numbers.
+
+To simplify the theorem we will introduce a new notation:
+For any $n\in\mathbb{N}_0$ we define $\mathit{Succ}^n \ 1 := \underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{n \text{ times}} \ 1$. Note that $\mathit{Succ}^0 \ 1 = 1$.
+
 ```{theorem}
 \begin{letIn}
-the algebraic type $\mathit{Nat}$ be defined as $\mathit{Nat}:=\mu C.1| \mathit{Succ} \ C$. Let $<_\mathbb{N}:\mathbb{N}\times\mathbb{N}$ be the well-order such that $a<_\mathbb{N}b :\Leftrightarrow \exists c\in\mathbb{N}. a = b + c$. Let $<_\mathit{Nat}:\mathit{Nat}\times\mathit{Nat}$ be a order such that $\underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{a \text{ times}} \ 1<_\mathit{Nat}\underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{b \text{ times}} \ 1:\Leftrightarrow a+1 <_\mathbb{N} b+1$.
+the algebraic type $\mathit{Nat}$ be defined as $\mathit{Nat}:=\mu C.1| \mathit{Succ} \ C$. Let $<_\mathbb{N}:\mathbb{N}\times\mathbb{N}$ be the well-order such that $a<_\mathbb{N}b :\Leftrightarrow \exists c\in\mathbb{N}. a = b + c$. Let $<_\mathit{Nat}:\mathit{Nat}\times\mathit{Nat}$ be a order such that $\mathit{Succ}^a \ 1<_\mathit{Nat}\mathit{Succ}^b \ 1:\Leftrightarrow a+1 <_\mathbb{N} b+1$.
 \end{letIn}
 Then we have:
 $$(\mathrm{values}(\mathit{Nat}),<_\mathit{Nat})\cong(\mathbb{N},<_\mathbb{N})$$
 ```
 ```{proof}
-We will introduce a new notation in order to simplify the proof:
-For any $n\in\mathbb{N}_0$ we define $\mathit{Succ}^n \ 1 := \underbrace{\mathit{Succ} \ \dots \ \mathit{Succ}}_{n \text{ times}} \ 1$. Note that $\mathit{Succ}^0 \ 1 = 1$.
-
-Next we show by induction over $n\in\mathbb{N}_0$ that
+We show by induction over $n\in\mathbb{N}_0$ that
 \begin{equation}\label{proof:natProof1} \textrm{rvalues}_\Gamma(n,\mu C.1\ |\ \mathit{Succ} \ C)=\{\mathit{Succ}^i \ 1\ |\ i\in\mathbb{N}^n_0\}. \end{equation}
 \begin{addmargin}[1cm]{0cm}
 \textbf{Base case}: $\mathrm{rvalues}_\Gamma(0,\mu C.1\ |\ Succ \ C) =\{1\}= \{\mathit{Succ}^0\}$. This is true.\newline
