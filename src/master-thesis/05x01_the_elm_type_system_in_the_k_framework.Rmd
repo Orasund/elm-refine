@@ -1,8 +1,8 @@
 # Implementation
 
-We will now discuss the implementation of the Elm type system and then the implementation of the refinement types. We use these implementations for rapid prototyping.
+We will now discuss the implementation of the Elm type system and the implementation of the refinement types. We use these implementations for rapid prototyping.
 
-Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the software system \enquote{K Framework}. In Section \@ref(implementation-in-elm) we will go over the implementation of the refinement types in Elm (we could not do this implementation in the K Framework, as it lacks a way to communicate with an external SMT-Solver). In Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In Section \@ref(demonstration) we will demonstrate the implemented algorithm on an example code.
+Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the software system \enquote{K Framework}. In Section \@ref(refinement-types-in-elm) we will go over the implementation of the refinement types in Elm. we could not do this implementation in the K Framework, as it lacks a way to communicate with an external SMT-Solver. In Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In Section \@ref(demonstration) we will demonstrate the implemented algorithm on an example code.
 
 ## The Elm Type System in the K Framework
 
@@ -12,7 +12,9 @@ The main usage besides the creation and formalization of new languages is to cre
 
 The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
 
-We will be using K Framework to express small step semantics of the denotational semantics from a previous chapter. We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
+We will be using K Framework to express small step semantics of the denotational semantics from Chapter \@ref(denotational-semantic). We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
+
+A file written in the K langauge has a specific structure.
 
 ```
 require "unification.k"
@@ -62,17 +64,17 @@ rule E1:Type E2:Type
 syntax KResult ::= Type
 ```
 
-The rule itself has the syntax `rule . => .`. The inner expressions need to be rewritten (into types) for the outer rule can be applied. We can include an additional `syntax` line before the rule and a `KResult` to ensure that rewriting system keeps on applying rules until a specific result has been reached. Only then it may continue.
+The rule itself has the syntax `rule ... => ...` . The inner expressions need to be rewritten into types before the outer rule can be applied. We can include an additional `syntax` line before the rule and a `KResult` to ensure that the rewriting system keeps on applying rules that are written above the `syntax` line until the result is of the form defined in the `syntax` line. Only then it may continue.
 
 Additionally, we have variables starting with an uppercase letter and existentially quantified variables starting with a question mark.
 
-The system itself allows for a more untraditional imperative rewriting system using `~>`. This symbol has only one rule: `rule . ~> A => A` where `.` is the empty symbol. Thus,d the left part needs to be rewritten to `.` before the right part can be changed.
+The system itself allows for a more untraditional imperative rewriting system using `~>`. This symbol has only one rule: `rule . ~> A => A` (read as "`. ~> A` can be rewritten into `A`") where "`.`" denotes the empty term. Thus, the left side of a `~>` expression needs to be first rewritten to "`.`" before the right side can be changed. Until then the right side is just a term.
 
-With all of this applied, the type system can infer types by applying rules as long as possible. But this only holds true for mono types. For poly types we need to implement the polymorphism, in particular instantiation and the generalization. The inference rules that we have presented in the section about type inference are not monomorphic and therefore can't be implemented. So in order to implement them we need to modify the slightly.
+The type system can infer mono types by applying rules as long as possible. For poly types we need to implement the polymorphism, in particular instantiation and the generalization. The inference rules that we have presented in the Section \@ef(type-inference) are not monomorphic and therefore can not be implemented in this state. We will therefore modify them slightly. In particular, we will implement the Alogrithm J as described in in the original papar by Milner [@Milner_type_polymorphism].
 
 ### Implementing Algorithm J
 
-In the original paper by Milner [@Milner_type_polymorphism], an optimized algorithm is presented for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
+The Algorithm J is an optimized algorithm for implementing polymorphism in a programming language. This algorithm is imperative but is typically presented as logical rules:
 
 \logicRule
 {a:T_1\quad
@@ -104,11 +106,11 @@ T_2 = \mathit{newvar}\quad
 {\Delta\vdash_J \mf{let} x \mf{=} e_0 \mf{in} e_1 : T_2}
 {LetIn}
 
-So all we need to do, is to replace the rules of _let in_, _lambda_, _call_ and _variable_ with the rules above. The imperative functions are _newvar_, _unify_ and _inst_:
+To adjust our own infrence rules, we only need to replace the rules of _let in_, _lambda_, _call_ and _variable_ with the rules above. The imperative functions are _newvar_, _unify_ and _inst_:
 
 * _newvar_ creates a new variable.
 * _inst_ instantiates a type with new variables.
-* _inify_ checks whether two types can be unified.
+* _uinify_ checks whether two types can be unified.
 
 The K Framework has these imperative functions implemented in the `Unification.k` module. In order to use them, we need to first properly define poylmorphic types.
 
@@ -122,7 +124,7 @@ Next we tell the system that we want to use the unification algorithm on types.
 syntax Type ::= MetaVariable
 ```
 
-Once this is set up, we can use the function `#renameMetaKVariables` for _inst_ and `?T` for _newvar_.
+We can now use the function `#renameMetaKVariables` for _inst_ and `?T` for _newvar_.
 
 ```
 rule <k> variable X:Id => #renameMetaKVariables(T, Tvs) ...</k>
@@ -136,9 +138,9 @@ syntax KItem ::= setTenv(Map)
   rule <k> T:Type ~> (setTenv(TEnv) => .) ...</k>
    <tenv> _ => TEnv </tenv>
 ```
-Note that the `setTenv` function ensures that ?T is instantiated before its inserted into the environment.
+Note that the `setTenv` function ensures that `?T` is instantiated before it is inserted into the environment.
 
-For implementing unification we use `#metaKVariables` for getting all bound variables and `#freezeKVariables` to ensure that variables in the environment needs to be newly instantiated whenever they get used.
+For implementing the unification we use `#metaKVariables` for getting all bound variables and `#freezeKVariables` to ensure that variables in the environment need to be newly instantiated whenever they get used.
 
 ```
 rule <k> let X = T:Type in E => E ~> setTenv(TEnv) 
@@ -198,10 +200,12 @@ in
 <tenv> .Map </tenv>
 ```
 
-Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule. The K Framework uses this rule at parse time, so this is just syntax sugar.
+Here `.Map` denotes the empty type context. Also note that we have already applied the `left` rule by adding brackets. The K Framework uses this rule at parse time, so this is just syntax sugar.
 
 The K Framework will now walk through the abstract syntax tree to find the first term it can match.
-By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is rewritten. By appling the rule
+By specifying `strict(2)` we tell the system that `let in` can only be matched once `[]Exp` is rewritten.
+
+By appling the rule
 
 ```
 rule []Exp => list ?A:Type
@@ -238,6 +242,7 @@ rule <k> let X = T:Type in E => E ~> setTenv(TEnv)
 
 the system rewrites the `let in` expression.
 
+Thus our example gets rewritten into the following.
 ```
 <k>
 ((::) (intExp 1)) (variable model)
@@ -247,12 +252,13 @@ the system rewrites the `let in` expression.
 </tenv>
 ```
 
-Note that we have just witnessed generalization: The free variable `?A` of the type got bound resulting in a poly type. These poly types only exist inside the type inference system.
+Note that we have just witnessed the generalization being applied: The free variable `?A` of the type got bound resulting in the poly type `forall A0 . (list (#freeze(A0))`. These poly types only exist inside the type environment.
 
-The rule `Exp Exp` is strict, we therefore need to first rewrite `(::) (intExp 1)` and `variable model`. By appling the rules
+The rule for function application is strict, we therefore need to first rewrite `(::) (intExp 1)` and `variable model`. By appling the rules
 
 ```
 rule (::) => ?A:Type -> ( list ?A ) -> ( list ?A )
+
 rule intExp I:Int => int
 ```
 
@@ -303,7 +309,7 @@ we obtain the following expression.
 </tenv>
 ```
 
-Note how the poly type was only used to store the variables that have been frozen. As we take a copy out of the type context, we instantiate the poly type resulting in a new type hole `?A1`.
+Note how the poly type was only needed to store a record of the frozen variables. As we take a copy out of the type context, we instantiate the frozen variable resulting in a new type hole `?A1`.
 
 Finally, we apply the expressions and again fill the type hole `?A2 = int` resulting in in our final expression.
 

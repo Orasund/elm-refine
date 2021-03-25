@@ -16,7 +16,7 @@ type alias LiquidType a b =
     )
 ```
 
-A function $a:\{\mathit{Int}|r1\}\to b:\{\mathit{Int}|r2\}\to\{\mathit{Int}|r3\}$ would be represented as `([{name=a,refinement=r1},{name=b,refinement=r2}],r3)`.
+A function $a:\{\mathit{Int}\ |\ r1\}\to b:\{\mathit{Int}\ |\ r2\}\to\{\mathit{Int}\ |\ r3\}$ would be represented as `([{name=a,refinement=r1},{name=b,refinement=r2}],r3)`.
 We allow different types for  `a` and `b`:
 
 ```
@@ -57,7 +57,7 @@ type alias Transition =
     List SimpleCondition
 ```
 
- We obtain simple conditions from the `split` function. This is a one-to-one implementation of the  _split_ function previously described. We will now go through its definition.
+ We obtain simple conditions from the _Split_ function. This is a one-to-one implementation of the  _Split_ function previously described. We will now go through its definition.
  
 \text{\textemdash}
 
@@ -95,8 +95,8 @@ This first case is equivalent to the following.
 
 $$
 \begin{aligned}
-&\text{Split}(a:\{\nu:\mathit{Int}|q_1\}\to \hat{T}_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}|q_3\}\to\hat{T}_4 )=\\
-&\quad\quad\{\{\nu:\mathit{Int}|q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_1\}\}\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}\hat{T}_4\})
+&\text{Split}(a:\{\nu:\mathit{Int}\ |\ q_1\}\to \hat{T}_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}\ |\ q_3\}\to\hat{T}_4 )=\\
+&\quad\quad\{\{\nu:\mathit{Int}\ |\ q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_1\}\}\cup\text{Split}(\hat{T}_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}\hat{T}_4\})
 \end{aligned}
 $$
 
@@ -116,8 +116,8 @@ The second case is a direct transformation from a `Condition` into a `SimpleCond
 
 $$
 \begin{aligned}
-&\text{Split}(\{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} )=\\
-&\quad\quad\{ \{\nu:\mathit{Int}|q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}|q_2\} \}
+&\text{Split}(\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} )=\\
+&\quad\quad\{ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} \}
 \end{aligned}
 $$
 
@@ -130,7 +130,7 @@ $$
   rec 0
 ```
 
-The _split_ function is a partial function, therefore we will return an error if neither case could be applied. If so, the `Setup` program will throw an error and the user would need to correct the given conditions. For a valid condition, the _split_ function will always be successful. Once successful the new list of `SimpleCondition`s will be passed as transition data to the `Assistant`
+The _Split_ function is a partial function, therefore we will return an error if neither case could be applied. If so, the `Setup` program will throw an error and the user would need to correct the given conditions. For a valid condition, the _Split_ function will always be successful. Once successful the new list of `SimpleCondition`s will be passed as transition data to the `Assistant`
 program.
 
 ```
@@ -143,7 +143,7 @@ case model.conditions |> List.map function.split |> Result.combine of
 
 ### Init
 
-After we have split the conditions, we initiate the Elm program. Note that this program will be implementing the `solve` and `weaken` functions.
+After we have split the conditions, we initiate the Elm program. Note that this program will be implementing the _Solve_ and _Weaken_ functions.
 
 ```
 init : Transition -> ( Model, Cmd Msg )
@@ -179,8 +179,8 @@ We now go through all fields of our model.
 
  * `conditions` contains a copy of the conditions.
  * `predicates` contains a dictionary, mapping every liquid type variable to the initial set of predicates $\mathit{Init}(V)$. (Equivalent to `Refinement.init`)
- * `index` contains the index of the current condition. Keep in mind, that the loop from the Solve function is actually modelled as state transitions. Therefore, we can assume that we are always investigating one specific condition at a time. If not, then the program would have already stopped.
- * `weaken` says if we are currently weakening a condition. If this is set to `Nothing` then we are in the `solve` function, else its `Just i` where `i` is the index of the predicate that we are currently investigating.
+ * `index` contains the index of the current condition. Keep in mind, that the loop from the _Solve_ function is actually modelled as state transitions. Therefore, we can assume that we are always investigating one specific condition at a time. If not, then the program would have already stopped.
+ * `weaken` says if we are currently weakening a condition. If this is set to `Nothing` then we are in the _Solve_ function, else its `Just i` where `i` is the index of the predicate that we are currently investigating.
  * `auto` is a boolean expression that says if the SMT solver should be asked directly. If set to `False`, then the user may decide the satisfiability of the current SMT statement.
  * `error` contains any error message that should be displayed to the user. These errors come directly from the SMT solver.
  
@@ -205,8 +205,8 @@ handleResponse sendMsg bool model =
 ```
 
 
-We have stored the additional information needed for the `weaken` function in `model.weaken`.
-We therefore check the content of `model.weaken`. We check the content of `model.weaken`, If it is `Nothing` we know that we are in the `solve` function, else we know that we are currently in the `weaken` function.
+We have stored the additional information needed for the _Weaken_ function in `model.weaken`.
+We therefore check the content of `model.weaken`. We check the content of `model.weaken`, If it is `Nothing` we know that we are in the _Solve_ function, else we know that we are currently in the _Weaken_ function.
 
 #### The Solve function
 
@@ -224,7 +224,8 @@ handleSolve sendMsg bool model =
                     | weaken =
                         Just
                             { index = 0
-                            , liquidTypeVariable = bigger |> Tuple.first
+                            , liquidTypeVariable = 
+                                bigger |> Tuple.first
                             }
                 }
                     |> handleAuto sendMsg
@@ -233,7 +234,7 @@ handleSolve sendMsg bool model =
                 Action.updating ( model, Cmd.none )
 ```
 
-If the incoming result is `True` it means that the SMT statement is satisfiable. Therefore, we start the `weaken` function. To do so, we initiate the weakening index at `0` and also store the liquid type variable whose corresponding refinement we want to weaken.
+If the incoming result is `True` it means that the SMT statement is satisfiable. Therefore, we start the _Weaken_ function. To do so, we initiate the weakening index at `0` and also store the liquid type variable whose corresponding refinement we want to weaken.
 
 \text{\textemdash}
 
@@ -306,7 +307,7 @@ handleWeaken weaken sendMsg bool model =
                 |> handleAuto sendMsg
 ```
 
-If the incoming result is `False`, then the SMT statement is unsatifiable. Thus, we remove the predicate. If no predicate exists, we finish the `weaken` function by setting `model.weaken` to `Nothing`.
+If the incoming result is `False`, then the SMT statement is unsatifiable. Thus, we remove the predicate. If no predicate exists, we finish the _Weaken_ function by setting `model.weaken` to `Nothing`.
 
 \text{\textemdash}
 
@@ -385,11 +386,11 @@ smtStatement model =
         |> Maybe.map toString
 ```
 
-The statement differes between the `solve` and the `weaken` function.
+The statement differes between the _Solve_ and the _Weaken_ function.
 
 #### SMT Statement for Solve
 
-For the `solve` function we translate the condition directly into the SMT statement.
+For the _Solve_ function we translate the condition directly into the SMT statement.
 
 ```
 statementForSolve : Model -> SimpleCondition -> String
@@ -397,11 +398,12 @@ statementForSolve model condition =
     condition
         |> Condition.toSMTStatement
             (model.predicates
-                |> Dict.map (\_ -> Array.toList >> Refinement.conjunction)
+                |> Dict.map (\_ -> Array.toList 
+                  >> Refinement.conjunction)
             )
 ```
 
-The actual translation happens in `Condition.toSMTStatement`. The translation is taken directly from the described `solve` function. We therefore will now compare both with another.
+The actual translation happens in `Condition.toSMTStatement`. The translation is taken directly from the described _Solve_ function. We therefore will now compare both with another.
 
 \text{\textemdash}
 
@@ -525,7 +527,7 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 
 #### SMT Statement for Weaken
 
-For the `weaken` function we modify the statement.
+For the _Weaken_ function we modify the statement.
 
 ```
 statementForWeaken :

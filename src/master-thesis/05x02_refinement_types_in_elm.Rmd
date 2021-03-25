@@ -1,6 +1,6 @@
 ## Refinement Types in Elm
 
-We will now turn to the implementation of the core of the type inference algorithm discussed in section \@ref(formulating-smt-statements) previous chapter.
+We will now turn to the implementation of the core of the type inference algorithm discussed in Section \@ref(formulating-smt-statements) previous chapter.
 
 In particular, we will present the `split`, `solve` and `weaken` functions for computing the strongest refinements for a set of given subtyping conditions.
 
@@ -10,7 +10,7 @@ We have implemented these functions in Elm itself; to simplify testing, we have 
 knitr::include_graphics("ui.png")
 ```
 
-Elm is an immutable pure functional language. The architecture of a typical elm program is similar to that of a state machine: First a `init` function is called to define the initial state (in Elm typically called `Model`). The state is then passed to the `view` function that displays the state as an HTML document on the screen. The user can now interact with the elements on screen(like pressing a button). Once the user has performed an interaction, a message describing the action will be passed to an `update` function, updating the current state (and with that also the HTML document on screen).
+The architecture of a typical elm program is similar to that of a state machine: First a `init` function is called to define the initial state (in Elm typically called `Model`). The state is then passed to the `view` function that displays the state as an HTML document on the screen. The user can now interact with the elements on screen (like pressing a button). Once the user has performed an interaction, a message describing the action will be passed to an `update` function, updating the current state (and with that also the HTML document on screen).
 
 Our implementation consists of three different programs called `Setup`, `Assistant` and `Done`. The `Setup` program as seen in Figure \@ref(fig:gui) handles the creation of our conditions. The `Assistant` program as seen in Figure \@ref(fig:assistant) applies the `split`, `solve` and `weaken` functions to the conditions. The `Done` program as seen in Figure \@ref(fig:done) shows the solution. 
 
