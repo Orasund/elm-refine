@@ -12,7 +12,7 @@ Given two variable domains `<upper-var>` and `<lower-var>`, we define the follow
 $$
 \begin{aligned}
 \mf{<list-type-fields>} \ ::=& \ \mf{""} \\
-                       |& \mf{<lower-var> ":" <type> "," <list-type-fields>}
+                       |\ & \mf{<lower-var> ":" <type> "," <list-type-fields>}
 \end{aligned}
 $$
 $$\mf{<list-type>} \ ::= \ \mf{""} \ | \ \mf{<type>} \ \mf{<list-type>}$$

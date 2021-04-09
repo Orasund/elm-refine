@@ -134,7 +134,7 @@ The _Split_ function is a partial function, therefore we will return an error if
 program.
 
 ```
-case model.conditions |> List.map function.split |> Result.combine of
+case model.conditions |> List.map Function.split |> Result.combine of
     Ok conds ->
         conds |> List.concat |> Action.transitioning
     Err () ->

@@ -495,7 +495,7 @@ The first post-condition states that $[T_1]_S$ and $[T_2]_S$ are not templates.
 The second condition states that $S$ is a solution, meaning that $[T_1]_S$ is a subtype of $[T_2]_S$.
 The third condition states that $S$ is the sharpest solution.
 ```{proof}
-Let $C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
+Let $C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
 Let $Q_0:=\mathit{Init}(V)$,
 $A_0:=\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\}$ and $C_1:= \bigcup_{c\in C}\text{Split}(c)$. Then by Theorem \ref{thm:correctness_split} $C_1\subset\mathcal{C}^-$ is a set of well-formed conditions. Let $A:=\text{Solve}(C_1,A_0)$ and therefore $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$. Then by Theorem \ref{thm:correctness_solve} the conclusion holds.
 ```
@@ -549,7 +549,7 @@ $$
 ```
 The post-condition is the same as for Infer.
 ```{proof}
-Let $C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
+Let $C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and
 $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 
 \textbf{Show that the then-branch ensures the postcondition}\newline

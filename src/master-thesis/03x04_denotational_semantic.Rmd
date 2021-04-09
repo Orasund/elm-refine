@@ -10,7 +10,7 @@ $\Delta : \mathcal{V} \nrightarrow \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(
 The semantics of the type signature was already defined in Section \@ref(type-inference): The semantic of a type signature is its type. We will therefore define the same concept again but now in a denotational style.
 ```{definition, name="Type Signature Semantic"}
 \begin{letIn}
-$T,T'\in\mathcal{T}$, $c,a_0,a\in\mathcal{V}$. Let $t_0,t_1,t_2\in\mf{<type>}$, $ltf\in\mf{<list-type-fields>}$ and $lt\in\mf{<list-type>}$. Let $\Gamma$ be a type context.
+Let $\Gamma$ be a type context.
 \end{letIn}
 
 $$
@@ -54,11 +54,11 @@ $$
 $$
 ```
 
-An Elm program is nothing more than an expression. Semantics of an expression is therefore the heart piece of this section.
+An Elm program is nothing more than an expression with some syntax sugar around it. Semantics of an expression is therefore the heart piece of this section.
 
 ```{definition, name="Expression Semantic"}
 \begin{letIn}
-$\Gamma$ be a type context and let $\Delta,\Theta$ be variable contexts. Let $a,a_0,a_1\in\mathcal{V}$, $e,e_1,e_2,e_3\in\mf{<exp>}$. Let $\mathit{lef}\in\mf{<list-exp-field>}$, $t\in\mf{<type>}$, $p\in\mf{<pattern>}$, $\mathit{lc}\in\mf{<list-case>}$, $b\in\mf{<bool>}$, $\mathit{nr}\in\mathbb{N}$, $\mathit{le}\in\mf{<list-exp>}$ and $\mathit{mes}\in\mf{<maybe-expression-sign>}$.
+$\Gamma$ be a type context and let $\Delta$ be variable contexts.
 \end{letIn}
 
 $$
@@ -288,9 +288,6 @@ $$
 Statements are, semantically speaking, just functions that either map the type- or variable-context. 
 
 ```{definition, name="Statement Semantic"}
-\begin{letIn}
-$\Gamma$ be a type context. Let $a,a_0\in\mathcal{V}$, $t\in\mf{<type>}$, $\mathit{lsv}\in\mf{<list-statement-var>}$, $\mathit{lt}\in\mf{<list-type>}$, $\mathit{lss}\in\mf{<list-statement-sort>}$, $\mathit{st}\in\mf{<statement>}$, $\mathit{ls}\in\mf{<list-statement>}$, $\mathit{mss}\in\mf{<maybe-statement-sign>}$ and $\mathit{mms}\in\mf{<maybe-main-sign>}$. Let $\mathcal{S}$ be the class of all finite sets.
-\end{letIn}
 
 $$
 \begin{aligned}

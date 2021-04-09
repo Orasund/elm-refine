@@ -34,7 +34,7 @@ endmodule
 
 One can specify the realm upon which the rewriting system can be executed by using the `configuration` keyword. Here we specify two parts: `<k></k>` containing the expression and `<tenv></tenv>` containing the type context.
 
-We also need to specify the end result using the `KResult` keyword. Once the rewriting system reaches such an expression, it will stop. If not specified the system might not terminate.
+We also need to specify the end result using the keyword `KResult`. Once the rewriting system reaches such an expression, it will stop. If not specified the system might not terminate.
 
 ### Implementing the Formal Language
 
@@ -70,7 +70,7 @@ Additionally, we have variables starting with an uppercase letter and existentia
 
 The system itself allows for a more untraditional imperative rewriting system using `~>`. This symbol has only one rule: `rule . ~> A => A` (read as "`. ~> A` can be rewritten into `A`") where "`.`" denotes the empty term. Thus, the left side of a `~>` expression needs to be first rewritten to "`.`" before the right side can be changed. Until then the right side is just a term.
 
-The type system can infer mono types by applying rules as long as possible. For poly types we need to implement the polymorphism, in particular instantiation and the generalization. The inference rules that we have presented in the Section \@ef(type-inference) are not monomorphic and therefore can not be implemented in this state. We will therefore modify them slightly. In particular, we will implement the Alogrithm J as described in in the original papar by Milner [@Milner_type_polymorphism].
+The type system can infer mono types by applying rules as long as possible. For poly types we need to implement the polymorphism, in particular instantiation and the generalization. The inference rules that we have presented in the Section \@ref(type-inference) are not monomorphic and therefore can not be implemented in this state. We will therefore modify them slightly. In particular, we will implement the Alogrithm J as described in in the original papar by Milner [@Milner_type_polymorphism].
 
 ### Implementing Algorithm J
 

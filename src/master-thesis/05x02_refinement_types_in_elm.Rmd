@@ -1,6 +1,6 @@
 ## Refinement Types in Elm
 
-We will now turn to the implementation of the core of the type inference algorithm discussed in Section \@ref(formulating-smt-statements) previous chapter.
+We will now turn to the implementation of the core of the type inference algorithm discussed in Section \@ref(formulating-smt-statements).
 
 In particular, we will present the `split`, `solve` and `weaken` functions for computing the strongest refinements for a set of given subtyping conditions.
 
@@ -25,4 +25,3 @@ knitr::include_graphics("done.png")
 Our library Elm-Action simplifies the wiring to combine multiple Elm programs into one. To do so, the library models the different Elm programs as different states of a meta-level state machine: Each state is its own state machine. To transition from one program into another we define a transition function that takes some transition data as an input and returns the initial state of the new elm program.
 
 We will only discuss the `Assistant` program, as it is the most interesting. In this program our state describes a satisfiability problem. This SAT problem needs to be solved by either the SMT solver or a human. We are using the SMT solver called Z3. To talk to Z3, we use a small JavaScript code that communicates between Z3 and Elm. Elm will send the problem in question through JavaScript to Z3 and then awaits a response. Once the response has been received, it will then be sent to the `update` function, resulting in a new satisfiability problem. This new problem can be again sent to either Z3 or displayed on the screen. If this process stops, then the program ends and transitions into the `Done` program.
-

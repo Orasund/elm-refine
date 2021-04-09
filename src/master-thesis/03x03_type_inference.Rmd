@@ -18,7 +18,7 @@ We can read it in two ways:
 * "If all premises hold then the conclusion holds as well" or
 * "To prove the conclusion we need to prove all premises".
 
-We will now provide a judgment for every production rule defined in Section \@ref(Syntax). Ultimately, we will have a judgment $p:T$ which indicates that a program $p$ is of a type $T$ and therefore well-formed.
+We will now provide a judgment for every production rule defined in Section \@ref(syntax). Ultimately, we will have a judgment $p:T$ which indicates that a program $p$ is of a type $T$ and therefore well-formed.
 
 If the type $T$ is known then we talk about _type checking_ else we call the process of finding the judgment _type inference_.
 
@@ -134,6 +134,6 @@ $$
 \mathit{Bool}&:=\mu \_.\mathit{True} \ |\ \mathit{False}\\
 \mathit{Nat}&:=\mu C. 1 \ |\ \mathit{Succ} \ C\\
 \mathit{Int}&:=\mu \_. 0 \ |\ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}\\
-\mathit{List}&:=\forall a.\mu C. [ \ ] \ | \ \mathit{Cons} \ a \ C
+\mathit{List}&:=\forall a.\mu C. [ \ ] \ | \ \mathit{Cons} \ a \ C.
 \end{aligned}
 $$

@@ -7,7 +7,7 @@ We will now extend the type system of Elm with liquid types.
 We will use the syntax described in the Section \@ref(notion-of-liquid-types).
 
 ```{definition,name="Extended Type Signature Syntax"}
-\begin{letIn} `<upper-var>` and `<lower-var>` be two variable domains and $\mf{<int>}$ as in Section \@ref(syntax) definined.
+\begin{letIn} $\mf{<upper-var>}$ and $\mf{<lower-var>}$ be two variable domains.
 \end{letIn}
 
 We define the following syntax:
@@ -120,17 +120,17 @@ We define following.
 \text{wellFormed}&(\{b:\mathit{Int}\ |\ r \},\{(a_1,r_1),\dots,(a_n,r_n)\}) :\Leftrightarrow\\
 &\forall k_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1\}).\dots \forall k_n\in\text{value}_\Gamma(\{nu:\mathit{Int}\ |\ r_n\}).\\
 &r\text{ is well defined with respect to } \{(a_1,k_1),\dots,(a_n,k_n),(b,\mathit{Int})\}\\
-\text{wellFormed}&(a:\{b:\mathit{Int}\ |\ r \}\to\hat{T},\Theta) :\Leftrightarrow\\
+\text{wellFormed}&(a:\{b:\mathit{Int}\ |\ r \}\to T,\Theta) :\Leftrightarrow\\
 &(a,\_)\not\in \Theta\\
 \land \ &\text{wellFormed}(\{b:\mathit{Int}\ |\ r \},\Theta)\\
-\land \ &\text{wellFormed}(\hat{T},\Theta\cup\{(a,\{b:\mathit{Int}\ |\ r \})\})
+\land \ &\text{wellFormed}(T,\Theta\cup\{(a,\{b:\mathit{Int}\ |\ r \})\})
 \end{aligned}
 \]
 ```
 
 #### Subtyping {-}
 
-There are some liquid types that hows values are a subset of the values from another type. In this case we say it is a subtype. For our usecase we will use a different definition of subtyping.
+There are some liquid types whos values are a subset of the values from another type. In this case we say it is a subtype. For our usecase we will use a different definition of subtyping.
 
 ```{definition,name="Subtyping"}
 \begin{letIn}
@@ -145,22 +145,22 @@ $$
 &\quad \semantic{$e$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
 &\quad\land \semantic{$q_1$}_{\{(a_1,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
 &\Rightarrow\semantic{$q_2$}_{\{(a_2,n),(b_1,k_1),\dots,(b_n,k_n)\}}\\
-a_1:\{b_1:\mathit{Int}| q_1 \}\to\hat{T}_2 &<:_{\Theta,\Lambda} a_1:\{ b_2 : \mathit{Int}| q_2\}\to\hat{T}_4 \ :\Leftrightarrow\\ 
+a_1:\{b_1:\mathit{Int}| q_1 \}\to T_2 &<:_{\Theta,\Lambda} a_1:\{ b_2 : \mathit{Int}| q_2\}\to T_4 \ :\Leftrightarrow\\ 
 &\{ b_2 : \mathit{Int}| q_2\}<:_{\Theta,\Lambda}\{b_1:\mathit{Int}| q_1 \}\\
-&\land\hat{T}_2<:_{\Theta\cup\{(a_1,\{ b_2 : \mathit{Int}| r_2\})\},\Lambda}\hat{T}_4
+&\land T_2<:_{\Theta\cup\{(a_1,\{ b_2 : \mathit{Int}| r_2\})\},\Lambda} T_4
 \end{aligned}
 $$
-For two liquid types $\hat{T}_1,\hat{T}_2$, we say $\hat{T}_1$ is a subtype of $\hat{T}_2$ with respect to $\Theta$ and $\Lambda$ if and only if $\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2$ is valid. 
+For two liquid types $T_1,T_2$, we say $T_1$ is a subtype of $T_2$ with respect to $\Theta$ and $\Lambda$ if and only if $T_1<:_{\Theta,\Lambda} T_2$ is valid. 
 ```
 
 Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpness of the inferred subtype depends on the capabilities of the SMT-Solver. Using this optional inference rule, the SMT-Solver will need to find the sharpest subtype, or at least sharp enough: In the case of type checking, it might be that the subtype is too sharp and therefore the SMT-Solver can't check the type successfully.
 
 \logicRule
-{\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_1\quad
-\hat{T}_1<:_{\Theta,\Lambda}\hat{T}_2\quad
-\text{wellFormed}(\hat{T}_2,\Theta)
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:T_1\quad
+\hat{T}_1<:_{\Theta,\Lambda} T_2\quad
+\text{wellFormed}(T_2,\Theta)
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash e:\hat{T}_2}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:T_2}
 {}
 
 We will discuss in Chapter \@ref(formulating-smt-statements) how one can use this inference rule for automated type checking.

@@ -68,7 +68,7 @@ Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume
 
 ### Soundness of the Variable Context
 
-In Section \@ref(type-inference) we sad that $\Delta$ is a type context, where as in Section \@ref(denotational-semantic) we said that $\Delta$ is a variable context. We will now define the relation between the two.
+In Section \@ref(type-inference) we said that $\Delta$ is a type context, where as in Section \@ref(denotational-semantic) we said that $\Delta$ is a variable context. We will now define the relation between the two.
 
 ```{definition,name="Similar Variable context"}
 \begin{letIn}

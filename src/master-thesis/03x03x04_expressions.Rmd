@@ -177,7 +177,7 @@ mes:T_1\vdash a:T_1\\
 \Gamma,\Delta\cup\{(a,\overline{\Gamma}(T_1))\}\vdash e_2:T_2
 \end{gathered}
 }
-{\Gamma,\Delta\vdash\mf{"let"} \ \mathit{mes} \ a \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
+{\Gamma,\Delta\vdash\mf{"let"} \ \mathit{mes} \ a \ \mf{"="} \ e_1 \ \mf{"in"} \ e_2: T_2
 }
 {}
 
