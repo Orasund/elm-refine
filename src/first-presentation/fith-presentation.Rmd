@@ -62,7 +62,7 @@ Initial paper in 1991 by Tim Freeman and Frank Pfenning
     
 ### Example
 $$
-\forall t.\{a:List \ t\ |\ a = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
+\forall t.\{\nu:List \ t\ |\ \nu = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
 $$
 
 
@@ -170,9 +170,9 @@ Example: $\forall a.\forall b. \text{List} \ (a,b)$ is the most general type of 
 
 ## Formulizing the Elm Language: Defining the Type System
 
-$$\Gamma : \mathcal{V} \to \mathcal{T}$$ contains type aliases.
+$\Gamma : \mathcal{V} \to \mathcal{T}$ contains type aliases.
 
-$$\Delta : \mathcal{V} \to \mathcal{T}$$ contains types of occuring variables.
+$\Delta : \mathcal{V} \to \mathcal{T}$ contains types of occuring variables.
 
 ## Formulizing the Elm Language: The Max Function
 
@@ -400,11 +400,11 @@ $$
 $$
 \begin{aligned}
 T \text{ is a }\mathit{liquid} \ \mathit{type} \ :\Leftrightarrow \ 
-         & T \text{ is of form } \{ a :\mathit{Int} \ | \ r \}\\
+         & T \text{ is of form } \{ \nu :\mathit{Int} \ | \ r \}\\
          & \text{where } T_0\text{ is a type}, a \text{ is a symbol, }r\in \mathcal{Q},\\
          & \mathit{Nat}:=\mu C. 1 \ | \ \mathit{Succ} \ C\\
 &\text{and }\mathit{Int}:=\mu \_. 0 \ | \ \mathit{Pos} \ Nat \ | \ \mathit{Neg} \ \mathit{Nat}.\\
-  \lor \ & T \text{ is of form } a:\{ b :\mathit{Int} \ | \ r \}\to T\\
+  \lor \ & T \text{ is of form } a:\{ \nu :\mathit{Int} \ | \ r \}\to T\\
          & \text{where } a,b \text{ are symbols}, r\in \mathcal{Q}\text{ and } T \text{ is a}\\
           &\text{liquid types.}\\
          \end{aligned}
@@ -424,9 +424,9 @@ $$
 
 ## Formulizing the Elm Language: Defining the Type System
 
-$$\Theta : \mathcal{V} \to \mathcal{T}$$ contains types of liquid type variables (type variable of a dependent function).
+$\Theta : \mathcal{V} \to \mathcal{T}$ contains types of liquid type variables (type variable of a dependent function).
 
-$$\Lambda : \mathcal{V} \to \mathcal{T}$$ contains guards(conditions of if-expressions).
+$\Lambda : \mathcal{V} \to \mathcal{T}$ contains guards(conditions of if-expressions).
 
 ## Extending the Elm Language: Revisiting the Max Function
 
@@ -521,12 +521,12 @@ $$
 \frac
 {
 \begin{gathered}
-\{(a,\{\nu:\mathit{Int}|r_0\}),(b,\{\nu:\mathit{Int}|r_1\})\}\in\Delta\\
-\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash \mathtt{b}: \{\nu:\mathit{Int}|r_2\}\\
-\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash \mathtt{a}: \{\nu:\mathit{Int}|r_2\}
+\{(a,\{\nu:\mathit{Int}|r_0\}),(b,\{\nu:\mathit{Int}\ |\ r_1\})\}\in\Delta\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{a<b\}\vdash \mathtt{b}: \{\nu:\mathit{Int}\ |\ r_2\}\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg(a<b)\}\vdash \mathtt{a}: \{\nu:\mathit{Int}\ |\ r_2\}
 \end{gathered}
 }
-{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}|r_2\}}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ \mathtt{a<b}  \ \mathtt{"then"}\ \mathtt{b} \ \mathtt{"else"} \ \mathtt{a}:\{\nu:\mathit{Int}\ |\ r_2\}}
 $$
 
 ## Extending the Elm Language: Revisiting the Max Function
@@ -612,9 +612,9 @@ Sharpest solution: $r_2 := ((a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \n
 
 $$
 \begin{aligned}
-       \text{We say }&T\text{ is a }\mathit{template}:\Leftrightarrow T \text{ is of form } \{\nu:\mathit{Int}\ |\ [k]_S\}\\
+       \text{We say }&T\text{ is a }\mathit{template}:\Leftrightarrow T \text{ is of form } \{\nu:\mathit{Int}\ |\ k \}\\
          &\text{where } k\in\mathcal{K} \text{ and } S:\mathcal{V}\nrightarrow\mathcal{Q}\\
-  \lor \ & T \text{ is of form } a:\{\nu:\mathit{Int}\ |\ [k]_S\}\to T\\
+  \lor \ & T \text{ is of form } a:\{\nu:\mathit{Int}\ |\ k\}\to T\\
          &\text{where } k\in\mathcal{K}, T \text{ is a template and } S:\mathcal{V}\nrightarrow\mathit{IntExp}.\\
 \end{aligned}
 $$
@@ -628,7 +628,7 @@ We define $\mathcal{K}:=\{\kappa_i \ | \ i\in\mathbb{N}\}$.
 3. (Solve) Check for very subtyping condition if the current mapping $A$ violates the subtyping condition.
   4. (Weaken) If so, weaken the mapping by removing any predicate that violates the subtyping condition and repeat
 
-5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}$.
+5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}(V)$.
 
 ## Extending the Elm Language: The Inference Algorithm
 
@@ -640,8 +640,6 @@ $$
 &\quad\quad\{ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} \}
 \end{aligned}
 $$
-
-$\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
 
 ## Extending the Elm Language: The Inference Algorithm
 
@@ -667,9 +665,9 @@ $$
 
 **Solve**
 
-For a subtyping condition $\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
+For a subtyping condition $\{\nu:\mathit{Int}\ |\ r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
 
-* $q_2:=\bigwedge A(\kappa_i)$
+* $r_2:=\bigwedge A(\kappa_i)$
 * $p := \bigwedge \Lambda$
 * $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta$.
 
@@ -684,9 +682,8 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 
 **Weaken**
 
-For a subtyping condition $\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
+For a subtyping condition $\{\nu:\mathit{Int}\ |\ r_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
 
-* $q_2:=\bigwedge A(\kappa_i)$
 * $p := \bigwedge \Lambda$
 * $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta$.
 
@@ -696,7 +693,7 @@ Return all predicates $q\in A(\kappa)$ such that SMT statement is satifiable.
 
 $$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor q
 $$
-with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$ and $r_2 := [q]_{S_2}$.
+with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
 
 
 ## Conclusion
@@ -710,7 +707,7 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 **Negatives**
 
 * The capabilities of liquid types directly depend on the predicates included in $Init(V)$.
-* Increasing the size of $Init(V)$ increases the computation type by a lot. (~ quadratic time)
+* Increasing the size of $Init(V)$ increases the computation time by a lot. (~ quadratic time)
 * The set of inferrable refinements is always a proper subset of the set of refinements annotatable. Thus, the type system is no longer complete.  
 
 
