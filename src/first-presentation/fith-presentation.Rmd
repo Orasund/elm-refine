@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = FALSE)
 * Extending the Elm Language
     * Defining Liquid Types
     * Revisiting the Max Function
-    * The Inference Algorithm for liquid Types
+    * The Inference Algorithm for Liquid Types
 
 # Background
 
@@ -41,7 +41,7 @@ knitr::opts_chunk$set(echo = FALSE)
 * Compiles to JavaScript (in the future also to WebAssembly)
 * ML-like Syntax (we say `fun a b c` for $fun(a,b,c)$)
 * Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
-* "No Runtimes errors" (running out of memory, function equality and non-terminating functions still give runtime errors.)
+* "No Runtimes errors" (running out of memory, function equality)
 
 ## Background: Introduction to Elm
 
@@ -77,7 +77,7 @@ Liquid Types (Logically Quantified Data Types) introduced in 2008
 
 ### Example
 
-$$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq a\}\to b:\{\nu:\mathit{Int}\ |\ 0 \leq b\}\\
+$$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}\ |\ 0 \leq \nu\}\\
 &\to\{\nu:Int\ |\  0\leq\nu \ \land \ a-b\leq\nu \ \land \ b-a\leq\nu \}\end{aligned}$$
 
 ## Background: Motivation
@@ -168,6 +168,12 @@ We say $\overline{\Gamma}(T)$ is _the most general type_ of $T$.
 
 Example: $\forall a.\forall b. \text{List} \ (a,b)$ is the most general type of $\text{List} \ (a,b)$.
 
+## Formulizing the Elm Language: Defining the Type System
+
+$$\Gamma : \mathcal{V} \to \mathcal{T}$$ contains type aliases.
+
+$$\Delta : \mathcal{V} \to \mathcal{T}$$ contains types of occuring variables.
+
 ## Formulizing the Elm Language: The Max Function
 
 ```
@@ -208,9 +214,9 @@ max =
     if 
       (<) a b 
     then
-      b                   --> a1
+      b                   --> ?a1
     else
-      a                   --> a2
+      a                   --> ?a2
 ```
 
 Next we derive the type for `(<) a b`.
@@ -416,6 +422,12 @@ $$
 \end{aligned}
 $$
 
+## Formulizing the Elm Language: Defining the Type System
+
+$$\Theta : \mathcal{V} \to \mathcal{T}$$ contains types of liquid type variables (type variable of a dependent function).
+
+$$\Lambda : \mathcal{V} \to \mathcal{T}$$ contains guards(conditions of if-expressions).
+
 ## Extending the Elm Language: Revisiting the Max Function
 
 ```
@@ -466,19 +478,6 @@ $$
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash \mathtt{b}: \{\nu:\mathit{Int}| \ \nu = b\}}{}
 $$
-
-## Extending the Elm Language: Revisiting the Max Function
-
-```
-max =
-  \a -> \b ->
-    if 
-      (<) a b
-    then
-      b       --> {v:Int| v = b }
-    else
-      a       --> {v:Int| v = a }
-```
 
 ## Extending the Elm Language: Revisiting the Max Function
 
@@ -607,6 +606,7 @@ are valid.
 Use SMT-Solver to find a solution.
 
 Sharpest solution: $r_2 := ((a < \nu \land \nu = b) \lor (\neg(\nu < b) \land \nu = a))$
+\quad for $r_0,r_1 := \mathit{True}$
 
 ## Extending the Elm Language: The Inference Algorithm
 
@@ -628,13 +628,12 @@ We define $\mathcal{K}:=\{\kappa_i \ | \ i\in\mathbb{N}\}$.
 3. (Solve) Check for very subtyping condition if the current mapping $A$ violates the subtyping condition.
   4. (Weaken) If so, weaken the mapping by removing any predicate that violates the subtyping condition and repeat
 
-5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $Q$.
+5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}$.
 
 ## Extending the Elm Language: The Inference Algorithm
 
 $$
 \begin{aligned}
-&\text{Split}:\mathcal{C}\nrightarrow\mathcal{P}(\mathcal{C^-})\\
 &\text{Split}(a:\{\nu:\mathit{Int}\ |\ q_1\}\to T_2<:_{\Theta,\Lambda}a:\{\nu:\mathit{Int}\ |\ q_3\}\to T_4 )=\\
 &\quad\quad\{\{\nu:\mathit{Int}\ |\ q_3\} <:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_1\}\}\cup\text{Split}(T_2 <:_{\Theta\cup\{(a,q_3)\},\Lambda}T_4\})\\
 &\text{Split}(\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} )=\\
@@ -643,13 +642,6 @@ $$
 $$
 
 $\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
-
-$$
-\begin{aligned}
-\mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\}\\
-| \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathit{IntExp})\\
-\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
-\end{aligned}$$
 
 ## Extending the Elm Language: The Inference Algorithm
 
@@ -673,17 +665,15 @@ $$
 
 ## Extending the Elm Language: The Inference Algorithm
 
-$$
-\begin{aligned}
-\text{So}&\text{lve}:\mathcal{P}(\mathcal{C}^-)\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\to(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
-\text{So}&\text{lve}(C,A)=\\
-&\text{Let } S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\}.\\
-&\text{If there exists } (\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})\in C \text{ such that }\\
-&\quad\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
-&\quad\quad[[r_1\land p]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow [[r_2]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\\
-&\text{then } \text{Solve}(C,\text{Weaken}(c,A)) \text{ else } A
-\end{aligned}
-$$
+**Solve**
+
+For a subtyping condition $\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
+
+* $q_2:=\bigwedge A(\kappa_i)$
+* $p := \bigwedge \Lambda$
+* $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta$.
+
+If SMT statement is satifiable, then call **Weaken** on the mapping and repeat
 
 ### SMT statement:
 
@@ -692,23 +682,19 @@ with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N
 
 ## Extending the Elm Language: The Inference Algorithm
 
-$$
-{\small\begin{aligned}
-&\text{Weaken}:\mathcal{C}^-\times(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\nrightarrow(\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q}))\\
-&\text{Weaken}(\{\nu:\mathit{Int}\ |\ x \} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\},A) =\\
-&\quad\begin{aligned}\text{Let }&S:=\{(k,\bigwedge Q) \ | \ (k,Q)\in A\},\\
-&\begin{aligned}Q_2 := \{\ &q \\
-| \ &q\in A(k_2)\\
-\land & (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
-&\quad[[r_1\land p]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow[[[q]_{S_2}]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})\}
-\end{aligned}\end{aligned}\\
-&\quad\text{in }\{(k,Q)\ |\ (k,Q)\in A \land k \neq k_2\}\cup\{(k_2,Q_2)\}\\
-\end{aligned}}
-$$
+**Weaken**
+
+For a subtyping condition $\{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ \kappa_i\}$ and a mapping $A:\mathcal{K}\nrightarrow\mathcal{P}(\mathcal{Q})$, let
+
+* $q_2:=\bigwedge A(\kappa_i)$
+* $p := \bigwedge \Lambda$
+* $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta$.
+
+Return all predicates $q\in A(\kappa)$ such that SMT statement is satifiable.
 
 ### SMT statement:
 
-$$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor r_2
+$$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor q
 $$
 with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$ and $r_2 := [q]_{S_2}$.
 
