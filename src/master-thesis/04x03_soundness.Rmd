@@ -1,7 +1,7 @@
 ## Soundness of Liquid Types
 
 
-We will now show that the extension is sound. To do so we first will show the soundness of the new semantic with respect to the inference rules. 
+We will now show that the extension is sound. To do so we first will show the soundness of the inference rules with respect to the new semantics. 
 
 ```{theorem}
 \label{thm:soundness_int_exp_type}
@@ -73,7 +73,7 @@ Let $\Gamma$ be a type context, $t \in\mf{<type>}$ and $T\in\mathcal{T}$. Assume
 All other cases have been proven in Theorem \ref{thm:soundness_type}.
 ```
 
-To finish of, we need to prove the soundness of the semantic of expressions. This is by the definition of refinement types trivially true, as the set values of a refinement type is always a subtype of the set of values of the base type.
+To finish of, we need to prove the soundness of the inference rules for expressions. This is by the definition of refinement types trivially true, as the set values of a refinement type is always a subtype of the set of values of the base type.
 
 ```{theorem}
 \begin{letIn}

@@ -1,6 +1,6 @@
 ## Soundness of the Inference Rules
 
-In this section we prove the soundness of the inference rules with respect to the semantics. This means we ensure that if we can infer the well-typedness of a program, the execution of the program yields those kinds of values predicted by the inference rules.
+In this section we prove the soundness of the inference rules with respect to the denotational semantics. This means we ensure that if we can infer the well-typedness of a program, the execution of the program yields those kinds of values predicted by the inference rules.
 
 ### Soundness of the Type Signature
 
@@ -99,11 +99,11 @@ Let $a'\in\mathcal{V}$ and $T'\in\mathcal{T}$ such that $(a',T')\in\Delta\cup\{(
 \end{itemize}
 ```
 
-Types in $\Delta$ are all the most generalized types. Instead of proving this, we show that the semantic only produces values of most generalized types. This is a weaker statement but strong enough for our purposes.
+Types in $\Delta$ are all the most generalized types. Instead of proving this, we show that the semantics only produces values of most generalized types. This is a weaker statement but strong enough for our purposes.
 
-### Soundness of the Expression Semantics
+### Soundness of the Expression Rules
 
-We can now use the definition of well-formed variable contexts, to prove the soundness of the expression semantics.
+We can now use the definition of well-formed variable contexts, to prove the soundness of the rules for inferring the types of expressions.
 
 ```{theorem}
 \label{thm:soundness_bool}
@@ -225,9 +225,9 @@ $\Delta'$ is similar to $\Delta$ and therefore this is a valid assumption. Thus,
 \end{itemize} 
 ```
 
-### Soundness of the Statement Semantics
+### Soundness of the Statement Rules
 
-Statements are modelled as operations on either the type context or the variable context. We will now show that their semantics conforms to the result of the inference rules.
+Statements are modelled as operations on either the type context or the variable context. We will now show that the result of the inference rules conforms to their semantics.
 
 ```{theorem}
 \label{thm:soundness_list-statement-var}
@@ -276,7 +276,7 @@ $\Gamma_1,\Delta_1,\Gamma_2,\Delta_2$ be type contexts and $\Delta_1',$ be a var
 
 ```
 
-### Soundness of the Program Semantic
+### Soundness of the Program Rules
 
 A program is a sequence of statements. Starting with an empty type context, and an empty variable context, one statement at the time will be applied, resulting in a value $e$, a type $T$ and a type context $\Gamma$ such that $e\in\text{value}_\Gamma(T)$.
 

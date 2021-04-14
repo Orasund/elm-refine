@@ -208,7 +208,7 @@ handleResponse sendMsg bool model =
 We have stored the additional information needed for the _Weaken_ function in `model.weaken`.
 We therefore check the content of `model.weaken`. We check the content of `model.weaken`, If it is `Nothing` we know that we are in the _Solve_ function, else we know that we are currently in the _Weaken_ function.
 
-#### The Solve function
+#### The Solve Function
 
 ```
 handleSolve : (String -> Cmd msg) -> Bool -> Model -> Update msg
@@ -263,7 +263,7 @@ If the incoming result is `True` it means that the SMT statement is satisfiable.
 
 If the incoming result is `False`, then we check out the next condition. If there exists no following condition, then the function is done. We end the Elm program by transitioning into the `Done` program.
 
-#### The Weaken function
+#### The Weaken Function
 
 ```
 handleWeaken :
@@ -345,7 +345,7 @@ If the incoming result is `False`, then the SMT statement is unsatifiable. Thus,
 
 If the incoming result is `True`, then the SMT statement is satisfiable. We therefore check out the next predicate. We finish the function if no following predicate exists. To do so we again set `model.weaken` to `Nothing`.
 
-### SMT Statement
+### The SMT Statement
 
 After every update we check if the SMT statement should be automatically sent to the SMT solver.
 
@@ -388,7 +388,7 @@ smtStatement model =
 
 The statement differes between the _Solve_ and the _Weaken_ function.
 
-#### SMT Statement for Solve
+#### The SMT Statement for Solve
 
 For the _Solve_ function we translate the condition directly into the SMT statement.
 
@@ -422,7 +422,7 @@ toSMTStatement dict { smaller, bigger, guards, typeVariables } =
                             }
                     )
 ```
-This equivalent to the following.
+This is equivalent to the following.
 
 $$
 \begin{aligned}
@@ -491,7 +491,7 @@ $$
                     )
 ```
 
-Here we see how we apply the lazy substitution (stored in `bigger |> Tuple.second`). In the original definition we assumed that we know how to apply a substitution on term level:
+Here we see how we apply the lazy substitution (stored in `bigger |> Tuple.second`). In the original definition, we assumed that we know how to apply a substitution on the term level:
 
 $$
 r_2 := \bigwedge [S(\kappa_2)]_{S_2}
@@ -525,7 +525,7 @@ The final statement is therefore
 $$((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\land \neg r_2$$
 with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
 
-#### SMT Statement for Weaken
+#### The SMT Statement for Weaken
 
 For the _Weaken_ function we modify the statement.
 

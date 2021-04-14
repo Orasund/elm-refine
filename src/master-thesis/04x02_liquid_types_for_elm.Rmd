@@ -56,7 +56,7 @@ $$
 ### Type Inference
 
 We will also extend the inference rules. The interesting part is the new judgment for \mf{<exp>}: We introduce two new sets $\Theta$ and $\Lambda$.
-As before, $\Theta$ will contain the type of a variable. This is similarly to Section \@ref(notion-of-liquid-types) where $\Theta$ contained the value of a variable. The set $\Lambda$ contains boolean expressions that get collected while traversing if-branches. We will use these expressions to allow path sensitive subtyping.
+As before, $\Theta$ will contain the type of a variable. This is similar to Section \@ref(notion-of-liquid-types) where $\Theta$ contained the value of a variable. The set $\Lambda$ contains boolean expressions that get collected while traversing if-branches. We will use these expressions to allow path sensitive subtyping.
 
 #### Type Signature Judgments
 
@@ -130,7 +130,7 @@ We define following.
 
 #### Subtyping {-}
 
-There are some liquid types whos values are a subset of the values from another type. In this case we say it is a subtype. For our usecase we will use a different definition of subtyping.
+There are some liquid types whos values are a subset of the values from another type. In this case we say it is a subtype. For our use case we will use a different definition of subtyping.
 
 ```{definition,name="Subtyping"}
 \begin{letIn}
@@ -163,7 +163,7 @@ Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpnes
 {\Gamma,\Delta,\Theta,\Lambda\vdash e:T_2}
 {}
 
-We will discuss in Chapter \@ref(formulating-smt-statements) how one can use this inference rule for automated type checking.
+We will discuss in Chapter \@ref(formulating-smt-statements), how one can use this inference rule for automated type checking.
 
 ### Inference Rules for Type Signatures
 
@@ -320,7 +320,7 @@ The following are special inference rules for liquid types. For non-liquid types
 {\Gamma,\Delta,\Theta,\Lambda\vdash\mf{"(//)"}:\mathit{Int}\to\{\nu:\mathit{Int} \ | \ \neg (\nu = 0)\}\to\mathit{Int}}
 {}
 
-By using a liquid type we can avoid dividing by zero.
+Thus, using a liquid type we can avoid dividing by zero.
 
 \logicRule
 {

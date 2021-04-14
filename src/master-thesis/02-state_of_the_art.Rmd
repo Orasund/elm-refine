@@ -1,10 +1,10 @@
 # State of the Art
 
-In this chapter we give a quick history of type theory and the Elm langauge.
+In this chapter we give a quick history of type theory and the Elm language.
 
 ## Type Theory
 
-In 1902, Bertrand Russell wrote Gottlob Frege a letter, pointing out a paradox in Gottlob's definition of sets in his paper _Begriffsschrift_ [@Frege]. Up until this point mathematicians expected that the naive theory of sets was well-formed. Russell's paradox gave a contradiction to this assumption:
+In 1902, Bertrand Russell wrote Gottlob Frege a letter, pointing out a paradox in Gottlob's definition of sets in his paper _Begriffsschrift_ [@Frege]. Up to this point, mathematicians expected that the naive theory of sets was well-formed. Russell's paradox gave a contradiction to this assumption:
 
 ```{theorem,name="Russell's Paradox"}
 Given the set of all sets that do not contain themselfs $R = \{x|x\not \in x\}$, then $R\in R$ and $R\not\in R$.
@@ -12,7 +12,7 @@ Given the set of all sets that do not contain themselfs $R = \{x|x\not \in x\}$,
 
 To fix this problem, Russell added a basic theory of types in the appendix of _Principia Mathematica_ [@Principia_Mathematica], which at the time was already in the printer. This rushed theory was not perfect, but it marks the first appearance.
 
-Russell thought that the main pain point of set theory was that sets could be defined implicitly, (without listing all elements). Type theory is therefore by design constructive. Every value has exactly one type. Once the type of value is given, it can not change. This is a big difference to sets, where elements can live in any amount of different sets.
+Russell thought that the main pain point of set theory was that sets could be defined implicitly (without listing all elements). Type theory is therefore by design constructive. Every value has exactly one type. Once the type of value is given, it can not change. This is a big difference to sets, where elements can live in any amount of different sets.
 
 In Russell's original _ramified theory of types_ [@modern_perspective_on_type_theory] he defined an order amongst the predicates. The lowest predicates could only reason about types. Higher predicates could reason only about lower predicates. This made the type of functions not only dependent on the types of its arguments but also on the types of predicates contained in the definition of the function. Thus, the type of a function could get very complicated even for simple functions.
 
@@ -46,18 +46,18 @@ One of the first systems for automated reasoning was LCF (Logic for Computable F
 \end{enumerate}
 ```
 
-With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicate $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type.
+With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicates $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type.Therefore we have:
 $$
 \Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))
 $$
-Nowdays ML exists in different dialects such as SML(Standard ML), OCaml and&nbsp;F#.
+Nowdays ML exists in different dialects such as SML (Standard ML), OCaml and&nbsp;F#.
 
-Additionally, ML also provides rules for inferring the type for a given expression. These inference rules provide the most general type possible. This means it will only instantiate a polymorphic type if necessary.
+Additionally, ML also provides an algorithm based on inference rules for inferring the type of a given expression. This algorithm provide the most general type possible. This means that it will only instantiate a polymorphic type if necessary.
 
 
 ## Dependent Types and Refinement Types
 
-In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that it is able to write statements in predicate logic. To do so, he introduced _dependent types_ [@modern_perspective_on_type_theory].
+In 1972 Per Martin-Löf introduced a new form of type theory, now known as the Martin-Löf type theory. Martin-Löf took the Curry-Howard-Correspondence and extended it such that its types are able to express statements in predicate logic. To do so, he introduced _dependent types_ [@modern_perspective_on_type_theory].
 
 Because dependent types have the same expressiveness as statements in predicate logic, they can be used to check proofs written in predicate logic. This checking process is still far from automatic, but it has the benefit of producing bulletproof proofs. Note that dependent types can not be automatically checked. In comparison, an extension to type theory that can be checked automatically are so-called _refinement types_. The idea behind _refinement types_ is to use a predicate to restrict possible values of an existing type. Refinement types are therefore a form of _subtyping_.
 
@@ -69,7 +69,7 @@ Modern refinement types are mostly influenced by a paper in 2008 by Patrick Rond
 
 The programming language Elm was developed by Evan Czaplicki as his master thesis [@elm] in 2012. It was initially developed as a reactive programming language. In reactive programming effects are modelled as data streams (sequences of effects). This was implemented in Elm by a data type called _Signal_. Signals allowed for \enquote{time-travel debugging}: One can step forwards and backwards through the events.
 
-While signals where a very direct implementation of the mathematical model, it turned out to be not very useful. Thus, it got replaced by a special architecture, now known as _The Elm Architecture_ (TEA) [@ElmPage]. Nowadays, an Elm program is more like a state machine with events being state transitions:
+While signals where a very direct implementation of the mathematical model, they turned out to be not very useful. Thus, they got replaced by a special architecture, now known as _The Elm Architecture_ (TEA) [@ElmPage]. Nowadays, an Elm program is more like a state machine with events being state transitions:
 
 We call the state of a program the `Model`, the events are called messages or `Msg` for short.
 The TEA has three exposed functions:
@@ -82,6 +82,6 @@ view : Model -> Html Msg
 
 The program start with an `init` model. The model then gets displayed on screen using the `view` function. The result of the view function is an HTML document. This resulting HTML allows the user to send messages (for example by pressing a button). These messages then get send one at the time through the `update` function. The `update` function changes the model and then calls the `view` function, resulting in an update of the HTML document. To allow impure effects like time-related actions or randomness, Elm can send and receive asynchronous messages from and to a local or remote computer.
 
-Elm claims that it has no runtime errors [@ElmPage]. This is actually not completely true. There exist three sorts of runtime errors: running out of memory, non-terminating functions and comparing functions. For this thesis we can safely ignore the first sort of runtime errors as our formal language does not consider memory. We can also ignore the second sort as our formal language will only allow terminating functions. As for the thrid sort of errors, the reason why Elm has problems comparing functions is that it uses the mathematical definition of equality. Two functions $f$ and $g$ are equal if for all $x$ we have $f(x) = g(x)$. For infinite sets, like the real numbers, this is impossible to check numerically. Thus, Elm can not reason about $(\lambda x. x\cdot 2) = (\lambda x. x + x)$. For our thesis we therefore do not allow comparisons between functions.
+Elm claims that it has no runtime errors [@ElmPage]. This is actually not completely true. There exist three sorts of runtime errors: running out of memory, non-terminating functions and comparing functions. For this thesis we can safely ignore the first sort of runtime errors, as our formal language assumes an infinite amount of memory. We can also ignore the second sort, as our formal language only allows terminating functions. As for the thrid sort of errors, the reason why Elm has problems comparing functions is that it uses the mathematical definition of equality. Two functions $f$ and $g$ are equal if for all $x$ we have $f(x) = g(x)$. For infinite sets, like the real numbers, this is impossible to check numerically. Thus, Elm can not reason about $(\lambda x. x\cdot 2) = (\lambda x. x + x)$. For our thesis, we therefore do not allow comparisons between functions.
 
 Elm has a lot of hidden features that are intended for advanced programmers. These features are mostly syntactic sugar or quality-of-life features and include recursive types (which is the only way to write non terminating functions), opaque types, extendable records and constraint type variables. For this thesis, we will not consider any of these features. 

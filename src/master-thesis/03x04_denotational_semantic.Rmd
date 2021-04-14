@@ -1,18 +1,18 @@
-## Denotational Semantic
+## Denotational Semantics
 
-We will now expore the semantics of the formal language. To do so, we first define a new context.
+We will now expore the semantics of the formal language. To do so, we first define a new kind of context.
 ```{definition, name="Variable Context"}
 \begin{letIn}
 $\Gamma$ be a type context.
 \end{letIn}
-$\Delta : \mathcal{V} \nrightarrow \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ is called a _variable context_.
+The function $\Delta : \mathcal{V} \nrightarrow \bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T)$ is called a _variable context_.
 ```
 The semantics of the type signature was already defined in Section \@ref(type-inference): The semantic of a type signature is its type. We will therefore define the same concept again but now in a denotational style.
 ```{definition, name="Type Signature Semantic"}
 \begin{letIn}
 Let $\Gamma$ be a type context.
 \end{letIn}
-
+We define the following semantic evaluation functions:
 $$
 \begin{aligned}
 \semantic{.}_\Gamma:\ &\mf{<list-type-fields>}\to(\mathcal{V}\times\mathcal{T})^*\\
@@ -60,7 +60,7 @@ An Elm program is nothing more than an expression with some syntax sugar around 
 \begin{letIn}
 $\Gamma$ be a type context and let $\Delta$ be variable contexts.
 \end{letIn}
-
+We define the following semantic evaluation functions:
 $$
 \begin{aligned}
 \semantic{.}_{\Gamma,\Delta}:\ & \mf{<list-exp-field>} \to (\mathcal{V}\times\bigcup_{T\in\mathcal{T}}\text{value}_\Gamma(T))^*\\
@@ -288,7 +288,7 @@ $$
 Statements are, semantically speaking, just functions that either map the type- or variable-context. 
 
 ```{definition, name="Statement Semantic"}
-
+We define the following semantic evaluation functions:
 $$
 \begin{aligned}
 \semantic{.}:\ &\mf{<list-statement-var>}\to\mathcal{V}^*\\

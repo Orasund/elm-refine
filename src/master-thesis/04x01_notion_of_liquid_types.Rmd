@@ -1,6 +1,6 @@
-# Liquid Types
+# Liquid Types for Elm
 
-In this chapter we will specify a version of liquid types that can be inferred using an arbitrary SMT solver. Section \@ref(notion-of-liquid-types) will formally define liquid types. Section \@ref(liquid-types-for-elm) will extend the type system of Elm with liquid types. This included the syntax, type inference rules and the denotational semantic. Section \@ref(soundness-of-liquid-types) gives a proof that the extended denotational semantic is sound with respect to the extended type inference rules. Section \@ref(formulating-smt-statements) explains how the SMT statements used for the SMT solver can be generated and proves that the provided algorithm is correct.
+In this chapter we will specify a version of liquid types for Elm that can be inferred using an arbitrary SMT solver. Section \@ref(notion-of-liquid-types) will formally define liquid types. Section \@ref(liquid-types-for-elm) will extend the type system of Elm with liquid types. This included the syntax, type inference rules and the denotational semantic. Section \@ref(soundness-of-liquid-types) gives a proof that the extended denotational semantic is sound with respect to the extended type inference rules. Section \@ref(formulating-smt-statements) explains how the SMT statements used for the SMT solver can be generated and proves that the provided algorithm is correct.
 
 
 ## Notion of Liquid Types
@@ -54,7 +54,7 @@ $$
 \end{aligned}
 $$
   
-Note that we assume that the given expression is well-formed with respect to $\Theta$.
+Note that we assume that the given expression is well-formed with respect to&nbsp;$\Theta$.
 
 We also define the semantic of logical qualifier expressions $\mathcal{Q}$ as follows:
 
@@ -73,7 +73,7 @@ $$
 $$
 ```
 
-We will now extend our previous definition of types (see Definition \ref{thm:types}) with the notion of refinement types. This extension is not very interesting, as refinement types don't behave differently from their underlying type.
+We will now extend our previous definition of types (see Definition \ref{thm:types}) by the notion of refinement types. This extension is not very interesting, as refinement types don't behave differently from their underlying type.
 
 ```{definition,name="Extended Types"}
  We define the following

@@ -2,7 +2,7 @@
 
 We will now discuss the implementation of the Elm type system and the implementation of the refinement types. We use these implementations for rapid prototyping.
 
-Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the software system \enquote{K Framework}. In Section \@ref(refinement-types-in-elm) we will go over the implementation of the refinement types in Elm. we could not do this implementation in the K Framework, as it lacks a way to communicate with an external SMT-Solver. In Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In Section \@ref(demonstration) we will demonstrate the implemented algorithm on an example code.
+Section \@ref(the-elm-type-system-in-the-k-framework) will discuss the implementation of the Elm type system in the software system \enquote{K Framework}. In Section \@ref(refinement-types-in-elm) we will go over the implementation of the refinement types in Elm. We could not perform this implementation in the K Framework, as it lacks a way to communicate with an external SMT-Solver. In Section \@ref(details-of-the-elm-implementation) we will give a detailed walkthrough of the Elm code. In Section \@ref(demonstration) we will demonstrate the implemented algorithm on an example code.
 
 ## The Elm Type System in the K Framework
 
@@ -10,9 +10,9 @@ The K Framework [@K_framework] was created in 2003 by Grigore Rosu. It is a rese
 
 The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C [@Kframework_C], Java [@Kframework_Java], JavaScript [@Kframework_Js], PHP [@Kframework_Php], Python [@Kframework_Python] and Rust [@Kframework_Rust].
 
-The project was developed by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
+The project was published by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
 
-We will be using K Framework to express small step semantics of the denotational semantics from Chapter \@ref(denotational-semantic). We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
+We will be using K Framework (Version 4) to express small step semantics of the denotational semantics from Chapter \@ref(denotational-semantic). We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
 
 A file written in the K langauge has a specific structure.
 

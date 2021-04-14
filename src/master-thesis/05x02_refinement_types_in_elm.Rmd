@@ -6,7 +6,7 @@ In particular, we will present the `split`, `solve` and `weaken` functions for c
 
 We have implemented these functions in Elm itself; to simplify testing, we have equipped the implementation with a GUI by using an Em package written by the author called Elm-Action \cite{elmAction} (see Figure \@ref(fig:gui)).
 
-```{r gui, echo=FALSE, fig.align='center', fig.cap="A GUI for writing a set of input conditions.", out.width = '50%', eval=TRUE}
+```{r gui, echo=FALSE, fig.align='center', fig.cap="A GUI for writing a set of input conditions.", out.width = '75%', eval=TRUE}
 knitr::include_graphics("ui.png")
 ```
 
@@ -14,11 +14,11 @@ The architecture of a typical elm program is similar to that of a state machine:
 
 Our implementation consists of three different programs called `Setup`, `Assistant` and `Done`. The `Setup` program as seen in Figure \@ref(fig:gui) handles the creation of our conditions. The `Assistant` program as seen in Figure \@ref(fig:assistant) applies the `split`, `solve` and `weaken` functions to the conditions. The `Done` program as seen in Figure \@ref(fig:done) shows the solution. 
 
-```{r assistant, echo=FALSE, fig.align='center', fig.cap="Proof assistant displaying the current SMT statement", out.width = '50%', eval=TRUE}
+```{r assistant, echo=FALSE, fig.align='center', fig.cap="Proof assistant displaying the current SMT statement", out.width = '75%', eval=TRUE}
 knitr::include_graphics("assistant.png")
 ```
 
-```{r done, echo=FALSE, fig.align='center', fig.cap="The end result", out.width = '50%', eval=TRUE}
+```{r done, echo=FALSE, fig.align='center', fig.cap="The end result", out.width = '75%', eval=TRUE}
 knitr::include_graphics("done.png")
 ```
 

@@ -30,7 +30,7 @@ $$
 $$
 ```
 
-Because Elm is a pure functional programming language, a program contains just a single expression.
+Because Elm is a pure functional programming language, a program is just a single expression.
 
 
 ```{definition,name="Expression Syntax"}

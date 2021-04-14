@@ -1,6 +1,6 @@
 ## Formulating SMT Statements
 
-So far we have described the inference rules and the subtyping rule. We have yet to describe an algorithm that can derive a valid type for a set of given subtyping rules.
+So far we have described the inference rules and the subtyping rule. We have yet to give an algorithm that can derive a valid type for a set of given subtyping rules.
 
 ```{definition,name="Liquid Type Variable"}
 We say $\mathcal{K}:=\{\kappa_i \ | \ i\in\mathbb{N}\}$ is the set of all _liquid type variables_.
@@ -19,7 +19,7 @@ $$
 \end{aligned}
 $$
 
-We define $\mathcal{T}^?:=\{T \ | \ T \text{ is a template}\}$
+We define $\mathcal{T}^?:=\{T \ | \ T \text{ is a template}\}$.
 ```
 A template will be used for a liquid type with unknown refinement. Note that the inference rule for function applications introduces a refinement substitution $S$. For templates this substitution is not defined and needs to be delayed until the corresponding liquid type has been derived. We will point out whenever the substitution $[k]_S$ will be applied.
 ```{definition,name="Type Variable Context"}
@@ -38,7 +38,7 @@ $$
 \end{aligned}
 $$
 
-We define $\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$
+We define $\mathcal{C}:=\{c \ | \ c \text{ is a subtyping condition}\}$.
 ```
 We will also need a function to obtain the set of all liquid type variables of a template or subtyping condition. 
 ```{definition,name="Vars"}
@@ -98,7 +98,7 @@ Q_0:=&\mathit{Init}(V),\\
 A_0:=&\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\},\\
 A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
 &\quad\text{in } \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
-&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q}, A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}, \Theta\text{ be a type variable context and } \Lambda\subseteq\mathcal{Q}.
+&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q}, A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}, \Theta\text{ is a type variable context and } \Lambda\subseteq\mathcal{Q}.
 \end{aligned}
 $$
 We first split the subtyping conditions for functions into subtyping conditions for simpler templates:
@@ -106,7 +106,7 @@ $$
 \begin{aligned}
 \mathcal{C}^-:=\{&\ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\}\\
 | \ &(q_1\in\mathcal{Q}\lor q_1=[k_1]_{S_1} \text{ for } k_1\in\mathcal{K}, S_1\in\mathcal{V}\nrightarrow\mathit{IntExp})\\
-\land &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
+\land\ &(q_2\in\mathcal{Q}\lor q_2=[k_2]_{S_2} \text{ for } k_2\in\mathcal{K}, S_2\in\mathcal{V}\nrightarrow\mathit{IntExp})\}.
 \end{aligned}
 $$
 With this we can now define the Split function.
@@ -119,7 +119,7 @@ $$
 &\quad\quad\{ \{\nu:\mathit{Int}\ |\ q_1\}<:_{\Theta,\Lambda}\{\nu:\mathit{Int}\ |\ q_2\} \}
 \end{aligned}
 $$
-Note that Split will result in an error, if the subtyping condition is not one of the two cases above.
+Note that the result of Split is undefined, if the subtyping condition is not one of the two cases above.
 
 We resolve the obtained subtyping conditions by repeatably checking if a subtyping condition is not valid and removing all predicates that contradict it. By removing the predicate we weaken the resulting refinement.
 $$
@@ -149,7 +149,7 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\text{substitution } A.\\
 \end{aligned}
 $$
-Note that we can use a SMT solver to validate
+Note that we can use an SMT solver to validate
 $$
 \begin{aligned}
 &\neg (\forall z \in \mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
@@ -186,14 +186,14 @@ q_1& \text{if }q_1\in\mathcal{Q}
 &\quad \text{substitution for the term } t \text{ with a substitution } A.
 \end{aligned}
 $$
-Note that we can use a SMT solver to validate
+Note that we can use an SMT solver to validate
 $$
 \begin{aligned}
 &\forall z\in\mathbb{Z}.\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
 &\quad\semantic{$r_1\land p$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}\Rightarrow\semantic{$[q]_{S_2}$}_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}}
 \end{aligned}
 $$
-To do so, we first need to compute $r_2 := [q]_{S_2}$, with that we can now use a SMT solver to decide the satisfiablity of
+To do so, we first need to compute $r_2 := [q]_{S_2}$, with that we can now use an SMT solver to decide the satisfiablity of
 $$\neg((\bigwedge_{j=0}^n [r_j']_{\{(\nu,b_j)\}})\land r_1\land p)\lor r_2
 $$
 with free variables $\nu\in\mathbb{Z}$ and $b_i\in\mathbb{Z}$ for $i\in\mathbb{N}_1^n$.
@@ -497,7 +497,7 @@ The third condition states that $S$ is the sharpest solution.
 ```{proof}
 Let $C$ be a set of well-formed conditions, $S := \text{Infer}(C)$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$.
 Let $Q_0:=\mathit{Init}(V)$,
-$A_0:=\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\}$ and $C_1:= \bigcup_{c\in C}\text{Split}(c)$. Then by Theorem \ref{thm:correctness_split} $C_1\subset\mathcal{C}^-$ is a set of well-formed conditions. Let $A:=\text{Solve}(C_1,A_0)$ and therefore $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$. Then by Theorem \ref{thm:correctness_solve} the conclusion holds.
+$A_0:=\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\}$ and $C_1:= \bigcup_{c\in C}\text{Split}(c)$. Then by Theorem \ref{thm:correctness_split} (given below) $C_1\subset\mathcal{C}^-$ is a set of well-formed conditions. Let $A:=\text{Solve}(C_1,A_0)$ and therefore $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}$. Then by Theorem \ref{thm:correctness_solve} (given below) the conclusion holds.
 ```
 
 ```{theorem}
@@ -559,7 +559,7 @@ $\text{Weaken}(c,A_1)(a)\subseteq A_1(a)$. Thus for every $a\in V$,$A_2(a)\subse
 
 We have left to show that for every $a\in V$, if the sharpest solution is generated by subsets of $A_2(a)$, than it is also the sharpest solution over all subsets of $A_1(a)$.
 
-By theorem \ref{thm:correctness_weaken} we know that for every $a\in V$, $A_2(a)$ contains the smallest subset of $A_1(a)$ such that the properies hold. Thus $A_2(a)$ is its definition the sharpest solution over all subsets of $A_1(a)$.
+By Theorem \ref{thm:correctness_weaken} (given below) we know that for every $a\in V$, $A_2(a)$ contains the smallest subset of $A_1(a)$ such that the properies hold. Thus $A_2(a)$ is its definition the sharpest solution over all subsets of $A_1(a)$.
 
 \textbf{Show that the else-branch ensures the postcondition}\newline
 Once the recursion is done, we can assume that for all $c\in C$, $c$ has the form $(\{\nu:\mathit{Int}\ |\ q_1\} <:_{\Theta,\Lambda} \{\nu:\mathit{Int}\ |\ [k_2]_{S_2}\})$ and the following holds:
