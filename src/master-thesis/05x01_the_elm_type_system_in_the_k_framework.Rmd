@@ -10,7 +10,7 @@ The K Framework [@K_framework] was created in 2003 by Grigore Rosu. It is a rese
 
 The main usage besides the creation and formalization of new languages is to create formal languages of existing programming languages. These include C [@Kframework_C], Java [@Kframework_Java], JavaScript [@Kframework_Js], PHP [@Kframework_Php], Python [@Kframework_Python] and Rust [@Kframework_Rust].
 
-The project was published by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
+The project was pursued by the Formal Systems Laboratory Research Group and the University of Illinois, USA. The software itself is open source while the various more specialized tools are distributed by the company Runtime Verification Inc. These include an analysing tool for C called RV-Match that is based on the formal C language written in K language [@Kframework_rvMatch] and more recently a tool for verifying smart contract written for the crypto-coin Ethereum [@Kframework_KEVM].
 
 We will be using K Framework (Version 4) to express small step semantics of the denotational semantics from Chapter \@ref(denotational-semantic). We can validate the semantic by letting the K Framework apply the rewriting rules upon some examples.
 
@@ -322,4 +322,8 @@ list int
 </tenv>
 ```
 
-Here the rewriting system terminates, and the inferred type is `list int`.
+Here the rewriting system terminates, and the inferred type is `list int`, as seen in Figure \@ref(fig:k). Note that in the figure the type environment is empty. This is just to simplify the output.
+
+```{r k, echo=FALSE, fig.align='center', fig.cap="The end result", out.width = '75%', eval=TRUE}
+knitr::include_graphics("k.png")
+```

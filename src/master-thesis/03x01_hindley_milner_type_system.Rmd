@@ -139,7 +139,7 @@ For integers, we can use the natural numbers for constructing the positive and n
 $$
 \mathit{Int} ::= \mu \_.0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}
 $$
-Term like $1$ and $\mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $1$ and $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg},\mathit{Pos}$ and $0$ for $\mathit{Int}$ are terminals.
+The terms $\mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg} or \mathit{Pos}$ for $mathit{Int}$ are terminals. The terms $1$ and $0$ are both terminals and sorts.
 ```
 ```{definition,name="Label"}
 \begin{letIn}
@@ -199,7 +199,7 @@ $$
      & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,T_0)\in\Theta \text{ for some}\\
      & T_0\not\in\mathcal{V} \text{ where } T_1 \text{ is a type, } a \text{ is a variable and}\\
      & T_0 \in\mathcal{T}\\
-     \forall t.T'_1
+     \forall a.T'_1
      & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,T_0)\in\Theta \text{ for some}\\
      & T_0\in\mathcal{V} \text{ and } T'_1\text{Inst}(T_1,\Theta) \text{ where } T_1 \text{ is a type, } a \text{ is a}\\
      & \text{variable and } T_0 \in\mathcal{T}\\

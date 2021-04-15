@@ -46,7 +46,7 @@ One of the first systems for automated reasoning was LCF (Logic for Computable F
 \end{enumerate}
 ```
 
-With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicates $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type.Therefore we have:
+With this definition, the predicate $\land$ has type $\forall a.\forall b.(a,b)$. For the predicates $P$ and $Q$ of type $(0)$, the predicate $\lambda a.\lambda b.P(a) \land Q(b)$ has type $\Big(\Big(\forall a.\forall b.(a,b)\Big)\ (0) \Big) \ (0)$. Note that we have derived two types for the same expression. The Hindley-Milner type system comes with two equivalence rules to ensure that every expression has a unique type. The first equivalence rule says that any bound variables may be renamed and the second that type applications can be eliminated by instantiating the polymorphic type. Therefore we have:
 $$
 \Big(\Big(\forall a.\forall b (a,b)\Big)\ (0)\Big) \ (0) = \Big(\forall a. ((0),a)\Big) \ (0)= ((0),(0))
 $$
@@ -69,7 +69,7 @@ Modern refinement types are mostly influenced by a paper in 2008 by Patrick Rond
 
 The programming language Elm was developed by Evan Czaplicki as his master thesis [@elm] in 2012. It was initially developed as a reactive programming language. In reactive programming effects are modelled as data streams (sequences of effects). This was implemented in Elm by a data type called _Signal_. Signals allowed for \enquote{time-travel debugging}: One can step forwards and backwards through the events.
 
-While signals where a very direct implementation of the mathematical model, they turned out to be not very useful. Thus, they got replaced by a special architecture, now known as _The Elm Architecture_ (TEA) [@ElmPage]. Nowadays, an Elm program is more like a state machine with events being state transitions:
+While signals were a very direct implementation of the mathematical model, they turned out to be not very useful. Thus, they got replaced by a special architecture, now known as _The Elm Architecture_ (TEA) [@ElmPage]. Nowadays, an Elm program is more like a state machine with events being state transitions:
 
 We call the state of a program the `Model`, the events are called messages or `Msg` for short.
 The TEA has three exposed functions:
