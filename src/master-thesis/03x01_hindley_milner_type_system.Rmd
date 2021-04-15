@@ -6,7 +6,7 @@ For this thesis we will use the following notations:
 
 * $\mathbb{N}$ is the set of the natural numbers starting from $1$.
 * $\mathbb{N}_0$ is the set of the natural numbers starting from $0$.
-* $\mathbb{N}_a^b:=\{i\in \mathbb{N}_0 | a \leq i \land i \leq b\}$ is the set of the natural numbers between $a$ and&nbsp;$b$ (including the bounds).
+* $\mathbb{N}_a^b:=\{i\in \mathbb{N}_0 \ | \ a \leq i \land i \leq b\}$ is the set of the natural numbers between $a$ and&nbsp;$b$ (including the bounds).
 * We will use "$.$" to separate a quantifier from a statement: $\forall a . F$ and $\exists a . F$, where $a$ is a variable and $F$ is a formula.
 * Function types will be written as $a_1 \to \dots \to a_n \to b$ instead of $a_1 \times \dots \times a_n \to b$; thus an n-ary function is represented as a unary function whoes result is a $(n-1)$-ary function. This concept is called "currying".
 * We allow the use of lambda notation for functions, i.e. $\lambda x.T$ denotes the function $f$ defined by the equation $f(x) = T$ where $T$ is a term.
@@ -139,7 +139,7 @@ For integers, we can use the natural numbers for constructing the positive and n
 $$
 \mathit{Int} ::= \mu \_.0 \ | \ \mathit{Pos} \ \mathit{Nat} \ | \ \mathit{Neg} \ \mathit{Nat}
 $$
-The terms $\mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg} or \mathit{Pos}$ for $mathit{Int}$ are terminals. The terms $1$ and $0$ are both terminals and sorts.
+The terms $\mathit{Succ} \ 1$ for $\mathit{Nat}$ or $\mathit{Neg} \ (\mathit{Succ} \ 1)$ for $\mathit{Int}$ are sorts, whereas $\mathit{Succ}$ for $\mathit{Nat}$ and $\mathit{Neg}$ or $\mathit{Pos}$ for $\mathit{Int}$ are terminals. The terms $1$ and $0$ are both terminals and sorts.
 ```
 ```{definition,name="Label"}
 \begin{letIn}
@@ -193,17 +193,15 @@ A poly type can be instantiated with a mono type by applying $\alpha$-Conversion
 We define the following:
 $$
   \begin{aligned}
-   \text{Inst}:\ &\mathcal{T}\to(\mathcal{V}\nrightarrow\{t\in\mathcal{T}\ |\ t \text{ is a mono type}\})\to\mathcal{T}\\
+   \text{Inst}:\ &\mathcal{T}\to(\mathcal{V}\nrightarrow\mathcal{T}\to\mathcal{T}\\
    \text{Inst}(T,\Theta) :=& \begin{cases}
-     \text{Inst}(T',\Theta) 
-     & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,T_0)\in\Theta \text{ for some}\\
-     & T_0\not\in\mathcal{V} \text{ where } T_1 \text{ is a type, } a \text{ is a variable and}\\
-     & T_0 \in\mathcal{T}\\
-     \forall a.T'_1
-     & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,T_0)\in\Theta \text{ for some}\\
-     & T_0\in\mathcal{V} \text{ and } T'_1\text{Inst}(T_1,\Theta) \text{ where } T_1 \text{ is a type, } a \text{ is a}\\
-     & \text{variable and } T_0 \in\mathcal{T}\\
-     [T]_\Theta&\text{else}
+     \text{Inst}(T_1,\Theta) 
+     & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,\_)\in\Theta\\
+     & \text{where } a\in\mathcal{V} \text{ and } T_1 \in\mathcal{T}\\
+     \forall a.\text{Inst}(T_1,\Theta)
+     & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,\_)\not\in\Theta\\
+     & \text{where } a\in\mathcal{V} \text{ and } T_1 \in\mathcal{T}\\
+     \forall a.[T]_\Theta&\text{else}
 \end{cases}
   \end{aligned}
 $$
