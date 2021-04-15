@@ -188,12 +188,12 @@ $$
   \end{aligned}
 $$
 ```
-A poly type can be instantiated with a mono type by applying $\alpha$-Conversion and $\beta$-Reduction. The result will again be a type.
+A poly type can be instantiated with a mono type by applying $\beta$-Reduction. The result will again be a type.
 ```{definition,name="Type Instatiation"}
 We define the following:
 $$
   \begin{aligned}
-   \text{Inst}:\ &\mathcal{T}\to(\mathcal{V}\nrightarrow\mathcal{T}\to\mathcal{T}\\
+   \text{Inst}:\ &\mathcal{T}\to(\mathcal{V}\nrightarrow\mathcal{T})\to\mathcal{T}\\
    \text{Inst}(T,\Theta) :=& \begin{cases}
      \text{Inst}(T_1,\Theta) 
      & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,\_)\in\Theta\\
@@ -201,7 +201,7 @@ $$
      \forall a.\text{Inst}(T_1,\Theta)
      & \text{If } T \text{ is of form } \forall a.T_1 \text{ and } (a,\_)\not\in\Theta\\
      & \text{where } a\in\mathcal{V} \text{ and } T_1 \in\mathcal{T}\\
-     \forall a.[T]_\Theta&\text{else}
+     [T]_\Theta&\text{else}
 \end{cases}
   \end{aligned}
 $$
