@@ -1,0 +1,336 @@
+---
+title: "Refinement Types for Elm"
+subtitle: "Master Thesis Report"
+author: "Lucas Payr"
+date: "13 April 2021"
+output:
+  beamer_presentation:
+    theme: "metropolis" #"Boadilla" # "Rochester"
+    colortheme: "default" #"dolphin" #"dove" #"beaver" #"default" #"seagull"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Topics of this Talk
+
+* Background
+* Formal Language Similar to Elm
+* Extension of the Formal Language
+* Demonstration
+
+# Background
+
+## Background: Introduction to Elm
+
+* Invented by Evan Czaplicki as his master-thesis in 2012.
+* Website: \alert{elm-lang.org}
+
+### Characteristics
+
+* Pure Functional Language (immutable, no side effect, everything is a function)
+* Compiles to JavaScript (in the future also to WebAssembly)
+* ML-like Syntax (Functions are curried)
+* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
+* "No Runtimes errors" (running out of memory, function equality)
+
+```
+max =
+  \a -> \b ->
+    if 
+      (<) a b
+    then
+      b
+    else
+      a
+```
+
+## Background: Introduction to Refinement Types
+
+Restricts the values of an existing type using a predicate (refinement).
+
+Initial paper in 1991 by Tim Freeman and Frank Pfenning
+
+* Initial concept was done in ML.
+* Allows predicates with only $\land,\lor,=$, constants and basic pattern matching.
+* Operates over algebraic types.
+* Needed to specify **explicitly** all possible Values.
+    
+### Example
+$$
+\forall t.\{\nu:List \ t\ |\ \nu = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
+$$
+Refinement: $\nu = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ]$
+
+## Background: Introduction to Refinement Types
+
+Liquid Types (Logically Quantified Data Types) introduced in 2008
+
+* Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
+* Initial concept done in OCaml. Later also C, Haskell and TypeScript.
+* Operates over Integers and Booleans, Tuples and Functions.
+* Allows predicates with logical operators and linear arithmetic.
+
+### Example
+
+$$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}\ |\ 0 \leq \nu\}\\
+&\to\{\nu:\mathit{Int}\ |\  0\leq\nu \ \land \ a\leq\nu \ \land \ b\leq\nu \}\end{aligned}$$
+
+* Liquid Type Variables : $a,b$
+* Refinements: $\ 0 \leq \nu$ and $0\leq\nu \ \land \ a\leq\nu \ \land \ b\leq\nu$
+
+
+## Background: Motivation
+
+* Catching Division by zero in compile time
+    $$(//):\mathit{Int} \rightarrow \{\nu:\mathit{Int}\ |\ \neg (\nu = 0)\} \rightarrow \mathit{Int}$$
+* Catching index-out-of-bounds errors in compile time
+    $$\mathit{get}:\mathit{Array}\ \mathit{Int} \to \{\nu:\mathit{Int}\ |\ 0 \leq \nu \land \nu < 5\} \to \mathit{Int}$$
+* Having natural numbers as a subtype of ingeters
+    $$\text{type alias } \mathit{nat} = \{\nu:\mathit{Int}\ |\ 0 \leq \nu\}$$
+
+## Background: Goals of Thesis
+
+1. Formal language similar to Elm
+
+    * Formal syntax
+    * Formal type system
+    * Denotational semantics
+    * Proof that the type system is sound with respect to the semantics.
+    * Small step semantics (using K Framework) for rapid prototyping the language
+
+2. Extension of the formal language with Liquid Types
+
+    * Extending the formal syntax, formal type system and denotational semantic
+    * Proof that the extension infers the correct types.
+    * Implementation (of the core algorithm) written in Elm for Elm.
+
+## Formal Language Similar to Elm
+
+### Formal syntax
+
+$$
+\begin{aligned}
+\mathtt{<exp>} \ ::=& \ \mathtt{"if"}\ \mathtt{<exp>}\ \mathtt{"then"} \mathtt{<exp>}\ \mathtt{"else"}\ \mathtt{<exp>}\\
+                |\ &\dots
+\end{aligned}
+$$
+
+### Formal Type System
+
+$$
+\frac
+{
+\Gamma,\Delta\vdash e_1:\textit{Bool}\quad
+\Gamma,\Delta\vdash e_2: T\quad
+\Gamma,\Delta\vdash e_3: T
+}
+{\Gamma,\Delta\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:T}
+$$
+
+Judgment: $\Gamma,\Delta\vdash e:T$ ($e$ has the type $T$ with respect to $\Gamma$ and $\Delta$)
+
+## Formal Language Similar to Elm
+
+### Denotational Semantics
+
+$$
+\begin{aligned}
+ \Bigg[\Bigg[\begin{aligned}
+ &\mathtt{"if"} \ e_1\ \mathtt{"then"}\\
+ & e_2\ \mathtt{"else"}\ e_3
+ \end{aligned}\Bigg]\Bigg]_{\Gamma,\Delta} =\ & 
+      \begin{cases}
+        [[e_2]]_{\Gamma,\Delta} & \text{if } b\\
+        [[e_3]]_{\Gamma,\Delta} & \text{if } \neg b
+      \end{cases}\\
+  & \text{with } [[e_1]]_{\Gamma,\Delta} = b\\
+    & \text{where } b\in\text{value}(\mathit{Bool})
+\end{aligned}
+$$
+
+### Theorem (Soundness of `<exp>`)
+
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $e\in\mathtt{<exp>}$ and $T\in\mathcal{T}$. Assume $\Delta,\Gamma\vdash e:T$ can be derived. 
+
+Then \([[e]]_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
+
+## Extension of the Formal Language
+
+### Extending the Formal Syntax
+
+$$
+\begin{aligned}
+\mathtt{<l}&\mathtt{iquid-type>} ::=\\
+  & \mathtt{"\{v:Int|"} \ \mathtt{<qualifier-type>} \ \mathtt{"\}"} \\
+  &| \ \mathtt{<lower-var> ":\{v:Int|" <qualifier-type>}\\
+  &\quad \mathtt{"->" <liquid-type>}
+\end{aligned}
+$$
+
+## Extension of the Formal Language
+
+### Formal Type System
+
+$$
+\frac
+{
+\begin{gathered}
+\Gamma,\Delta,\Theta,\Lambda\vdash e_1:\textit{Bool}\quad
+e_1:e_1'\\
+\Gamma,\Delta,\Theta,\Lambda\cup\{e_1'\}\vdash e_2: T\quad
+\Gamma,\Delta,\Theta,\Lambda\cup\{\neg e_1'\}\vdash e_3: T
+\end{gathered}
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash\mathtt{"if"} \ e_1  \ \mathtt{"then"} \ e_2 \ \mathtt{"else"} \ e_3:T}
+$$
+$$
+\frac
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:T_1\quad
+T_1<:_{\Theta,\Lambda} T_2\quad
+\text{wellFormed}(T_2,\Theta)
+}
+{\Gamma,\Delta,\Theta,\Lambda\vdash e:T_2}
+$$
+
+Judgment: $\Gamma,\Delta,\Theta,\Lambda\vdash e:T$ ($e$ has the type $T$ with respect to $\Gamma$,$\Delta$, $\Theta$ and $\Lambda$)
+
+## Extension of the Formal Language
+
+### Theorem (Soundness of Liquid Types)
+
+$\Gamma,\Delta$ be type contexts, $\Delta'$ be a variable context similar to $\Delta$ with respect to $\Gamma$. Let $\Lambda\subset\mathcal{Q}$ and $\Theta:\mathcal{V}\nrightarrow\mathcal{Q}$. Let $e\in\mathtt{<exp>}$ and $T\in\mathcal{T}$. Assume $\Gamma,\Delta,\Theta,\Lambda\vdash e:T$ can be derived. 
+
+Then \([[e]]_{\Gamma,\Delta'}\in\text{value}_\Gamma(\overline{\Gamma}(T))\).
+
+## Inference Algorithm for Liquid Types
+
+$$
+\begin{aligned}
+&\text{Infer}:\mathcal{P}(\mathcal{C})\to\ (\mathcal{K}\nrightarrow \mathcal{Q})\\
+&\text{Infer}(C)=\\
+&\quad\begin{aligned}\text{Let}\
+V:=&\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}\\
+Q_0:=&\mathit{Init}(V),\\
+A_0:=&\{(\kappa,Q_0)\ | \ \kappa\in\bigcup_{c\in C}\text{Var}(c)\},\\
+A:=&\text{Solve}(\bigcup_{c\in C} \text{Split}(c),A_0)\end{aligned}\\
+&\quad\text{in } \{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A\}\\
+&\quad\text{where } V\subseteq\mathcal{V},Q_0,Q\subseteq\mathcal{Q}, A_0,A\in\mathcal{K}\nrightarrow\mathcal{Q}, \Theta\text{ is a type variable}\\
+&\quad\text{context and } \Lambda\subseteq\mathcal{Q}.
+\end{aligned}
+$$
+
+## Inference Algorithm for Liquid Types
+
+1. (Split) Split the subtyping conditions over dependent function into subtyping conditions over simple liquid types.
+2. (Init) Compute $Q=\mathit{Init}(V)$ where $V$ is the set of all occurring variables and initiate the mapping $A$ for very key $\kappa_i$ with the set of resulting predicates with $Q$.
+3. (Solve) Check for very subtyping condition if the current mapping $A$ violates the subtyping condition. (SMT statement is satisfiable)
+  4. (Weaken) If so, weaken the mapping by removing any predicate that violates the subtyping condition (SMT statement is not satisfiable) and repeat
+
+5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}(V)$.
+
+## Inference Algorithm for Liquid Types
+
+### Theory (Verification) - Part 1
+
+$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
+
+Then for every $a\in V$, $A_2(a)\subseteq A_1(a)$.
+
+## Inference Algorithm for Liquid Types
+
+### Theory (Verification) - Part 2
+
+For every subtyping condition $(T_1 <:_{\Theta,\Lambda} T_2)\in C$, let 
+$$
+\begin{aligned} \Theta':= \{\ (&a,r)\\
+   | \ &r \text{ has the form } q \land (a,q)\in\Theta \land q\in\mathcal{Q}\\
+\lor \ &r \text{ has the form } [[k]_S]_{S_0}\land (a,q)\in\Theta\\
+&\quad\land q \text{ has the form } [k]_{S_0} \land k\in\mathcal{K} \land S_0\in\mathcal{V}\nrightarrow\mathit{IntExp}\}
+\end{aligned}
+$$
+and $\{(b_1,r_1'),\dots,(b_n,r_n')\}=\Theta'$.
+
+## Inference Algorithm for Liquid Types
+
+### Theory (Verification) - Part 3
+
+We then have the following correctness property.
+$$
+\begin{aligned}
+&[T_1]_S \in\mathcal{T} \land [T_2]_S \in\mathcal{T}\\
+&\land\ [T_1]_S <:_{\Theta',\Lambda} [T_2]_S\\
+&\land\ \forall S'\in(\mathcal{V}\to\mathcal{Q}).(\forall a\in V.\exists Q\in \mathcal{P}(A_1(a)). S'(a) = \bigwedge Q)\\
+&\quad\land [T_1]_{S'} \in\mathcal{T} \land [T_2]_{S'} \in\mathcal{T}\\
+&\quad\land ([T_1]_{S'} <:_{\Theta',\Lambda} [T_2]_{S'}\\
+&\quad\quad\Rightarrow \forall a\in V.\forall \nu\in\mathbb{Z}.\\
+&\quad\quad\quad\forall i_1\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_1'\}).\dots \forall i_n\in\text{value}_\Gamma(\{\nu:\mathit{Int}\ |\ r_n'\}).\\
+&\quad\quad\quad\quad[[S(a)]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}} \Rightarrow [[S'(a)]]_{\{(\nu,z),(b_1,i_1),\dots,(b_n,i_n)\}})
+\end{aligned}
+$$
+
+## Conclusion: The Good
+
+* Can catch index-out-of-bounds errors in compile time
+* Can catch (some) division by zero errors in compile time
+* Can define the natural numbers as a subtype of the integers.
+
+## Conclusion: The Bad
+
+Liquid Types have three weaknesses:
+
+* Capabilities of liquid types depend on the initial set of predicates $Init(V)$.
+* Increasing the size of $Init(V)$ increases the computation time by a quadratic amount.
+* The type system is no longer complete (Not every liquid type can be checked using a type checker).
+
+### Liquid Haskell
+
+* Uses a specific initial set $init(V)$ tailered to a specific use-case.
+* Developed in Haskell (Not in Elm) thus its faster.
+
+## Conclusion: The Ugly
+
+The following code can not be checked in Liquid Haskell.
+
+```
+fun : {v:Int | 0 <= v && v*v <= 4} -> {v:Int | v*v <= v+v}
+fun =
+  \x -> x
+```
+
+Liquid Haskell returns the following Error:
+
+```
+Error: Liquid Type Mismatch
+Inferred type
+  {v:Int | v = x }
+not a subtype of Required type
+  {VV:Int | VV * VV <= VV + VV}
+In Context
+  x:{v:Int | 0 <= v && v * v <= 4 }
+```
+
+## Conclusion: The Ugly
+
+The following can be checked in Liquid Haskell.
+
+```
+fun : {v:Int | 0 <= v && v*v <= 4} -> {v:Int | v*v <= v+v}
+fun =
+  \x -> 
+    if 0 <= v && v <= 2 then
+      x
+    else
+      0 --dead branch
+```
+
+## Conclusion: The Ugly
+
+* The user needs to know about the inner workings of the type checker.
+* Liquid types are an overkill for the usecases of Elm.
+
+I therefore come to the conclusion, that liquid types are not a proper fit for Elm.
+
+* LiquidHaskell has the same problems, but targets more the academic world.
+* Main target of Elm: Javascript programmers.

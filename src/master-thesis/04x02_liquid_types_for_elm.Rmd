@@ -157,7 +157,7 @@ Subtyping comes with an additional inference rule for $\mf{<exp>}$. The sharpnes
 
 \logicRule
 {\Gamma,\Delta,\Theta,\Lambda\vdash e:T_1\quad
-\hat{T}_1<:_{\Theta,\Lambda} T_2\quad
+T_1<:_{\Theta,\Lambda} T_2\quad
 \text{wellFormed}(T_2,\Theta)
 }
 {\Gamma,\Delta,\Theta,\Lambda\vdash e:T_2}
