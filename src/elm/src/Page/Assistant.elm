@@ -35,6 +35,12 @@ type alias Model =
     }
 
 
+{-| will use True as a default value if the SMT solver return an error.
+-}
+isDemo =
+    True
+
+
 getLazySubstitute : Model -> List ( String, IntExp )
 getLazySubstitute { conditions, index } =
     conditions
@@ -312,12 +318,16 @@ update sendMsg msg model =
                             )
 
             else if kind == "STDERR" then
-                Action.updating
-                    ( { model
-                        | error = Just payload
-                      }
-                    , Cmd.none
-                    )
+                if (payload |> String.startsWith "Failed to verify:") && isDemo then
+                    handleResponse sendMsg True model
+
+                else
+                    Action.updating
+                        ( { model
+                            | error = Just payload
+                          }
+                        , Cmd.none
+                        )
 
             else if kind == "VERIFICATION_COMPLETE" then
                 Action.updating

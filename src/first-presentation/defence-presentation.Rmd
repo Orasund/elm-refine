@@ -1,8 +1,8 @@
 ---
 title: "Refinement Types for Elm"
-subtitle: "Master Thesis Report"
+subtitle: "Master Thesis"
 author: "Lucas Payr"
-date: "13 April 2021"
+#date: "13 April 2021"
 output:
   beamer_presentation:
     theme: "metropolis" #"Boadilla" # "Rochester"
@@ -13,25 +13,14 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Topics of this Talk
-
-* Background
-* Formal Language Similar to Elm
-* Extension of the Formal Language
-* Demonstration
-
 ## Background: Introduction to Elm
 
 * Invented by Evan Czaplicki as his master-thesis in 2012.
+* Pure Functional Language
+* Compiles to JavaScript
+* ML-like Syntax
+* Simpler than Haskell
 * Website: \alert{elm-lang.org}
-
-### Characteristics
-
-* Pure Functional Language (immutable, no side effect, everything is a function)
-* Compiles to JavaScript (in the future also to WebAssembly)
-* ML-like Syntax (Functions are curried)
-* Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
-* "No Runtimes errors" (running out of memory, function equality)
 
 ## Background: Introduction to Elm
 
@@ -52,21 +41,6 @@ max =
 
 Restricts the values of an existing type using a predicate (refinement).
 
-Initial paper in 1991 by Tim Freeman and Frank Pfenning
-
-* Initial concept was done in ML.
-* Allows predicates with only $\land,\lor,=$, constants and basic pattern matching.
-* Operates over algebraic types.
-* Needed to specify **explicitly** all possible Values.
-    
-### Example
-$$
-\forall t.\{\nu:List \ t\ |\ \nu = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ] \}
-$$
-Refinement: $\nu = Cons \ (b:t) \ (c:List \ t) \land c = Cons \ (d:t) \ [ \ ]$
-
-## Background: Introduction to Refinement Types
-
 Liquid Types (Logically Quantified Data Types) introduced in 2008
 
 * Invented by Patrick Rondan, Ming Kawaguchi and Ranji Jhala
@@ -76,11 +50,11 @@ Liquid Types (Logically Quantified Data Types) introduced in 2008
 
 ### Example
 
-$$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}\ |\ 0 \leq \nu\}\\
-&\to\{\nu:\mathit{Int}\ |\  0\leq\nu \ \land \ a\leq\nu \ \land \ b\leq\nu \}\end{aligned}$$
+$$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \mathit{True}\}\to b:\{\nu:\mathit{Int}\ |\ \mathit{True}\}\\
+&\to\{\nu:\mathit{Int}\ |\ a\leq\nu \ \land \ b\leq\nu \}\end{aligned}$$
 
 * Liquid Type Variables : $a,b$
-* Refinements: $\ 0 \leq \nu$ and $0\leq\nu \ \land \ a\leq\nu \ \land \ b\leq\nu$
+* Refinements: $\mathit{True}$ and $a\leq\nu \ \land \ b\leq\nu$
 
 
 ## Background: Motivation
@@ -272,6 +246,10 @@ $$
 \end{aligned}
 $$
 
+## Inference Algorithm for Liquid Types
+
+### Demonstration
+
 ## Conclusion: The Good
 
 * Can catch index-out-of-bounds errors in compile time
@@ -289,7 +267,7 @@ Liquid Types have three weaknesses:
 ### Liquid Haskell
 
 * Uses a specific initial set $init(V)$ tailored to a specific use-case.
-* Developed in Haskell (Not in Elm) thus its faster.
+* Developed in Haskell (not in Elm) thus its faster.
 
 ## Conclusion: The Ugly
 

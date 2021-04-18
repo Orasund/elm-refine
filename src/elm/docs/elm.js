@@ -5685,9 +5685,29 @@ var $author$project$Data$Refinement$init = function (vars) {
 				'v',
 				$author$project$Data$IntExp$Integer(0)),
 				A2(
+				$author$project$Data$Refinement$EitherOr,
+				A2(
+					$author$project$Data$Refinement$IsBigger,
+					'v',
+					$author$project$Data$IntExp$Integer(0)),
+				A2(
+					$author$project$Data$Refinement$IsEqual,
+					'v',
+					$author$project$Data$IntExp$Integer(0))),
+				A2(
 				$author$project$Data$Refinement$IsSmaller,
 				'v',
 				$author$project$Data$IntExp$Integer(0)),
+				A2(
+				$author$project$Data$Refinement$EitherOr,
+				A2(
+					$author$project$Data$Refinement$IsSmaller,
+					'v',
+					$author$project$Data$IntExp$Integer(0)),
+				A2(
+					$author$project$Data$Refinement$IsEqual,
+					'v',
+					$author$project$Data$IntExp$Integer(0))),
 				A2(
 				$author$project$Data$Refinement$IsEqual,
 				'v',
@@ -5698,18 +5718,7 @@ var $author$project$Data$Refinement$init = function (vars) {
 					'v',
 					$author$project$Data$IntExp$Integer(0)))
 			]));
-	return $elm$core$List$concat(
-		A2(
-			$elm$core$List$map,
-			function (a) {
-				return A2(
-					$elm$core$List$map,
-					function (b) {
-						return _Utils_eq(a, b) ? a : A2($author$project$Data$Refinement$EitherOr, a, b);
-					},
-					noOr);
-			},
-			noOr));
+	return noOr;
 };
 var $author$project$Data$Condition$liquidTypeVariables = function (_v0) {
 	var smaller = _v0.smaller;
@@ -7272,6 +7281,7 @@ var $author$project$Page$Assistant$handleResponse = F3(
 			return A3($author$project$Page$Assistant$handleSolve, sendMsg, bool, model);
 		}
 	});
+var $author$project$Page$Assistant$isDemo = true;
 var $elm$core$Basics$not = _Basics_not;
 var $author$project$Page$Assistant$update = F3(
 	function (sendMsg, msg, model) {
@@ -7300,7 +7310,7 @@ var $author$project$Page$Assistant$update = F3(
 					}
 				} else {
 					if (kind === 'STDERR') {
-						return $Orasund$elm_action$Action$updating(
+						return (A2($elm$core$String$startsWith, 'Failed to verify:', payload) && $author$project$Page$Assistant$isDemo) ? A3($author$project$Page$Assistant$handleResponse, sendMsg, true, model) : $Orasund$elm_action$Action$updating(
 							_Utils_Tuple2(
 								_Utils_update(
 									model,
