@@ -20,8 +20,6 @@ knitr::opts_chunk$set(echo = FALSE)
 * Extension of the Formal Language
 * Demonstration
 
-# Background
-
 ## Background: Introduction to Elm
 
 * Invented by Evan Czaplicki as his master-thesis in 2012.
@@ -34,6 +32,10 @@ knitr::opts_chunk$set(echo = FALSE)
 * ML-like Syntax (Functions are curried)
 * Simpler than Haskell (no Type classes, no Monads, only one way to do a given thing)
 * "No Runtimes errors" (running out of memory, function equality)
+
+## Background: Introduction to Elm
+
+### Example
 
 ```
 max =
@@ -87,7 +89,7 @@ $$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}
     $$(//):\mathit{Int} \rightarrow \{\nu:\mathit{Int}\ |\ \neg (\nu = 0)\} \rightarrow \mathit{Int}$$
 * Catching index-out-of-bounds errors in compile time
     $$\mathit{get}:\mathit{Array}\ \mathit{Int} \to \{\nu:\mathit{Int}\ |\ 0 \leq \nu \land \nu < 5\} \to \mathit{Int}$$
-* Having natural numbers as a subtype of ingeters
+* Having natural numbers as a subtype of integers
     $$\text{type alias } \mathit{nat} = \{\nu:\mathit{Int}\ |\ 0 \leq \nu\}$$
 
 ## Background: Goals of Thesis
@@ -98,7 +100,7 @@ $$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}
     * Formal type system
     * Denotational semantics
     * Proof that the type system is sound with respect to the semantics.
-    * Small step semantics (using K Framework) for rapid prototyping the language
+    * Small step semantics (using K Framework) for rapid prototyping of the language
 
 2. Extension of the formal language with Liquid Types
 
@@ -108,7 +110,7 @@ $$\begin{aligned}a:&\{\nu:\mathit{Int}\ | \ 0 \leq \nu\}\to b:\{\nu:\mathit{Int}
 
 ## Formal Language Similar to Elm
 
-### Formal syntax
+**Formal syntax**
 
 $$
 \begin{aligned}
@@ -117,7 +119,7 @@ $$
 \end{aligned}
 $$
 
-### Formal Type System
+**Formal Type System**
 
 $$
 \frac
@@ -228,13 +230,13 @@ $$
 3. (Solve) Check for very subtyping condition if the current mapping $A$ violates the subtyping condition. (SMT statement is satisfiable)
   4. (Weaken) If so, weaken the mapping by removing any predicate that violates the subtyping condition (SMT statement is not satisfiable) and repeat
 
-5. One the algorthm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}(V)$.
+5. Once the algorithm terminates we have obtained the strongest refinements that can be build by conjunction over predicates in $\mathit{Init}(V)$.
 
 ## Inference Algorithm for Liquid Types
 
 ### Theory (Verification) - Part 1
 
-$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well defined. Let $A_2 = \text{Solve}(C,A_1)$ and $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
+$C\subseteq\mathcal{C}^-$ be a set of well-formed conditions, $A_1,A_2:\mathcal{K}\nrightarrow\mathcal{Q}$ and $V:=\bigcup_{T_1<:_{\Theta,\Lambda}T_2\in C}\{a \ | \ (a,\_)\in\Theta\}$. Let for all $a\in V$, $A_1(a)$ be well-defined. Let $A_2 = \text{Solve}(C,A_1)$ and $S=\{(\kappa,\bigwedge Q) \ | \ (\kappa,Q)\in A_2\}$.
 
 Then for every $a\in V$, $A_2(a)\subseteq A_1(a)$.
 
@@ -286,7 +288,7 @@ Liquid Types have three weaknesses:
 
 ### Liquid Haskell
 
-* Uses a specific initial set $init(V)$ tailered to a specific use-case.
+* Uses a specific initial set $init(V)$ tailored to a specific use-case.
 * Developed in Haskell (Not in Elm) thus its faster.
 
 ## Conclusion: The Ugly
@@ -319,7 +321,7 @@ The following can be checked in Liquid Haskell.
 fun : {v:Int | 0 <= v && v*v <= 4} -> {v:Int | v*v <= v+v}
 fun =
   \x -> 
-    if 0 <= v && v <= 2 then
+    if v <= 2 then
       x
     else
       0 --dead branch
@@ -328,7 +330,7 @@ fun =
 ## Conclusion: The Ugly
 
 * The user needs to know about the inner workings of the type checker.
-* Liquid types are an overkill for the usecases of Elm.
+* Liquid types are an overkill for the use cases of Elm.
 
 I therefore come to the conclusion, that liquid types are not a proper fit for Elm.
 
