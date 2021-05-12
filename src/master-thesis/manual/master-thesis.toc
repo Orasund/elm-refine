@@ -1,0 +1,173 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{9}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}State of the Art}{13}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Type Theory}{13}{section.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}The Hindley Milner Type System}{14}{section.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.3}Dependent Types and Refinement Types}{15}{section.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.4}An Introduction to Elm}{16}{section.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {3}Formal Definition of Elm}{19}{chapter.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Defining the Hindley-Milner Type System}{19}{section.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1.1}Notion of Types}{20}{subsection.3.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1.2}Interpretation of Types}{24}{subsection.3.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Syntax}{28}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}Type Inference}{31}{section.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.1}Typing Judgments}{31}{subsection.3.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Type Signature Judgments}{32}{section*.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Expression Judgments}{32}{section*.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Statement Judgments}{33}{section*.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.2}Auxiliary Definitions}{34}{subsection.3.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Instantiation, Generalization}{34}{section*.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Predefined Types}{35}{section*.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.3}Inference Rules for Type Signatures}{35}{subsection.3.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-type-fields\textgreater {}}}{35}{section*.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-type\textgreater {}}}{36}{section*.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}type\textgreater {}}}{36}{section*.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.4}Inference Rules for Expressions}{37}{subsection.3.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-exp-field\textgreater {}}}{37}{section*.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}maybe-exp-sign\textgreater {}}}{37}{section*.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}bool\textgreater {}}}{37}{section*.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}int\textgreater {}}}{37}{section*.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-exp\textgreater {}}}{38}{section*.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}exp\textgreater {}}}{38}{section*.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.5}Inference Rules for Statements}{40}{subsection.3.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-statement-var\textgreater {}}}{40}{section*.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-statement-sort\textgreater {}}}{41}{section*.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}list-statement\textgreater {}}}{41}{section*.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}maybe-statement-sign\textgreater {}}}{41}{section*.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}statement\textgreater {}}}{41}{section*.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}maybe-main-sign\textgreater {}}}{42}{section*.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}program\textgreater {}}}{42}{section*.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.4}Denotational Semantics}{43}{section.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.5}Soundness of the Inference Rules}{49}{section.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5.1}Soundness of the Type Signature}{49}{subsection.3.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5.2}Soundness of the Variable Context}{51}{subsection.3.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5.3}Soundness of the Expression Rules}{52}{subsection.3.5.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5.4}Soundness of the Statement Rules}{57}{subsection.3.5.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5.5}Soundness of the Program Rules}{59}{subsection.3.5.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Liquid Types for Elm}{61}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}Notion of Liquid Types}{61}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}Liquid Types for Elm}{66}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.1}Syntax}{66}{subsection.4.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.2}Type Inference}{67}{subsection.4.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.2.2.1}Type Signature Judgments}{67}{subsubsection.4.2.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.3}Auxiliary Definitions}{68}{subsection.4.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Well-formed Liquid Type}{68}{section*.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Subtyping}{69}{section*.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.4}Inference Rules for Type Signatures}{70}{subsection.4.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}int-exp-type\textgreater {}}}{70}{section*.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}qualifier-type\textgreater {}}}{70}{section*.30}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}liquid-type\textgreater {}}}{71}{section*.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}type\textgreater {}}}{71}{section*.32}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.5}Inference Rules for Expressions}{71}{subsection.4.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Inference Rules for \texttt {\textless {}Exp\textgreater {}}}{71}{section*.33}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.6}Denotational Semantic}{73}{subsection.4.2.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}Soundness of Liquid Types}{74}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.4}Formulating SMT Statements}{78}{section.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.4.1}The Inference Algorithm}{80}{subsection.4.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.4.2}Correctness}{89}{subsection.4.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Implementation}{97}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}The Elm Type System in the K Framework}{97}{section.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.1}Implementing the Formal Language}{98}{subsection.5.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.2}Implementing Algorithm J}{99}{subsection.5.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.3}Example}{101}{subsection.5.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Refinement Types in Elm}{105}{section.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.3}Details of the Elm Implementation}{108}{section.5.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.1}Types}{108}{subsection.5.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.2}Transition}{109}{subsection.5.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.3}Init}{111}{subsection.5.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.4}Update}{112}{subsection.5.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.3.4.1}The Solve Function}{113}{subsubsection.5.3.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.3.4.2}The Weaken Function}{114}{subsubsection.5.3.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.5}The SMT Statement}{116}{subsection.5.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.3.5.1}The SMT Statement for Solve}{117}{subsubsection.5.3.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.3.5.2}The SMT Statement for Weaken}{120}{subsubsection.5.3.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.4}Demonstration}{121}{section.5.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Conclusions}{127}{chapter.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {A}Source Code}{129}{appendix.A}%
+\defcounter {refsection}{0}\relax 
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

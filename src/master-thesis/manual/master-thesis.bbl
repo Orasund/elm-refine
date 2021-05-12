@@ -1,0 +1,1668 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{anyt/global//global/global}
+    \entry{backus-naur-form}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=2fa466b64610e0d66a57b92d92fe2c9a}{%
+           family={Backus},
+           familyi={B\bibinitperiod},
+           given={John\bibnamedelima W.},
+           giveni={J\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \strng{fullhash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \strng{bibnamehash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \strng{authorbibnamehash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \strng{authornamehash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \strng{authorfullhash}{2fa466b64610e0d66a57b92d92fe2c9a}
+      \field{labelalpha}{Bac59}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{IFIP} Congress}
+      \field{title}{The syntax and semantics of the proposed international algebraic language of the Zurich {ACM-GAMM} Conference}
+      \field{year}{1959}
+      \field{pages}{125\bibrangedash 131}
+      \range{pages}{7}
+    \endentry
+    \entry{F_sharp}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=4298012d0f885a2e42836120b2a69024}{%
+           family={Bengtson},
+           familyi={B\bibinitperiod},
+           given={Jesper},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8bbe26f3de431f47b95fa6d69969dd56}{%
+           family={Bhargavan},
+           familyi={B\bibinitperiod},
+           given={Karthikeyan},
+           giveni={K\bibinitperiod}}}%
+        {{hash=fa822736722a4cc89c1133cac2a38342}{%
+           family={Fournet},
+           familyi={F\bibinitperiod},
+           given={C{é}dric},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5f26e38882111393118b8dc7936966f5}{%
+           family={Gordon},
+           familyi={G\bibinitperiod},
+           given={Andrew\bibnamedelima D.},
+           giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=f0242a4f2b7b6e02bb2750e473aaab44}{%
+           family={Maffeis},
+           familyi={M\bibinitperiod},
+           given={Sergio},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{bc230a2ac8788b816b4ae4727256cdf8}
+      \strng{fullhash}{732ab4c090c688dbabbb6ebe3f8db563}
+      \strng{bibnamehash}{bc230a2ac8788b816b4ae4727256cdf8}
+      \strng{authorbibnamehash}{bc230a2ac8788b816b4ae4727256cdf8}
+      \strng{authornamehash}{bc230a2ac8788b816b4ae4727256cdf8}
+      \strng{authorfullhash}{732ab4c090c688dbabbb6ebe3f8db563}
+      \field{labelalpha}{Ben+08}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 21st {IEEE} Computer Security Foundations Symposium, {CSF} 2008, Pittsburgh, Pennsylvania, USA, 23-25 June 2008}
+      \field{title}{Refinement Types for Secure Implementations}
+      \field{year}{2008}
+      \field{pages}{17\bibrangedash 32}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1109/CSF.2008.27
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/CSF.2008.27
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/CSF.2008.27
+      \endverb
+    \endentry
+    \entry{Kframework_Java}{article}{}
+      \name{author}{2}{}{%
+        {{hash=920fc3fd1bdd8b6e0ad9470fdb9e7a9e}{%
+           family={Bogdanas},
+           familyi={B\bibinitperiod},
+           given={Denis},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9af91b822c411b516793e9a20512a651}{%
+           family={Roşu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{4836154fde3c858d655672d7e971536d}
+      \strng{fullhash}{4836154fde3c858d655672d7e971536d}
+      \strng{bibnamehash}{4836154fde3c858d655672d7e971536d}
+      \strng{authorbibnamehash}{4836154fde3c858d655672d7e971536d}
+      \strng{authornamehash}{4836154fde3c858d655672d7e971536d}
+      \strng{authorfullhash}{4836154fde3c858d655672d7e971536d}
+      \field{labelalpha}{BR15}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0362-1340}
+      \field{journaltitle}{SIGPLAN Not.}
+      \field{month}{1}
+      \field{number}{1}
+      \field{title}{K-Java: A Complete Semantics of Java}
+      \field{volume}{50}
+      \field{year}{2015}
+      \field{pages}{445\bibrangedash 456}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/2775051.2676982
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2775051.2676982
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2775051.2676982
+      \endverb
+      \keyw{k framework,java,mechanized semantics}
+    \endentry
+    \entry{elm}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=bd0b601d2ea72eeb81587cf33772db14}{%
+           family={Czaplicki},
+           familyi={C\bibinitperiod},
+           given={Evan},
+           giveni={E\bibinitperiod}}}%
+        {{hash=bdb41de68e48d58bdaeb35d428b1b7ca}{%
+           family={Chong},
+           familyi={C\bibinitperiod},
+           given={Stephen},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \strng{fullhash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \strng{bibnamehash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \strng{authorbibnamehash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \strng{authornamehash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \strng{authorfullhash}{14ab00a24a843f93d1c19bcad3dc2d60}
+      \field{labelalpha}{CC13}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{ACM} {SIGPLAN} Conference on Programming Language Design and Implementation, {PLDI} '13, Seattle, WA, USA, June 16-19, 2013}
+      \field{title}{Asynchronous functional reactive programming for GUIs}
+      \field{year}{2013}
+      \field{pages}{411\bibrangedash 422}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/2491956.2462161
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2491956.2462161
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2491956.2462161
+      \endverb
+    \endentry
+    \entry{little_typer}{book}{}
+      \name{author}{1}{}{%
+        {{hash=80c30c5165b6e3d7184e890e0d069b82}{%
+           family={Christiansen},
+           familyi={C\bibinitperiod},
+           given={Daniel\bibnamedelimb P.\bibnamedelimi Friedman;\bibnamedelimb David\bibnamedelima Thrane},
+           giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim F\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {The MIT Press}%
+      }
+      \strng{namehash}{80c30c5165b6e3d7184e890e0d069b82}
+      \strng{fullhash}{80c30c5165b6e3d7184e890e0d069b82}
+      \strng{bibnamehash}{80c30c5165b6e3d7184e890e0d069b82}
+      \strng{authorbibnamehash}{80c30c5165b6e3d7184e890e0d069b82}
+      \strng{authornamehash}{80c30c5165b6e3d7184e890e0d069b82}
+      \strng{authorfullhash}{80c30c5165b6e3d7184e890e0d069b82}
+      \field{labelalpha}{Chr18}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{Paperback}
+      \field{isbn}{0262536439,9780262536431}
+      \field{title}{The Little Typer}
+      \field{year}{2018}
+    \endentry
+    \entry{ElmPage}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=bd0b601d2ea72eeb81587cf33772db14}{%
+           family={Czaplicki},
+           familyi={C\bibinitperiod},
+           given={Evan},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{bd0b601d2ea72eeb81587cf33772db14}
+      \strng{fullhash}{bd0b601d2ea72eeb81587cf33772db14}
+      \strng{bibnamehash}{bd0b601d2ea72eeb81587cf33772db14}
+      \strng{authorbibnamehash}{bd0b601d2ea72eeb81587cf33772db14}
+      \strng{authornamehash}{bd0b601d2ea72eeb81587cf33772db14}
+      \strng{authorfullhash}{bd0b601d2ea72eeb81587cf33772db14}
+      \field{labelalpha}{Cza21}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Website}
+      \field{title}{Elm Website}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://elm-lang.org/
+      \endverb
+      \verb{url}
+      \verb https://elm-lang.org/
+      \endverb
+    \endentry
+    \entry{Principal_Type-Schemes_for_Functional_Programs}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=4df025788c82404ed01a0c7e0785b3c1}{%
+           family={Damas},
+           familyi={D\bibinitperiod},
+           given={Lu{í}s},
+           giveni={L\bibinitperiod}}}%
+        {{hash=b2f5936dc874ec167c9911352b5cae01}{%
+           family={Milner},
+           familyi={M\bibinitperiod},
+           given={Robin},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{9f5b8165185a22f33807b9f8b5c00586}
+      \strng{fullhash}{9f5b8165185a22f33807b9f8b5c00586}
+      \strng{bibnamehash}{9f5b8165185a22f33807b9f8b5c00586}
+      \strng{authorbibnamehash}{9f5b8165185a22f33807b9f8b5c00586}
+      \strng{authornamehash}{9f5b8165185a22f33807b9f8b5c00586}
+      \strng{authorfullhash}{9f5b8165185a22f33807b9f8b5c00586}
+      \field{labelalpha}{DM82}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Conference Record of the Ninth Annual {ACM} Symposium on Principles of Programming Languages, Albuquerque, New Mexico, USA, January 1982}
+      \field{title}{Principal Type-Schemes for Functional Programs}
+      \field{year}{1982}
+      \field{pages}{207\bibrangedash 212}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1145/582153.582176
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/582153.582176
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/582153.582176
+      \endverb
+    \endentry
+    \entry{Kframework_Php}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=e612da666bc0b9a9812cee8f1d762e19}{%
+           family={Filaretti},
+           familyi={F\bibinitperiod},
+           given={Daniele},
+           giveni={D\bibinitperiod}}}%
+        {{hash=f0242a4f2b7b6e02bb2750e473aaab44}{%
+           family={Maffeis},
+           familyi={M\bibinitperiod},
+           given={Sergio},
+           giveni={S\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=686f63784177f089204782d110bd55f1}{%
+           family={Jones},
+           familyi={J\bibinitperiod},
+           given={Richard},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Berlin, Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer Berlin Heidelberg}%
+      }
+      \strng{namehash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{fullhash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{bibnamehash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{authorbibnamehash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{authornamehash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{authorfullhash}{ec6563e9ef70a4ec27d90376d451b56a}
+      \strng{editorbibnamehash}{686f63784177f089204782d110bd55f1}
+      \strng{editornamehash}{686f63784177f089204782d110bd55f1}
+      \strng{editorfullhash}{686f63784177f089204782d110bd55f1}
+      \field{labelalpha}{FM14}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{PHP is among the most used languages for server-side scripting. Although substantial effort has been spent on the problem of automatically analysing PHP code, vulnerabilities remain pervasive in web applications, and analysis tools do not provide any formal guarantees of soundness or coverage. This is partly due to the lack of a precise specification of the language, which is highly dynamic and often exhibits subtle behaviour.}
+      \field{booktitle}{ECOOP 2014 -- Object-Oriented Programming}
+      \field{isbn}{978-3-662-44202-9}
+      \field{title}{An Executable Formal Semantics of PHP}
+      \field{year}{2014}
+      \field{pages}{567\bibrangedash 592}
+      \range{pages}{26}
+    \endentry
+    \entry{refinement_types_for_ML}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=9ffa6b30b4fcb7a51ddd425ab2d07393}{%
+           family={Freeman},
+           familyi={F\bibinitperiod},
+           given={Timothy\bibnamedelima S.},
+           giveni={T\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=6fa187678bcd9926269af2195cb766bb}{%
+           family={Pfenning},
+           familyi={P\bibinitperiod},
+           given={Frank},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{2c85920762cfd65ef5d2951a19eae037}
+      \strng{fullhash}{2c85920762cfd65ef5d2951a19eae037}
+      \strng{bibnamehash}{2c85920762cfd65ef5d2951a19eae037}
+      \strng{authorbibnamehash}{2c85920762cfd65ef5d2951a19eae037}
+      \strng{authornamehash}{2c85920762cfd65ef5d2951a19eae037}
+      \strng{authorfullhash}{2c85920762cfd65ef5d2951a19eae037}
+      \field{labelalpha}{FP91}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the {ACM} SIGPLAN'91 Conference on Programming Language Design and Implementation (PLDI), Toronto, Ontario, Canada, June 26-28, 1991}
+      \field{title}{Refinement Types for {ML}}
+      \field{year}{1991}
+      \field{pages}{268\bibrangedash 277}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/113445.113468
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/113445.113468
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/113445.113468
+      \endverb
+    \endentry
+    \entry{Frege}{book}{}
+      \name{author}{1}{}{%
+        {{hash=1c468d5fce77082669983ce899030b96}{%
+           family={Frege},
+           familyi={F\bibinitperiod},
+           given={Gottlob},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Breslau}%
+      }
+      \list{publisher}{1}{%
+        {Verlag von Wilhelm Koebner}%
+      }
+      \strng{namehash}{1c468d5fce77082669983ce899030b96}
+      \strng{fullhash}{1c468d5fce77082669983ce899030b96}
+      \strng{bibnamehash}{1c468d5fce77082669983ce899030b96}
+      \strng{authorbibnamehash}{1c468d5fce77082669983ce899030b96}
+      \strng{authornamehash}{1c468d5fce77082669983ce899030b96}
+      \strng{authorfullhash}{1c468d5fce77082669983ce899030b96}
+      \field{labelalpha}{Fre84}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Die Grundlagen der Arithmetik -- Eine logisch mathematische Untersuchung über den Brgiff der Zahl}}
+      \field{year}{1884}
+      \verb{urlraw}
+      \verb http://www.gutenberg.org/ebooks/48312, https://archive.org/details/diegrundlagende01freggoog
+      \endverb
+      \verb{url}
+      \verb http://www.gutenberg.org/ebooks/48312,%20https://archive.org/details/diegrundlagende01freggoog
+      \endverb
+    \endentry
+    \entry{Kframework_rvMatch}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=96a76539e88bb08712831a1ef3ae7785}{%
+           family={Guth},
+           familyi={G\bibinitperiod},
+           given={Dwight},
+           giveni={D\bibinitperiod}}}%
+        {{hash=daa27e3169839b6593c8290eedbf6823}{%
+           family={Hathhorn},
+           familyi={H\bibinitperiod},
+           given={Chris},
+           giveni={C\bibinitperiod}}}%
+        {{hash=2ce0eb7aad864de99b75e72a948a228b}{%
+           family={Saxena},
+           familyi={S\bibinitperiod},
+           given={Manasvi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=7fd7dca72da93b22748f135e2191a0fa}{%
+           family={Rosu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{d772d2f6a92470a8e96dce57ac6a5913}
+      \strng{fullhash}{1fa65fe15a5ea3f606cd2cf8e28dd0b8}
+      \strng{bibnamehash}{d772d2f6a92470a8e96dce57ac6a5913}
+      \strng{authorbibnamehash}{d772d2f6a92470a8e96dce57ac6a5913}
+      \strng{authornamehash}{d772d2f6a92470a8e96dce57ac6a5913}
+      \strng{authorfullhash}{1fa65fe15a5ea3f606cd2cf8e28dd0b8}
+      \field{labelalpha}{Gut+16}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Aided Verification - 28th International Conference, {CAV} 2016, Toronto, ON, Canada, July 17-23, 2016, Proceedings, Part {I}}
+      \field{month}{7}
+      \field{series}{LNCS}
+      \field{title}{RV-Match: Practical Semantics-Based Program Analysis}
+      \field{volume}{9779}
+      \field{year}{2016}
+      \field{pages}{447\bibrangedash 453}
+      \range{pages}{7}
+      \verb{doi}
+      \verb http://dx.doi.org/10.1007/978-3-319-41528-4_24
+      \endverb
+    \endentry
+    \entry{Kframework_Python}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=96a76539e88bb08712831a1ef3ae7785}{%
+           family={Guth},
+           familyi={G\bibinitperiod},
+           given={Dwight},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{96a76539e88bb08712831a1ef3ae7785}
+      \strng{fullhash}{96a76539e88bb08712831a1ef3ae7785}
+      \strng{bibnamehash}{96a76539e88bb08712831a1ef3ae7785}
+      \strng{authorbibnamehash}{96a76539e88bb08712831a1ef3ae7785}
+      \strng{authornamehash}{96a76539e88bb08712831a1ef3ae7785}
+      \strng{authorfullhash}{96a76539e88bb08712831a1ef3ae7785}
+      \field{labelalpha}{Gut13}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A formal semantics of Python 3.3}
+      \field{year}{2013}
+      \verb{urlraw}
+      \verb https://github.com/kframework/python-semantics
+      \endverb
+      \verb{url}
+      \verb https://github.com/kframework/python-semantics
+      \endverb
+    \endentry
+    \entry{Kframework_C}{article}{}
+      \name{author}{3}{}{%
+        {{hash=daa27e3169839b6593c8290eedbf6823}{%
+           family={Hathhorn},
+           familyi={H\bibinitperiod},
+           given={Chris},
+           giveni={C\bibinitperiod}}}%
+        {{hash=4196598f5b3f56a33a49c788f8eb2f02}{%
+           family={Ellison},
+           familyi={E\bibinitperiod},
+           given={Chucky},
+           giveni={C\bibinitperiod}}}%
+        {{hash=9af91b822c411b516793e9a20512a651}{%
+           family={Roşu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \strng{fullhash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \strng{bibnamehash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \strng{authorbibnamehash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \strng{authornamehash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \strng{authorfullhash}{916d5c13b79b4bcf2ac6ac43119f69b8}
+      \field{labelalpha}{HER15}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0362-1340}
+      \field{journaltitle}{SIGPLAN Not.}
+      \field{month}{6}
+      \field{number}{6}
+      \field{title}{Defining the Undefinedness of C}
+      \field{volume}{50}
+      \field{year}{2015}
+      \field{pages}{336\bibrangedash 345}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/2813885.2737979
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2813885.2737979
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2813885.2737979
+      \endverb
+      \keyw{Undefined behavior,K Framework,Programming language semantics,C11}
+    \endentry
+    \entry{Kframework_KEVM}{inproceedings}{}
+      \name{author}{11}{}{%
+        {{hash=4ec86c91e95485c40ee80351fd4c186b}{%
+           family={Hildenbrandt},
+           familyi={H\bibinitperiod},
+           given={Everett},
+           giveni={E\bibinitperiod}}}%
+        {{hash=2ce0eb7aad864de99b75e72a948a228b}{%
+           family={Saxena},
+           familyi={S\bibinitperiod},
+           given={Manasvi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=093120533f555fdec23aa85292daed68}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Xiaoran},
+           giveni={X\bibinitperiod}}}%
+        {{hash=d90b30c008c843c1e258fa26e9fc957c}{%
+           family={Rodrigues},
+           familyi={R\bibinitperiod},
+           given={Nishant},
+           giveni={N\bibinitperiod}}}%
+        {{hash=df2575330b865ea84f81646dd9764ad2}{%
+           family={Daian},
+           familyi={D\bibinitperiod},
+           given={Philip},
+           giveni={P\bibinitperiod}}}%
+        {{hash=96a76539e88bb08712831a1ef3ae7785}{%
+           family={Guth},
+           familyi={G\bibinitperiod},
+           given={Dwight},
+           giveni={D\bibinitperiod}}}%
+        {{hash=528d25559edc3f43df0b99c4ba0d7aca}{%
+           family={Moore},
+           familyi={M\bibinitperiod},
+           given={Brandon},
+           giveni={B\bibinitperiod}}}%
+        {{hash=f4db9373a5ba3555eac8a45bcd339479}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=686f3a5e784b38e1f5b1b22a305b2214}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Daejun},
+           giveni={D\bibinitperiod}}}%
+        {{hash=cf6550cb54145f8ec07ed229e7550ba8}{%
+           family={Ştefănescu},
+           familyi={Ş\bibinitperiod},
+           given={Andrei},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9af91b822c411b516793e9a20512a651}{%
+           family={Roşu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{7db0085ff2e3ecda2d85b5d7310bc182}
+      \strng{fullhash}{f08f231574bdde446c89b53d5fa944bd}
+      \strng{bibnamehash}{7db0085ff2e3ecda2d85b5d7310bc182}
+      \strng{authorbibnamehash}{7db0085ff2e3ecda2d85b5d7310bc182}
+      \strng{authornamehash}{7db0085ff2e3ecda2d85b5d7310bc182}
+      \strng{authorfullhash}{f08f231574bdde446c89b53d5fa944bd}
+      \field{labelalpha}{Hil+18}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2018 IEEE 31st Computer Security Foundations Symposium}
+      \field{title}{KEVM: A Complete Semantics of the Ethereum Virtual Machine}
+      \field{year}{2018}
+      \field{pages}{204\bibrangedash 217}
+      \range{pages}{14}
+    \endentry
+    \entry{elmInElm}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=0b0b185238897cf61e172f506211b51b}{%
+           family={Janiczek},
+           familyi={J\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{0b0b185238897cf61e172f506211b51b}
+      \strng{fullhash}{0b0b185238897cf61e172f506211b51b}
+      \strng{bibnamehash}{0b0b185238897cf61e172f506211b51b}
+      \strng{authorbibnamehash}{0b0b185238897cf61e172f506211b51b}
+      \strng{authornamehash}{0b0b185238897cf61e172f506211b51b}
+      \strng{authorfullhash}{0b0b185238897cf61e172f506211b51b}
+      \field{labelalpha}{Jan19}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{GitHub repository}
+      \field{title}{Elm-In-Elm}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://github.com/elm-in-elm/compiler
+      \endverb
+      \verb{url}
+      \verb https://github.com/elm-in-elm/compiler
+      \endverb
+    \endentry
+    \entry{Kframework_Rust}{article}{}
+      \name{author}{4}{}{%
+        {{hash=c5e80876d4de08ac35b2ae24988c18b1}{%
+           family={Kan},
+           familyi={K\bibinitperiod},
+           given={Shuanglong},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e7a16552f861acb79d19a78cf1eabbb0}{%
+           family={San{á}n},
+           familyi={S\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=e42b78e99230c885b23c13313f2e45a8}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Shang{-}Wei},
+           giveni={S\bibinitperiod}}}%
+        {{hash=621013bf54d3546375ad71f17f020b5b}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Yang},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{d4c8017026339153ce640cfdf1dc608a}
+      \strng{fullhash}{06287f71e79853334a30a08aef8ccc0f}
+      \strng{bibnamehash}{d4c8017026339153ce640cfdf1dc608a}
+      \strng{authorbibnamehash}{d4c8017026339153ce640cfdf1dc608a}
+      \strng{authornamehash}{d4c8017026339153ce640cfdf1dc608a}
+      \strng{authorfullhash}{06287f71e79853334a30a08aef8ccc0f}
+      \field{labelalpha}{Kan+18}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprinttype}{arXiv}
+      \field{journaltitle}{CoRR}
+      \field{title}{K-Rust: An Executable Formal Semantics for Rust}
+      \field{volume}{abs/1804.07608}
+      \field{year}{2018}
+      \verb{eprint}
+      \verb 1804.07608
+      \endverb
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/1804.07608
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/1804.07608
+      \endverb
+    \endentry
+    \entry{Ruby}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=8e6beaad8fee1cba706a86b985857aeb}{%
+           family={Kazerounian},
+           familyi={K\bibinitperiod},
+           given={Milod},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b78a377734a44faae5e925c1ce02ae42}{%
+           family={Vazou},
+           familyi={V\bibinitperiod},
+           given={Niki},
+           giveni={N\bibinitperiod}}}%
+        {{hash=dfb060b6ad2b33198a646c908da68c33}{%
+           family={Bourgerie},
+           familyi={B\bibinitperiod},
+           given={Austin},
+           giveni={A\bibinitperiod}}}%
+        {{hash=55173464701b5010f40690c34f4477ef}{%
+           family={Foster},
+           familyi={F\bibinitperiod},
+           given={Jeffrey\bibnamedelima S.},
+           giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=891b5b8af87210ad697663a0f5e1e379}{%
+           family={Torlak},
+           familyi={T\bibinitperiod},
+           given={Emina},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{f13974229978f1657c7ee63db8fa442f}
+      \strng{fullhash}{6a435e55dc3c0c7f5eed1565d0da252a}
+      \strng{bibnamehash}{f13974229978f1657c7ee63db8fa442f}
+      \strng{authorbibnamehash}{f13974229978f1657c7ee63db8fa442f}
+      \strng{authornamehash}{f13974229978f1657c7ee63db8fa442f}
+      \strng{authorfullhash}{6a435e55dc3c0c7f5eed1565d0da252a}
+      \field{labelalpha}{Kaz+18}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Verification, Model Checking, and Abstract Interpretation - 19th International Conference, {VMCAI} 2018, Los Angeles, CA, USA, January 7-9, 2018, Proceedings}
+      \field{title}{Refinement Types for Ruby}
+      \field{year}{2018}
+      \field{pages}{269\bibrangedash 290}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1007/978-3-319-73721-8\_13
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-319-73721-8\_13
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-319-73721-8%5C_13
+      \endverb
+    \endentry
+    \entry{Racket}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=bd215e794feccd42ac3da05711746e4a}{%
+           family={Kent},
+           familyi={K\bibinitperiod},
+           given={Andrew\bibnamedelima M.},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=548c8439009be7e3768757c6ff4fc6d3}{%
+           family={Kempe},
+           familyi={K\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=c75f1ab89f99f1364e7a0437d13ad233}{%
+           family={Tobin{-}Hochstadt},
+           familyi={T\bibinitperiod},
+           given={Sam},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{d33244854f6b2fc8634a1d939272aaac}
+      \strng{fullhash}{d33244854f6b2fc8634a1d939272aaac}
+      \strng{bibnamehash}{d33244854f6b2fc8634a1d939272aaac}
+      \strng{authorbibnamehash}{d33244854f6b2fc8634a1d939272aaac}
+      \strng{authornamehash}{d33244854f6b2fc8634a1d939272aaac}
+      \strng{authorfullhash}{d33244854f6b2fc8634a1d939272aaac}
+      \field{labelalpha}{KKT16}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 37th {ACM} {SIGPLAN} Conference on Programming Language Design and Implementation, {PLDI} 2016, Santa Barbara, CA, USA, June 13-17, 2016}
+      \field{title}{Occurrence typing modulo theories}
+      \field{year}{2016}
+      \field{pages}{296\bibrangedash 309}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1145/2908080.2908091
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2908080.2908091
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2908080.2908091
+      \endverb
+    \endentry
+    \entry{modern_perspective_on_type_theory}{book}{}
+      \name{author}{3}{}{%
+        {{hash=3f86ac55028a72b31a21bf673954914d}{%
+           family={Kamareddine},
+           familyi={K\bibinitperiod},
+           given={Fairouz},
+           giveni={F\bibinitperiod}}}%
+        {{hash=1ae096f4e77af2f6b9e660ca243980bd}{%
+           family={Laan},
+           familyi={L\bibinitperiod},
+           given={Twan},
+           giveni={T\bibinitperiod}}}%
+        {{hash=830c3a4de9950c5cd4c3cfd3676b4261}{%
+           family={Nederpelt},
+           familyi={N\bibinitperiod},
+           given={Rob},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Kluwer}%
+      }
+      \strng{namehash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \strng{fullhash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \strng{bibnamehash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \strng{authorbibnamehash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \strng{authornamehash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \strng{authorfullhash}{a9476e6a74aa74b8268c70e52c3138aa}
+      \field{labelalpha}{KLN04}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{29}
+      \field{series}{Applied Logic}
+      \field{title}{A Modern Perspective on Type Theory: From its Origins until Today}
+      \field{year}{2004}
+    \endentry
+    \entry{DSolve}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=ea826c909be092d06c2636e3be8a6c67}{%
+           family={Kawaguchi},
+           familyi={K\bibinitperiod},
+           given={Ming},
+           giveni={M\bibinitperiod}}}%
+        {{hash=fd27a2425abefe96599971c7e0bd2e47}{%
+           family={Rondon},
+           familyi={R\bibinitperiod},
+           given={Patrick\bibnamedelima Maxim},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{658a1b86062424cce2255852312de2d9}
+      \strng{fullhash}{658a1b86062424cce2255852312de2d9}
+      \strng{bibnamehash}{658a1b86062424cce2255852312de2d9}
+      \strng{authorbibnamehash}{658a1b86062424cce2255852312de2d9}
+      \strng{authornamehash}{658a1b86062424cce2255852312de2d9}
+      \strng{authorfullhash}{658a1b86062424cce2255852312de2d9}
+      \field{labelalpha}{KRJ10}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Aided Verification, 22nd International Conference, {CAV} 2010, Edinburgh, UK, July 15-19, 2010. Proceedings}
+      \field{title}{Dsolve: Safety Verification via Liquid Types}
+      \field{year}{2010}
+      \field{pages}{123\bibrangedash 126}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1007/978-3-642-14295-6\_12
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-642-14295-6\_12
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-642-14295-6%5C_12
+      \endverb
+    \endentry
+    \entry{z3}{article}{}
+      \name{author}{2}{}{%
+        {{hash=04ffe79f369bf9f16e299fcf4f98e780}{%
+           family={Moura},
+           familyi={M\bibinitperiod},
+           given={Leonardo},
+           giveni={L\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=99b7b42f13980bae3d14cd2bbc329658}{%
+           family={Bjørner},
+           familyi={B\bibinitperiod},
+           given={Nikolaj},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \strng{fullhash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \strng{bibnamehash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \strng{authorbibnamehash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \strng{authornamehash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \strng{authorfullhash}{8ed841e87e50b9624f9ae19c1fa525cc}
+      \field{labelalpha}{MB08}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-540-78799-0}
+      \field{journaltitle}{Tools and Algorithms for the Construction and Analysis of Systems}
+      \field{month}{04}
+      \field{title}{Z3: an efficient SMT solver}
+      \field{volume}{4963}
+      \field{year}{2008}
+      \field{pages}{337\bibrangedash 340}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1007/978-3-540-78800-3_24
+      \endverb
+    \endentry
+    \entry{Milner_type_polymorphism}{article}{}
+      \name{author}{1}{}{%
+        {{hash=b2f5936dc874ec167c9911352b5cae01}{%
+           family={Milner},
+           familyi={M\bibinitperiod},
+           given={Robin},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{b2f5936dc874ec167c9911352b5cae01}
+      \strng{fullhash}{b2f5936dc874ec167c9911352b5cae01}
+      \strng{bibnamehash}{b2f5936dc874ec167c9911352b5cae01}
+      \strng{authorbibnamehash}{b2f5936dc874ec167c9911352b5cae01}
+      \strng{authornamehash}{b2f5936dc874ec167c9911352b5cae01}
+      \strng{authorfullhash}{b2f5936dc874ec167c9911352b5cae01}
+      \field{labelalpha}{Mil78}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Computer and System Sciences}
+      \field{title}{A theory of type polymorphism in programming}
+      \field{volume}{17}
+      \field{year}{1978}
+      \field{pages}{348\bibrangedash 375}
+      \range{pages}{28}
+    \endentry
+    \entry{humblePi}{book}{}
+      \name{author}{1}{}{%
+        {{hash=9ac15a6a1d85e71b88e059cc9808d980}{%
+           family={Parker},
+           familyi={P\bibinitperiod},
+           given={Matt},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Allen Lane}%
+      }
+      \strng{namehash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \strng{fullhash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \strng{bibnamehash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \strng{authorbibnamehash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \strng{authornamehash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \strng{authorfullhash}{9ac15a6a1d85e71b88e059cc9808d980}
+      \field{labelalpha}{Par19}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{ISBN 978-0241360194}
+      \field{title}{Humble Pi:A Comedy of Maths Errors}
+      \field{year}{2019}
+    \endentry
+    \entry{elmAction}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=277af7ef5122edecc84930a0866c3068}{%
+           family={Payr},
+           familyi={P\bibinitperiod},
+           given={Lucas},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{fullhash}{277af7ef5122edecc84930a0866c3068}
+      \strng{bibnamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authorbibnamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authornamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authorfullhash}{277af7ef5122edecc84930a0866c3068}
+      \field{extraname}{1}
+      \field{labelalpha}{Pay20}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{GitHub repository}
+      \field{title}{Elm-Action}
+      \field{year}{2020}
+      \verb{urlraw}
+      \verb https://github.com/Orasund/elm-action
+      \endverb
+      \verb{url}
+      \verb https://github.com/Orasund/elm-action
+      \endverb
+    \endentry
+    \entry{elmStaticArray}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=277af7ef5122edecc84930a0866c3068}{%
+           family={Payr},
+           familyi={P\bibinitperiod},
+           given={Lucas},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{fullhash}{277af7ef5122edecc84930a0866c3068}
+      \strng{bibnamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authorbibnamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authornamehash}{277af7ef5122edecc84930a0866c3068}
+      \strng{authorfullhash}{277af7ef5122edecc84930a0866c3068}
+      \field{extraname}{2}
+      \field{labelalpha}{Pay21}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{GitHub repository}
+      \field{title}{Elm-Static-Array}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://github.com/Orasund/elm-static-array
+      \endverb
+      \verb{url}
+      \verb https://github.com/Orasund/elm-static-array
+      \endverb
+    \endentry
+    \entry{peano}{book}{}
+      \name{author}{1}{}{%
+        {{hash=2b770993cca3e85511a4c09b5ae51bff}{%
+           family={Peano},
+           familyi={P\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \name{translator}{1}{}{%
+        {{hash=fef2ecedf6930cb0ab54546502ded965}{%
+           family={Verheyen},
+           familyi={V\bibinitperiod},
+           given={Vincent},
+           giveni={V\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Fratres Bocca}%
+      }
+      \strng{namehash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{fullhash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{bibnamehash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{authorbibnamehash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{authornamehash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{authorfullhash}{2b770993cca3e85511a4c09b5ae51bff}
+      \strng{translatorbibnamehash}{fef2ecedf6930cb0ab54546502ded965}
+      \strng{translatornamehash}{fef2ecedf6930cb0ab54546502ded965}
+      \strng{translatorfullhash}{fef2ecedf6930cb0ab54546502ded965}
+      \field{labelalpha}{Pea89}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Arithmetices principia: nova methodo}
+      \field{year}{1889}
+      \verb{urlraw}
+      \verb https://github.com/mdnahas/Peano_Book/blob/master/Peano.pdf
+      \endverb
+      \verb{url}
+      \verb https://github.com/mdnahas/Peano_Book/blob/master/Peano.pdf
+      \endverb
+    \endentry
+    \entry{Types_and_Programming_Languages}{book}{}
+      \name{author}{4}{}{%
+        {{hash=332eb62568ea5f9e7e07c206929a4652}{%
+           family={Pierce},
+           familyi={P\bibinitperiod},
+           given={B.C.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=834cb54b61bbed9d4296c995e4c5d8b2}{%
+           family={C},
+           familyi={C\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=3af1f7801930550dd7f94f3ba20a7624}{%
+           family={Services},
+           familyi={S\bibinitperiod},
+           given={Coutts\bibnamedelima Information},
+           giveni={C\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+        {{hash=35931e969939dd265e9bfdddcc5371d1}{%
+           family={Press},
+           familyi={P\bibinitperiod},
+           given={MIT},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MIT Press}%
+      }
+      \strng{namehash}{ac13ae005f69763954e9c91868d548df}
+      \strng{fullhash}{538c3e85c3f8dce532b0992a0b808964}
+      \strng{bibnamehash}{ac13ae005f69763954e9c91868d548df}
+      \strng{authorbibnamehash}{ac13ae005f69763954e9c91868d548df}
+      \strng{authornamehash}{ac13ae005f69763954e9c91868d548df}
+      \strng{authorfullhash}{538c3e85c3f8dce532b0992a0b808964}
+      \field{labelalpha}{Pie+02}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9780262162098}
+      \field{series}{The MIT Press}
+      \field{title}{Types and Programming Languages}
+      \field{year}{2002}
+      \verb{urlraw}
+      \verb https://books.google.at/books?id=ti6zoAC9Ph8C
+      \endverb
+      \verb{url}
+      \verb https://books.google.at/books?id=ti6zoAC9Ph8C
+      \endverb
+    \endentry
+    \entry{AdvancedTypesAndProgrammingLangauges}{book}{}
+      \name{author}{1}{}{%
+        {{hash=7365a4e827c2dfa2c5af0c0ec4c18c27}{%
+           family={Pierce},
+           familyi={P\bibinitperiod},
+           given={Benjamin\bibnamedelima C.},
+           giveni={B\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {The MIT Press}%
+      }
+      \strng{namehash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \strng{fullhash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \strng{bibnamehash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \strng{authorbibnamehash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \strng{authornamehash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \strng{authorfullhash}{7365a4e827c2dfa2c5af0c0ec4c18c27}
+      \field{labelalpha}{Pie04}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{0262162288}
+      \field{title}{Advanced Topics in Types and Programming Languages}
+      \field{year}{2004}
+    \endentry
+    \entry{Kframework_Js}{article}{}
+      \name{author}{3}{}{%
+        {{hash=686f3a5e784b38e1f5b1b22a305b2214}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Daejun},
+           giveni={D\bibinitperiod}}}%
+        {{hash=86be089ac81db4429ee13b07f53b06e3}{%
+           family={Stefănescu},
+           familyi={S\bibinitperiod},
+           given={Andrei},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9af91b822c411b516793e9a20512a651}{%
+           family={Roşu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \strng{fullhash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \strng{bibnamehash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \strng{authorbibnamehash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \strng{authornamehash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \strng{authorfullhash}{6b4645f8552bd2c09d4c3688841fb6ee}
+      \field{labelalpha}{PSR15}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0362-1340}
+      \field{journaltitle}{SIGPLAN Not.}
+      \field{month}{6}
+      \field{number}{6}
+      \field{title}{KJS: A Complete Formal Semantics of JavaScript}
+      \field{volume}{50}
+      \field{year}{2015}
+      \field{pages}{346\bibrangedash 356}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1145/2813885.2737991
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2813885.2737991
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2813885.2737991
+      \endverb
+      \keyw{mechanized semantics,JavaScript,K framework}
+    \endentry
+    \entry{liquidTypes}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=fd27a2425abefe96599971c7e0bd2e47}{%
+           family={Rondon},
+           familyi={R\bibinitperiod},
+           given={Patrick\bibnamedelima Maxim},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=ea826c909be092d06c2636e3be8a6c67}{%
+           family={Kawaguchi},
+           familyi={K\bibinitperiod},
+           given={Ming},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{fullhash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{bibnamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authorbibnamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authornamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authorfullhash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \field{extraname}{1}
+      \field{labelalpha}{RKJ08}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the {ACM} {SIGPLAN} 2008 Conference on Programming Language Design and Implementation, Tucson, AZ, USA, June 7-13, 2008}
+      \field{title}{Liquid types}
+      \field{year}{2008}
+      \field{pages}{159\bibrangedash 169}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1145/1375581.1375602
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/1375581.1375602
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/1375581.1375602
+      \endverb
+    \endentry
+    \entry{LTLL}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=fd27a2425abefe96599971c7e0bd2e47}{%
+           family={Rondon},
+           familyi={R\bibinitperiod},
+           given={Patrick\bibnamedelima Maxim},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=ea826c909be092d06c2636e3be8a6c67}{%
+           family={Kawaguchi},
+           familyi={K\bibinitperiod},
+           given={Ming},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{fullhash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{bibnamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authorbibnamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authornamehash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \strng{authorfullhash}{81727833e538f8a7e1dcfe0aad2d46d0}
+      \field{extraname}{2}
+      \field{labelalpha}{RKJ10}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 37th {ACM} {SIGPLAN-SIGACT} Symposium on Principles of Programming Languages, {POPL} 2010, Madrid, Spain, January 17-23, 2010}
+      \field{title}{Low-level Liquid types}
+      \field{year}{2010}
+      \field{pages}{131\bibrangedash 144}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1145/1706299.1706316
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/1706299.1706316
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/1706299.1706316
+      \endverb
+    \endentry
+    \entry{CSolve}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=fd27a2425abefe96599971c7e0bd2e47}{%
+           family={Rondon},
+           familyi={R\bibinitperiod},
+           given={Patrick\bibnamedelima Maxim},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=5ec91582d0d3b752c83ac2290dee1823}{%
+           family={Bakst},
+           familyi={B\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+        {{hash=ea826c909be092d06c2636e3be8a6c67}{%
+           family={Kawaguchi},
+           familyi={K\bibinitperiod},
+           given={Ming},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{da43c8dd49eafcc7f93cb7bb9dec5b9a}
+      \strng{fullhash}{0138b4364f5ba3c8652d730704d76905}
+      \strng{bibnamehash}{da43c8dd49eafcc7f93cb7bb9dec5b9a}
+      \strng{authorbibnamehash}{da43c8dd49eafcc7f93cb7bb9dec5b9a}
+      \strng{authornamehash}{da43c8dd49eafcc7f93cb7bb9dec5b9a}
+      \strng{authorfullhash}{0138b4364f5ba3c8652d730704d76905}
+      \field{labelalpha}{Ron+12}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Aided Verification - 24th International Conference, {CAV} 2012, Berkeley, CA, USA, July 7-13, 2012 Proceedings}
+      \field{title}{CSolve: Verifying {C} with Liquid Types}
+      \field{year}{2012}
+      \field{pages}{744\bibrangedash 750}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1007/978-3-642-31424-7\_59
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-642-31424-7\_59
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-642-31424-7%5C_59
+      \endverb
+    \endentry
+    \entry{K_framework}{article}{}
+      \name{author}{2}{}{%
+        {{hash=7fd7dca72da93b22748f135e2191a0fa}{%
+           family={Rosu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+        {{hash=2bc73a639e5b364bd641cac75bc8d24c}{%
+           family={Serbanuta},
+           familyi={S\bibinitperiod},
+           given={Traian{-}Florin},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{e2461618c35c803b5effdf64d3d1cba1}
+      \strng{fullhash}{e2461618c35c803b5effdf64d3d1cba1}
+      \strng{bibnamehash}{e2461618c35c803b5effdf64d3d1cba1}
+      \strng{authorbibnamehash}{e2461618c35c803b5effdf64d3d1cba1}
+      \strng{authornamehash}{e2461618c35c803b5effdf64d3d1cba1}
+      \strng{authorfullhash}{e2461618c35c803b5effdf64d3d1cba1}
+      \field{labelalpha}{RS14}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Electr. Notes Theor. Comput. Sci.}
+      \field{title}{K Overview and {SIMPLE} Case Study}
+      \field{volume}{304}
+      \field{year}{2014}
+      \field{pages}{3\bibrangedash 56}
+      \range{pages}{54}
+      \verb{doi}
+      \verb 10.1016/j.entcs.2014.05.002
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.entcs.2014.05.002
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.entcs.2014.05.002
+      \endverb
+    \endentry
+    \entry{Kframework_verification}{article}{}
+      \name{author}{5}{}{%
+        {{hash=86be089ac81db4429ee13b07f53b06e3}{%
+           family={Stefănescu},
+           familyi={S\bibinitperiod},
+           given={Andrei},
+           giveni={A\bibinitperiod}}}%
+        {{hash=686f3a5e784b38e1f5b1b22a305b2214}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Daejun},
+           giveni={D\bibinitperiod}}}%
+        {{hash=3a19a7b0eb7800af755c78aeba32e58e}{%
+           family={Yuwen},
+           familyi={Y\bibinitperiod},
+           given={Shijiao},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e71a382d7e04bd75f2753373184f7332}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yilong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9af91b822c411b516793e9a20512a651}{%
+           family={Roşu},
+           familyi={R\bibinitperiod},
+           given={Grigore},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{49e66d283f97c4e5f51ba832261421bc}
+      \strng{fullhash}{60ce996fc9d0ca2ef8561ea6b07b3165}
+      \strng{bibnamehash}{49e66d283f97c4e5f51ba832261421bc}
+      \strng{authorbibnamehash}{49e66d283f97c4e5f51ba832261421bc}
+      \strng{authornamehash}{49e66d283f97c4e5f51ba832261421bc}
+      \strng{authorfullhash}{60ce996fc9d0ca2ef8561ea6b07b3165}
+      \field{labelalpha}{Ste+16}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0362-1340}
+      \field{journaltitle}{SIGPLAN Not.}
+      \field{month}{10}
+      \field{number}{10}
+      \field{title}{Semantics-Based Program Verifiers for All Languages}
+      \field{volume}{51}
+      \field{year}{2016}
+      \field{pages}{74\bibrangedash 91}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1145/3022671.2984027
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3022671.2984027
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3022671.2984027
+      \endverb
+      \keyw{matching logic,K framework,reachability logic}
+    \endentry
+    \entry{RT_for_Haskell}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=b78a377734a44faae5e925c1ce02ae42}{%
+           family={Vazou},
+           familyi={V\bibinitperiod},
+           given={Niki},
+           giveni={N\bibinitperiod}}}%
+        {{hash=0d9abd78b6d829df1944e988fd738c17}{%
+           family={Seidel},
+           familyi={S\bibinitperiod},
+           given={Eric\bibnamedelima L.},
+           giveni={E\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+        {{hash=a9cce1a83cd369bf8d01d9b87074a780}{%
+           family={Vytiniotis},
+           familyi={V\bibinitperiod},
+           given={Dimitrios},
+           giveni={D\bibinitperiod}}}%
+        {{hash=b53297525d22bba28e8a789aec2fb226}{%
+           family={{Peyton Jones}},
+           familyi={P\bibinitperiod},
+           given={Simon\bibnamedelima L.},
+           giveni={S\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{b25ddb162a4e5fe57adb7117e204df84}
+      \strng{fullhash}{5666a28213d45c4efaa45b4f9488e4ec}
+      \strng{bibnamehash}{b25ddb162a4e5fe57adb7117e204df84}
+      \strng{authorbibnamehash}{b25ddb162a4e5fe57adb7117e204df84}
+      \strng{authornamehash}{b25ddb162a4e5fe57adb7117e204df84}
+      \strng{authorfullhash}{5666a28213d45c4efaa45b4f9488e4ec}
+      \field{labelalpha}{Vaz+14}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 19th {ACM} {SIGPLAN} international conference on Functional programming, Gothenburg, Sweden, September 1-3, 2014}
+      \field{title}{Refinement types for Haskell}
+      \field{year}{2014}
+      \field{pages}{269\bibrangedash 282}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1145/2628136.2628161
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2628136.2628161
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2628136.2628161
+      \endverb
+    \endentry
+    \entry{trust_but_verify}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=2ff00ffc57c51be67f642ecf8493b53b}{%
+           family={Vekris},
+           familyi={V\bibinitperiod},
+           given={Panagiotis},
+           giveni={P\bibinitperiod}}}%
+        {{hash=83151fa326d2ae5403cf391f3da85260}{%
+           family={Cosman},
+           familyi={C\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{fullhash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{bibnamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authorbibnamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authornamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authorfullhash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \field{extraname}{1}
+      \field{labelalpha}{VCJ15}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{29th European Conference on Object-Oriented Programming, {ECOOP} 2015, July 5-10, 2015, Prague, Czech Republic}
+      \field{title}{Trust, but Verify: Two-Phase Typing for Dynamic Languages}
+      \field{year}{2015}
+      \field{pages}{52\bibrangedash 75}
+      \range{pages}{24}
+      \verb{doi}
+      \verb 10.4230/LIPIcs.ECOOP.2015.52
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.4230/LIPIcs.ECOOP.2015.52
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.4230/LIPIcs.ECOOP.2015.52
+      \endverb
+    \endentry
+    \entry{Refined_TypeScript}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=2ff00ffc57c51be67f642ecf8493b53b}{%
+           family={Vekris},
+           familyi={V\bibinitperiod},
+           given={Panagiotis},
+           giveni={P\bibinitperiod}}}%
+        {{hash=83151fa326d2ae5403cf391f3da85260}{%
+           family={Cosman},
+           familyi={C\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{fullhash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{bibnamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authorbibnamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authornamehash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \strng{authorfullhash}{fb18b015b60ff5845acd2fa66d90f2aa}
+      \field{extraname}{2}
+      \field{labelalpha}{VCJ16}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 37th {ACM} {SIGPLAN} Conference on Programming Language Design and Implementation, {PLDI} 2016, Santa Barbara, CA, USA, June 13-17, 2016}
+      \field{title}{Refinement types for TypeScript}
+      \field{year}{2016}
+      \field{pages}{310\bibrangedash 325}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1145/2908080.2908110
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2908080.2908110
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2908080.2908110
+      \endverb
+    \endentry
+    \entry{abstract_refinement_types}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=b78a377734a44faae5e925c1ce02ae42}{%
+           family={Vazou},
+           familyi={V\bibinitperiod},
+           given={Niki},
+           giveni={N\bibinitperiod}}}%
+        {{hash=fd27a2425abefe96599971c7e0bd2e47}{%
+           family={Rondon},
+           familyi={R\bibinitperiod},
+           given={Patrick\bibnamedelima Maxim},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=0b731274f4d045521bac73df419287ea}{%
+           family={Jhala},
+           familyi={J\bibinitperiod},
+           given={Ranjit},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{0e719d906130594a0ec083fd1a685213}
+      \strng{fullhash}{0e719d906130594a0ec083fd1a685213}
+      \strng{bibnamehash}{0e719d906130594a0ec083fd1a685213}
+      \strng{authorbibnamehash}{0e719d906130594a0ec083fd1a685213}
+      \strng{authornamehash}{0e719d906130594a0ec083fd1a685213}
+      \strng{authorfullhash}{0e719d906130594a0ec083fd1a685213}
+      \field{labelalpha}{VRJ13}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Programming Languages and Systems - 22nd European Symposium on Programming, {ESOP} 2013, Held as Part of the European Joint Conferences on Theory and Practice of Software, {ETAPS} 2013, Rome, Italy, March 16-24, 2013. Proceedings}
+      \field{title}{Abstract Refinement Types}
+      \field{year}{2013}
+      \field{pages}{209\bibrangedash 228}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1007/978-3-642-37036-6\_13
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-642-37036-6\_13
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-642-37036-6%5C_13
+      \endverb
+    \endentry
+    \entry{Principia_Mathematica}{book}{}
+      \name{author}{2}{}{%
+        {{hash=9131dcc0b7c52c07d7d95e489ba0a0f6}{%
+           family={Whitehead},
+           familyi={W\bibinitperiod},
+           given={Alfred\bibnamedelima North},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=c58c42b6f7e7e1f78dbbdc65ed8e5384}{%
+           family={Russell},
+           familyi={R\bibinitperiod},
+           given={Bertrand},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{048cf9054c2e7dc9fef3172a79679690}
+      \strng{fullhash}{048cf9054c2e7dc9fef3172a79679690}
+      \strng{bibnamehash}{048cf9054c2e7dc9fef3172a79679690}
+      \strng{authorbibnamehash}{048cf9054c2e7dc9fef3172a79679690}
+      \strng{authornamehash}{048cf9054c2e7dc9fef3172a79679690}
+      \strng{authorfullhash}{048cf9054c2e7dc9fef3172a79679690}
+      \field{labelalpha}{WR27}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Principia Mathematica}
+      \field{year}{1925--1927}
+      \keyw{1925 1927 empirism logic mathematica principia russell whitehead}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,35 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'master-thesis.blg'
+[518] biber-MSWIN64:340> INFO - === 
+[745] Biber.pm:415> INFO - Reading 'master-thesis.bcf'
+[1111] Biber.pm:952> INFO - Found 39 citekeys in bib section 0
+[1148] Biber.pm:4340> INFO - Processing section 0
+[1222] Biber.pm:4531> INFO - Looking for bibtex format file 'book.bibtex' for section 0
+[1462] bibtex.pm:1689> INFO - LaTeX decoding ...
+[1662] bibtex.pm:1494> INFO - Found BibTeX data source 'book.bibtex'
+[1888] Utils.pm:395> WARN - ISBN '0262536439,9780262536431' in entry 'little_typer' is invalid - run biber with '--validate_datamodel' for details.
+[2059] Utils.pm:395> WARN - legacy year field '1925--1927' in entry 'Principia_Mathematica' is not an integer - this will probably not sort properly.
+[2224] Utils.pm:395> WARN - legacy month field 'July' in entry 'Kframework_rvMatch' is not an integer - this will probably not sort properly.
+[2586] bibtex.pm:1689> INFO - LaTeX decoding ...
+[2620] bibtex.pm:1494> INFO - Found BibTeX data source 'packages.bib'
+[2623] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/pldi/1991' in entry 'refinement_types_for_ML' - ignoring (section 0)
+[2623] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/cav/2010' in entry 'DSolve' - ignoring (section 0)
+[2624] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/cav/2012' in entry 'CSolve' - ignoring (section 0)
+[2624] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/popl/2010' in entry 'LTLL' - ignoring (section 0)
+[2625] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/icfp/2014' in entry 'RT_for_Haskell' - ignoring (section 0)
+[2625] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/esop/2013' in entry 'abstract_refinement_types' - ignoring (section 0)
+[2626] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/pldi/2016' in entry 'Refined_TypeScript' - ignoring (section 0)
+[2626] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/ecoop/2015' in entry 'trust_but_verify' - ignoring (section 0)
+[2627] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/pldi/2016' in entry 'Racket' - ignoring (section 0)
+[2627] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/vmcai/2018' in entry 'Ruby' - ignoring (section 0)
+[2627] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/csfw/2008' in entry 'F_sharp' - ignoring (section 0)
+[2627] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/pldi/2013' in entry 'elm' - ignoring (section 0)
+[2628] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/pldi/2008' in entry 'liquidTypes' - ignoring (section 0)
+[2628] Utils.pm:395> WARN - I didn't find a database entry for crossref 'DBLP:conf/popl/82' in entry 'Principal_Type-Schemes_for_Functional_Programs' - ignoring (section 0)
+[2755] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[2755] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[2755] Biber.pm:4168> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
+[2755] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
+[2885] bbl.pm:654> INFO - Writing 'master-thesis.bbl' with encoding 'UTF-8'
+[2926] bbl.pm:757> INFO - Output to master-thesis.bbl
+[2926] Biber.pm:128> INFO - WARNINGS: 17

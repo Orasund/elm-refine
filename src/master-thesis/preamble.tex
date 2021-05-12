@@ -14,7 +14,8 @@
 
 	\input{config}
 	
-	%\usepackage[T1]{fontenc}
+	\usepackage[T1]{fontenc}
+  %\usepackage[a-1b]{pdfx}
 	%\usepackage{roboto}
 	%\usepackage{mathpazo}
 	    
@@ -55,7 +56,7 @@
 
 	\usepackage[onehalfspacing]{setspace}
 	
-	%\usepackage{pdfpages}
+	\usepackage{pdfpages}
 
 	%\usepackage{tabularx}
 	%\usepackage{ltxtable}
@@ -79,15 +80,15 @@
 	
 %	\usepackage[toc,lof,lot]{multitoc}
 
-	%\usepackage[
-	%	bookmarksnumbered=true,
-	%	pdfborder={0 0 0},
-	%	pdfa,
-	%	pdftitle={\pdfTitle},
-	%	pdfauthor={\pdfAuthor},
-	%	pdfsubject={\pdfSubject},
-	%	pdfkeywords={\pdfKeywords}
-	%]{hyperref}
+\usepackage[
+		bookmarksnumbered=true,
+		pdfborder={0 0 0},
+		pdfa,
+		pdftitle={\\pdfTitle},
+		pdfauthor={\pdfAuthor},
+		pdfsubject={\pdfSubject},
+		pdfkeywords={\pdfKeywords}
+	]{hyperref}
 	
 %	\setcounter{tocdepth}{3} %subsubsection
 %	\setcounter{secnumdepth}{3}
@@ -112,6 +113,7 @@
 %\setmainfont{tex-gyre-pagella}
 %\setmainfont{Tex Gyre Termes}
 %\setsansfont{Verdana}
+%\setmainfont{Arial}
 
 \newcommand{\mf}[1]{\text{\texttt{#1}}}
 

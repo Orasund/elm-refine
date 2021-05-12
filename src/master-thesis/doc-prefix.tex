@@ -8,7 +8,17 @@
 
 \newenvironment{myexample}[2][]{\begin{example}}{\end{example}}
 
-\iftrue
+%%\iftrue
+\newcounter{axiom}[section]\setcounter{axiom}{0}
+\renewcommand{\theaxiom}{\arabic{section}.\arabic{axiom}}
+\newenvironment{axiom}[2][]{%
+  \refstepcounter{axiom}%
+  Axiom~\theaxiom:~#1\\
+  \label{#2}
+}
+{}
+
+\iffalse
 %%
 %% example
 %%

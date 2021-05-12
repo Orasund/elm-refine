@@ -1,0 +1,145 @@
+\ProvidesPackage{elm-highlighting}
+
+\usepackage{listings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Define Language                                                                  %%
+%% Keywords from: https://github.com/lambdatoast/elm.vim/blob/master/syntax/elm.vim %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinelanguage{elm}
+{
+  % List of keywords
+  morekeywords={
+    alias,
+    as,
+    case,
+    else,
+    exposing,
+    if,
+    import,
+    in,
+    let,
+    module,
+    of,
+    port,
+    then,
+    type,
+    where
+  },
+  sensitive=true, % Keywords are case-sensitive
+  morecomment=[s]{\{-}{-\}}, % s is for start and end delimiter
+  morecomment=[l]{--},
+  morestring=[b]" % Defines that strings are enclosed in double quotes
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Define Colors             %%
+%% Colors from: elm.lang.org %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\definecolor{elm-orange}{RGB}{240,173,0}
+\definecolor{elm-gray}{RGB}{149,149,138}
+\definecolor{elm-blue}{RGB}{0,168,198}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Format Module Names                                 %%
+%% Adapted from: http://tex.stackexchange.com/a/159248 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+
+\lst@Key{modulestyle}{}{\def\modulestyle@supcol{#1}}
+
+% Local variables
+\newcount\currentchar
+
+\def\@testChar%
+{%
+  \ifnum\lst@mode=\lst@Pmode%
+    % Copy the first token in \the\lst@token to \@testChar.
+    \expandafter\splitfirstchar\expandafter{\the\lst@token}%
+        % Test for characters A through Z.
+        \currentchar=65
+        \loop
+          \expandafter\ifnum\expandafter`\@testChar=\currentchar%
+            \let\lst@thestyle\modulestyle@supcol%
+            \let\iterate\relax
+          \fi
+          \advance \currentchar by 1
+          \unless\ifnum\currentchar>90
+        \repeat 
+  \fi
+  % Override by keyword style if a keyword is detected!
+  \lsthk@DetectKeywords% 
+}
+
+% Helper macros
+\def\splitfirstchar#1{\@splitfirstchar#1\@nil}
+\def\@splitfirstchar#1#2\@nil{\gdef\@testChar{#1}}
+
+% Apply patch to perform test on each identifier.
+\lst@AddToHook{Output}{\@ddedToOutput}
+\let\@ddedToOutput\@testChar
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Set Language                                   %%
+%% Adapted from: http://www.davehofmann.de/?p=153 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{
+  language={elm},
+  basicstyle=\small\ttfamily, % Global Code Style
+  captionpos=b, % Position of the Caption (t for top, b for bottom)
+  extendedchars=true, % Allows 256 instead of 128 ASCII characters
+  tabsize=2, % Number of spaces indented when discovering a tab 
+  columns=fixed, % Make all characters equal width
+  keepspaces=true, % Does not ignore spaces to fit width, convert tabs to spaces
+  breaklines=true, % Wrap lines if they don't fit
+  showstringspaces=false, % Lets spaces in strings appear as real spaces
+  mathescape=true, % Enable math escape
+  commentstyle=\color{elm-gray}, % Style of comments
+  keywordstyle=\color{elm-orange}, % Style of keywords
+  stringstyle=\color{elm-orange}, % Style of strings
+  modulestyle=\color{elm-blue}, % Style of module names
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Format Numbers and Symbols %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{literate=%
+    % Format Numbers
+   *{0}{{{\color{elm-blue}0}}}1
+    {1}{{{\color{elm-blue}1}}}1
+    {2}{{{\color{elm-blue}2}}}1
+    {3}{{{\color{elm-blue}3}}}1
+    {4}{{{\color{elm-blue}4}}}1
+    {5}{{{\color{elm-blue}5}}}1
+    {6}{{{\color{elm-blue}6}}}1
+    {7}{{{\color{elm-blue}7}}}1
+    {8}{{{\color{elm-blue}8}}}1
+    {9}{{{\color{elm-blue}9}}}1
+    {.0}{{{\color{elm-blue}.0}}}1
+    {.1}{{{\color{elm-blue}.1}}}1
+    {.2}{{{\color{elm-blue}.2}}}1
+    {.3}{{{\color{elm-blue}.3}}}1
+    {.4}{{{\color{elm-blue}.4}}}1
+    {.5}{{{\color{elm-blue}.5}}}1
+    {.6}{{{\color{elm-blue}.6}}}1
+    {.7}{{{\color{elm-blue}.7}}}1
+    {.8}{{{\color{elm-blue}.8}}}1
+    {.9}{{{\color{elm-blue}.9}}}1
+    % Format Symbols
+    {\(..\)}{{{ ({\color{elm-orange}..})}}}1
+    {=}{{{\color{elm-orange}=}}}1
+    {:}{{{\color{elm-orange}:}}}1
+    {->}{{{\color{elm-orange}->}}}1
+    {_}{{\_}}1
+}
+
+%% Define command for inlining %%
+\newcommand{\elmtt}[1]{\lstinline[language=elm]!#1!}

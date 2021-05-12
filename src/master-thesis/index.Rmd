@@ -6,13 +6,14 @@
 geometry: "margin=3.5cm" #,showframe"
 site: bookdown::bookdown_site
 documentclass: scrbook
-bibliography: [book.bibtex, packages.bib]
+bibliography: [book.bibtex] #, packages.bib]
 biblio-style: alphabetic
 link-citations: yes
 output:
   bookdown::pdf_book:
     citation_package: biblatex
-    latex_engine: xelatex
+    latex_engine: pdflatex #lualatex # #xelatex #
+    #pandoc_arg: --latex-engine-opt= -shell-escape -output-driver="xdvipdfmx -z 0"
     number_sections: yes
     toc: true
     toc_depth: 2
